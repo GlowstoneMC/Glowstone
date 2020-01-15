@@ -1,14 +1,14 @@
 furnace:
   - result:
-      type: COOKED_FISH
+      type: COOKED_SALMON
     input:
-      type: RAW_FISH
+      type: SALMON
   - result:
       type: COOKED_CHICKEN
     input:
-      type: RAW_CHICKEN
+      type: CHICKEN
   - result:
-      type: HARD_CLAY
+      type: CLAY_BALL
     input:
       type: CLAY
   - result:
@@ -28,9 +28,9 @@ furnace:
     input:
       type: COAL_ORE
   - result:
-      type: COOKED_FISH
+      type: COOKED_SALMON
     input:
-      type: RAW_FISH
+      type: SALMON
   - result:
       type: STONE
     input:
@@ -46,7 +46,7 @@ furnace:
   - result:
       type: BAKED_POTATO
     input:
-      type: POTATO_ITEM
+      type: POTATO
   - result:
       type: CHARCOAL
     input:
@@ -54,7 +54,7 @@ furnace:
   - result:
       type: COOKED_BEEF
     input:
-      type: RAW_BEEF
+      type: BEEF
   - result:
       type: GOLD_INGOT
     input:
@@ -76,21 +76,21 @@ furnace:
     input:
       type: CLAY_BALL
   - result:
-      type: GRILLED_PORK
+      type: COOKED_PORKCHOP
     input:
-      type: PORK
+      type: PORKCHOP
   - result:
       type: QUARTZ
     input:
-      type: QUARTZ_ORE
+      type: NETHER_QUARTZ_ORE
   - result:
       type: INK_SAC
     input:
       type: CACTUS
   - result:
-      type: SMOOTH_BRICK
+      type: STONE_BRICKS
     input:
-      type: SMOOTH_BRICK
+      type: STONE_BRICKS
   - result:
       type: COOKED_RABBIT
     input:
@@ -109,17 +109,17 @@ shapeless:
     ingredients:
       - type: INK_SAC
   - result:
-      type: FIREWORK
+      type: FIREWORK_STAR
     ingredients:
       - type: GUNPOWDER
   - result:
       type: WRITTEN_BOOK
     ingredients:
-      - type: BOOK_AND_QUILL
+      - type: WRITABLE_BOOK
   - result:
       type: MAP
     ingredients:
-      - type: EMPTY_MAP
+      - type: MAP
   - result:
       type: INK_SAC
       amount: 4
@@ -136,7 +136,7 @@ shapeless:
       - type: PAPER
       - type: LEATHER
   - result:
-      type: MUSHROOM_SOUP
+      type: MUSHROOM_STEW
     ingredients:
       - type: BROWN_MUSHROOM
       - type: RED_MUSHROOM
@@ -168,20 +168,20 @@ shapeless:
       - type: INK_SAC
       - type: INK_SAC
   - result:
-      type: BOOK_AND_QUILL
+      type: WRITABLE_BOOK
     ingredients:
       - type: BOOK
       - type: INK_SAC
       - type: FEATHER
   - result:
-      type: FIREBALL
+      type: FIRE_CHARGE
       amount: 3
     ingredients:
       - type: GUNPOWDER
       - type: BLAZE_POWDER
       - type: COAL
   - result:
-      type: FIREBALL
+      type: FIRE_CHARGE
       amount: 3
     ingredients:
       - type: GUNPOWDER
@@ -344,11 +344,11 @@ shapeless:
   - result:
       type: INK_SAC
     ingredients:
-      - type: YELLOW_FLOWER
+      - type: DANDELION
   - result:
       type: INK_SAC
     ingredients:
-      - type: RED_ROSE
+      - type: POPPY
   - result:
       type: INK_SAC
       amount: 3
@@ -357,59 +357,59 @@ shapeless:
   - result:
       type: INK_SAC
     ingredients:
-      - type: RED_ROSE
+      - type: POPPY
   - result:
       type: INK_SAC
     ingredients:
-      - type: RED_ROSE
+      - type: POPPY
   - result:
       type: INK_SAC
     ingredients:
-      - type: RED_ROSE
+      - type: POPPY
   - result:
       type: INK_SAC
     ingredients:
-      - type: RED_ROSE
+      - type: POPPY
   - result:
       type: INK_SAC
     ingredients:
-      - type: RED_ROSE
+      - type: POPPY
   - result:
       type: INK_SAC
     ingredients:
-      - type: RED_ROSE
+      - type: POPPY
   - result:
       type: INK_SAC
     ingredients:
-      - type: RED_ROSE
+      - type: POPPY
   - result:
       type: INK_SAC
     ingredients:
-      - type: RED_ROSE
-  - result:
-      type: INK_SAC
-      amount: 2
-    ingredients:
-      - type: DOUBLE_PLANT
+      - type: POPPY
   - result:
       type: INK_SAC
       amount: 2
     ingredients:
-      - type: DOUBLE_PLANT
+      - type: TALL_GRASS
   - result:
       type: INK_SAC
       amount: 2
     ingredients:
-      - type: DOUBLE_PLANT
+      - type: TALL_GRASS
   - result:
       type: INK_SAC
       amount: 2
     ingredients:
-      - type: DOUBLE_PLANT
+      - type: TALL_GRASS
   - result:
-      type: SMOOTH_BRICK
+      type: INK_SAC
+      amount: 2
     ingredients:
-      - type: SMOOTH_BRICK
+      - type: TALL_GRASS
+  - result:
+      type: STONE_BRICKS
+    ingredients:
+      - type: STONE_BRICKS
       - type: VINE
   - result:
       type: MOSSY_COBBLESTONE
@@ -580,7 +580,7 @@ shaped:
       e:
         type: GOLD_NUGGET
   - result:
-      type: MELON_BLOCK
+      type: MELON
     shape:
       - eee
       - eee
@@ -627,7 +627,7 @@ shaped:
       g:
         type: COBBLESTONE
   - result:
-      type: REDSTONE_LAMP_OFF
+      type: REDSTONE_LAMP
     shape:
       - " b "
       - beb
@@ -741,7 +741,7 @@ shaped:
       g:
         type: GOLD_INGOT
   - result:
-      type: STAINED_CLAY
+      type: WHITE_TERRACOTTA
       amount: 8
     shape:
       - ggg
@@ -751,33 +751,9 @@ shaped:
       e:
         type: INK_SAC
       g:
-        type: HARD_CLAY
+        type: BRICK
   - result:
-      type: STAINED_GLASS
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: GLASS
-  - result:
-      type: STAINED_CLAY
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: HARD_CLAY
-  - result:
-      type: STAINED_GLASS
+      type: WHITE_STAINED_GLASS
       amount: 8
     shape:
       - ggg
@@ -789,7 +765,7 @@ shaped:
       g:
         type: GLASS
   - result:
-      type: STAINED_CLAY
+      type: WHITE_TERRACOTTA
       amount: 8
     shape:
       - ggg
@@ -799,33 +775,9 @@ shaped:
       e:
         type: INK_SAC
       g:
-        type: HARD_CLAY
+        type: BRICK
   - result:
-      type: STAINED_GLASS
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: GLASS
-  - result:
-      type: STAINED_CLAY
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: HARD_CLAY
-  - result:
-      type: STAINED_GLASS
+      type: WHITE_STAINED_GLASS
       amount: 8
     shape:
       - ggg
@@ -837,7 +789,7 @@ shaped:
       g:
         type: GLASS
   - result:
-      type: STAINED_CLAY
+      type: WHITE_TERRACOTTA
       amount: 8
     shape:
       - ggg
@@ -847,33 +799,9 @@ shaped:
       e:
         type: INK_SAC
       g:
-        type: HARD_CLAY
+        type: BRICK
   - result:
-      type: STAINED_GLASS
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: GLASS
-  - result:
-      type: STAINED_CLAY
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: HARD_CLAY
-  - result:
-      type: STAINED_GLASS
+      type: WHITE_STAINED_GLASS
       amount: 8
     shape:
       - ggg
@@ -885,7 +813,7 @@ shaped:
       g:
         type: GLASS
   - result:
-      type: STAINED_CLAY
+      type: WHITE_TERRACOTTA
       amount: 8
     shape:
       - ggg
@@ -895,33 +823,9 @@ shaped:
       e:
         type: INK_SAC
       g:
-        type: HARD_CLAY
+        type: BRICK
   - result:
-      type: STAINED_GLASS
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: GLASS
-  - result:
-      type: STAINED_CLAY
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: HARD_CLAY
-  - result:
-      type: STAINED_GLASS
+      type: WHITE_STAINED_GLASS
       amount: 8
     shape:
       - ggg
@@ -933,7 +837,7 @@ shaped:
       g:
         type: GLASS
   - result:
-      type: STAINED_CLAY
+      type: WHITE_TERRACOTTA
       amount: 8
     shape:
       - ggg
@@ -943,33 +847,9 @@ shaped:
       e:
         type: INK_SAC
       g:
-        type: HARD_CLAY
+        type: BRICK
   - result:
-      type: STAINED_GLASS
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: GLASS
-  - result:
-      type: STAINED_CLAY
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: HARD_CLAY
-  - result:
-      type: STAINED_GLASS
+      type: WHITE_STAINED_GLASS
       amount: 8
     shape:
       - ggg
@@ -981,7 +861,7 @@ shaped:
       g:
         type: GLASS
   - result:
-      type: STAINED_CLAY
+      type: WHITE_TERRACOTTA
       amount: 8
     shape:
       - ggg
@@ -991,33 +871,9 @@ shaped:
       e:
         type: INK_SAC
       g:
-        type: HARD_CLAY
+        type: BRICK
   - result:
-      type: STAINED_GLASS
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: GLASS
-  - result:
-      type: STAINED_CLAY
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: HARD_CLAY
-  - result:
-      type: STAINED_GLASS
+      type: WHITE_STAINED_GLASS
       amount: 8
     shape:
       - ggg
@@ -1029,7 +885,7 @@ shaped:
       g:
         type: GLASS
   - result:
-      type: STAINED_CLAY
+      type: WHITE_TERRACOTTA
       amount: 8
     shape:
       - ggg
@@ -1039,33 +895,9 @@ shaped:
       e:
         type: INK_SAC
       g:
-        type: HARD_CLAY
+        type: BRICK
   - result:
-      type: STAINED_GLASS
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: GLASS
-  - result:
-      type: STAINED_CLAY
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: HARD_CLAY
-  - result:
-      type: STAINED_GLASS
+      type: WHITE_STAINED_GLASS
       amount: 8
     shape:
       - ggg
@@ -1077,7 +909,7 @@ shaped:
       g:
         type: GLASS
   - result:
-      type: STAINED_CLAY
+      type: WHITE_TERRACOTTA
       amount: 8
     shape:
       - ggg
@@ -1087,33 +919,9 @@ shaped:
       e:
         type: INK_SAC
       g:
-        type: HARD_CLAY
+        type: BRICK
   - result:
-      type: STAINED_GLASS
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: GLASS
-  - result:
-      type: STAINED_CLAY
-      amount: 8
-    shape:
-      - ggg
-      - geg
-      - ggg
-    ingredients:
-      e:
-        type: INK_SAC
-      g:
-        type: HARD_CLAY
-  - result:
-      type: STAINED_GLASS
+      type: WHITE_STAINED_GLASS
       amount: 8
     shape:
       - ggg
@@ -1125,7 +933,199 @@ shaped:
       g:
         type: GLASS
   - result:
-      type: EMPTY_MAP
+      type: WHITE_TERRACOTTA
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: BRICK
+  - result:
+      type: WHITE_STAINED_GLASS
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: GLASS
+  - result:
+      type: WHITE_TERRACOTTA
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: BRICK
+  - result:
+      type: WHITE_STAINED_GLASS
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: GLASS
+  - result:
+      type: WHITE_TERRACOTTA
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: BRICK
+  - result:
+      type: WHITE_STAINED_GLASS
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: GLASS
+  - result:
+      type: WHITE_TERRACOTTA
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: BRICK
+  - result:
+      type: WHITE_STAINED_GLASS
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: GLASS
+  - result:
+      type: WHITE_TERRACOTTA
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: BRICK
+  - result:
+      type: WHITE_STAINED_GLASS
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: GLASS
+  - result:
+      type: WHITE_TERRACOTTA
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: BRICK
+  - result:
+      type: WHITE_STAINED_GLASS
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: GLASS
+  - result:
+      type: WHITE_TERRACOTTA
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: BRICK
+  - result:
+      type: WHITE_STAINED_GLASS
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: GLASS
+  - result:
+      type: WHITE_TERRACOTTA
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: BRICK
+  - result:
+      type: WHITE_STAINED_GLASS
+      amount: 8
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e:
+        type: INK_SAC
+      g:
+        type: GLASS
+  - result:
+      type: MAP
     shape:
       - ggg
       - geg
@@ -1147,7 +1147,7 @@ shaped:
       g:
         type: OAK_PLANKS
   - result:
-      type: LEASH
+      type: LEAD
       amount: 2
     shape:
       - "bb "
@@ -1229,7 +1229,7 @@ shaped:
       f:
         type: SUGAR
   - result:
-      type: RAILS
+      type: RAIL
       amount: 16
     shape:
       - g g
@@ -1283,7 +1283,7 @@ shaped:
       h:
         type: REDSTONE
   - result:
-      type: CAULDRON_ITEM
+      type: CAULDRON
     shape:
       - g g
       - g g
@@ -1292,7 +1292,7 @@ shaped:
       g:
         type: IRON_INGOT
   - result:
-      type: OAK_PLANK_STAIRS
+      type: OAK_STAIRS
       amount: 4
     shape:
       - "e  "
@@ -1302,7 +1302,7 @@ shaped:
       e:
         type: OAK_PLANKS
   - result:
-      type: BIRCH_OAK_PLANK_STAIRS
+      type: BIRCH_STAIRS
       amount: 4
     shape:
       - "e  "
@@ -1322,7 +1322,7 @@ shaped:
       e:
         type: OAK_PLANKS
   - result:
-      type: JUNGLE_OAK_PLANK_STAIRS
+      type: JUNGLE_STAIRS
       amount: 4
     shape:
       - "e  "
@@ -1383,7 +1383,7 @@ shaped:
       e:
         type: BRICK
   - result:
-      type: SMOOTH_STAIRS
+      type: STONE_BRICK_STAIRS
       amount: 4
     shape:
       - "e  "
@@ -1391,7 +1391,7 @@ shaped:
       - eee
     ingredients:
       e:
-        type: SMOOTH_BRICK
+        type: STONE_BRICKS
   - result:
       type: NETHER_BRICK_STAIRS
       amount: 4
@@ -1488,7 +1488,7 @@ shaped:
       g:
         type: GOLD_NUGGET
   - result:
-      type: SPECKLED_MELON
+      type: GLISTERING_MELON_SLICE
     shape:
       - ggg
       - geg
@@ -1499,7 +1499,7 @@ shaped:
       g:
         type: GOLD_NUGGET
   - result:
-      type: REDSTONE_COMPARATOR
+      type: COMPARATOR
     shape:
       - " b "
       - beb
@@ -1512,7 +1512,7 @@ shaped:
       b:
         type: REDSTONE_TORCH
   - result:
-      type: WATCH
+      type: CLOCK
     shape:
       - " b "
       - beb
@@ -1534,7 +1534,7 @@ shaped:
       b:
         type: IRON_INGOT
   - result:
-      type: EMPTY_MAP
+      type: MAP
     shape:
       - ggg
       - geg
@@ -1569,7 +1569,7 @@ shaped:
       h:
         type: REDSTONE
   - result:
-      type: PISTON_BASE
+      type: PISTON
     shape:
       - ccc
       - geg
@@ -1584,7 +1584,7 @@ shaped:
       h:
         type: REDSTONE
   - result:
-      type: ENCHANTMENT_TABLE
+      type: ENCHANTING_TABLE
     shape:
       - " b "
       - fef
@@ -1643,7 +1643,7 @@ shaped:
       f:
         type: STICK
   - result:
-      type: OAK_PLANK_HOE
+      type: WOODEN_HOE
     shape:
       - bb
       - " f"
@@ -1742,7 +1742,7 @@ shaped:
       f:
         type: STICK
   - result:
-      type: IRON_FENCE
+      type: IRON_BARS
       amount: 16
     shape:
       - eee
@@ -1751,7 +1751,7 @@ shaped:
       e:
         type: IRON_INGOT
   - result:
-      type: THIN_GLASS
+      type: GLASS_PANE
       amount: 16
     shape:
       - eee
@@ -1840,151 +1840,151 @@ shaped:
       c:
         type: GOLD_INGOT
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: STAINED_GLASS_PANE
+      type: WHITE_STAINED_GLASS_PANE
       amount: 16
     shape:
       - eee
       - eee
     ingredients:
       e:
-        type: STAINED_GLASS
+        type: WHITE_STAINED_GLASS
   - result:
-      type: FENCE
+      type: OAK_FENCE
       amount: 3
     shape:
       - wew
@@ -2050,7 +2050,7 @@ shaped:
       w:
         type: OAK_PLANKS
   - result:
-      type: COBBLE_WALL
+      type: COBBLESTONE_WALL
       amount: 6
     shape:
       - eee
@@ -2059,7 +2059,7 @@ shaped:
       e:
         type: COBBLESTONE
   - result:
-      type: COBBLE_WALL
+      type: COBBLESTONE_WALL
       amount: 6
     shape:
       - eee
@@ -2068,7 +2068,7 @@ shaped:
       e:
         type: MOSSY_COBBLESTONE
   - result:
-      type: NETHER_FENCE
+      type: NETHER_BRICK_FENCE
       amount: 6
     shape:
       - eee
@@ -2077,7 +2077,7 @@ shaped:
       e:
         type: NETHER_BRICK
   - result:
-      type: FENCE_GATE
+      type: OAK_FENCE_GATE
     shape:
       - cwc
       - cwc
@@ -2137,7 +2137,7 @@ shaped:
       c:
         type: STICK
   - result:
-      type: OAK_PLANK_DOOR
+      type: OAK_DOOR
       amount: 3
     shape:
       - ee
@@ -2197,7 +2197,7 @@ shaped:
       e:
         type: OAK_PLANKS
   - result:
-      type: TRAP_DOOR
+      type: OAK_TRAPDOOR
       amount: 2
     shape:
       - eee
@@ -2250,7 +2250,7 @@ shaped:
       e:
         type: IRON_INGOT
   - result:
-      type: BREWING_STAND_ITEM
+      type: BREWING_STAND
     shape:
       - " b "
       - eee
@@ -2260,7 +2260,7 @@ shaped:
       b:
         type: BLAZE_ROD
   - result:
-      type: BOAT
+      type: OAK_BOAT
     shape:
       - e e
       - eee
@@ -2316,7 +2316,7 @@ shaped:
       e:
         type: IRON_INGOT
   - result:
-      type: FLOWER_POT_ITEM
+      type: FLOWER_POT
     shape:
       - e e
       - " e "
@@ -2396,7 +2396,7 @@ shaped:
       c:
         type: RED_SANDSTONE
   - result:
-      type: SMOOTH_BRICK
+      type: STONE_BRICKS
       amount: 4
     shape:
       - cc
@@ -2461,7 +2461,7 @@ shaped:
       c:
         type: STRING
   - result:
-      type: CARROT_STICK
+      type: CARROT_ON_A_STICK
     shape:
       - "a "
       - " d"
@@ -2685,7 +2685,7 @@ shaped:
       c:
         type: OAK_PLANKS
   - result:
-      type: OAK_PLANK_SLAB
+      type: OAK_SLAB
       amount: 6
     shape:
       - ccc
@@ -2779,7 +2779,7 @@ shaped:
       b:
         type: QUARTZ_SLAB
   - result:
-      type: SMOOTH_BRICK
+      type: STONE_BRICKS
     shape:
       - c
       - c
@@ -2796,7 +2796,7 @@ shaped:
       b:
         type: QUARTZ_BLOCK
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2804,7 +2804,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2812,7 +2812,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2820,7 +2820,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2828,7 +2828,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2836,7 +2836,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2844,7 +2844,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2852,7 +2852,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2860,7 +2860,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2868,7 +2868,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2876,7 +2876,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2884,7 +2884,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2892,7 +2892,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2900,7 +2900,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2908,7 +2908,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2916,7 +2916,7 @@ shaped:
       b:
         type: WHITE_WOOL
   - result:
-      type: CARPET
+      type: WHITE_CARPET
       amount: 3
     shape:
       - bb
@@ -2965,7 +2965,7 @@ shaped:
       a:
         type: PUMPKIN
   - result:
-      type: STORAGE_MINECART
+      type: CHEST_MINECART
     shape:
       - a
       - b
@@ -2975,7 +2975,7 @@ shaped:
       a:
         type: CHEST
   - result:
-      type: POWERED_MINECART
+      type: FURNACE_MINECART
     shape:
       - a
       - b
@@ -2985,7 +2985,7 @@ shaped:
       a:
         type: FURNACE
   - result:
-      type: EXPLOSIVE_MINECART
+      type: TNT_MINECART
     shape:
       - a
       - b
@@ -3032,34 +3032,34 @@ shaped:
       b:
         type: STONE
   - result:
-      type: OAK_PLANK_PLATE
+      type: OAK_PRESSURE_PLATE
     shape:
       - bb
     ingredients:
       b:
         type: OAK_PLANKS
   - result:
-      type: IRON_PLATE
+      type: LIGHT_WEIGHTED_PRESSURE_PLATE
     shape:
       - bb
     ingredients:
       b:
         type: IRON_INGOT
   - result:
-      type: GOLD_PLATE
+      type: HEAVY_WEIGHTED_PRESSURE_PLATE
     shape:
       - bb
     ingredients:
       b:
         type: GOLD_INGOT
   - result:
-      type: PISTON_STICKY_BASE
+      type: STICKY_PISTON
     shape:
       - a
       - b
     ingredients:
       b:
-        type: PISTON_BASE
+        type: PISTON
       a:
         type: SLIME_BALL
   - result:
@@ -3212,7 +3212,7 @@ shaped:
       a:
         type: STONE
   - result:
-      type: OAK_PLANK_BUTTON
+      type: OAK_BUTTON
     shape:
       - a
     ingredients:
@@ -3368,7 +3368,7 @@ shaped:
       b:
         type: PRISMARINE_CRYSTALS
   - result:
-      type: MAGMA
+      type: MAGMA_BLOCK
     shape:
       - aa
       - aa
@@ -3385,7 +3385,7 @@ shaped:
       a:
         type: NETHER_WART
   - result:
-      type: RED_NETHER_BRICK
+      type: NETHER_BRICK
     shape:
       - ba
       - ab
@@ -3404,7 +3404,7 @@ shaped:
       a:
         type: BONE
   - result:
-      type: CONCRETE_POWDER
+      type: WHITE_CONCRETE_POWDER
     shape:
       - aba
       - bcb
