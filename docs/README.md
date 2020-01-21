@@ -60,8 +60,8 @@ Older releases can be found on [GitHub](https://github.com/GlowstoneMC/Glowstone
 ## Building
 
 ### 1. Setup
-After installing [Oracle JDK](https://oracle.com/technetwork/java/javase/downloads) (recommended) or [OpenJDK](https://openjdk.java.net/), and
-[Maven](https://maven.apache.org), checkout the source:
+After installing [Oracle JDK](https://oracle.com/technetwork/java/javase/downloads) (recommended) or [OpenJDK](https://openjdk.java.net/),
+checkout the source:
 
 ```sh
 git clone https://github.com/GlowstoneMC/Glowstone
@@ -71,10 +71,29 @@ cd Glowstone
 ### 2. Build
 
 ```sh
-./scripts/build.sh
+gradlew build
 ```
 
-The final jar will be placed in `target/` named `glowstone.jar`.
+The final jar will be placed in `build/libs`, and will be named `glowstone.jar`.
+
+#### Customising the build
+
+Several properties are available to you if you need to customise the build. These properties are Gradle properties, and
+may be specified in several ways - we recommend the following approaches:
+
+* For a once-off build, you can supply the property on the command-line using `-Pproperty=value`
+* For a more permanent configuration, create a file named `gradle.properties` in `~/.gradle` if it doesn't already 
+  exist, and add `property=value` to it
+
+The following properties are available for build customisation:
+
+* `org.gradle.caching` (Default: `true`) - If you need to disable the build cache temporarily, you can set this to
+  `false` - but note that **this will only work if specified on the command-line** as it is present in the project's
+  `gradle.properties` file
+* `skipExtras` (Default: unset) - Set this property to `true` to skip building `javadoc` and `sources` jars, which 
+  will also skip the `delombok` task
+* `testForks` (Default: `1`) - This can be used to run tests in parallel, by specifying the number of processes to 
+  spawn for the test runner
 
 ## Running
 
