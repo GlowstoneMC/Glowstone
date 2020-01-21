@@ -1,0 +1,268 @@
+plugins {
+    // First-party
+    id 'application'
+    id 'checkstyle'
+    id 'eclipse'
+    id 'idea'
+    id 'java'
+    id 'jacoco'
+    id 'maven-publish'
+
+    // Third-party
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id "io.freefair.lombok" version "4.1.6"
+}
+
+def gitCommitHash = 'git rev-parse --verify --short HEAD'.execute().text.trim()
+def testForks = (findProperty('testForks') ?: '1') as Integer
+
+description = 'A fast, customizable and compatible open source Minecraft server.'
+group = 'net.glowstone'
+sourceCompatibility = jdkVersion
+targetCompatibility = jdkVersion
+version = glowstoneVersion
+
+repositories {
+    mavenLocal()
+
+    maven {
+        name = 'Glowstone'
+        url = 'https://repo.glowstone.net/repository/internal/'
+    }
+
+    maven {
+        name = 'Glowstone (Snapshots)'
+        url = 'https://repo.glowstone.net/repository/snapshots/'
+    }
+
+    maven {  // TODO: Temporary, Paper snapshots repo is FUBAR'd
+        name = 'PaperMC (Public)'
+        url = 'https://papermc.io/repo/repository/maven-public/'
+    }
+}
+
+dependencies {
+    implementation group: 'com.eatthepath', name: 'fast-uuid', version: '0.1'
+    implementation group: 'com.flowpowered', name: 'flow-network', version: '1.2.8-SNAPSHOT'
+    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.2'
+    implementation group: 'jline', name: 'jline', version: '2.14.6'
+    implementation group: 'org.apache.maven', name: 'maven-artifact', version: '3.6.0'
+    implementation group: 'org.fusesource.jansi', name: 'jansi', version: '1.17.1'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '16.0.2'
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlinVersion
+    implementation group: 'org.jogamp.gluegen', name: 'gluegen-rt-main', version: '2.3.2'
+    implementation group: 'org.jogamp.jocl', name: 'jocl-main', version: '2.3.2'
+
+    // noinspection DifferentStdlibGradleVersion
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlinVersion
+
+    implementation(group: 'com.tobedevoured.naether', name: 'core', version: '0.15.4') {
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+
+    implementation(group: 'net.glowstone', name: 'glowkit', version: apiVersion) {
+        exclude group: 'junit', module: 'junit'
+    }
+
+    runtimeOnly group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.25'
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVintageVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
+    testImplementation group: 'org.powermock', name: 'powermock-core', version: powermockVersion
+    testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: powermockVersion
+    testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: powermockVersion
+}
+
+application {
+    mainClassName = 'net.glowstone.GlowServer'
+}
+
+checkstyle {
+    // Checkstyle expects config files to be in `config/checkstyle` by default
+    configFile rootProject.file('/etc/checkstyle.xml')
+    ignoreFailures true
+    toolVersion '8.18'
+}
+
+compileJava {
+    if (! JavaVersion.current().is(JavaVersion.VERSION_1_8)) {
+        // Instead of using Animal Sniffer, we can just use the JDK's own options for this
+        options.compilerArgs.addAll(['--release', '8'])
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+            rule {
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 0.01
+            }
+        }
+
+        rule {
+            limit {
+                counter = 'COMPLEXITY'
+                value = 'COVEREDRATIO'
+                minimum = 0.01
+            }
+        }
+    }
+}
+
+jacocoTestCoverageVerification.mustRunAfter jacocoTestReport
+
+jacocoTestReport {
+    reports {
+        csv.enabled true
+        html.enabled true
+        xml.enabled true
+    }
+}
+
+jar {
+    archiveFileName = "glowstone-slim.${archiveExtension.get()}"
+
+    manifest {
+        attributes 'Launcher-Agent-Class': 'net.glowstone.util.ClassPathAgent'
+        attributes 'Main-Class': 'net.glowstone.GlowServer'
+        attributes 'Implementation-Title': rootProject.name
+        attributes 'Implementation-Version': "${glowstoneVersion}.${gitCommitHash}"
+        attributes 'Implementation-Vendor': new Date().format('yyyyMMdd-HHmm')
+        attributes 'Specification-Title': 'Bukkit'
+        attributes 'Specification-Version': apiVersion
+    }
+}
+
+java {
+    if (project.findProperty("skipExtras") != 'true') {
+        withJavadocJar()
+        withSourcesJar()
+    }
+}
+
+javadoc {  // Modified version of the Lombok plugin example
+    dependsOn delombok
+    exclude('**/*.xml')
+    failOnError = false
+    source = "${rootProject.projectDir}/build/delombok/main/"
+
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+javadocJar {
+    archiveFileName = "glowstone-javadoc.${archiveExtension.get()}"
+}
+
+lombok {
+    version = '1.18.10'
+}
+
+publishing {
+    repositories {
+        maven {
+            def baseUrl = 'https://repo.glowstone.net/repository'
+            def releasesRepoUrl = uri("$baseUrl/releases")
+            def snapshotsRepoUrl = uri("$baseUrl/snapshots")
+
+            name = 'Glowstone-Nexus'
+            url = version.contains('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            credentials {
+                username = project.findProperty('glowstoneNexusUser') ?: System.getenv('NEXUS_USER')
+                password = project.findProperty('glowstoneNexusPass') ?: System.getenv('NEXUS_PASS')
+            }
+        }
+
+        if (! version.contains('SNAPSHOT')) {
+            // Bintray is for releases, oss.jfrog.org is good for snapshots but we need releases
+            // on Bintray first to be approved for it - so I haven't included a deployment for
+            // that here.
+
+            maven {
+                name = 'Bintray'
+                url = uri('https://api.bintray.com/maven/glowstonemc/Glowstone/Glowstone/;publish=1')
+
+                credentials {
+                    username = project.findProperty('glowstoneBintrayUser') ?: System.getenv('BINTRAY_USER')
+                    password = project.findProperty('glowstoneBintrayPass') ?: System.getenv('BINTRAY_PASS')
+                }
+            }
+        }
+    }
+
+    publications {
+        maven(MavenPublication) { publication ->
+            artifactId = 'glowstone'
+            groupId = group
+
+            from(components.java)
+
+            artifact shadowJar  // Publish this too!
+
+            pom {
+                name = rootProject.name
+                description = rootProject.description
+                url = 'https://glowstone.net'
+
+                // TODO: Add developers section if we want to publish to Maven Central
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+
+                organization {
+                    name = 'Glowstone'
+                    url = 'https://glowstone.net'
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/GlowstoneMC/Glowstone.git'
+                    developerConnection = 'scm:git:ssh://github.com:GlowstoneMC/Glowstone.git'
+                    url = 'https://github.com/GlowstoneMC/Glowstone'
+                }
+            }
+        }
+    }
+}
+
+shadowJar {
+    archiveFileName = "glowstone.${archiveExtension.get()}"
+
+    exclude 'mojang-translations/*'
+
+    relocate 'jline', 'org.bukkit.craftbukkit.libs.jline'
+    relocate 'it.unimi', 'org.bukkit.craftbukkit.libs.it.unimi'
+}
+
+sourcesJar {
+    archiveFileName = "glowstone-sources.${archiveExtension.get()}"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+
+    jacoco {
+        excludes = [
+                'META-INF/versions/**'
+        ]
+    }
+
+    maxParallelForks testForks
+}
+
+test.finalizedBy jacocoTestReport
