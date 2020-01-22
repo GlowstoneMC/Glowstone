@@ -39,7 +39,7 @@ jobs:
     inputs:
       codeCoverageTool: "jaCoCo"
       summaryFileLocation: "$(System.DefaultWorkingDirectory)/build/reports/jacoco/test/jacocoTestReport.xml"
-      reportDirectory: "$(System.DefaultWorkingDirectory)/build/reports/jacoco/test/"
+      reportDirectory: "$(System.DefaultWorkingDirectory)/build/reports/jacoco/test/html"
       additionalCodeCoverageFiles: "$(System.DefaultWorkingDirectory)/**/jacoco.exec"
       failIfCoverageEmpty: false
 
