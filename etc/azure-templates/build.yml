@@ -4,7 +4,7 @@ steps:
 
   inputs:
     options: "-PtestForks=4 --stacktrace"
-    gradleOptions: "-Xmx2048m"
+    gradleOptions: "-Xmx2048m -Dorg.gradle.daemon=false"
 
     javaHomeOption: "JDKVersion"
     jdkVersionOption: "$(jdk_version)"
