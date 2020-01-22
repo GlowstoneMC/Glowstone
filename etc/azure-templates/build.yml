@@ -1,3 +1,4 @@
+steps:
 - task: Cache@2
   displayName: "Configure Build Cache"
 
