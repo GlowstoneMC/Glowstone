@@ -19,9 +19,3 @@ steps:
     jdkArchitectureOption: "x64"
     publishJUnitResults: true
     testResultsFiles: "$(System.DefaultWorkingDirectory)/build/test-results/test/**/TEST-*.xml"
-
-- task: CmdLine@2
-  displayName: "Stop Gradle daemon"
-
-  inputs:
-    script: "./gradlew stop"
