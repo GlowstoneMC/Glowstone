@@ -1,14 +1,26 @@
-steps:
+- task: Cache@2
+  displayName: "Configure Build Cache"
+
+  inputs:
+    cacheHitVar: "CACHE_RESTORED"
+    key: 'gradle | "$(Agent.OS)"'
+    path: "$(GRADLE_USER_HOME)"
+
 - task: Gradle@2
   displayName: "Gradle: Build"
 
   inputs:
-    options: "-PtestForks=4 --stacktrace"
+    options: "-PtestForks=4 --stacktrace --build-cache"
     gradleOptions: "-Xmx2048m -Dorg.gradle.daemon=false"
 
     javaHomeOption: "JDKVersion"
     jdkVersionOption: "$(jdk_version)"
     jdkArchitectureOption: "x64"
     publishJUnitResults: true
-    testResultsFiles: '$(System.DefaultWorkingDirectory)/build/test-results/test/**/TEST-*.xml'
+    testResultsFiles: "$(System.DefaultWorkingDirectory)/build/test-results/test/**/TEST-*.xml"
 
+- task: CmdLine@2
+  displayName: "Stop Gradle daemon"
+
+  inputs:
+    script: "./gradlew stop"
