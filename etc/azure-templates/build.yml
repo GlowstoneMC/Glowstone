@@ -3,7 +3,7 @@ steps:
   displayName: "Gradle: Build"
 
   inputs:
-    options: "-PtestForks=4"
+    options: "-PtestForks=4 --stacktrace"
     gradleOptions: "-Xmx2048m"
 
     javaHomeOption: "JDKVersion"
