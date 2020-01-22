@@ -59,6 +59,11 @@ import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
+import net.glowstone.block.data.SimpleBlockData;
+import net.glowstone.block.data.impl.GlowAgeableBlockData;
+import net.glowstone.block.data.impl.GlowBedBlockData;
+import net.glowstone.block.data.impl.GlowFacingBlockData;
+import net.glowstone.block.data.state.StateGenerator;
 import net.glowstone.block.entity.state.GlowDispenser;
 import net.glowstone.boss.GlowBossBar;
 import net.glowstone.boss.GlowKeyedBossBar;
@@ -1484,8 +1489,33 @@ public class GlowServer implements Server {
 
     @Override
     public BlockData createBlockData(Material material) {
-        // TODO: 1.13, flattening
-        throw new UnsupportedOperationException("Not supported yet.");
+        switch (material){
+            case ANVIL:
+            case CHIPPED_ANVIL:
+            case DAMAGED_ANVIL:
+                return new GlowFacingBlockData(material, StateGenerator.FOUR_FACING);
+            case BLACK_BED:
+            case BLUE_BED:
+            case BROWN_BED:
+            case CYAN_BED:
+            case GRAY_BED:
+            case GREEN_BED:
+            case LIGHT_BLUE_BED:
+            case LIGHT_GRAY_BED:
+            case LIME_BED:
+            case MAGENTA_BED:
+            case ORANGE_BED:
+            case PINK_BED:
+            case PURPLE_BED:
+            case RED_BED:
+            case WHITE_BED:
+            case YELLOW_BED:
+                return new GlowBedBlockData(material);
+            case BEETROOT_SEEDS:
+                return new GlowAgeableBlockData(material, StateGenerator.THREE_AGE);
+            default:
+                return new SimpleBlockData(material);
+        }
     }
 
     @Override
