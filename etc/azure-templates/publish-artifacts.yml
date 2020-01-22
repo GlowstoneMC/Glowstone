@@ -4,7 +4,7 @@ steps:
 
   inputs:
     artifactName: 'Glowstone$(artifact_suffix)'
-    pathtoPublish: 'build/libs/glowstone-all.jar'
+    pathtoPublish: 'build/libs/glowstone.jar'
 
 - task: PublishBuildArtifacts@1
   displayName: "Artifact: JavaDoc JAR"
