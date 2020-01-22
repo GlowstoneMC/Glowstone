@@ -60,9 +60,7 @@ import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.data.SimpleBlockData;
-import net.glowstone.block.data.impl.GlowAgeableBlockData;
-import net.glowstone.block.data.impl.GlowBedBlockData;
-import net.glowstone.block.data.impl.GlowFacingBlockData;
+import net.glowstone.block.data.impl.*;
 import net.glowstone.block.data.state.StateGenerator;
 import net.glowstone.block.entity.state.GlowDispenser;
 import net.glowstone.boss.GlowBossBar;
@@ -1493,6 +1491,22 @@ public class GlowServer implements Server {
             case ANVIL:
             case CHIPPED_ANVIL:
             case DAMAGED_ANVIL:
+            case BLACK_WALL_BANNER:
+            case BLUE_WALL_BANNER:
+            case BROWN_WALL_BANNER:
+            case CYAN_WALL_BANNER:
+            case GRAY_WALL_BANNER:
+            case GREEN_WALL_BANNER:
+            case LIME_WALL_BANNER:
+            case MAGENTA_WALL_BANNER:
+            case ORANGE_WALL_BANNER:
+            case PINK_WALL_BANNER:
+            case PURPLE_WALL_BANNER:
+            case RED_WALL_BANNER:
+            case WHITE_WALL_BANNER:
+            case YELLOW_WALL_BANNER:
+            case LIGHT_BLUE_WALL_BANNER:
+            case LIGHT_GRAY_WALL_BANNER:
                 return new GlowFacingBlockData(material, StateGenerator.FOUR_FACING);
             case BLACK_BED:
             case BLUE_BED:
@@ -1513,6 +1527,35 @@ public class GlowServer implements Server {
                 return new GlowBedBlockData(material);
             case BEETROOT_SEEDS:
                 return new GlowAgeableBlockData(material, StateGenerator.THREE_AGE);
+            case BLACK_BANNER:
+            case BLUE_BANNER:
+            case BROWN_BANNER:
+            case CYAN_BANNER:
+            case GRAY_BANNER:
+            case GREEN_BANNER:
+            case LIGHT_BLUE_BANNER:
+            case LIGHT_GRAY_BANNER:
+            case LIME_BANNER:
+            case MAGENTA_BANNER:
+            case ORANGE_BANNER:
+            case PINK_BANNER:
+            case PURPLE_BANNER:
+            case RED_BANNER:
+            case WHITE_BANNER:
+            case YELLOW_BANNER:
+                return new GlowRotatableBlockData(material, StateGenerator.SIXTEEN_ROTATION);
+            case BREWING_STAND:
+                return new GlowBrewingStandBlockData(material);
+            case BUBBLE_COLUMN:
+                return new GlowBubbleColumn(material);
+            case CACTUS:
+                return new GlowAgeableBlockData(material, StateGenerator.SIXTEEN_AGE);
+            case CAKE:
+                return new GlowCakeBlockData(material);
+            case CARROT:
+                return new GlowAgeableBlockData(material, StateGenerator.EIGHT_AGE);
+            case CAULDRON:
+                return new GlowLevelledBlockData(material, StateGenerator.FOUR_LEVEL);
             default:
                 return new SimpleBlockData(material);
         }
@@ -1520,14 +1563,15 @@ public class GlowServer implements Server {
 
     @Override
     public BlockData createBlockData(Material material, Consumer<BlockData> consumer) {
-        // TODO: 1.13, flattening
-        throw new UnsupportedOperationException("Not supported yet.");
+        BlockData data = this.createBlockData(material);
+        consumer.accept(data);
+        return data;
     }
 
     @Override
     public BlockData createBlockData(String data) throws IllegalArgumentException {
-        // TODO: 1.13, flattening
-        throw new UnsupportedOperationException("Not supported yet.");
+        String[] split = data.substring(0, data.length() - 1).split("\\[", 2);
+        return this.createBlockData(Material.matchMaterial(split[0]), split[1]);
     }
 
     @Override

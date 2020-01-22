@@ -26,6 +26,10 @@ public abstract class AbstractBlockData implements BlockData {
         this(material, Arrays.asList(array));
     }
 
+    public AbstractBlockData(Material material){
+        this(material, new StateValue[0]);
+    }
+
     public AbstractBlockData(Material material, Collection<StateValue<? extends Object>> collection){
         this.material = material;
         this.values = new HashSet<>(collection);
@@ -58,7 +62,7 @@ public abstract class AbstractBlockData implements BlockData {
         String entries = null;
         for(StateValue<?> value : this.values){
             if(entries == null){
-                entries = value.getGenerator().getId() + ": " + value.getValueAsString();
+                entries = value.getGenerator().getId() + "=" + value.getValueAsString();
             }else{
                 entries = entries + ", " + value.getGenerator().getId() + ": " + value.getValueAsString();
             }
