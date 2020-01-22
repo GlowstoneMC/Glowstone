@@ -10,5 +10,5 @@ steps:
     jdkVersionOption: "$(jdk_version)"
     jdkArchitectureOption: "x64"
     publishJUnitResults: true
-    testResultsFiles: '$(System.DefaultWorkingDirectory)build/test-results/test/**/TEST-*.xml'
+    testResultsFiles: '$(System.DefaultWorkingDirectory)/build/test-results/test/**/TEST-*.xml'
 
