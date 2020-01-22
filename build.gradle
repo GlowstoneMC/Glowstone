@@ -35,9 +35,9 @@ repositories {
         url = 'https://repo.glowstone.net/repository/snapshots/'
     }
 
-    maven {  // TODO: Temporary, Paper snapshots repo is FUBAR'd
-        name = 'PaperMC (Public)'
-        url = 'https://papermc.io/repo/repository/maven-public/'
+    maven {  // Required for bungeecord-chat
+        name = 'SpigotMC (Public)'
+        url = 'https://repo.glowstone.net/nexus/content/repositories/spigotmc-public/'
     }
 }
 
