@@ -83,7 +83,7 @@ application {
 
 checkstyle {
     // Checkstyle expects config files to be in `config/checkstyle` by default
-    configFile rootProject.file('/etc/checkstyle.xml')
+    configFile rootProject.file('etc/checkstyle.xml')
     ignoreFailures true
     toolVersion '8.18'
 }
