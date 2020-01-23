@@ -93,6 +93,8 @@ compileJava {
         // Instead of using Animal Sniffer, we can just use the JDK's own options for this
         options.compilerArgs.addAll(['--release', '8'])
     }
+
+    options.compilerArgs.addAll(['-JXss4m', 'Xmaxerrs', '1000'])
 }
 
 jacocoTestCoverageVerification {
@@ -169,8 +171,8 @@ publishing {
     repositories {
         maven {
             def baseUrl = 'https://repo.glowstone.net/repository'
-            def releasesRepoUrl = uri("$baseUrl/releases")
-            def snapshotsRepoUrl = uri("$baseUrl/snapshots")
+            def releasesRepoUrl = uri("$baseUrl/releases/")
+            def snapshotsRepoUrl = uri("$baseUrl/snapshots/")
 
             name = 'Glowstone-Nexus'
             url = version.contains('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
