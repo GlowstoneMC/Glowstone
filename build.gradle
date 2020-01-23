@@ -95,6 +95,7 @@ compileJava {
     }
 
     options.compilerArgs.addAll(['Xmaxerrs', '1000'])
+    options.setFork(true)
     options.forkOptions.jvmArgs.addAll(['-JXss4m'])
 }
 
