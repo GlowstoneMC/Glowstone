@@ -564,45 +564,6 @@ public class GlowServer implements Server {
                 case "--configfile":
                     configFileName = args[++i];
                     break;
-                case "--port":
-                case "-p":
-                    parameters.put(Key.SERVER_PORT, Integer.valueOf(args[++i]));
-                    break;
-                case "--host":
-                case "-H":
-                    parameters.put(Key.SERVER_IP, args[++i]);
-                    break;
-                case "--onlinemode":
-                case "-o":
-                    parameters.put(Key.ONLINE_MODE, Boolean.valueOf(args[++i]));
-                    break;
-                case "--jline":
-                    parameters.put(Key.USE_JLINE, Boolean.valueOf(args[++i]));
-                    break;
-                case "--plugins-dir":
-                case "-P":
-                    parameters.put(Key.PLUGIN_FOLDER, args[++i]);
-                    break;
-                case "--worlds-dir":
-                case "-W":
-                    parameters.put(Key.WORLD_FOLDER, args[++i]);
-                    break;
-                case "--update-dir":
-                case "-U":
-                    parameters.put(Key.UPDATE_FOLDER, args[++i]);
-                    break;
-                case "--max-players":
-                case "-M":
-                    parameters.put(Key.MAX_PLAYERS, Integer.valueOf(args[++i]));
-                    break;
-                case "--world-name":
-                case "-N":
-                    parameters.put(Key.LEVEL_NAME, args[++i]);
-                    break;
-                case "--log-pattern":
-                case "-L":
-                    parameters.put(Key.LOG_FILE, args[++i]);
-                    break;
                 case "--generate-config":
                     // previously handled
                     break;
