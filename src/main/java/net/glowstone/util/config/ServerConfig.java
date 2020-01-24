@@ -86,7 +86,7 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
                         + "It contains everything from server.properties and bukkit.yml in a\n"
                         + "normal CraftBukkit installation.\n\n"
                         + "Configuration entries are documented on the wiki: "
-                        + "https://github.com/GlowstoneMC/Glowstone/wiki/Configuration-Guide\n"
+                        + "https://docs.glowstone.net/en/latest/Configuration_Guide/index.html\n"
                         + "For help, join us on Discord: https://discord.gg/TFJqhsC");
     }
 
