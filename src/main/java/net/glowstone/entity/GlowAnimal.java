@@ -25,6 +25,8 @@ public class GlowAnimal extends GlowAgeable implements Animals {
     private static final Set<Material> DEFAULT_BREEDING_FOODS =
             Sets.immutableEnumSet(EnumSet.noneOf(Material.class));
 
+    private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
+
     /**
      * Creates a new ageable animal.
      *
