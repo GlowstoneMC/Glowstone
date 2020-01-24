@@ -37,6 +37,8 @@ public class GlowAnimal extends GlowAgeable implements Animals {
             EntityDirector.registerEntityMobState(type, MobState.IDLE, "look_player");
         }
         setState(MobState.IDLE);
+
+        setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
     }
 
     @Override
