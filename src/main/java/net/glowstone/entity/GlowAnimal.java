@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import net.glowstone.entity.ai.EntityDirector;
 import net.glowstone.entity.ai.MobState;
+import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
