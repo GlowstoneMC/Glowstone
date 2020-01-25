@@ -21,7 +21,7 @@ not needed or higher performance is desired than the official software can
 deliver. Glowstone makes use of a thread-per-world model and performs
 synchronization only when necessitated by the Bukkit API.
 
-Still have questions? Check out our [FAQ](https://github.com/GlowstoneMC/Glowstone/wiki/Frequently-Asked-Questions).
+Still have questions? Check out our [FAQ](https://docs.glowstone.net/en/latest/FAQ/frequently_asked_features.html).
 
 ## Features
 
