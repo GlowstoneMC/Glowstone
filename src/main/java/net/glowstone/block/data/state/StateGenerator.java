@@ -69,6 +69,7 @@ public interface StateGenerator<T> {
     IntegerStateGenerator.Ranged REDSTONE_POWER = new IntegerStateGenerator.Ranged("power", 0, 16);
     IntegerStateGenerator.Ranged TWO_STAGE = new IntegerStateGenerator.Ranged("stage", 0, 2);
     IntegerStateGenerator.Ranged THREE_AGE = new IntegerStateGenerator.Ranged("age", 0, 3);
+    IntegerStateGenerator.Ranged SIX_AGE = new IntegerStateGenerator.Ranged("age", 0, 6);
     IntegerStateGenerator.Ranged FOUR_LEVEL = new IntegerStateGenerator.Ranged("level", 0, 4);
     IntegerStateGenerator.Ranged SIXTEEN_LEVEL = new IntegerStateGenerator.Ranged("level", 0, 16);
     IntegerStateGenerator.Ranged EIGHT_DISTANCE  = new IntegerStateGenerator.Ranged("level", 0, 8);

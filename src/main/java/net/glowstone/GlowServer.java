@@ -1547,7 +1547,7 @@ public class GlowServer implements Server {
             case BREWING_STAND:
                 return new GlowBrewingStandBlockData(material);
             case BUBBLE_COLUMN:
-                return new GlowBubbleColumn(material);
+                return new GlowBubbleColumnBlockData(material);
             case CACTUS:
                 return new GlowAgeableBlockData(material, StateGenerator.SIXTEEN_AGE);
             case CAKE:
@@ -1556,6 +1556,29 @@ public class GlowServer implements Server {
                 return new GlowAgeableBlockData(material, StateGenerator.EIGHT_AGE);
             case CAULDRON:
                 return new GlowLevelledBlockData(material, StateGenerator.FOUR_LEVEL);
+            case CHEST:
+            case TRAPPED_CHEST:
+                return new GlowChestBlockData(material);
+            case CHORUS_FLOWER:
+                return new GlowAgeableBlockData(material, StateGenerator.SIX_AGE);
+            case CHORUS_PLANT:
+                return new GlowMultipleFacesBlockData(material,
+                        StateGenerator.BOOLEAN_DOWN,
+                        StateGenerator.BOOLEAN_UP,
+                        StateGenerator.BOOLEAN_WEST,
+                        StateGenerator.BOOLEAN_NORTH,
+                        StateGenerator.BOOLEAN_SOUTH,
+                        StateGenerator.BOOLEAN_EAST);
+            case COBBLESTONE_WALL:
+                return new GlowFenceBlockData(material);
+            case CONDUIT:
+                return new GlowWaterBlockData(material);
+            case DAYLIGHT_DETECTOR:
+                return new GlowDaylightBlockData(material);
+            case GRASS_BLOCK:
+                return new GlowSnowyBlockData(material);
+            case DISPENSER:
+                return new GlowDispenserBlockData(material);
             default:
                 return new SimpleBlockData(material);
         }

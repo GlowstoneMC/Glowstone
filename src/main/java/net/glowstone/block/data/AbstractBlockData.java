@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public abstract class AbstractBlockData implements BlockData {
+public abstract class AbstractBlockData implements IBlockData {
 
     private Material material;
     private Set<StateValue<? extends Object>> values;
@@ -35,16 +35,9 @@ public abstract class AbstractBlockData implements BlockData {
         this.values = new HashSet<>(collection);
     }
 
+    @Override
     public Set<StateValue<?>> getStateValues(){
         return this.values;
-    }
-
-    public <T extends Object> StateValue<T> getStateValue(StateGenerator<T> generator){
-        return (StateValue<T>) this.values.stream().filter(s -> s.getGenerator().equals(generator)).findAny().orElse(null);
-    }
-
-    public StateValue<?> getStateValue(String id){
-        return this.values.stream().filter(s -> s.getGenerator().getId().equals(id)).findAny().orElse(null);
     }
 
     @Override

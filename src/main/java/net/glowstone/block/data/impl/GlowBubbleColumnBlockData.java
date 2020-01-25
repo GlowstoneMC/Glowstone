@@ -8,9 +8,9 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.BubbleColumn;
 import org.jetbrains.annotations.NotNull;
 
-public class GlowBubbleColumn extends AbstractBlockData implements BubbleColumn {
+public class GlowBubbleColumnBlockData extends AbstractBlockData implements BubbleColumn {
 
-    public GlowBubbleColumn(Material material) {
+    public GlowBubbleColumnBlockData(Material material) {
         super(material, StateGenerator.DRAG);
     }
 
@@ -30,7 +30,7 @@ public class GlowBubbleColumn extends AbstractBlockData implements BubbleColumn 
 
     @Override
     public @NotNull BlockData clone() {
-        GlowBubbleColumn column = new GlowBubbleColumn(this.getMaterial());
+        GlowBubbleColumnBlockData column = new GlowBubbleColumnBlockData(this.getMaterial());
         column.setDrag(this.isDrag());
         return column;
     }
