@@ -1488,9 +1488,14 @@ public class GlowServer implements Server {
     @Override
     public BlockData createBlockData(Material material) {
         switch (material){
+            case REDSTONE_LAMP:
+            case REDSTONE_ORE:
+            case REDSTONE_TORCH:
+                return new GlowLightableBlockData(material);
             case ANVIL:
             case CHIPPED_ANVIL:
             case DAMAGED_ANVIL:
+            case CARVED_PUMPKIN:
             case BLACK_WALL_BANNER:
             case BLUE_WALL_BANNER:
             case BROWN_WALL_BANNER:
@@ -1525,7 +1530,19 @@ public class GlowServer implements Server {
             case LIGHT_GRAY_GLAZED_TERRACOTTA:
                 return new GlowFacingBlockData(material, StateGenerator.FOUR_FACING);
             case DETECTOR_RAIL:
+            case POWERED_RAIL:
                 return new GlowRedstoneRailBlockData(material);
+            case OAK_PRESSURE_PLATE:
+            case ACACIA_PRESSURE_PLATE:
+            case BIRCH_PRESSURE_PLATE:
+            case JUNGLE_PRESSURE_PLATE:
+            case SPRUCE_PRESSURE_PLATE:
+            case STONE_PRESSURE_PLATE:
+            case DARK_OAK_PRESSURE_PLATE:
+                return new GlowPoweredBlockData(material);
+            case HEAVY_WEIGHTED_PRESSURE_PLATE:
+            case LIGHT_WEIGHTED_PRESSURE_PLATE:
+                return new GlowRedstonePowerBlockData(material);
             case HAY_BLOCK:
             case ACACIA_LOG:
             case BIRCH_LOG:
@@ -1583,11 +1600,15 @@ public class GlowServer implements Server {
                 return new GlowBrewingStandBlockData(material);
             case BUBBLE_COLUMN:
                 return new GlowBubbleColumnBlockData(material);
+            case REPEATER:
+                return new GlowRepeaterBlockData(material);
             case CACTUS:
+            case SUGAR_CANE:
                 return new GlowAgeableBlockData(material, StateGenerator.SIXTEEN_AGE);
             case CAKE:
                 return new GlowCakeBlockData(material);
             case CARROT:
+            case POTATO:
                 return new GlowAgeableBlockData(material, StateGenerator.EIGHT_AGE);
             case CAULDRON:
                 return new GlowLevelledBlockData(material, StateGenerator.FOUR_LEVEL);
@@ -1605,6 +1626,8 @@ public class GlowServer implements Server {
             case PISTON:
             case STICKY_PISTON:
                 return new GlowPistonBlockData(material);
+            case NETHER_PORTAL:
+                return new GlowAxisBlockData(material, StateGenerator.TWO_AXIS);
             case FROSTED_ICE:
             case NETHER_WART:
                 return new GlowAgeableBlockData(material, StateGenerator.FOUR_AGE);
