@@ -1507,7 +1507,42 @@ public class GlowServer implements Server {
             case YELLOW_WALL_BANNER:
             case LIGHT_BLUE_WALL_BANNER:
             case LIGHT_GRAY_WALL_BANNER:
+            case BLACK_GLAZED_TERRACOTTA:
+            case BLUE_GLAZED_TERRACOTTA:
+            case BROWN_GLAZED_TERRACOTTA:
+            case CYAN_GLAZED_TERRACOTTA:
+            case GRAY_GLAZED_TERRACOTTA:
+            case GREEN_GLAZED_TERRACOTTA:
+            case LIME_GLAZED_TERRACOTTA:
+            case MAGENTA_GLAZED_TERRACOTTA:
+            case ORANGE_GLAZED_TERRACOTTA:
+            case PINK_GLAZED_TERRACOTTA:
+            case PURPLE_GLAZED_TERRACOTTA:
+            case RED_GLAZED_TERRACOTTA:
+            case WHITE_GLAZED_TERRACOTTA:
+            case YELLOW_GLAZED_TERRACOTTA:
+            case LIGHT_BLUE_GLAZED_TERRACOTTA:
+            case LIGHT_GRAY_GLAZED_TERRACOTTA:
                 return new GlowFacingBlockData(material, StateGenerator.FOUR_FACING);
+            case DETECTOR_RAIL:
+                return new GlowRedstoneRailBlockData(material);
+            case HAY_BLOCK:
+            case ACACIA_LOG:
+            case BIRCH_LOG:
+            case JUNGLE_LOG:
+            case OAK_LOG:
+            case SPRUCE_LOG:
+            case DARK_OAK_LOG:
+            case STRIPPED_ACACIA_LOG:
+            case STRIPPED_BIRCH_LOG:
+            case STRIPPED_JUNGLE_LOG:
+            case STRIPPED_OAK_LOG:
+            case STRIPPED_SPRUCE_LOG:
+                return new GlowAxisBlockData(material, StateGenerator.AXIS);
+            case END_ROD:
+                return new GlowFacingBlockData(material, StateGenerator.SIX_FACING);
+            case HOPPER:
+                return new GlowHopperBlockData(material);
             case BLACK_BED:
             case BLUE_BED:
             case BROWN_BED:
@@ -1556,12 +1591,29 @@ public class GlowServer implements Server {
                 return new GlowAgeableBlockData(material, StateGenerator.EIGHT_AGE);
             case CAULDRON:
                 return new GlowLevelledBlockData(material, StateGenerator.FOUR_LEVEL);
+            case WATER:
+            case LAVA:
+                return new GlowLevelledBlockData(material, StateGenerator.SIXTEEN_LEVEL);
+            case FURNACE:
+                return new GlowFurnaceBlockData(material);
             case CHEST:
             case TRAPPED_CHEST:
+            case ENDER_CHEST:
                 return new GlowChestBlockData(material);
+            case OBSERVER:
+                return new GlowObserver(material);
+            case PISTON:
+            case STICKY_PISTON:
+                return new GlowPistonBlockData(material);
+            case FROSTED_ICE:
+            case NETHER_WART:
+                return new GlowAgeableBlockData(material, StateGenerator.FOUR_AGE);
             case CHORUS_FLOWER:
                 return new GlowAgeableBlockData(material, StateGenerator.SIX_AGE);
             case CHORUS_PLANT:
+            case BROWN_MUSHROOM_BLOCK:
+            case RED_MUSHROOM_BLOCK:
+            case MUSHROOM_STEM:
                 return new GlowMultipleFacesBlockData(material,
                         StateGenerator.BOOLEAN_DOWN,
                         StateGenerator.BOOLEAN_UP,
@@ -1570,15 +1622,53 @@ public class GlowServer implements Server {
                         StateGenerator.BOOLEAN_SOUTH,
                         StateGenerator.BOOLEAN_EAST);
             case COBBLESTONE_WALL:
+            case IRON_BARS:
+            case ACACIA_FENCE:
+            case BIRCH_FENCE:
+            case JUNGLE_FENCE:
+            case OAK_FENCE:
+            case SPRUCE_FENCE:
+            case DARK_OAK_FENCE:
+            case NETHER_BRICK_FENCE:
                 return new GlowFenceBlockData(material);
+            case JUKEBOX:
+                return new GlowJukeBoxBlockData(material);
+            case KELP:
+                return new GlowAgeableBlockData(material, StateGenerator.TWENTY_SIX);
+            case LEVER:
+                return new GlowSwitchBlockData(material);
+            case LADDER:
+                return new GlowLadderBlockData(material);
+            case ACACIA_FENCE_GATE:
+            case BIRCH_FENCE_GATE:
+            case JUNGLE_FENCE_GATE:
+            case OAK_FENCE_GATE:
+            case SPRUCE_FENCE_GATE:
+                return new GlowGateBlockData(material);
+            case FIRE:
+                return new GlowFireBlockData(material);
+            case SIGN:
+                return new GlowFreeStandingSign(material);
             case CONDUIT:
                 return new GlowWaterBlockData(material);
             case DAYLIGHT_DETECTOR:
                 return new GlowDaylightBlockData(material);
             case GRASS_BLOCK:
+            case MYCELIUM:
                 return new GlowSnowyBlockData(material);
             case DISPENSER:
+            case DROPPER:
                 return new GlowDispenserBlockData(material);
+            case OAK_DOOR:
+            case ACACIA_DOOR:
+            case BIRCH_DOOR:
+            case IRON_DOOR:
+            case JUNGLE_DOOR:
+            case SPRUCE_DOOR:
+            case DARK_OAK_DOOR:
+                return new GlowDoorBlockData(material);
+            case END_PORTAL_FRAME:
+                return new GlowEnderPortalFrameBlockData(material);
             default:
                 return new SimpleBlockData(material);
         }

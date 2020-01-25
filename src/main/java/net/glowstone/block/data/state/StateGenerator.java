@@ -8,6 +8,7 @@ import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.Rail;
 import org.bukkit.block.data.type.*;
 
 public interface StateGenerator<T> {
@@ -22,10 +23,10 @@ public interface StateGenerator<T> {
     EnumStateGenerator<Axis> AXIS = new EnumStateGenerator<>("axis", Axis.X, Axis.values());
     EnumStateGenerator<Axis> TWO_AXIS = new EnumStateGenerator<>("axis", Axis.X, Axis.X, Axis.Z);
     EnumStateGenerator<Instrument> INSTRUMENT = new EnumStateGenerator<>("instrument", 0, Instrument.values());
-    EnumStateGenerator<Note.Tone> NOTE = new EnumStateGenerator<>("note", 0, Note.Tone.values());
     EnumStateGenerator<Bisected.Half> HALF = new EnumStateGenerator<>("half", 0, Bisected.Half.values());
     EnumStateGenerator<PistonHead.Type> PISTON_TYPE = new EnumStateGenerator<>("type", 0, PistonHead.Type.values());
     EnumStateGenerator<Stairs.Shape> STAIRS_SHAPE = new EnumStateGenerator<>("shape", 0, Stairs.Shape.values());
+    EnumStateGenerator<Rail.Shape> RAIL_SHAPE = new EnumStateGenerator<Rail.Shape>("shape", 0, Rail.Shape.values());
     EnumStateGenerator<Door.Hinge> HINGE = new EnumStateGenerator<>("hinge", 0, Door.Hinge.values());
     EnumStateGenerator<Chest.Type> CHEST_TYPE = new EnumStateGenerator<>("type", 0, Chest.Type.values());
     EnumStateGenerator<Comparator.Mode> COMPARATOR_MODE = new EnumStateGenerator<>("mode", 0, Comparator.Mode.COMPARE);
@@ -61,6 +62,7 @@ public interface StateGenerator<T> {
     BooleanStateGenerator CONDITIONAL = new BooleanStateGenerator("conditional");
     BooleanStateGenerator INVERTED = new BooleanStateGenerator("inverted");
 
+    IntegerStateGenerator.Ranged NOTE = new IntegerStateGenerator.Ranged("note", 0, 25);
     IntegerStateGenerator.Ranged EGGS = new IntegerStateGenerator.Ranged("eggs", 0, 5);
     IntegerStateGenerator.Ranged HATCH = new IntegerStateGenerator.Ranged("hatch", 0, 3);
     IntegerStateGenerator.Ranged PICKLES = new IntegerStateGenerator.Ranged("pickles", 0, 5);
@@ -69,6 +71,7 @@ public interface StateGenerator<T> {
     IntegerStateGenerator.Ranged REDSTONE_POWER = new IntegerStateGenerator.Ranged("power", 0, 16);
     IntegerStateGenerator.Ranged TWO_STAGE = new IntegerStateGenerator.Ranged("stage", 0, 2);
     IntegerStateGenerator.Ranged THREE_AGE = new IntegerStateGenerator.Ranged("age", 0, 3);
+    IntegerStateGenerator.Ranged FOUR_AGE = new IntegerStateGenerator.Ranged("age", 0, 4);
     IntegerStateGenerator.Ranged SIX_AGE = new IntegerStateGenerator.Ranged("age", 0, 6);
     IntegerStateGenerator.Ranged FOUR_LEVEL = new IntegerStateGenerator.Ranged("level", 0, 4);
     IntegerStateGenerator.Ranged SIXTEEN_LEVEL = new IntegerStateGenerator.Ranged("level", 0, 16);
@@ -77,8 +80,7 @@ public interface StateGenerator<T> {
     IntegerStateGenerator.Ranged SEVEN_BITES = new IntegerStateGenerator.Ranged("bites", 0, 7);
     IntegerStateGenerator.Ranged SIXTEEN_AGE = new IntegerStateGenerator.Ranged("age", 0, 16);
     IntegerStateGenerator.Ranged SIXTEEN_ROTATION = new IntegerStateGenerator.Ranged("rotation", 0, 16);
-
-
+    IntegerStateGenerator.Ranged TWENTY_SIX = new IntegerStateGenerator.Ranged("age", 0, 26);
 
     interface EnumGenerator<T> extends StateGenerator<T> {
 
