@@ -3,6 +3,7 @@ package net.glowstone.block.data.state;
 import net.glowstone.block.data.state.generator.BooleanStateGenerator;
 import net.glowstone.block.data.state.generator.EnumStateGenerator;
 import net.glowstone.block.data.state.generator.IntegerStateGenerator;
+import net.glowstone.block.data.state.value.EnumStateValue;
 import org.bukkit.Axis;
 import org.bukkit.Instrument;
 import org.bukkit.block.BlockFace;
@@ -34,6 +35,7 @@ public interface StateGenerator<T> {
     EnumStateGenerator<Comparator.Mode> COMPARATOR_MODE = new EnumStateGenerator<>("mode", 0, Comparator.Mode.COMPARE);
     EnumStateGenerator<Slab.Type> SLAB_TYPE  = new EnumStateGenerator("type", 0, Slab.Type.values());
     EnumStateGenerator<StructureBlock.Mode> STRUCTURE_MODE = new EnumStateGenerator("mode", 0, StructureBlock.Mode.values());
+    EnumStateGenerator<Switch.Face> SWITCH_FACE = new EnumStateGenerator<>("wall", 0, Switch.Face.values());
 
     BooleanStateGenerator BOOLEAN_NORTH = new BooleanStateGenerator("north");
     BooleanStateGenerator BOOLEAN_EAST = new BooleanStateGenerator("east");
@@ -94,9 +96,9 @@ public interface StateGenerator<T> {
     T deserialize(int serial);
     String getId();
     T getDefaultValue();
-    StateValue createStateValue(T value);
+    StateValue<T> createStateValue(T value);
 
-    default StateValue createDefaultStateValue(){
+    default StateValue<T> createDefaultStateValue(){
         return createStateValue(null);
     }
 }

@@ -1528,7 +1528,46 @@ public class GlowServer implements Server {
             case YELLOW_GLAZED_TERRACOTTA:
             case LIGHT_BLUE_GLAZED_TERRACOTTA:
             case LIGHT_GRAY_GLAZED_TERRACOTTA:
+            case CREEPER_WALL_HEAD:
+            case PLAYER_WALL_HEAD:
+            case ZOMBIE_WALL_HEAD:
+            case SKELETON_WALL_SKULL:
                 return new GlowFacingBlockData(material, StateGenerator.FOUR_FACING);
+            case BLACK_STAINED_GLASS_PANE:
+            case BLUE_STAINED_GLASS_PANE:
+            case BROWN_STAINED_GLASS_PANE:
+            case CYAN_STAINED_GLASS_PANE:
+            case GRAY_STAINED_GLASS_PANE:
+            case GREEN_STAINED_GLASS_PANE:
+            case LIME_STAINED_GLASS_PANE:
+            case MAGENTA_STAINED_GLASS_PANE:
+            case ORANGE_STAINED_GLASS_PANE:
+            case PINK_STAINED_GLASS_PANE:
+            case PURPLE_STAINED_GLASS_PANE:
+            case RED_STAINED_GLASS_PANE:
+            case WHITE_STAINED_GLASS_PANE:
+            case YELLOW_STAINED_GLASS_PANE:
+            case LIGHT_BLUE_STAINED_GLASS_PANE:
+            case LIGHT_GRAY_STAINED_GLASS_PANE:
+                return new GlowGlassPaneBlockData(material);
+            case ACACIA_STAIRS:
+            case BIRCH_STAIRS:
+            case BRICK_STAIRS:
+            case COBBLESTONE_STAIRS:
+            case JUNGLE_STAIRS:
+            case OAK_STAIRS:
+            case PRISMARINE_STAIRS:
+            case PURPUR_STAIRS:
+            case QUARTZ_STAIRS:
+            case SANDSTONE_STAIRS:
+            case SPRUCE_STAIRS:
+            case DARK_OAK_STAIRS:
+            case DARK_PRISMARINE_STAIRS:
+            case NETHER_BRICK_STAIRS:
+            case PRISMARINE_BRICK_STAIRS:
+            case RED_SANDSTONE_STAIRS:
+            case STONE_BRICK_STAIRS:
+                return new GlowStairsBlockData(material);
             case DETECTOR_RAIL:
             case POWERED_RAIL:
                 return new GlowRedstoneRailBlockData(material);
@@ -1557,6 +1596,22 @@ public class GlowServer implements Server {
             case STRIPPED_SPRUCE_LOG:
                 return new GlowAxisBlockData(material, StateGenerator.AXIS);
             case END_ROD:
+            case BLACK_SHULKER_BOX:
+            case BLUE_SHULKER_BOX:
+            case BROWN_SHULKER_BOX:
+            case CYAN_SHULKER_BOX:
+            case GRAY_SHULKER_BOX:
+            case GREEN_SHULKER_BOX:
+            case LIME_SHULKER_BOX:
+            case MAGENTA_SHULKER_BOX:
+            case ORANGE_SHULKER_BOX:
+            case PINK_SHULKER_BOX:
+            case PURPLE_SHULKER_BOX:
+            case RED_SHULKER_BOX:
+            case WHITE_SHULKER_BOX:
+            case YELLOW_SHULKER_BOX:
+            case LIGHT_BLUE_SHULKER_BOX:
+            case LIGHT_GRAY_SHULKER_BOX:
                 return new GlowFacingBlockData(material, StateGenerator.SIX_FACING);
             case HOPPER:
                 return new GlowHopperBlockData(material);
@@ -1595,6 +1650,10 @@ public class GlowServer implements Server {
             case RED_BANNER:
             case WHITE_BANNER:
             case YELLOW_BANNER:
+            case SKELETON_SKULL:
+            case CREEPER_HEAD:
+            case PLAYER_HEAD:
+            case ZOMBIE_HEAD:
                 return new GlowRotatableBlockData(material, StateGenerator.SIXTEEN_ROTATION);
             case BREWING_STAND:
                 return new GlowBrewingStandBlockData(material);
@@ -1659,6 +1718,13 @@ public class GlowServer implements Server {
             case KELP:
                 return new GlowAgeableBlockData(material, StateGenerator.TWENTY_SIX);
             case LEVER:
+            case ACACIA_BUTTON:
+            case BIRCH_BUTTON:
+            case JUNGLE_BUTTON:
+            case OAK_BUTTON:
+            case SPRUCE_BUTTON:
+            case STONE_BUTTON:
+            case DARK_OAK_BUTTON:
                 return new GlowSwitchBlockData(material);
             case LADDER:
                 return new GlowLadderBlockData(material);
