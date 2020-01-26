@@ -1,22 +1,26 @@
 package net.glowstone.block.data.state.value;
 
-import net.glowstone.block.data.state.StateGenerator;
 import net.glowstone.block.data.state.StateValue;
 import net.glowstone.block.data.state.generator.IntegerStateGenerator;
 
 public class IntegerStateValue implements StateValue<Integer> {
 
     private IntegerStateGenerator generator;
-    private int value;
+    private Integer value;
+    private boolean fromString;
 
     public static class Ranged extends IntegerStateValue{
 
         public Ranged(IntegerStateGenerator.Ranged generator){
-            this(generator, generator.getDefaultValue());
+            this(generator, null);
         }
 
-        public Ranged(IntegerStateGenerator.Ranged generator, int value) {
+        public Ranged(IntegerStateGenerator.Ranged generator, Integer value) {
             super(generator, value);
+        }
+
+        private Ranged(IntegerStateGenerator.Ranged generator, Integer value, boolean fromString){
+            super(generator, value, fromString);
         }
 
         @Override
@@ -39,12 +43,17 @@ public class IntegerStateValue implements StateValue<Integer> {
     }
 
     public IntegerStateValue(IntegerStateGenerator generator){
-        this(generator, generator.getDefaultValue());
+        this(generator, null);
     }
 
-    public IntegerStateValue(IntegerStateGenerator generator, int value){
+    public IntegerStateValue(IntegerStateGenerator generator, Integer value){
+        this(generator, value, false);
+    }
+
+    public IntegerStateValue(IntegerStateGenerator generator, Integer value, boolean fromString){
         this.generator = generator;
         this.value = value;
+        this.fromString = fromString;
     }
 
     @Override
@@ -54,17 +63,30 @@ public class IntegerStateValue implements StateValue<Integer> {
 
     @Override
     public Integer getValue() {
+        if(this.value == null){
+            return this.generator.getDefaultValue();
+        }
         return this.value;
     }
 
     @Override
     public String getValueAsString() {
-        return this.value + "";
+        return this.getValue() + "";
     }
 
     @Override
     public void setValue(Integer value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean isExplicit() {
+        return this.value != null;
+    }
+
+    @Override
+    public boolean fromString() {
+        return this.fromString;
     }
 
     @Override

@@ -5,11 +5,13 @@ import net.glowstone.block.data.state.generator.EnumStateGenerator;
 import net.glowstone.block.data.state.generator.IntegerStateGenerator;
 import org.bukkit.Axis;
 import org.bukkit.Instrument;
-import org.bukkit.Note;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Rail;
 import org.bukkit.block.data.type.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public interface StateGenerator<T> {
 
@@ -88,13 +90,13 @@ public interface StateGenerator<T> {
 
     }
 
-    int getNetworkId(T id);
+    int serialize(T id);
     T deserialize(int serial);
     String getId();
     T getDefaultValue();
     StateValue createStateValue(T value);
 
-    default StateValue<T> getDefaultStateValue(){
-        return this.createStateValue(this.getDefaultValue());
+    default StateValue createDefaultStateValue(){
+        return createStateValue(null);
     }
 }

@@ -6,6 +6,8 @@ public interface StateValue<F extends Object> {
     F getValue();
     String getValueAsString();
     void setValue(F value);
+    boolean isExplicit();
+    boolean fromString();
     StateValue<F> clone();
 
 }

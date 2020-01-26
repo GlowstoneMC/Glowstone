@@ -13,7 +13,7 @@ public class BooleanStateGenerator implements StateGenerator.EnumGenerator<Boole
     }
 
     @Override
-    public int getNetworkId(Boolean id) {
+    public int serialize(Boolean id) {
         return id ? 0 : 1;
     }
 

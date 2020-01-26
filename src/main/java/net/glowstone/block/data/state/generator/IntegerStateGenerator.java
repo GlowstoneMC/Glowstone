@@ -54,7 +54,7 @@ public class IntegerStateGenerator implements StateGenerator<Integer> {
     }
 
     @Override
-    public int getNetworkId(Integer id) {
+    public int serialize(Integer id) {
         return id;
     }
 
