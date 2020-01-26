@@ -225,12 +225,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <dependencies>
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>8.18</version>
+            <version>8.27</version>
           </dependency>
         </dependencies>
         <executions>
@@ -249,7 +249,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.17</version>
+        <version>1.18</version>
         <executions>
           <execution>
             <phase>process-classes</phase>
@@ -323,7 +323,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0-M4</version>
         <executions>
           <execution>
             <id>default-test</id>
@@ -343,7 +343,17 @@
       <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>3.8.1</version>
+          <configuration>
+              <compilerId>eclipse</compilerId>
+          </configuration>
+          <dependencies>
+              <dependency>
+                  <groupId>org.codehaus.plexus</groupId>
+                  <artifactId>plexus-compiler-eclipse</artifactId>
+                  <version>2.8.5</version>
+              </dependency>
+	      </dependencies>
       </plugin>
       <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -467,7 +477,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <configuration>
           <configLocation>${project.basedir}/etc/checkstyle.xml</configLocation>
           <headerLocation>${project.basedir}/LICENSE</headerLocation>
