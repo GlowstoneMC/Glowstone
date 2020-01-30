@@ -9,17 +9,17 @@ import org.jetbrains.annotations.NotNull;
 
 public interface GlowRotatable extends IBlockData, Rotatable {
 
-    default IntegerStateValue.Ranged getRangedStateValue(){
-        return this.getRangedStateValue();
+    default IntegerStateValue.Ranged getRotationStateValue(){
+        return (IntegerStateValue.Ranged) this.<Integer>getStateValue("face").get();
     }
 
     @Override
     default  @NotNull BlockFace getRotation() {
-        return StateUtil.getBlockFace(this.getRangedStateValue().getValue(), StateUtil.SIXTEEN_BLOCK_FACES);
+        return StateUtil.getBlockFace(this.getRotationStateValue().getValue(), StateUtil.SIXTEEN_BLOCK_FACES);
     }
 
     @Override
     default void setRotation(@NotNull BlockFace blockFace) {
-        this.getRangedStateValue().setValue(StateUtil.getBlockFaceId(blockFace, StateUtil.SIXTEEN_BLOCK_FACES));
+        this.getRotationStateValue().setValue(StateUtil.getBlockFaceId(blockFace, StateUtil.SIXTEEN_BLOCK_FACES));
     }
 }

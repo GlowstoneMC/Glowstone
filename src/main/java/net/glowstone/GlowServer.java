@@ -61,7 +61,7 @@ import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.data.SimpleBlockData;
 import net.glowstone.block.data.impl.*;
-import net.glowstone.block.data.state.StateGenerator;
+import net.glowstone.block.data.state.generator.StateGenerator;
 import net.glowstone.block.entity.state.GlowDispenser;
 import net.glowstone.boss.GlowBossBar;
 import net.glowstone.boss.GlowKeyedBossBar;
@@ -1681,7 +1681,7 @@ public class GlowServer implements Server {
             case ENDER_CHEST:
                 return new GlowChestBlockData(material);
             case OBSERVER:
-                return new GlowObserver(material);
+                return new GlowObserverBlockData(material);
             case PISTON:
             case STICKY_PISTON:
                 return new GlowPistonBlockData(material);

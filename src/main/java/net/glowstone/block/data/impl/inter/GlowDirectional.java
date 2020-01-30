@@ -13,7 +13,7 @@ import java.util.Set;
 public interface GlowDirectional extends IBlockData, Directional {
 
     default EnumStateValue<BlockFace> getFacingState(){
-        return (EnumStateValue<BlockFace>)this.getStateValue("facing");
+        return (EnumStateValue<BlockFace>)this.getStateValue("facing").get();
     }
 
     @Override

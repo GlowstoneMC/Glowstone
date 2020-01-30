@@ -1,6 +1,5 @@
 package net.glowstone.block.data.state.value;
 
-import net.glowstone.block.data.state.StateValue;
 import net.glowstone.block.data.state.generator.EnumStateGenerator;
 
 public class EnumStateValue<E extends Enum> implements StateValue<E> {
@@ -43,7 +42,18 @@ public class EnumStateValue<E extends Enum> implements StateValue<E> {
 
     @Override
     public void setValue(E value) {
+        this.fromString = false;
         this.value = value;
+    }
+
+    @Override
+    public void setValueFromString(String value) throws IllegalArgumentException {
+        this.fromString = true;
+        E value1 = (E) Enum.valueOf(this.value.getClass(), value.toUpperCase());
+        if(value1 == null){
+            throw new IllegalArgumentException("Invalid argument for " + this.getGenerator().getId());
+        }
+        this.value = value1;
     }
 
     @Override

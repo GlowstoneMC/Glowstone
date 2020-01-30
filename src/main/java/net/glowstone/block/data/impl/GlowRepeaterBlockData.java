@@ -3,7 +3,7 @@ package net.glowstone.block.data.impl;
 import net.glowstone.block.data.AbstractBlockData;
 import net.glowstone.block.data.impl.inter.GlowDirectional;
 import net.glowstone.block.data.impl.inter.GlowPowered;
-import net.glowstone.block.data.state.StateGenerator;
+import net.glowstone.block.data.state.generator.StateGenerator;
 import net.glowstone.block.data.state.value.BooleanStateValue;
 import net.glowstone.block.data.state.value.IntegerStateValue;
 import org.bukkit.Material;

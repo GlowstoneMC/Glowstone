@@ -4,7 +4,7 @@ import net.glowstone.block.data.AbstractBlockData;
 import net.glowstone.block.data.impl.inter.GlowBisected;
 import net.glowstone.block.data.impl.inter.GlowDirectional;
 import net.glowstone.block.data.impl.inter.GlowWaterlogged;
-import net.glowstone.block.data.state.StateGenerator;
+import net.glowstone.block.data.state.generator.StateGenerator;
 import net.glowstone.block.data.state.value.EnumStateValue;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;

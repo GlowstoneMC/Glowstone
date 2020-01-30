@@ -1,7 +1,6 @@
 package net.glowstone.block.data.state.generator;
 
-import net.glowstone.block.data.state.StateGenerator;
-import net.glowstone.block.data.state.StateValue;
+import net.glowstone.block.data.state.value.StateValue;
 import net.glowstone.block.data.state.value.IntegerStateValue;
 
 public class IntegerStateGenerator implements StateGenerator<Integer> {

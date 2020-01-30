@@ -1,6 +1,5 @@
 package net.glowstone.block.data.state.value;
 
-import net.glowstone.block.data.state.StateValue;
 import net.glowstone.block.data.state.generator.IntegerStateGenerator;
 
 public class IntegerStateValue implements StateValue<Integer> {
@@ -76,7 +75,18 @@ public class IntegerStateValue implements StateValue<Integer> {
 
     @Override
     public void setValue(Integer value) {
+        this.fromString = false;
         this.value = value;
+    }
+
+    @Override
+    public void setValueFromString(String value) throws IllegalArgumentException {
+        this.fromString = true;
+        try{
+            this.value = Integer.parseInt(value);
+        }catch(NumberFormatException e){
+            throw new IllegalArgumentException("Invalid argument for " + this.getGenerator().getId());
+        }
     }
 
     @Override

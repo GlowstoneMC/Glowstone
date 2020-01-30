@@ -11,7 +11,7 @@ import java.util.Set;
 public interface GlowRail extends IBlockData, Rail {
 
     default EnumStateValue<Rail.Shape> getShapeStateValue(){
-        return (EnumStateValue<Shape>) this.getStateValue("shape");
+        return (EnumStateValue<Shape>) this.<Shape>getStateValue("shape").get();
     }
 
     @Override

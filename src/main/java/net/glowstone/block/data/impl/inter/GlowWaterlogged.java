@@ -7,7 +7,7 @@ import org.bukkit.block.data.Waterlogged;
 public interface GlowWaterlogged extends IBlockData, Waterlogged {
 
     default BooleanStateValue getWaterLoggedValue(){
-        return (BooleanStateValue) this.getStateValue("waterlogged");
+        return (BooleanStateValue) this.<Boolean>getStateValue("waterlogged").get();
     }
 
     @Override

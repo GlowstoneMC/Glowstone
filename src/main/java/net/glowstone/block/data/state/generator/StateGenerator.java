@@ -1,18 +1,12 @@
-package net.glowstone.block.data.state;
+package net.glowstone.block.data.state.generator;
 
-import net.glowstone.block.data.state.generator.BooleanStateGenerator;
-import net.glowstone.block.data.state.generator.EnumStateGenerator;
-import net.glowstone.block.data.state.generator.IntegerStateGenerator;
-import net.glowstone.block.data.state.value.EnumStateValue;
+import net.glowstone.block.data.state.value.StateValue;
 import org.bukkit.Axis;
 import org.bukkit.Instrument;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Rail;
 import org.bukkit.block.data.type.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public interface StateGenerator<T> {
 

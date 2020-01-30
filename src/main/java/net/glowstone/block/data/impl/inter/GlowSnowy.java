@@ -7,7 +7,7 @@ import org.bukkit.block.data.Snowable;
 public interface GlowSnowy extends IBlockData, Snowable {
 
     default BooleanStateValue getSnowStateValue(){
-        return (BooleanStateValue) this.getStateValue("snowy");
+        return (BooleanStateValue) this.<Boolean>getStateValue("snowy").get();
     }
 
     @Override

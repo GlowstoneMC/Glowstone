@@ -7,7 +7,7 @@ import org.bukkit.block.data.Ageable;
 public interface GlowAgeable extends IBlockData, Ageable {
 
     default IntegerStateValue.Ranged getAgeStateValue(){
-        return (IntegerStateValue.Ranged) this.getStateValue("age");
+        return (IntegerStateValue.Ranged) this.getStateValue("age").get();
     }
 
     @Override

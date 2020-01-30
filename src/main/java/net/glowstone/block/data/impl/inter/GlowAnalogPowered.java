@@ -7,7 +7,7 @@ import org.bukkit.block.data.AnaloguePowerable;
 public interface GlowAnalogPowered extends IBlockData, AnaloguePowerable {
 
     default IntegerStateValue.Ranged getPowerStateValue(){
-        return (IntegerStateValue.Ranged) this.getStateValue("power");
+        return (IntegerStateValue.Ranged) this.getStateValue("power").get();
     }
 
     @Override

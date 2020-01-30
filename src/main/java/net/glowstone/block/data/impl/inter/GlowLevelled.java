@@ -7,7 +7,7 @@ import org.bukkit.block.data.Levelled;
 public interface GlowLevelled extends IBlockData, Levelled {
 
     default IntegerStateValue.Ranged getLevelStateValue(){
-        return (IntegerStateValue.Ranged) this.getStateValue("level");
+        return (IntegerStateValue.Ranged) this.getStateValue("level").get();
     }
 
     @Override

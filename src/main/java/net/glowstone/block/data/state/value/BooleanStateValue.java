@@ -1,7 +1,6 @@
 package net.glowstone.block.data.state.value;
 
-import net.glowstone.block.data.state.StateGenerator;
-import net.glowstone.block.data.state.StateValue;
+import net.glowstone.block.data.state.generator.StateGenerator;
 import net.glowstone.block.data.state.generator.BooleanStateGenerator;
 
 public class BooleanStateValue implements StateValue<Boolean> {
@@ -44,7 +43,19 @@ public class BooleanStateValue implements StateValue<Boolean> {
 
     @Override
     public void setValue(Boolean value) {
+        this.fromString = false;
         this.value = value;
+    }
+
+    @Override
+    public void setValueFromString(String value) throws IllegalArgumentException {
+        this.fromString = true;
+        if(value.equalsIgnoreCase("true")){
+            this.value = true;
+        }else if(value.equalsIgnoreCase("false")){
+            this.value = false;
+        }
+        throw new IllegalArgumentException("Invalid value for " + this.getGenerator().getId());
     }
 
     @Override

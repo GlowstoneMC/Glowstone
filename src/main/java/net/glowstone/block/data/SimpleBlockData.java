@@ -1,6 +1,5 @@
 package net.glowstone.block.data;
 
-import net.glowstone.block.data.state.StateValue;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;

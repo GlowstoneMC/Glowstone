@@ -4,15 +4,12 @@ import net.glowstone.block.data.AbstractBlockData;
 import net.glowstone.block.data.impl.inter.GlowDirectional;
 import net.glowstone.block.data.impl.inter.GlowOpenable;
 import net.glowstone.block.data.impl.inter.GlowPowered;
-import net.glowstone.block.data.state.StateGenerator;
+import net.glowstone.block.data.state.generator.StateGenerator;
 import net.glowstone.block.data.state.value.BooleanStateValue;
 import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Gate;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Set;
 
 public class GlowGateBlockData extends AbstractBlockData implements Gate, GlowDirectional, GlowOpenable, GlowPowered {
 

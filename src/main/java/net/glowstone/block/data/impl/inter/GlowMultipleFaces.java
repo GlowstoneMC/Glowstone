@@ -2,47 +2,42 @@ package net.glowstone.block.data.impl.inter;
 
 import com.google.common.collect.ImmutableSet;
 import net.glowstone.block.data.IBlockData;
-import net.glowstone.block.data.state.StateValue;
+import net.glowstone.block.data.state.value.StateValue;
 import net.glowstone.block.data.state.value.BooleanStateValue;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.MultipleFacing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.Set;
 
 public interface GlowMultipleFaces extends IBlockData, MultipleFacing {
 
     default BooleanStateValue getNorthStateValue(){
-        return (BooleanStateValue) this.getStateValue("north");
+        return (BooleanStateValue) this.<Boolean>getStateValue("north").get();
     }
 
     default BooleanStateValue getWestStateValue(){
-        return (BooleanStateValue) this.getStateValue("west");
+        return (BooleanStateValue) this.<Boolean>getStateValue("west").get();
     }
 
     default BooleanStateValue getSouthStateValue(){
-        return (BooleanStateValue) this.getStateValue("south");
+        return (BooleanStateValue) this.<Boolean>getStateValue("south").get();
     }
 
     default BooleanStateValue getEastStateValue(){
-        return (BooleanStateValue) this.getStateValue("east");
+        return (BooleanStateValue) this.<Boolean>getStateValue("east").get();
     }
 
-    default BooleanStateValue getUpStateValue(){
-        StateValue<?> value = this.getStateValue("up");
-        if(value == null){
-            return null;
-        }
-        return (BooleanStateValue)value;
+    default Optional<BooleanStateValue> getUpStateValue(){
+        Optional<StateValue<Boolean>> opValue = this.getStateValue("up");
+        return opValue.map(stateValue -> (BooleanStateValue) stateValue);
     }
 
-    default BooleanStateValue getDownStateValue(){
-        StateValue<?> value = this.getStateValue("down");
-        if(value == null){
-            return null;
-        }
-        return (BooleanStateValue)value;
+    default Optional<BooleanStateValue> getDownStateValue(){
+        Optional<StateValue<Boolean>> opValue = this.getStateValue("down");
+        return opValue.map(stateValue -> (BooleanStateValue) stateValue);
     }
 
     @Override
@@ -53,17 +48,17 @@ public interface GlowMultipleFaces extends IBlockData, MultipleFacing {
             case SOUTH: return getSouthStateValue().getValue();
             case WEST: return getWestStateValue().getValue();
             case UP:
-                BooleanStateValue up = getUpStateValue();
-                if(up == null){
-                    return false;
+                Optional<BooleanStateValue> opUp = getUpStateValue();
+                if(opUp.isPresent()){
+                    return opUp.get().getValue();
                 }
-                return up.getValue();
+                return false;
             case DOWN:
-                BooleanStateValue down = getDownStateValue();
-                if(down == null){
-                    return false;
+                Optional<BooleanStateValue> opDown = getDownStateValue();
+                if(opDown.isPresent()){
+                    return opDown.get().getValue();
                 }
-                return down.getValue();
+                return false;
             default:
                 return false;
         }
@@ -85,21 +80,12 @@ public interface GlowMultipleFaces extends IBlockData, MultipleFacing {
                 getWestStateValue().setValue(b);
                 return;
             case UP:
-                BooleanStateValue up = getUpStateValue();
-                if(up == null){
-                    return;
-                }
-                up.setValue(b);
+                getUpStateValue().ifPresent(s -> s.setValue(b));
                 return;
             case DOWN:
-                BooleanStateValue down = getDownStateValue();
-                if(down == null){
-                    return;
-                }
-                down.setValue(b);
+                getDownStateValue().ifPresent(s -> s.setValue(b));
                 return;
             default:
-                return;
         }
     }
 

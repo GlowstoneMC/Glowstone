@@ -2,10 +2,9 @@ package net.glowstone.block.data.impl;
 
 import net.glowstone.block.data.AbstractBlockData;
 import net.glowstone.block.data.impl.inter.GlowSnowy;
-import net.glowstone.block.data.state.StateGenerator;
+import net.glowstone.block.data.state.generator.StateGenerator;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Snowable;
 import org.jetbrains.annotations.NotNull;
 
 public class GlowSnowyBlockData extends AbstractBlockData implements GlowSnowy {

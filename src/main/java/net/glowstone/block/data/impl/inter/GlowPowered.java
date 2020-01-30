@@ -7,7 +7,7 @@ import org.bukkit.block.data.Powerable;
 public interface GlowPowered extends IBlockData, Powerable {
 
     default BooleanStateValue getPoweredStateValue(){
-        return (BooleanStateValue) this.getStateValue("powered");
+        return (BooleanStateValue) this.<Boolean>getStateValue("powered").get();
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.Set;
 public interface GlowOrientable extends IBlockData, Orientable {
 
     default EnumStateValue<Axis> getAxisStateValue(){
-        return (EnumStateValue<Axis>) this.getStateValue("axis");
+        return (EnumStateValue<Axis>) this.getStateValue("axis").get();
     }
 
     @Override
