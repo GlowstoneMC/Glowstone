@@ -113,8 +113,12 @@
       <property name="allowMissingParamTags" value="true"/>
       <property name="validateThrows" value="false"/>
       <property name="allowMissingReturnTag" value="true"/>
-      <property name="minLineCount" value="2"/>
       <property name="allowedAnnotations" value="Override, Test"/>
+    </module>
+    <module name="MissingJavadocMethod">
+      <property name="severity" value="warning"/>
+      <property name="minLineCount" value="2"/>
+      <property name="scope" value="public"/>
     </module>
     <module name="SingleLineJavadoc">
       <property name="severity" value="warning"/>
