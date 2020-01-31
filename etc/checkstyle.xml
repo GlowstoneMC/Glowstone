@@ -14,6 +14,12 @@
     <property name="eachLine" value="true"/>
   </module>
 
+  <module name="LineLength">
+    <property name="severity" value="warning"/>
+    <property name="max" value="100"/>
+    <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+  </module>
+
   <module name="TreeWalker">
     <module name="Indentation"> <!-- TODO: indent by 2 -->
       <property name="basicOffset" value="4"/>
@@ -39,11 +45,6 @@
     </module>
 
     <!-- Code -->
-    <module name="LineLength">
-      <property name="severity" value="warning"/>
-      <property name="max" value="100"/>
-      <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
-    </module>
     <module name="OuterTypeFilename"/>
     <module name="OneTopLevelClass"/>
     <module name="NoLineWrap"/>
