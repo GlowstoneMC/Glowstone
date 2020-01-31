@@ -115,7 +115,6 @@
       <property name="allowMissingReturnTag" value="true"/>
       <property name="minLineCount" value="2"/>
       <property name="allowedAnnotations" value="Override, Test"/>
-      <property name="allowThrowsTagsForSubclasses" value="true"/>
     </module>
     <module name="SingleLineJavadoc">
       <property name="severity" value="warning"/>
