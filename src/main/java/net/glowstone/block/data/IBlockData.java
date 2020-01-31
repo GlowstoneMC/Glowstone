@@ -9,8 +9,6 @@ import java.util.Optional;
 public interface IBlockData extends BlockData {
 
     Map<String, StateValue<?>> getStateValues();
-    int getNetworkId();
-    String getJSONUniqueId();
 
     default <T> Optional<StateValue<T>> getStateValue(String id){
         return Optional.ofNullable((StateValue<T>) this.getStateValues().get(id));

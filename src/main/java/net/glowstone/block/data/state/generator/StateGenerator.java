@@ -1,5 +1,6 @@
 package net.glowstone.block.data.state.generator;
 
+import net.glowstone.block.data.state.value.BooleanStateValue;
 import net.glowstone.block.data.state.value.StateValue;
 import org.bukkit.Axis;
 import org.bukkit.Instrument;
@@ -31,6 +32,8 @@ public interface StateGenerator<T> {
     EnumStateGenerator<StructureBlock.Mode> STRUCTURE_MODE = new EnumStateGenerator("mode", 0, StructureBlock.Mode.values());
     EnumStateGenerator<Switch.Face> SWITCH_FACE = new EnumStateGenerator<>("wall", 0, Switch.Face.values());
 
+    BooleanStateGenerator DISARMED = new BooleanStateGenerator("disarmed");
+    BooleanStateGenerator UNSTABLE = new BooleanStateGenerator("unstable");
     BooleanStateGenerator BOOLEAN_NORTH = new BooleanStateGenerator("north");
     BooleanStateGenerator BOOLEAN_EAST = new BooleanStateGenerator("east");
     BooleanStateGenerator BOOLEAN_SOUTH = new BooleanStateGenerator("south");
