@@ -111,7 +111,7 @@
       <property name="severity" value="warning"/>
       <property name="scope" value="public"/>
       <property name="allowMissingParamTags" value="true"/>
-      <property name="allowMissingThrowsTags" value="true"/>
+      <property name="validateThrows" value="false"/>
       <property name="allowMissingReturnTag" value="true"/>
       <property name="minLineCount" value="2"/>
       <property name="allowedAnnotations" value="Override, Test"/>
