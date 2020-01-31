@@ -187,8 +187,8 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.COBBLESTONE_STAIRS, new MaterialHolder<>(new GlowStairsBlockData(Material.COBBLESTONE_STAIRS), 3189));
         builder.put(Material.COBBLESTONE_WALL, new MaterialHolder<>(new GlowFenceBlockData(Material.COBBLESTONE_WALL), 5137));
         builder.put(Material.COBWEB, new MaterialHolder<>(new SimpleBlockData(Material.COBWEB), 1040));
-        builder.put(Material.COCOA, new MaterialHolder<>(new SimpleBlockData(Material.COCOA), 4638));
-        builder.put(Material.COMMAND_BLOCK, new MaterialHolder<>(new SimpleBlockData(Material.COMMAND_BLOCK), 5124));
+        builder.put(Material.COCOA, new MaterialHolder<>(new GlowCocoaBlockData(Material.COCOA), 4638));
+        builder.put(Material.COMMAND_BLOCK, new MaterialHolder<>(new GlowCommandBlockData(Material.COMMAND_BLOCK), 5124));
         builder.put(Material.COMPARATOR, new MaterialHolder<>(new SimpleBlockData(Material.COMPARATOR), 5635));
         builder.put(Material.CONDUIT, new MaterialHolder<>(new GlowWaterBlockData(Material.CONDUIT), 8573));
         builder.put(Material.CRACKED_STONE_BRICKS, new MaterialHolder<>(new SimpleBlockData(Material.CRACKED_STONE_BRICKS), 3985));
@@ -531,13 +531,13 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.QUARTZ_PILLAR, new MaterialHolder<>(new SimpleBlockData(Material.QUARTZ_PILLAR), 5697));
         builder.put(Material.QUARTZ_SLAB, new MaterialHolder<>(new SimpleBlockData(Material.QUARTZ_SLAB), 7335));
         builder.put(Material.QUARTZ_STAIRS, new MaterialHolder<>(new GlowStairsBlockData(Material.QUARTZ_STAIRS), 5700));
-        builder.put(Material.RAIL, new MaterialHolder<>(new SimpleBlockData(Material.RAIL), 3179));
+        builder.put(Material.RAIL, new MaterialHolder<>(new GlowRailBlockData(Material.RAIL), 3179));
         builder.put(Material.REDSTONE_BLOCK, new MaterialHolder<>(new SimpleBlockData(Material.REDSTONE_BLOCK), 5683));
         builder.put(Material.REDSTONE_LAMP, new MaterialHolder<>(new GlowLightableBlockData(Material.REDSTONE_LAMP), 4636));
         builder.put(Material.REDSTONE_ORE, new MaterialHolder<>(new GlowLightableBlockData(Material.REDSTONE_ORE), 3379));
         builder.put(Material.REDSTONE_TORCH, new MaterialHolder<>(new GlowLightableBlockData(Material.REDSTONE_TORCH), 3381));
         builder.put(Material.REDSTONE_WALL_TORCH, new MaterialHolder<>(new GlowRedstoneWallTorchBlockData(Material.REDSTONE_WALL_TORCH), 3383));
-        builder.put(Material.REDSTONE_WIRE, new MaterialHolder<>(new SimpleBlockData(Material.REDSTONE_WIRE), 1752));
+        builder.put(Material.REDSTONE_WIRE, new MaterialHolder<>(new GlowRedstoneWireBlockData(Material.REDSTONE_WIRE), 1752));
         builder.put(Material.RED_BANNER, new MaterialHolder<>(new GlowRotatableBlockData(Material.RED_BANNER, StateGenerator.SIXTEEN_ROTATION), 7078));
         builder.put(Material.RED_BED, new MaterialHolder<>(new GlowBedBlockData(Material.RED_BED), 972));
         builder.put(Material.RED_CARPET, new MaterialHolder<>(new SimpleBlockData(Material.RED_CARPET), 6837));
@@ -625,8 +625,8 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.TNT, new MaterialHolder<>(new GlowTNTBlockData(Material.TNT), 1126));
         builder.put(Material.TORCH, new MaterialHolder<>(new SimpleBlockData(Material.TORCH), 1130));
         builder.put(Material.TRAPPED_CHEST, new MaterialHolder<>(new GlowTrapDoorBlockData(Material.TRAPPED_CHEST), 5579));
-        builder.put(Material.TRIPWIRE, new MaterialHolder<>(new GlowTripwireHookBlockData(Material.TRIPWIRE), 4755));
-        builder.put(Material.TRIPWIRE_HOOK, new MaterialHolder<>(new SimpleBlockData(Material.TRIPWIRE_HOOK), 4739));
+        builder.put(Material.TRIPWIRE, new MaterialHolder<>(new GlowTripwireBlockData(Material.TRIPWIRE), 4755));
+        builder.put(Material.TRIPWIRE_HOOK, new MaterialHolder<>(new GlowTripwireHookBlockData(Material.TRIPWIRE_HOOK), 4739));
         builder.put(Material.TUBE_CORAL, new MaterialHolder<>(new SimpleBlockData(Material.TUBE_CORAL), 8459));
         builder.put(Material.TUBE_CORAL_BLOCK, new MaterialHolder<>(new SimpleBlockData(Material.TUBE_CORAL_BLOCK), 8454));
         builder.put(Material.TUBE_CORAL_FAN, new MaterialHolder<>(new SimpleBlockData(Material.TUBE_CORAL_FAN), 8554));
@@ -634,7 +634,7 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.TURTLE_EGG, new MaterialHolder<>(new SimpleBlockData(Material.TURTLE_EGG), 8437));
         builder.put(Material.VINE, new MaterialHolder<>(new SimpleBlockData(Material.VINE), 4268));
         builder.put(Material.VOID_AIR, new MaterialHolder<>(new SimpleBlockData(Material.VOID_AIR), 8574));
-        builder.put(Material.WALL_SIGN, new MaterialHolder<>(new SimpleBlockData(Material.WALL_SIGN), 3269));
+        builder.put(Material.WALL_SIGN, new MaterialHolder<>(new GlowWallSignBlockData(Material.WALL_SIGN), 3269));
         builder.put(Material.WALL_TORCH, new MaterialHolder<>(new GlowWallTorchBlockData(Material.WALL_TORCH), 1131));
         builder.put(Material.WATER, new MaterialHolder<>(new GlowLevelledBlockData(Material.WATER, StateGenerator.SIXTEEN_LEVEL), 34));
         builder.put(Material.WET_SPONGE, new MaterialHolder<>(new SimpleBlockData(Material.WET_SPONGE), 229));
@@ -652,8 +652,8 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.WHITE_TULIP, new MaterialHolder<>(new SimpleBlockData(Material.WHITE_TULIP), 1118));
         builder.put(Material.WHITE_WALL_BANNER, new MaterialHolder<>(new GlowFacingBlockData(Material.WHITE_WALL_BANNER, StateGenerator.FOUR_FACING), 7110));
         builder.put(Material.WHITE_WOOL, new MaterialHolder<>(new SimpleBlockData(Material.WHITE_WOOL), 1083));
-        builder.put(Material.WITHER_SKELETON_SKULL, new MaterialHolder<>(new SimpleBlockData(Material.WITHER_SKELETON_SKULL), 5471));
-        builder.put(Material.WITHER_SKELETON_WALL_SKULL, new MaterialHolder<>(new SimpleBlockData(Material.WITHER_SKELETON_WALL_SKULL), 5467));
+        builder.put(Material.WITHER_SKELETON_SKULL, new MaterialHolder<>(new GlowRotatableBlockData(Material.WITHER_SKELETON_SKULL, StateGenerator.SIXTEEN_ROTATION), 5471));
+        builder.put(Material.WITHER_SKELETON_WALL_SKULL, new MaterialHolder<>(new GlowFacingBlockData(Material.WITHER_SKELETON_WALL_SKULL, StateGenerator.FOUR_FACING), 5467));
         builder.put(Material.YELLOW_BANNER, new MaterialHolder<>(new GlowRotatableBlockData(Material.YELLOW_BANNER, StateGenerator.SIXTEEN_ROTATION), 6918));
         builder.put(Material.YELLOW_BED, new MaterialHolder<>(new GlowBedBlockData(Material.YELLOW_BED), 812));
         builder.put(Material.YELLOW_CARPET, new MaterialHolder<>(new SimpleBlockData(Material.YELLOW_CARPET), 6827));
