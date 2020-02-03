@@ -4,6 +4,7 @@ import net.glowstone.block.data.AbstractBlockData;
 import net.glowstone.block.data.impl.inter.GlowMultipleFaces;
 import net.glowstone.block.data.state.generator.BooleanStateGenerator;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +17,9 @@ public class GlowMultipleFacesBlockData extends AbstractBlockData implements Glo
     @Override
     public @NotNull BlockData clone() {
         GlowMultipleFacesBlockData faceData = new GlowMultipleFacesBlockData(this.getMaterial());
-        this.getStateValues().forEach(v -> faceData.getStateValues().add(v.clone()));
+        for(BlockFace face : faceData.getFaces()){
+            faceData.setFace(face, true);
+        }
         return faceData;
     }
 }

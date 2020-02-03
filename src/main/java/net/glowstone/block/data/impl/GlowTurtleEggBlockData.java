@@ -8,9 +8,9 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.TurtleEgg;
 import org.jetbrains.annotations.NotNull;
 
-public class GlowTurtleEgg extends AbstractBlockData implements TurtleEgg {
+public class GlowTurtleEggBlockData extends AbstractBlockData implements TurtleEgg {
 
-    public GlowTurtleEgg(Material material) {
+    public GlowTurtleEggBlockData(Material material) {
         super(material, StateGenerator.EGGS, StateGenerator.HATCH);
     }
 
@@ -59,7 +59,7 @@ public class GlowTurtleEgg extends AbstractBlockData implements TurtleEgg {
 
     @Override
     public @NotNull BlockData clone() {
-        GlowTurtleEgg egg = new GlowTurtleEgg(this.getMaterial());
+        GlowTurtleEggBlockData egg = new GlowTurtleEggBlockData(this.getMaterial());
         egg.setEggs(this.getEggs());
         egg.setHatch(this.getHatch());
         return egg;
