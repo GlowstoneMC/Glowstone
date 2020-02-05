@@ -65,6 +65,7 @@ public interface StateGenerator<T> {
     BooleanStateGenerator CONDITIONAL = new BooleanStateGenerator("conditional");
     BooleanStateGenerator INVERTED = new BooleanStateGenerator("inverted");
 
+    IntegerStateGenerator.Ranged EIGHT_LAYERS = new IntegerStateGenerator.Ranged("layers", 1, 1, 8);
     IntegerStateGenerator.Ranged NOTE = new IntegerStateGenerator.Ranged("note", 0, 25);
     IntegerStateGenerator.Ranged EGGS = new IntegerStateGenerator.Ranged("eggs", 0, 5);
     IntegerStateGenerator.Ranged HATCH = new IntegerStateGenerator.Ranged("hatch", 0, 3);

@@ -90,8 +90,8 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.ALLIUM, new MaterialHolder<>(new SimpleBlockData(Material.ALLIUM), 1114));
         builder.put(Material.ANDESITE, new MaterialHolder<>(new SimpleBlockData(Material.ANDESITE), 6));
         builder.put(Material.ANVIL, new MaterialHolder<>(new GlowFacingBlockData(Material.ANVIL, StateGenerator.FOUR_FACING), 5567));
-        builder.put(Material.ATTACHED_MELON_STEM, new MaterialHolder<>(new SimpleBlockData(Material.ATTACHED_MELON_STEM), 4248));
-        builder.put(Material.ATTACHED_PUMPKIN_STEM, new MaterialHolder<>(new SimpleBlockData(Material.ATTACHED_PUMPKIN_STEM), 4244));
+        builder.put(Material.ATTACHED_MELON_STEM, new MaterialHolder<>(new GlowFacingBlockData(Material.ATTACHED_MELON_STEM, StateGenerator.FOUR_FACING), 4248));
+        builder.put(Material.ATTACHED_PUMPKIN_STEM, new MaterialHolder<>(new GlowFacingBlockData(Material.ATTACHED_PUMPKIN_STEM, StateGenerator.FOUR_FACING), 4244));
         builder.put(Material.AZURE_BLUET, new MaterialHolder<>(new SimpleBlockData(Material.AZURE_BLUET), 1115));
         builder.put(Material.BARRIER, new MaterialHolder<>(new SimpleBlockData(Material.BARRIER), 6493));
         builder.put(Material.BEACON, new MaterialHolder<>(new SimpleBlockData(Material.BEACON), 5136));
@@ -272,7 +272,7 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.END_ROD, new MaterialHolder<>(new GlowFacingBlockData(Material.END_ROD, StateGenerator.SIX_FACING), 7997));
         builder.put(Material.END_STONE, new MaterialHolder<>(new SimpleBlockData(Material.END_STONE), 4634));
         builder.put(Material.END_STONE_BRICKS, new MaterialHolder<>(new SimpleBlockData(Material.END_STONE_BRICKS), 8157));
-        builder.put(Material.FARMLAND, new MaterialHolder<>(new SimpleBlockData(Material.FARMLAND), 3059));
+        builder.put(Material.FARMLAND, new MaterialHolder<>(new GlowSoilBlockData(Material.FARMLAND), 3059));
         builder.put(Material.FERN, new MaterialHolder<>(new SimpleBlockData(Material.FERN), 1042));
         builder.put(Material.FIRE, new MaterialHolder<>(new GlowFireBlockData(Material.FIRE), 1135));
         builder.put(Material.FIRE_CORAL, new MaterialHolder<>(new SimpleBlockData(Material.FIRE_CORAL), 8462));
@@ -411,7 +411,7 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.MAGENTA_WOOL, new MaterialHolder<>(new SimpleBlockData(Material.MAGENTA_WOOL), 1085));
         builder.put(Material.MAGMA_BLOCK, new MaterialHolder<>(new SimpleBlockData(Material.MAGMA_BLOCK), 8192));
         builder.put(Material.MELON, new MaterialHolder<>(new SimpleBlockData(Material.MELON), 4243));
-        builder.put(Material.MELON_STEM, new MaterialHolder<>(new SimpleBlockData(Material.MELON_STEM), 4260));
+        builder.put(Material.MELON_STEM, new MaterialHolder<>(new GlowAgeableBlockData(Material.MELON_STEM, StateGenerator.EIGHT_AGE), 4260));
         builder.put(Material.MOSSY_COBBLESTONE, new MaterialHolder<>(new SimpleBlockData(Material.MOSSY_COBBLESTONE), 1128));
         builder.put(Material.MOSSY_COBBLESTONE_WALL, new MaterialHolder<>(new SimpleBlockData(Material.MOSSY_COBBLESTONE_WALL), 5201));
         builder.put(Material.MOSSY_STONE_BRICKS, new MaterialHolder<>(new SimpleBlockData(Material.MOSSY_STONE_BRICKS), 3984));
@@ -512,7 +512,7 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.PRISMARINE_SLAB, new MaterialHolder<>(new SimpleBlockData(Material.PRISMARINE_SLAB), 6801));
         builder.put(Material.PRISMARINE_STAIRS, new MaterialHolder<>(new GlowStairsBlockData(Material.PRISMARINE_STAIRS), 6561));
         builder.put(Material.PUMPKIN, new MaterialHolder<>(new SimpleBlockData(Material.PUMPKIN), 3492));
-        builder.put(Material.PUMPKIN_STEM, new MaterialHolder<>(new SimpleBlockData(Material.PUMPKIN_STEM), 4252));
+        builder.put(Material.PUMPKIN_STEM, new MaterialHolder<>(new GlowAgeableBlockData(Material.PUMPKIN_STEM, StateGenerator.EIGHT_AGE), 4252));
         builder.put(Material.PURPLE_BANNER, new MaterialHolder<>(new GlowRotatableBlockData(Material.PURPLE_BANNER, StateGenerator.SIXTEEN_ROTATION), 7014));
         builder.put(Material.PURPLE_BED, new MaterialHolder<>(new GlowBedBlockData(Material.PURPLE_BED), 908));
         builder.put(Material.PURPLE_CARPET, new MaterialHolder<>(new SimpleBlockData(Material.PURPLE_CARPET), 6833));
@@ -579,7 +579,7 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.SMOOTH_RED_SANDSTONE, new MaterialHolder<>(new SimpleBlockData(Material.SMOOTH_RED_SANDSTONE), 7356));
         builder.put(Material.SMOOTH_SANDSTONE, new MaterialHolder<>(new SimpleBlockData(Material.SMOOTH_SANDSTONE), 7354));
         builder.put(Material.SMOOTH_STONE, new MaterialHolder<>(new SimpleBlockData(Material.SMOOTH_STONE), 7353));
-        builder.put(Material.SNOW, new MaterialHolder<>(new SimpleBlockData(Material.SNOW), 3415));
+        builder.put(Material.SNOW, new MaterialHolder<>(new GlowSnowBlockData(Material.SNOW), 3415));
         builder.put(Material.SNOW_BLOCK, new MaterialHolder<>(new SimpleBlockData(Material.SNOW_BLOCK), 3424));
         builder.put(Material.SOUL_SAND, new MaterialHolder<>(new SimpleBlockData(Material.SOUL_SAND), 3494));
         builder.put(Material.SPAWNER, new MaterialHolder<>(new SimpleBlockData(Material.SPAWNER), 1647));
