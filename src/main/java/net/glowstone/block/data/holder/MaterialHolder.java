@@ -355,7 +355,7 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.LADDER, new MaterialHolder<>(new GlowLadderBlockData(Material.LADDER), 3171));
         builder.put(Material.LAPIS_BLOCK, new MaterialHolder<>(new SimpleBlockData(Material.LAPIS_BLOCK), 232));
         builder.put(Material.LAPIS_ORE, new MaterialHolder<>(new SimpleBlockData(Material.LAPIS_ORE), 231));
-        builder.put(Material.LARGE_FERN, new MaterialHolder<>(new SimpleBlockData(Material.LARGE_FERN), 6852));
+        builder.put(Material.LARGE_FERN, new MaterialHolder<>(new GlowBisectedBlockData(Material.LARGE_FERN), 6852));
         builder.put(Material.LAVA, new MaterialHolder<>(new GlowLevelledBlockData(Material.LAVA, StateGenerator.SIXTEEN_LEVEL), 50));
         builder.put(Material.LEVER, new MaterialHolder<>(new GlowSwitchBlockData(Material.LEVER), 3277));
         builder.put(Material.LIGHT_BLUE_BANNER, new MaterialHolder<>(new GlowRotatableBlockData(Material.LIGHT_BLUE_BANNER, StateGenerator.SIXTEEN_ROTATION), 6902));
@@ -383,7 +383,7 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.LIGHT_GRAY_WALL_BANNER, new MaterialHolder<>(new GlowFacingBlockData(Material.LIGHT_GRAY_WALL_BANNER, StateGenerator.FOUR_FACING), 7142));
         builder.put(Material.LIGHT_GRAY_WOOL, new MaterialHolder<>(new SimpleBlockData(Material.LIGHT_GRAY_WOOL), 1091));
         builder.put(Material.LIGHT_WEIGHTED_PRESSURE_PLATE, new MaterialHolder<>(new GlowRedstonePowerBlockData(Material.LIGHT_WEIGHTED_PRESSURE_PLATE), 5603));
-        builder.put(Material.LILAC, new MaterialHolder<>(new SimpleBlockData(Material.LILAC), 6844));
+        builder.put(Material.LILAC, new MaterialHolder<>(new GlowBisectedBlockData(Material.LILAC), 6844));
         builder.put(Material.LILY_PAD, new MaterialHolder<>(new SimpleBlockData(Material.LILY_PAD), 4494));
         builder.put(Material.LIME_BANNER, new MaterialHolder<>(new GlowRotatableBlockData(Material.LIME_BANNER, StateGenerator.SIXTEEN_ROTATION), 6934));
         builder.put(Material.LIME_BED, new MaterialHolder<>(new GlowBedBlockData(Material.LIME_BED), 828));
@@ -458,7 +458,7 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.ORANGE_WOOL, new MaterialHolder<>(new SimpleBlockData(Material.ORANGE_WOOL), 1084));
         builder.put(Material.OXEYE_DAISY, new MaterialHolder<>(new SimpleBlockData(Material.OXEYE_DAISY), 1120));
         builder.put(Material.PACKED_ICE, new MaterialHolder<>(new SimpleBlockData(Material.PACKED_ICE), 6841));
-        builder.put(Material.PEONY, new MaterialHolder<>(new SimpleBlockData(Material.PEONY), 6848));
+        builder.put(Material.PEONY, new MaterialHolder<>(new GlowBisectedBlockData(Material.PEONY), 6848));
         builder.put(Material.PETRIFIED_OAK_SLAB, new MaterialHolder<>(new SimpleBlockData(Material.PETRIFIED_OAK_SLAB), 7305));
         builder.put(Material.PINK_BANNER, new MaterialHolder<>(new GlowRotatableBlockData(Material.PINK_BANNER, StateGenerator.SIXTEEN_ROTATION), 6950));
         builder.put(Material.PINK_BED, new MaterialHolder<>(new GlowBedBlockData(Material.PINK_BED), 844));
@@ -562,7 +562,7 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.RED_WOOL, new MaterialHolder<>(new SimpleBlockData(Material.RED_WOOL), 1097));
         builder.put(Material.REPEATER, new MaterialHolder<>(new GlowRepeaterBlockData(Material.REPEATER), 3513));
         builder.put(Material.REPEATING_COMMAND_BLOCK, new MaterialHolder<>(new SimpleBlockData(Material.REPEATING_COMMAND_BLOCK), 8164));
-        builder.put(Material.ROSE_BUSH, new MaterialHolder<>(new SimpleBlockData(Material.ROSE_BUSH), 6846));
+        builder.put(Material.ROSE_BUSH, new MaterialHolder<>(new GlowBisectedBlockData(Material.ROSE_BUSH), 6846));
         builder.put(Material.SAND, new MaterialHolder<>(new SimpleBlockData(Material.SAND), 66));
         builder.put(Material.SANDSTONE, new MaterialHolder<>(new SimpleBlockData(Material.SANDSTONE), 245));
         builder.put(Material.SANDSTONE_SLAB, new MaterialHolder<>(new SimpleBlockData(Material.SANDSTONE_SLAB), 7299));
@@ -617,12 +617,12 @@ public class MaterialHolder<BD extends IBlockData> {
         builder.put(Material.STRIPPED_OAK_WOOD, new MaterialHolder<>(new SimpleBlockData(Material.STRIPPED_OAK_WOOD), 126));
         builder.put(Material.STRIPPED_SPRUCE_LOG, new MaterialHolder<>(new GlowAxisBlockData(Material.STRIPPED_SPRUCE_LOG, StateGenerator.AXIS), 90));
         builder.put(Material.STRIPPED_SPRUCE_WOOD, new MaterialHolder<>(new SimpleBlockData(Material.STRIPPED_SPRUCE_WOOD), 129));
-        builder.put(Material.STRUCTURE_BLOCK, new MaterialHolder<>(new SimpleBlockData(Material.STRUCTURE_BLOCK), 8578));
+        builder.put(Material.STRUCTURE_BLOCK, new MaterialHolder<>(new GlowStructureBlockData(Material.STRUCTURE_BLOCK), 8578));
         builder.put(Material.STRUCTURE_VOID, new MaterialHolder<>(new SimpleBlockData(Material.STRUCTURE_VOID), 8198));
         builder.put(Material.SUGAR_CANE, new MaterialHolder<>(new GlowAgeableBlockData(Material.SUGAR_CANE, StateGenerator.SIXTEEN_AGE), 3442));
-        builder.put(Material.SUNFLOWER, new MaterialHolder<>(new SimpleBlockData(Material.SUNFLOWER), 6842));
+        builder.put(Material.SUNFLOWER, new MaterialHolder<>(new GlowBisectedBlockData(Material.SUNFLOWER), 6842));
         builder.put(Material.TALL_GRASS, new MaterialHolder<>(new GlowBisectedBlockData(Material.TALL_GRASS), 6850));
-        builder.put(Material.TALL_SEAGRASS, new MaterialHolder<>(new SimpleBlockData(Material.TALL_SEAGRASS), 1045));
+        builder.put(Material.TALL_SEAGRASS, new MaterialHolder<>(new GlowBisectedBlockData(Material.TALL_SEAGRASS), 1045));
         builder.put(Material.TERRACOTTA, new MaterialHolder<>(new SimpleBlockData(Material.TERRACOTTA), 6839));
         builder.put(Material.TNT, new MaterialHolder<>(new GlowTNTBlockData(Material.TNT), 1126));
         builder.put(Material.TORCH, new MaterialHolder<>(new SimpleBlockData(Material.TORCH), 1130));
