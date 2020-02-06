@@ -17,7 +17,6 @@ import static org.bukkit.Statistic.values;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Creature;

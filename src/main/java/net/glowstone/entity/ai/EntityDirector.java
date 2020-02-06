@@ -6,7 +6,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NonNls;
 

@@ -3,7 +3,6 @@ package net.glowstone.block.blocktype;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
