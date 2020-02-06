@@ -79,7 +79,7 @@ public interface StateGenerator<T> {
     IntegerStateGenerator.Ranged SIX_AGE = new IntegerStateGenerator.Ranged("age", 0, 6);
     IntegerStateGenerator.Ranged FOUR_LEVEL = new IntegerStateGenerator.Ranged("level", 0, 4);
     IntegerStateGenerator.Ranged SIXTEEN_LEVEL = new IntegerStateGenerator.Ranged("level", 0, 16);
-    IntegerStateGenerator.Ranged EIGHT_DISTANCE  = new IntegerStateGenerator.Ranged("level", 0, 8);
+    IntegerStateGenerator.Ranged EIGHT_DISTANCE  = new IntegerStateGenerator.Ranged("distance", 0, 8);
     IntegerStateGenerator.Ranged EIGHT_AGE = new IntegerStateGenerator.Ranged("age", 0, 8);
     IntegerStateGenerator.Ranged SEVEN_BITES = new IntegerStateGenerator.Ranged("bites", 0, 7);
     IntegerStateGenerator.Ranged SIXTEEN_AGE = new IntegerStateGenerator.Ranged("age", 0, 16);

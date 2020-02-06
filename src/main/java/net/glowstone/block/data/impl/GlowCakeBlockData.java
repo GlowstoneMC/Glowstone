@@ -15,7 +15,7 @@ public class GlowCakeBlockData extends AbstractBlockData implements Cake {
     }
 
     public IntegerStateValue.Ranged getBitesStateValue(){
-        return (IntegerStateValue.Ranged) this.getStateValue("bites");
+        return (IntegerStateValue.Ranged) this.<Integer>getStateValue("bites").get();
     }
 
     @Override

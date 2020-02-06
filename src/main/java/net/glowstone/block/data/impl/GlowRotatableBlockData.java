@@ -20,6 +20,6 @@ public class GlowRotatableBlockData extends AbstractBlockData implements GlowRot
 
     @Override
     public @NotNull BlockData clone() {
-        return new GlowRotatableBlockData(this.getMaterial(), this.getRangedStateValue().clone());
+        return new GlowRotatableBlockData(this.getMaterial(), this.getRotationStateValue().clone());
     }
 }

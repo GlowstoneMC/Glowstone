@@ -7,7 +7,7 @@ import org.bukkit.block.data.Openable;
 public interface GlowOpenable extends IBlockData, Openable {
 
     default BooleanStateValue getOpenStateValue(){
-        return (BooleanStateValue) this.getStateValue("open").get();
+        return (BooleanStateValue) this.<Boolean>getStateValue("open").get();
     }
 
     @Override

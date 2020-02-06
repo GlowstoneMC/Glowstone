@@ -1,6 +1,7 @@
 package net.glowstone.block.data.impl;
 
 import net.glowstone.block.data.AbstractBlockData;
+import net.glowstone.block.data.state.generator.StateGenerator;
 import net.glowstone.block.data.state.value.EnumStateValue;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class GlowStructureBlockData extends AbstractBlockData implements StructureBlock {
     public GlowStructureBlockData(Material material) {
-        super(material);
+        super(material, StateGenerator.STRUCTURE_MODE);
     }
 
     public EnumStateValue<StructureBlock.Mode> getModeStateValue(){

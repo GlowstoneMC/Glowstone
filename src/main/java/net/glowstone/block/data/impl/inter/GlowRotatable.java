@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public interface GlowRotatable extends IBlockData, Rotatable {
 
     default IntegerStateValue.Ranged getRotationStateValue(){
-        return (IntegerStateValue.Ranged) this.<Integer>getStateValue("face").get();
+        return (IntegerStateValue.Ranged) this.<Integer>getStateValue("rotation").get();
     }
 
     @Override

@@ -16,7 +16,7 @@ public class GlowEnderPortalFrameBlockData extends AbstractBlockData implements 
     }
 
     public BooleanStateValue getEyeStateValue(){
-        return this.getEyeStateValue();
+        return (BooleanStateValue) this.<Boolean>getStateValue("eye").get();
     }
 
     @Override

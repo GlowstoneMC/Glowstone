@@ -14,7 +14,7 @@ import java.util.Set;
 public class GlowTrapDoorBlockData extends AbstractBlockData implements GlowBisected, GlowOpenable, GlowPowered, GlowWaterlogged, GlowDirectional, TrapDoor {
 
     public GlowTrapDoorBlockData(Material material) {
-        super(material, StateGenerator.OPEN, StateGenerator.HALF, StateGenerator.POWERED, StateGenerator.FOUR_FACING);
+        super(material, StateGenerator.OPEN, StateGenerator.HALF, StateGenerator.POWERED, StateGenerator.FOUR_FACING, StateGenerator.WATER_LOGGED);
     }
 
     @Override

@@ -13,15 +13,15 @@ import org.jetbrains.annotations.NotNull;
 public class GlowBedBlockData extends AbstractBlockData implements Bed, GlowDirectional {
 
     public GlowBedBlockData(Material material) {
-        super(material, StateGenerator.BED_PART, StateGenerator.FOUR_FACING);
+        super(material, StateGenerator.OCCUPIED, StateGenerator.BED_PART, StateGenerator.FOUR_FACING);
     }
 
     public EnumStateValue<Bed.Part> getPartStateValue(){
-        return (EnumStateValue<Part>) this.getStateValue("foot");
+        return (EnumStateValue<Part>) this.<Part>getStateValue("foot").get();
     }
 
     public BooleanStateValue getOccupiedStateValue(){
-        return (BooleanStateValue) this.getStateValue("occupied");
+        return (BooleanStateValue) this.<Boolean>getStateValue("occupied").get();
     }
 
     @Override

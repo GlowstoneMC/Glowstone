@@ -31,8 +31,9 @@ public class IntegerStateValue implements StateValue<Integer> {
         public void setValue(Integer value){
             if(value >= this.getGenerator().getMinimum() && value < this.getGenerator().getMaximum()){
                 super.setValue(value);
+                return;
             }
-            throw new UnsupportedOperationException(value + " can not be applied with generator " + this.getGenerator().getClass().getName());
+            throw new UnsupportedOperationException(value + " can not be applied with generator " + this.getGenerator().getId() + ". Must be greater or equal to " + this.getGenerator().getMinimum() + " and less then " + this.getGenerator().getMaximum());
         }
 
         @Override

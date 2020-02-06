@@ -15,7 +15,7 @@ public class GlowBubbleColumnBlockData extends AbstractBlockData implements Bubb
     }
 
     public BooleanStateValue getDragStateValue(){
-        return (BooleanStateValue) this.getStateValue("drag");
+        return (BooleanStateValue) this.<Boolean>getStateValue("drag").get();
     }
 
     @Override

@@ -16,7 +16,7 @@ public class GlowDispenserBlockData extends AbstractBlockData implements GlowDir
     }
 
     public BooleanStateValue getTriggeredStateValue(){
-        return (BooleanStateValue) this.getStateValue("triggered");
+        return (BooleanStateValue) this.<Boolean>getStateValue("triggered").get();
     }
 
     @Override

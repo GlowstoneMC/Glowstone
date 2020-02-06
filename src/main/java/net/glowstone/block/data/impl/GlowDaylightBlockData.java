@@ -16,7 +16,7 @@ public class GlowDaylightBlockData extends AbstractBlockData implements GlowAnal
     }
 
     public BooleanStateValue getInvertedStateValue(){
-        return (BooleanStateValue) this.getStateValue("inverted");
+        return (BooleanStateValue) this.<Boolean>getStateValue("inverted").get();
     }
 
     @Override

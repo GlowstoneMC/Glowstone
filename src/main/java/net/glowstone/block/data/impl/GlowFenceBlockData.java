@@ -5,6 +5,7 @@ import net.glowstone.block.data.impl.inter.GlowMultipleFaces;
 import net.glowstone.block.data.impl.inter.GlowWaterlogged;
 import net.glowstone.block.data.state.generator.StateGenerator;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +18,11 @@ public class GlowFenceBlockData extends AbstractBlockData implements Fence, Glow
 
     @Override
     public @NotNull BlockData clone() {
-        GlowMultipleFacesBlockData faceData = new GlowMultipleFacesBlockData(this.getMaterial());
-        this.getStateValues().forEach(v -> faceData.getStateValues().add(v.clone()));
+        GlowFenceBlockData faceData = new GlowFenceBlockData(this.getMaterial());
+        for(BlockFace face : this.getFaces()){
+            faceData.setFace(face, true);
+        }
+        faceData.setWaterlogged(this.isWaterlogged());
         return faceData;
     }
 }

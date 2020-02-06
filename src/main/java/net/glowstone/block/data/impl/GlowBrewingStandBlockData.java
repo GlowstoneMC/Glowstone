@@ -18,7 +18,7 @@ public class GlowBrewingStandBlockData extends AbstractBlockData implements Brew
     }
 
     public BooleanStateValue getBottleStateValue(int value){
-        return (BooleanStateValue)this.getStateValue("has_bottle_" + value);
+        return (BooleanStateValue)this.<Boolean>getStateValue("has_bottle_" + value).get();
     }
 
     @Override

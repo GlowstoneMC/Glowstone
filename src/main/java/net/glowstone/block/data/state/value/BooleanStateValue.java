@@ -24,7 +24,7 @@ public class BooleanStateValue implements StateValue<Boolean> {
     }
 
     @Override
-    public StateGenerator<Boolean> getGenerator() {
+    public BooleanStateGenerator getGenerator() {
         return this.generator;
     }
 

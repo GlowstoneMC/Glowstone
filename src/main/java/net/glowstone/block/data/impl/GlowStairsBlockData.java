@@ -18,7 +18,7 @@ public class GlowStairsBlockData extends AbstractBlockData implements GlowBisect
     }
 
     public EnumStateValue<Stairs.Shape> getShapeStateValue(){
-        return (EnumStateValue<Shape>) this.getStateValue("shape");
+        return (EnumStateValue<Shape>) this.<Shape>getStateValue("shape").get();
     }
 
     @Override

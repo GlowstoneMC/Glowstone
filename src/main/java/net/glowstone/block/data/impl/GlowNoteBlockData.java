@@ -19,11 +19,11 @@ public class GlowNoteBlockData extends AbstractBlockData implements NoteBlock, G
     }
 
     public EnumStateValue<Instrument> getInstrumentStateValue(){
-        return (EnumStateValue<Instrument>) this.getStateValue("instrument");
+        return (EnumStateValue<Instrument>) this.<Instrument>getStateValue("instrument").get();
     }
 
     public IntegerStateValue.Ranged getNoteStateValue(){
-        return (IntegerStateValue.Ranged) this.getStateValue("note");
+        return (IntegerStateValue.Ranged) this.<Integer>getStateValue("note").get();
     }
 
     @Override
@@ -38,13 +38,12 @@ public class GlowNoteBlockData extends AbstractBlockData implements NoteBlock, G
 
     @Override
     public @NotNull Note getNote() {
-        //TODO - CONVERT NUMBER TO NOTE
-        return null;
+        return new Note(this.getNoteStateValue().getValue());
     }
 
     @Override
     public void setNote(@NotNull Note note) {
-        //TODO - CONVERT NOTE TO NUMBER
+        getNoteStateValue().setValue((int)note.getId());
     }
 
     @Override

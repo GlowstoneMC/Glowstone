@@ -16,7 +16,7 @@ public class GlowCommandBlockData extends AbstractBlockData implements GlowDirec
     }
 
     public BooleanStateValue getConditionalStateValue(){
-        return (BooleanStateValue) this.getStateValue("conditional");
+        return (BooleanStateValue) this.<Boolean>getStateValue("conditional").get();
     }
 
     @Override

@@ -2,6 +2,7 @@ package net.glowstone.block.data;
 
 import net.glowstone.block.data.state.generator.StateGenerator;
 import net.glowstone.block.data.state.value.StateValue;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
@@ -83,6 +84,11 @@ public abstract class AbstractBlockData implements IBlockData {
             return false;
         }
         return this.getStateValues().values().stream().filter(s -> s.isExplicit()).anyMatch(s -> ((IBlockData)blockData).getStateValue(s.getGenerator().getId()).get().getValue().equals(s.getValue()));
+    }
+
+    @Override
+    public BlockData clone(){
+        throw new NotImplementedException(this.getClass().getName() + " does not override clone");
     }
 
     private <T> void applyStateValue(StateValue<T> value){

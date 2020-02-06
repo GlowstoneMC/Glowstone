@@ -2,7 +2,9 @@ package net.glowstone.block.data.impl;
 
 import net.glowstone.block.data.AbstractBlockData;
 import net.glowstone.block.data.impl.inter.GlowDirectional;
+import net.glowstone.block.data.state.generator.StateGenerator;
 import net.glowstone.block.data.state.value.BooleanStateValue;
+import net.glowstone.block.data.state.value.StateValue;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Hopper;
@@ -11,11 +13,11 @@ import org.jetbrains.annotations.NotNull;
 public class GlowHopperBlockData extends AbstractBlockData implements Hopper, GlowDirectional {
 
     public GlowHopperBlockData(Material material) {
-        super(material);
+        super(material, StateGenerator.SIX_FACING, StateGenerator.ENABLED);
     }
 
     public BooleanStateValue getEnabledStateValue(){
-        return (BooleanStateValue) this.getStateValue("enabled");
+        return (BooleanStateValue) this.<Boolean>getStateValue("enabled").get();
     }
 
     @Override

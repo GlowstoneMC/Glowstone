@@ -7,7 +7,7 @@ import org.bukkit.block.data.Lightable;
 public interface GlowLightable extends IBlockData, Lightable {
 
     default BooleanStateValue getLitStateValue(){
-        return (BooleanStateValue) this.getStateValue("lit").get();
+        return (BooleanStateValue) this.<Boolean>getStateValue("lit").get();
     }
 
     @Override

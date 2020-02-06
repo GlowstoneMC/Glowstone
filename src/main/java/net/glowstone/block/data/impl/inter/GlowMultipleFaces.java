@@ -103,18 +103,12 @@ public interface GlowMultipleFaces extends IBlockData, MultipleFacing {
     @Override
     default @NotNull Set<BlockFace> getAllowedFaces() {
         ImmutableSet.Builder<BlockFace> builder = ImmutableSet.builder();
-        if(this.getWestStateValue() != null){
-            builder.add(BlockFace.WEST);
-        }
-        if(this.getNorthStateValue() != null){
-            builder.add(BlockFace.NORTH);
-        }
-        if(this.getEastStateValue() != null){
-            builder.add(BlockFace.EAST);
-        }
-        if(this.getSouthStateValue() != null){
-            builder.add(BlockFace.SOUTH);
-        }
+        builder.add(BlockFace.WEST);
+        builder.add(BlockFace.NORTH);
+        builder.add(BlockFace.EAST);
+        builder.add(BlockFace.SOUTH);
+        this.getUpStateValue().ifPresent(b -> builder.add(BlockFace.UP));
+        this.getDownStateValue().ifPresent(b -> builder.add(BlockFace.DOWN));
         return builder.build();
     }
 }

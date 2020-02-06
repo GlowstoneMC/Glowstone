@@ -17,7 +17,7 @@ public class GlowSwitchBlockData extends AbstractBlockData implements GlowDirect
     }
 
     public EnumStateValue<Switch.Face> getFaceStateValue(){
-        return (EnumStateValue<Face>) this.getStateValue("wall");
+        return (EnumStateValue<Face>) this.<Face>getStateValue("wall").get();
     }
 
     @Override

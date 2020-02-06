@@ -14,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 public class GlowGateBlockData extends AbstractBlockData implements Gate, GlowDirectional, GlowOpenable, GlowPowered {
 
     public GlowGateBlockData(Material material) {
-        super(material, StateGenerator.IN_WALL, StateGenerator.OPEN, StateGenerator.POWERED);
+        super(material, StateGenerator.FOUR_FACING, StateGenerator.IN_WALL, StateGenerator.OPEN, StateGenerator.POWERED);
     }
 
     public BooleanStateValue getInWallStateValue(){
-        return (BooleanStateValue) this.getStateValue("in_wall");
+        return (BooleanStateValue) this.<Boolean>getStateValue("in_wall").get();
     }
 
     @Override

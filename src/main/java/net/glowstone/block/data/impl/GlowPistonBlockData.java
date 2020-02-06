@@ -16,7 +16,7 @@ public class GlowPistonBlockData extends AbstractBlockData implements GlowDirect
     }
 
     public BooleanStateValue getExtendedStateValue(){
-        return (BooleanStateValue) this.getStateValue("extended");
+        return (BooleanStateValue) this.<Boolean>getStateValue("extended").get();
     }
 
     @Override

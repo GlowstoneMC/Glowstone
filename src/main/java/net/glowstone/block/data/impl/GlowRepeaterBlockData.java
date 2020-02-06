@@ -14,15 +14,15 @@ import org.jetbrains.annotations.NotNull;
 public class GlowRepeaterBlockData extends AbstractBlockData implements GlowPowered, GlowDirectional, Repeater {
 
     public GlowRepeaterBlockData(Material material) {
-        super(material, StateGenerator.POWERED, StateGenerator.FOUR_FACING);
+        super(material, StateGenerator.POWERED, StateGenerator.FOUR_FACING, StateGenerator.LOCKED, StateGenerator.DELAY);
     }
 
     public IntegerStateValue.Ranged getDelayStateValue(){
-        return (IntegerStateValue.Ranged) this.getStateValue("delay");
+        return (IntegerStateValue.Ranged) this.<Integer>getStateValue("delay").get();
     }
 
     public BooleanStateValue getLockedStateValue(){
-        return (BooleanStateValue) this.getStateValue("locked");
+        return (BooleanStateValue) this.<Boolean>getStateValue("locked").get();
     }
 
     @Override

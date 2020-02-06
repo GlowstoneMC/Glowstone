@@ -7,7 +7,7 @@ import org.bukkit.block.data.Bisected;
 public interface GlowBisected extends IBlockData, Bisected {
 
     default EnumStateValue<Bisected.Half> getHalfStateValue(){
-        return (EnumStateValue<Half>) this.getStateValue("half").get();
+        return (EnumStateValue<Half>) this.<Half>getStateValue("half").get();
     }
 
     @Override
