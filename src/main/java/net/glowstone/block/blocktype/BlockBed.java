@@ -2,7 +2,6 @@ package net.glowstone.block.blocktype;
 
 import java.util.Collection;
 import java.util.Collections;
-
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
