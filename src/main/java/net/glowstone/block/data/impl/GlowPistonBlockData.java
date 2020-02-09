@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class GlowPistonBlockData extends AbstractBlockData implements GlowDirectional, Piston {
 
     public GlowPistonBlockData(Material material) {
-        super(material, StateGenerator.EXTENDED, StateGenerator.SIX_FACING);
+        super(material, StateGenerator.EXTENDED, StateGenerator.SIX_FACING_DEFAULT_NORTH);
     }
 
     public BooleanStateValue getExtendedStateValue(){

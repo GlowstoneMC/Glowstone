@@ -13,11 +13,11 @@ import org.jetbrains.annotations.NotNull;
 public class GlowSwitchBlockData extends AbstractBlockData implements GlowDirectional, GlowPowered, Switch {
 
     public GlowSwitchBlockData(Material material) {
-        super(material, StateGenerator.SIX_FACING, StateGenerator.POWERED, StateGenerator.SWITCH_FACE);
+        super(material, StateGenerator.SIX_FACING_DEFAULT_NORTH, StateGenerator.POWERED, StateGenerator.SWITCH_FACE);
     }
 
     public EnumStateValue<Switch.Face> getFaceStateValue(){
-        return (EnumStateValue<Face>) this.<Face>getStateValue("wall").get();
+        return (EnumStateValue<Face>) this.<Face>getStateValue("face").get();
     }
 
     @Override

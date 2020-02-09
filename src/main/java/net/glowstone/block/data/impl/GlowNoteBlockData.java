@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class GlowNoteBlockData extends AbstractBlockData implements NoteBlock, GlowPowered {
 
     public GlowNoteBlockData(Material material) {
-        super(material, StateGenerator.INSTRUMENT, StateGenerator.NOTE);
+        super(material, StateGenerator.INSTRUMENT, StateGenerator.NOTE, StateGenerator.POWERED);
     }
 
     public EnumStateValue<Instrument> getInstrumentStateValue(){
@@ -51,6 +51,7 @@ public class GlowNoteBlockData extends AbstractBlockData implements NoteBlock, G
         GlowNoteBlockData note = new GlowNoteBlockData(this.getMaterial());
         note.setInstrument(this.getInstrument());
         note.setNote(this.getNote());
+        note.setPowered(this.isPowered());
         return note;
     }
 }

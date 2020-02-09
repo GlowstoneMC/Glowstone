@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class GlowObserverBlockData extends AbstractBlockData implements GlowDirectional, GlowPowered, Observer {
 
     public GlowObserverBlockData(Material material) {
-        super(material, StateGenerator.POWERED, StateGenerator.SIX_FACING);
+        super(material, StateGenerator.POWERED, StateGenerator.SIX_FACING_DEFAULT_SOUTH);
     }
 
     @Override

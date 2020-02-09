@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class GlowCommandBlockData extends AbstractBlockData implements GlowDirectional, CommandBlock {
 
     public GlowCommandBlockData(Material material) {
-        super(material, StateGenerator.SIX_FACING, StateGenerator.CONDITIONAL);
+        super(material, StateGenerator.SIX_FACING_DEFAULT_NORTH, StateGenerator.CONDITIONAL);
     }
 
     public BooleanStateValue getConditionalStateValue(){

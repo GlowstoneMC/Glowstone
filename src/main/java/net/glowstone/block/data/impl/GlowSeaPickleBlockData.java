@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class GlowSeaPickleBlockData extends AbstractBlockData implements GlowWaterlogged, SeaPickle {
 
     public GlowSeaPickleBlockData(Material material) {
-        super(material, StateGenerator.PICKLES, StateGenerator.WATER_LOGGED);
+        super(material, StateGenerator.PICKLES, StateGenerator.WATER_LOGGED_INVERTED);
     }
 
     public IntegerStateValue.Ranged getPicklesStateValue(){

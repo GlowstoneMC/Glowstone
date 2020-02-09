@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class GlowPistonHeadBlockData extends AbstractBlockData implements GlowDirectional, GlowPistonNeck, PistonHead {
 
     public GlowPistonHeadBlockData(Material material) {
-        super(material, StateGenerator.PISTON_NECK_TYPE, StateGenerator.SIX_FACING, StateGenerator.PISTON_NECK_TYPE, StateGenerator.SHORT);
+        super(material, StateGenerator.PISTON_NECK_TYPE, StateGenerator.SIX_FACING_DEFAULT_NORTH, StateGenerator.PISTON_NECK_TYPE, StateGenerator.SHORT);
     }
 
     public BooleanStateValue getShortStateValue(){

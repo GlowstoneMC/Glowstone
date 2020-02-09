@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class GlowDispenserBlockData extends AbstractBlockData implements GlowDirectional, Dispenser {
 
     public GlowDispenserBlockData(Material material) {
-        super(material, StateGenerator.TRIGGERED, StateGenerator.SIX_FACING);
+        super(material, StateGenerator.TRIGGERED, StateGenerator.SIX_FACING_DEFAULT_NORTH);
     }
 
     public BooleanStateValue getTriggeredStateValue(){

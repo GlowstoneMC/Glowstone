@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class GlowHopperBlockData extends AbstractBlockData implements Hopper, GlowDirectional {
 
     public GlowHopperBlockData(Material material) {
-        super(material, StateGenerator.SIX_FACING, StateGenerator.ENABLED);
+        super(material, StateGenerator.SIX_FACING_DEFAULT_DOWN, StateGenerator.ENABLED);
     }
 
     public BooleanStateValue getEnabledStateValue(){

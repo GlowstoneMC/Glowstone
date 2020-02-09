@@ -59,13 +59,13 @@ public abstract class AbstractBlockData implements IBlockData {
             if(entries == null){
                 entries = value.getGenerator().getId() + "=" + value.getValueAsString();
             }else{
-                entries += " " + value.getGenerator().getId() + "=" + value.getValueAsString();
+                entries += "," + value.getGenerator().getId() + "=" + value.getValueAsString();
             }
         }
         if(entries == null) {
             return "minecraft:" + this.material.name().toLowerCase();
         }
-        return "minecraft:" + this.material.name().toLowerCase() + " [" + entries + "]";
+        return "minecraft:" + this.material.name().toLowerCase() + "[" + entries + "]";
     }
 
     @Override

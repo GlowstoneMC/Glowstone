@@ -6,9 +6,11 @@ import net.glowstone.block.data.state.value.BooleanStateValue;
 public class BooleanStateGenerator implements StateGenerator.EnumGenerator<Boolean> {
 
     private String id;
+    private boolean defaultValue;
 
-    public BooleanStateGenerator(String id){
+    public BooleanStateGenerator(String id, boolean defaultValue){
         this.id = id;
+        this.defaultValue = defaultValue;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class BooleanStateGenerator implements StateGenerator.EnumGenerator<Boole
 
     @Override
     public Boolean getDefaultValue() {
-        return false;
+        return this.defaultValue;
     }
 
     @Override

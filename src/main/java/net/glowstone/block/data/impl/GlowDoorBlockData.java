@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class GlowDoorBlockData extends AbstractBlockData implements Door, GlowBisected, GlowDirectional, GlowOpenable, GlowPowered {
 
     public GlowDoorBlockData(Material material) {
-        super(material, StateGenerator.HALF, StateGenerator.FOUR_FACING, StateGenerator.OPEN, StateGenerator.POWERED, StateGenerator.HINGE);
+        super(material, StateGenerator.HALF_ALT_NAME, StateGenerator.FOUR_FACING, StateGenerator.OPEN, StateGenerator.POWERED, StateGenerator.HINGE);
     }
 
     public EnumStateValue<Door.Hinge> getHingeStateValue(){

@@ -17,7 +17,7 @@ public class GlowBedBlockData extends AbstractBlockData implements Bed, GlowDire
     }
 
     public EnumStateValue<Bed.Part> getPartStateValue(){
-        return (EnumStateValue<Part>) this.<Part>getStateValue("foot").get();
+        return (EnumStateValue<Part>) this.<Part>getStateValue("part").get();
     }
 
     public BooleanStateValue getOccupiedStateValue(){

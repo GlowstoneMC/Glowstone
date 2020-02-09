@@ -37,7 +37,7 @@ public class EnumStateValue<E extends Enum> implements StateValue<E> {
 
     @Override
     public String getValueAsString() {
-        return this.getValue().name().toLowerCase();
+        return this.getGenerator().getAltName(this.getValue());
     }
 
     @Override

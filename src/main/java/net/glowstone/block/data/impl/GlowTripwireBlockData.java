@@ -37,7 +37,7 @@ public class GlowTripwireBlockData extends AbstractBlockData implements GlowPowe
         tripwire.setDisarmed(this.isDisarmed());
         tripwire.setAttached(this.isAttached());
         tripwire.setPowered(this.isPowered());
-        for(BlockFace face : this.getAllowedFaces()){
+        for(BlockFace face : this.getFaces()){
             tripwire.setFace(face, true);
         }
         return tripwire;

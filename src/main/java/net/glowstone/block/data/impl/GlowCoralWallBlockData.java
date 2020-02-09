@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class GlowCoralWallBlockData extends AbstractBlockData implements GlowDirectional, GlowWaterlogged, CoralWallFan {
 
     public GlowCoralWallBlockData(Material material) {
-        super(material, StateGenerator.FOUR_FACING, StateGenerator.WATER_LOGGED);
+        super(material, StateGenerator.FOUR_FACING, StateGenerator.WATER_LOGGED_INVERTED);
     }
 
     @Override

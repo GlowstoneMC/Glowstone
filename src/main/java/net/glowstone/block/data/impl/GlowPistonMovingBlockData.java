@@ -13,7 +13,7 @@ import javax.swing.plaf.nimbus.State;
 public class GlowPistonMovingBlockData extends AbstractBlockData implements GlowDirectional, GlowPistonNeck {
 
     public GlowPistonMovingBlockData(Material material) {
-        super(material, StateGenerator.PISTON_NECK_TYPE, StateGenerator.SIX_FACING);
+        super(material, StateGenerator.PISTON_NECK_TYPE, StateGenerator.SIX_FACING_DEFAULT_NORTH);
     }
 
     @Override
