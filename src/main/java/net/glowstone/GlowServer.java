@@ -1506,7 +1506,7 @@ public class GlowServer implements Server {
 
     @Override
     public BlockData createBlockData(Material material, String data) throws IllegalArgumentException {
-        return MaterialHolder.getHolder(material).createState(data.split(" "));
+        return MaterialHolder.getHolder(material).createState(data.replaceAll(" ", "").split(","));
     }
 
     @Override
