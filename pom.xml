@@ -13,7 +13,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <api.version>1.12.2-R5.0-SNAPSHOT</api.version>
+    <api.version>1.12.2-R6.0-SNAPSHOT</api.version>
     <minecraft.version>1.12.2</minecraft.version>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <maven.compiler.source>1.8</maven.compiler.source>
