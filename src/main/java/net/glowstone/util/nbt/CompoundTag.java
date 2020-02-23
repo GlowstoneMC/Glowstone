@@ -17,13 +17,14 @@ import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import net.glowstone.block.data.SimpleBlockData;
-import net.glowstone.block.flattening.generated.FlatteningUtil;
+import net.glowstone.GlowServer;
+import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.DynamicallyTypedMapWithDoubles;
 import net.glowstone.util.FloatConsumer;
 import net.glowstone.util.ShortConsumer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
@@ -657,6 +658,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         if (!containsKey(key)) {
             return Optional.empty();
         }
+        BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
         switch (value.get(key).getType()) {
             case STRING:
                 @NonNls String id = getString(key);
@@ -674,11 +676,11 @@ public class CompoundTag extends Tag<Map<String, Tag>>
                 }
                 return Optional.ofNullable(type);
             case INT:
-                return Optional.ofNullable(FlatteningUtil.getMaterialFromBaseId(getInt(key)));
+                return Optional.of(blockDataManager.convertToBlockData(getInt(key)).getMaterial());
             case SHORT:
-                return Optional.ofNullable(FlatteningUtil.getMaterialFromBaseId(getShort(key)));
+                return Optional.of(blockDataManager.convertToBlockData(getShort(key)).getMaterial());
             case BYTE:
-                return Optional.ofNullable(FlatteningUtil.getMaterialFromBaseId(getByte(key)));
+                return Optional.of(blockDataManager.convertToBlockData(getByte(key)).getMaterial());
             default:
                 return Optional.empty();
         }
@@ -694,7 +696,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
                 Optional<Material> type = tryGetMaterial("Name");
                 // TODO: 1.13 parse properties
                 Optional<CompoundTag> properties = tryGetCompound("Properties");
-                return Optional.of(new SimpleBlockData(type.orElse(Material.AIR)));
+                return Optional.of(Bukkit.getServer().createBlockData(type.orElse(Material.AIR)));
             default:
                 return Optional.empty();
         }

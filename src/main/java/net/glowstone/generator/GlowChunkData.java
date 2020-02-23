@@ -1,9 +1,11 @@
 package net.glowstone.generator;
 
 import lombok.Getter;
-import net.glowstone.block.flattening.generated.FlatteningUtil;
+import net.glowstone.GlowServer;
+import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.chunk.GlowChunk;
 import org.apache.commons.lang.NotImplementedException;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
@@ -39,7 +41,8 @@ public class GlowChunkData implements ChunkData {
     @NotNull
     @Override
     public Material getType(int x, int y, int z) {
-        return FlatteningUtil.getMaterialFromStateId(getTypeId(x, y, z));
+        BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
+        return blockDataManager.convertToBlockData(getTypeId(x, y, z)).getMaterial();
     }
 
     @NotNull

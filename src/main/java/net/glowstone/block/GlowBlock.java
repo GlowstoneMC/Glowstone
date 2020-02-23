@@ -14,10 +14,11 @@ import net.glowstone.block.MaterialValueManager.ValueCollection;
 import net.glowstone.block.blocktype.BlockRedstone;
 import net.glowstone.block.blocktype.BlockRedstoneTorch;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.block.entity.BlockEntity;
-import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -240,7 +241,8 @@ public class GlowBlock implements Block {
         byte oldData = getData();
 
         GlowChunk chunk = (GlowChunk) world.getChunkAt(this);
-        chunk.setType(x & 0xf, z & 0xf, y, FlatteningUtil.getMaterialFromBaseId(type));
+        Material material = ((GlowServer) Bukkit.getServer()).getBlockDataManager().convertToBlockData(type).getMaterial();
+        chunk.setType(x & 0xf, z & 0xf, y, material);
         chunk.setMetaData(x & 0xf, z & 0xf, y, data);
 
         // TODO: fix so this hack isn't needed!
@@ -253,7 +255,7 @@ public class GlowBlock implements Block {
         }*/
 
         if (applyPhysics) {
-            applyPhysics(oldTypeId, FlatteningUtil.getMaterialFromBaseId(type), oldData, data);
+            applyPhysics(oldTypeId, material, oldData, data);
         }
 
         GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
@@ -321,8 +323,10 @@ public class GlowBlock implements Block {
         }
 
         GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
+        BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
+        BlockData blockData = blockDataManager.createBlockData(getType());
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z,
-                FlatteningUtil.getMaterialBaseId(getType()), data);
+                blockDataManager.convertToBlockId(blockData), data);
         world.broadcastBlockChangeInRange(key, bcmsg);
     }
 

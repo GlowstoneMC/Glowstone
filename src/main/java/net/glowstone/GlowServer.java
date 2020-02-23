@@ -59,6 +59,7 @@ import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
+import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.block.entity.state.GlowDispenser;
 import net.glowstone.boss.GlowBossBar;
 import net.glowstone.boss.GlowKeyedBossBar;
@@ -293,6 +294,11 @@ public class GlowServer implements Server {
      * The crafting manager for this server.
      */
     private final CraftingManager craftingManager = new CraftingManager();
+    /**
+     * What manages the mapping of Material to BlockData and the mapping between State ID and BlockData.
+     */
+    @Getter
+    private final BlockDataManager blockDataManager = new BlockDataManager();
     /**
      * The configuration for the server.
      */
@@ -1484,26 +1490,22 @@ public class GlowServer implements Server {
 
     @Override
     public BlockData createBlockData(Material material) {
-        // TODO: 1.13, flattening
-        throw new UnsupportedOperationException("Not supported yet.");
+        return blockDataManager.createBlockData(material);
     }
 
     @Override
     public BlockData createBlockData(Material material, Consumer<BlockData> consumer) {
-        // TODO: 1.13, flattening
-        throw new UnsupportedOperationException("Not supported yet.");
+        return blockDataManager.createBlockData(material, consumer);
     }
 
     @Override
     public BlockData createBlockData(String data) throws IllegalArgumentException {
-        // TODO: 1.13, flattening
-        throw new UnsupportedOperationException("Not supported yet.");
+        return blockDataManager.createBlockData(data);
     }
 
     @Override
     public BlockData createBlockData(Material material, String data) throws IllegalArgumentException {
-        // TODO: 1.13, flattening
-        throw new UnsupportedOperationException("Not supported yet.");
+        return blockDataManager.createBlockData(material, data);
     }
 
     @Override
