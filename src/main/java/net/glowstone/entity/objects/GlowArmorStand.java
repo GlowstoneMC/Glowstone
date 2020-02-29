@@ -560,6 +560,11 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
+    public boolean isGliding() {
+        return false;
+    }
+
+    @Override
     public void setCanTick(boolean tick) {
         canTick = tick;
     }

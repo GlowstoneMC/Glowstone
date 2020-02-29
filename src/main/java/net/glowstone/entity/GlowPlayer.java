@@ -173,6 +173,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
+import org.bukkit.event.player.PlayerChangedMainHandEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -1392,6 +1393,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         String newLocale = settings.getLocale();
         if (!newLocale.equalsIgnoreCase(this.settings.getLocale())) {
             EventFactory.getInstance().callEvent(new PlayerLocaleChangeEvent(this, newLocale));
+        }
+        if (settings.getMainHand() != getMainHand().ordinal()) {
+            EventFactory.getInstance().callEvent(new PlayerChangedMainHandEvent(this, settings.getMainHand() == 0 ? MainHand.LEFT : MainHand.RIGHT));
         }
         forceStream = settings.getViewDistance() != this.settings.getViewDistance()
                 && settings.getViewDistance() + 1 <= server.getViewDistance();
