@@ -4,7 +4,7 @@ import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.UUID;
 import net.glowstone.net.message.KickMessage;
-import net.glowstone.net.message.play.entity.AnimateEntityMessage;
+import net.glowstone.net.message.play.entity.EntityAnimationMessage;
 import net.glowstone.net.message.play.entity.AttachEntityMessage;
 import net.glowstone.net.message.play.entity.CollectItemMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
@@ -19,7 +19,7 @@ import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.entity.RelativeEntityPositionMessage;
 import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
-import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
+import net.glowstone.net.message.play.entity.SpawnGlobalEntityMessage;
 import net.glowstone.net.message.play.entity.SpawnMobMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
@@ -132,7 +132,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new PositionRotationMessage(1.0, 2.0, 3.0, 1f, 2f),
         new PositionRotationMessage(1.0, 2.0, 3.0, 4f, 5f, 6, 1),
         new PositionRotationMessage(new Location(null, 1.0, 2.0, 3.0, 4f, 5f)),
-        new AnimateEntityMessage(1, 2),
+        new EntityAnimationMessage(1, 2),
         new SpawnPlayerMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6,
             ProtocolTestUtils.getMetadataEntry()),
         new CollectItemMessage(1, 2, 3),
@@ -161,8 +161,8 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new EntityTeleportMessage(1, 2, 3, 4, 5, 6, false),
         new RelativeEntityPositionRotationMessage(1, (short) 2, (short) 3, (short) 4, 5, 6),
         new RelativeEntityPositionRotationMessage(1, (short) 2, (short) 3, (short) 4, 5, 6, false),
-        new SpawnLightningStrikeMessage(1, 2, 3, 4),
-        new SpawnLightningStrikeMessage(1, 2, 3, 4, 5),
+        new SpawnGlobalEntityMessage(1, 2, 3, 4),
+        new SpawnGlobalEntityMessage(1, 2, 3, 4, 5),
         new BlockActionMessage(1, 2, 3, 4, 5, 6),
         new BlockChangeMessage(1, 2, 3, 4),
         new BlockChangeMessage(1, 2, 3, 4, 5),

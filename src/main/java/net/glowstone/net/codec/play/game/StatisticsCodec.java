@@ -8,18 +8,18 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.glowstone.constants.GlowStatistic;
-import net.glowstone.net.message.play.game.StatisticMessage;
+import net.glowstone.net.message.play.game.StatisticsMessage;
 import org.bukkit.Statistic;
 
-public final class StatisticCodec implements Codec<StatisticMessage> {
+public final class StatisticsCodec implements Codec<StatisticsMessage> {
 
     @Override
-    public StatisticMessage decode(ByteBuf buf) throws IOException {
+    public StatisticsMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode StatisticMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, StatisticMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, StatisticsMessage message) throws IOException {
         Map<Statistic, Integer> map = message.getValues();
         ByteBufUtils.writeVarInt(buf, map.size());
         for (Entry<Statistic, Integer> entry : map.entrySet()) {

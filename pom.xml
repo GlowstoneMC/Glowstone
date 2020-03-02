@@ -33,6 +33,10 @@
       <id>glowstone-snapshots</id>
       <url>https://repo.glowstone.net/repository/snapshots/</url>
     </repository>
+    <repository>
+      <id>mojang</id>
+      <url>https://libraries.minecraft.net</url>
+    </repository>
   </repositories>
 
   <distributionManagement>
@@ -89,6 +93,11 @@
       <groupId>com.eatthepath</groupId>
       <artifactId>fast-uuid</artifactId>
       <version>0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mojang</groupId>
+      <artifactId>brigadier</artifactId>
+      <version>1.0.17</version>
     </dependency>
     <!-- NonNls annotation: https://mvnrepository.com/artifact/org.jetbrains/annotations -->
     <dependency>

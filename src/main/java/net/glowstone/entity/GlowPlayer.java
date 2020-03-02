@@ -77,7 +77,7 @@ import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.map.GlowMapCanvas;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.entity.AnimateEntityMessage;
+import net.glowstone.net.message.play.entity.EntityAnimationMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
@@ -3717,7 +3717,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void playAnimationToSelf(EntityAnimation animation) {
-        AnimateEntityMessage message = new AnimateEntityMessage(getEntityId(), animation.ordinal());
+        EntityAnimationMessage message = new EntityAnimationMessage(getEntityId(), animation.ordinal());
         getSession().send(message);
     }
 

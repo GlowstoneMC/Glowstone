@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowStatistic;
-import net.glowstone.net.message.play.game.StatisticMessage;
+import net.glowstone.net.message.play.game.StatisticsMessage;
 import org.bukkit.Achievement;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
@@ -21,7 +21,7 @@ public final class StatisticMap {
 
     private final Map<String, Integer> values = new HashMap<>();
 
-    public StatisticMessage toMessage() {
+    public StatisticsMessage toMessage() {
         Map<Statistic, Integer> statKeyedValues = new EnumMap<>(Statistic.class);
         for (Statistic stat : Statistic.values()) {
             Integer value = values.get(stat.name());
@@ -29,7 +29,7 @@ public final class StatisticMap {
                 statKeyedValues.put(stat, value);
             }
         }
-        return new StatisticMessage(statKeyedValues);
+        return new StatisticsMessage(statKeyedValues);
     }
 
     ////////////////////////////////////////////////////////////////////////////
