@@ -455,6 +455,7 @@ public class GlowServer implements Server {
                 new TextMessage("=)"),
                 new ItemStack(Material.GLOWSTONE),
                 GlowAdvancementDisplay.FrameType.GOAL,
+                NamespacedKey.minecraft("textures/gui/advancements/backgrounds/adventure.png"),
                 -10F, 0));
         addAdvancement(advancement);
 
