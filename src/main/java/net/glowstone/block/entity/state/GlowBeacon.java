@@ -30,7 +30,7 @@ public class GlowBeacon extends GlowContainer implements Beacon {
 
     @Override
     public Collection<LivingEntity> getEntitiesInRange() {
-        return getWorld().getNearbyEntitiesByType(Player.class, getLocation(), getTier() * RADIUS_MULTIPLIER + 10, getWorld().getMaxHeight());
+        return getWorld().getNearbyEntitiesByType(Player.class, getLocation(), getTier() * RADIUS_MULTIPLIER, getWorld().getMaxHeight());
     }
 
     @Override
