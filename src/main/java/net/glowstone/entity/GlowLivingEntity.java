@@ -1112,12 +1112,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         EntityEffectMessage msg = new EntityEffectMessage(getEntityId(), effect.getType().getId(),
                 effect.getAmplifier(), effect.getDuration(), effect.isAmbient());
         for (GlowPlayer player : world.getRawPlayers()) {
-            if (player == this) {
-                // special handling for players having a different view of themselves
-                player.getSession().send(
-                        new EntityEffectMessage(0, effect.getType().getId(), effect.getAmplifier(),
-                                effect.getDuration(), effect.isAmbient()));
-            } else if (player.canSeeEntity(this)) {
+            if (player.canSeeEntity(this) || player == this) {
                 player.getSession().send(msg);
             }
         }
@@ -1142,7 +1137,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public PotionEffect getPotionEffect(PotionEffectType potionEffectType) {
-        return null;
+        return potionEffects.get(potionEffectType);
     }
 
     @Override
@@ -1154,10 +1149,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         EntityRemoveEffectMessage msg = new EntityRemoveEffectMessage(getEntityId(), type.getId());
         for (GlowPlayer player : world.getRawPlayers()) {
-            if (player == this) {
-                // special handling for players having a different view of themselves
-                player.getSession().send(new EntityRemoveEffectMessage(0, type.getId()));
-            } else if (player.canSeeEntity(this)) {
+            if (player.canSeeEntity(this) || player == this) {
                 player.getSession().send(msg);
             }
         }
