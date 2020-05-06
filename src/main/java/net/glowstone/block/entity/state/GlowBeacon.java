@@ -13,6 +13,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GlowBeacon extends GlowContainer implements Beacon {
 
+    private static final int RADIUS_MULTIPLIER = 10;
+
     /**
      * Creates an entity for the given beacon block.
      *
@@ -28,7 +30,7 @@ public class GlowBeacon extends GlowContainer implements Beacon {
 
     @Override
     public Collection<LivingEntity> getEntitiesInRange() {
-        return getWorld().getNearbyEntitiesByType(Player.class, getLocation(), getTier() * 10 + 10, getWorld().getMaxHeight());
+        return getWorld().getNearbyEntitiesByType(Player.class, getLocation(), getTier() * RADIUS_MULTIPLIER + 10, getWorld().getMaxHeight());
     }
 
     @Override
