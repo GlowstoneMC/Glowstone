@@ -8,6 +8,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.inventory.GlowMetaPotion;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.GameMode;
@@ -19,6 +20,7 @@ import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 
 public class BlockCauldron extends BlockNeedsTool {
@@ -36,11 +38,23 @@ public class BlockCauldron extends BlockNeedsTool {
             return super.blockInteract(player, block, face, clickedLoc);
         }
 
+        // if player is holding a "potion" and not an "empty bottle"
+        if (player.getItemInHand().getType() == Material.POTION
+                && new GlowMetaPotion(player.getItemInHand().getItemMeta()).getBasePotionData().getType() != PotionType.WATER) {
+            return super.blockInteract(player, block, face, clickedLoc);
+        }
+
         switch (player.getItemInHand().getType()) {
-            // todo: filling the cauldron by emptying a bottle
-            // todo: emptying the cauldron by filling a bucket
             case WATER_BUCKET:
-                fillCauldron(player, block);
+                emptyBucket(player, block);
+                return true;
+
+            case BUCKET:
+                fillBucket(player, block);
+                return true;
+
+            case POTION:
+                emptyBottle(player, block);
                 return true;
 
             case GLASS_BOTTLE:
@@ -61,36 +75,74 @@ public class BlockCauldron extends BlockNeedsTool {
         }
     }
 
-    private void fillCauldron(GlowPlayer player, GlowBlock block) {
+    private void emptyBucket(GlowPlayer player, GlowBlock block) {
         // fired when a player fills the cauldron using a water bucket
-        if (block.getData() < LEVEL_FULL) {
-            if (!setCauldronLevel(block, LEVEL_FULL, player,
-                    CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY)) {
-                return;
-            }
-            if (player.getGameMode() != GameMode.CREATIVE) {
-                player.getItemInHand().setType(Material.BUCKET);
+        if (block.getData() == LEVEL_FULL) {
+            return;
+        }
+        if (!setCauldronLevel(block, LEVEL_FULL, player,
+                CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY)) {
+            return;
+        }
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            player.getItemInHand().setType(Material.BUCKET);
+        }
+
+    }
+
+    private void fillBucket(GlowPlayer player, GlowBlock block) {
+        // fired when a player fills an empty bucket from the cauldron
+        if (block.getData() != LEVEL_FULL) {
+            return;
+        }
+        if (!setCauldronLevel(block, LEVEL_EMPTY, player,
+                CauldronLevelChangeEvent.ChangeReason.BUCKET_FILL)) {
+            return;
+        }
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            Map<Integer, ItemStack> dummyInventory = player.getInventory()
+                    .addItem(new ItemStack(Material.WATER_BUCKET));
+            if (!dummyInventory.isEmpty()) {
+                player.getWorld()
+                        .dropItemNaturally(player.getLocation(), new ItemStack(Material.WATER_BUCKET));
             }
         }
+
+        player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
     }
 
     private void fillBottle(GlowPlayer player, GlowBlock block) {
         // fired when a player fills an empty bottle from the cauldron
-        if (block.getData() > LEVEL_EMPTY) {
-            if (!setCauldronLevel(block, block.getData() - 1, player,
-                    CauldronLevelChangeEvent.ChangeReason.BOTTLE_FILL)) {
-                return;
-            }
-            if (player.getGameMode() != GameMode.CREATIVE) {
-                Map<Integer, ItemStack> drops = player.getInventory()
+        if (block.getData() == LEVEL_EMPTY) {
+            return;
+        }
+        if (!setCauldronLevel(block, block.getData() - 1, player,
+                CauldronLevelChangeEvent.ChangeReason.BOTTLE_FILL)) {
+            return;
+        }
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            Map<Integer, ItemStack> drops = player.getInventory()
                     .addItem(new ItemStack(Material.POTION));
-                if (!drops.isEmpty()) {
-                    player.getWorld()
+            if (!drops.isEmpty()) {
+                player.getWorld()
                         .dropItemNaturally(player.getLocation(), new ItemStack(Material.POTION));
-                }
-
-                player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
             }
+            player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
+        }
+
+    }
+
+    private void emptyBottle(GlowPlayer player, GlowBlock block) {
+        // fired when a player partially fills the cauldron using a water bottle
+        if (block.getData() == LEVEL_FULL) {
+            return;
+        }
+        if (!setCauldronLevel(block, block.getData() + 1, player,
+                CauldronLevelChangeEvent.ChangeReason.BOTTLE_EMPTY)) {
+            return;
+        }
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            player.getItemInHand().setType(Material.GLASS_BOTTLE);
         }
     }
 
