@@ -372,10 +372,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             }
 
             if (effect.getDuration() > 0) {
-                // reduce duration and re-add
-                addPotionEffect(
-                        new PotionEffect(type, effect.getDuration() - 1, effect.getAmplifier(),
-                                effect.isAmbient()), true);
+                // reduce duration on server-side. Don't need to be updated to client
+                potionEffects.put(type, effect.withDuration(effect.getDuration() - 1));
             } else {
                 // remove
                 removePotionEffect(type);
@@ -1109,8 +1107,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         potionEffects.put(effect.getType(), effect);
 
+        updatePotionEffectsMetadata();
+
         EntityEffectMessage msg = new EntityEffectMessage(getEntityId(), effect.getType().getId(),
-                effect.getAmplifier(), effect.getDuration(), effect.isAmbient());
+                effect.getAmplifier(), effect.getDuration(), effect.hasParticles(), effect.isAmbient());
         for (GlowPlayer player : world.getRawPlayers()) {
             if (player.canSeeEntity(this) || player == this) {
                 player.getSession().send(msg);
@@ -1147,6 +1147,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
         potionEffects.remove(type);
 
+        updatePotionEffectsMetadata();
+
         EntityRemoveEffectMessage msg = new EntityRemoveEffectMessage(getEntityId(), type.getId());
         for (GlowPlayer player : world.getRawPlayers()) {
             if (player.canSeeEntity(this) || player == this) {
@@ -1164,6 +1166,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         for (PotionEffect effect : this.getActivePotionEffects()) {
             this.removePotionEffect(effect.getType());
         }
+    }
+
+    protected void updatePotionEffectsMetadata() {
+        metadata.set(MetadataIndex.POTION_COLOR, potionEffects.size() > 0 ? 1 : 0); //TODO: calculate potion particles color
+        metadata.set(MetadataIndex.POTION_AMBIENT, potionEffects.values().stream().allMatch(PotionEffect::isAmbient));
     }
 
     @Override
