@@ -76,7 +76,7 @@ import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.map.GlowMapCanvas;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.entity.AnimateEntityMessage;
+import net.glowstone.net.message.play.entity.EntityAnimationMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
@@ -172,6 +172,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
+import org.bukkit.event.player.PlayerChangedMainHandEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -1393,6 +1394,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         String newLocale = settings.getLocale();
         if (!newLocale.equalsIgnoreCase(this.settings.getLocale())) {
             EventFactory.getInstance().callEvent(new PlayerLocaleChangeEvent(this, newLocale));
+        }
+        if (settings.getMainHand() != getMainHand().ordinal()) {
+            EventFactory.getInstance().callEvent(new PlayerChangedMainHandEvent(this, settings.getMainHand() == 0 ? MainHand.LEFT : MainHand.RIGHT));
         }
         forceStream = settings.getViewDistance() != this.settings.getViewDistance()
                 && settings.getViewDistance() + 1 <= server.getViewDistance();
@@ -3714,7 +3718,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void playAnimationToSelf(EntityAnimation animation) {
-        AnimateEntityMessage message = new AnimateEntityMessage(getEntityId(), animation.ordinal());
+        EntityAnimationMessage message = new EntityAnimationMessage(getEntityId(), animation.ordinal());
         getSession().send(message);
     }
 

@@ -37,7 +37,7 @@ import net.glowstone.entity.passive.GlowWolf;
 import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.entity.AnimateEntityMessage;
+import net.glowstone.net.message.play.entity.EntityAnimationMessage;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
@@ -1325,7 +1325,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     public void playAnimation(EntityAnimation animation) {
-        AnimateEntityMessage message = new AnimateEntityMessage(getEntityId(), animation.ordinal());
+        EntityAnimationMessage message = new EntityAnimationMessage(getEntityId(), animation.ordinal());
         getWorld().getRawPlayers().stream()
                 .filter(observer -> observer != this && observer.canSeeEntity(this))
                 .forEach(observer -> observer.getSession().send(message));

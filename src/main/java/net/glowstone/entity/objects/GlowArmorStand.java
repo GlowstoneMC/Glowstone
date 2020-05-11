@@ -560,6 +560,21 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
+    public boolean canTick() {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    @Override
+    public void setCanTick(boolean tick) {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    @Override
+    public boolean isGliding() {
+        return false;
+    }
+
+    @Override
     public void setCanTick(boolean tick) {
         canTick = tick;
     }

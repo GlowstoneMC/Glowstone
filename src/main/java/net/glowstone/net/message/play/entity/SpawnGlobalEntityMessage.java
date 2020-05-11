@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public final class SpawnLightningStrikeMessage implements Message {
+public final class SpawnGlobalEntityMessage implements Message {
 
     private final int id;
     private final int mode;
@@ -14,7 +14,7 @@ public final class SpawnLightningStrikeMessage implements Message {
     private final double y;
     private final double z;
 
-    public SpawnLightningStrikeMessage(int id, double x, double y, double z) {
+    public SpawnGlobalEntityMessage(int id, double x, double y, double z) {
         this(id, 1, x, y, z);
     }
 

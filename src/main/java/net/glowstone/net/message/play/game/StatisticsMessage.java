@@ -6,7 +6,7 @@ import lombok.Data;
 import org.bukkit.Statistic;
 
 @Data
-public final class StatisticMessage implements Message {
+public final class StatisticsMessage implements Message {
 
     private final Map<Statistic, Integer> values;
 
