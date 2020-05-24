@@ -100,15 +100,19 @@ public class BlockCauldron extends BlockNeedsTool {
             return;
         }
         if (player.getGameMode() != GameMode.CREATIVE) {
-            Map<Integer, ItemStack> dummyInventory = player.getInventory()
-                    .addItem(new ItemStack(Material.WATER_BUCKET));
-            if (!dummyInventory.isEmpty()) {
-                player.getWorld()
-                        .dropItemNaturally(player.getLocation(), new ItemStack(Material.WATER_BUCKET));
+            if (player.getItemInHand().getAmount() == 1) {
+                player.getItemInHand().setType(Material.WATER_BUCKET);
+            } else {  // player has at least 2 empty buckets
+                Map<Integer, ItemStack> drops = player.getInventory()
+                        .addItem(new ItemStack(Material.WATER_BUCKET));
+                if (!drops.isEmpty()) {
+                    player.getWorld()
+                            .dropItemNaturally(player.getLocation(), new ItemStack(Material.WATER_BUCKET));
+                }
+                player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
             }
         }
 
-        player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
     }
 
     private void fillBottle(GlowPlayer player, GlowBlock block) {
@@ -121,13 +125,17 @@ public class BlockCauldron extends BlockNeedsTool {
             return;
         }
         if (player.getGameMode() != GameMode.CREATIVE) {
-            Map<Integer, ItemStack> drops = player.getInventory()
-                    .addItem(new ItemStack(Material.POTION));
-            if (!drops.isEmpty()) {
-                player.getWorld()
-                        .dropItemNaturally(player.getLocation(), new ItemStack(Material.POTION));
+            if (player.getItemInHand().getAmount() == 1) {
+                player.getItemInHand().setType(Material.POTION);
+            } else {  // player has at least 2 glass bottles
+                Map<Integer, ItemStack> drops = player.getInventory()
+                        .addItem(new ItemStack(Material.POTION));
+                if (!drops.isEmpty()) {
+                    player.getWorld()
+                            .dropItemNaturally(player.getLocation(), new ItemStack(Material.POTION));
+                }
+                player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
             }
-            player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
         }
 
     }
