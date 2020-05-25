@@ -53,6 +53,7 @@ import net.glowstone.util.RayUtil;
 import net.glowstone.util.SoundUtil;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
+import org.bukkit.Color;
 import org.bukkit.EntityAnimation;
 import org.bukkit.EntityEffect;
 import org.bukkit.GameMode;
@@ -257,6 +258,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * The ticks an entity stands adjacent to fire and lava.
      */
     private int adjacentBurnTicks;
+    /**
+     * If potion effects of entity changed
+     */
+    private boolean potionEffectsChanged;
 
     /**
      * Creates a mob within the specified world.
@@ -378,6 +383,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 // remove
                 removePotionEffect(type);
             }
+        }
+
+        if (potionEffectsChanged) {
+            updatePotionEffectsMetadata();
+            potionEffectsChanged = false;
         }
 
         if (getFireTicks() > 0 && getFireTicks() % 20 == 0) {
@@ -1107,7 +1117,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         potionEffects.put(effect.getType(), effect);
 
-        updatePotionEffectsMetadata();
+        potionEffectsChanged = true;
 
         EntityEffectMessage msg = new EntityEffectMessage(getEntityId(), effect.getType().getId(),
                 effect.getAmplifier(), effect.getDuration(), effect.hasParticles(), effect.isAmbient());
@@ -1147,7 +1157,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
         potionEffects.remove(type);
 
-        updatePotionEffectsMetadata();
+        potionEffectsChanged = true;
 
         EntityRemoveEffectMessage msg = new EntityRemoveEffectMessage(getEntityId(), type.getId());
         for (GlowPlayer player : world.getRawPlayers()) {
@@ -1169,8 +1179,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     protected void updatePotionEffectsMetadata() {
-        metadata.set(MetadataIndex.POTION_COLOR, potionEffects.size() > 0 ? 1 : 0); //TODO: calculate potion particles color
-        metadata.set(MetadataIndex.POTION_AMBIENT, potionEffects.values().stream().allMatch(PotionEffect::isAmbient));
+        int color = 0;
+        if (this.potionEffects.size() > 0) {
+            Color[] colors = this.potionEffects.values().stream()
+                    .filter(PotionEffect::hasParticles)
+                    .map(effect -> effect.getColor() != null ? effect.getColor() : effect.getType().getColor())
+                    .toArray(Color[]::new);
+            color = Color.BLACK.mixColors(colors).asRGB();
+        }
+        metadata.set(MetadataIndex.POTION_COLOR, color); //TODO: calculate color like in vanilla
+        metadata.set(MetadataIndex.POTION_AMBIENT, this.potionEffects.values().stream().allMatch(PotionEffect::isAmbient));
     }
 
     @Override
