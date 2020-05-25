@@ -53,6 +53,7 @@ import net.glowstone.util.RayUtil;
 import net.glowstone.util.SoundUtil;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
+import org.bukkit.Color;
 import org.bukkit.EntityAnimation;
 import org.bukkit.EntityEffect;
 import org.bukkit.GameMode;
@@ -257,6 +258,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * The ticks an entity stands adjacent to fire and lava.
      */
     private int adjacentBurnTicks;
+    /**
+     * If potion effects of entity changed
+     */
+    private boolean potionEffectsChanged;
 
     /**
      * Creates a mob within the specified world.
@@ -372,14 +377,17 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             }
 
             if (effect.getDuration() > 0) {
-                // reduce duration and re-add
-                addPotionEffect(
-                        new PotionEffect(type, effect.getDuration() - 1, effect.getAmplifier(),
-                                effect.isAmbient()), true);
+                // reduce duration on server-side. Don't need to be updated to client
+                potionEffects.put(type, effect.withDuration(effect.getDuration() - 1));
             } else {
                 // remove
                 removePotionEffect(type);
             }
+        }
+
+        if (potionEffectsChanged) {
+            updatePotionEffectsMetadata();
+            potionEffectsChanged = false;
         }
 
         if (getFireTicks() > 0 && getFireTicks() % 20 == 0) {
@@ -1109,8 +1117,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         potionEffects.put(effect.getType(), effect);
 
+        potionEffectsChanged = true;
+
         EntityEffectMessage msg = new EntityEffectMessage(getEntityId(), effect.getType().getId(),
-                effect.getAmplifier(), effect.getDuration(), effect.isAmbient());
+                effect.getAmplifier(), effect.getDuration(), effect.hasParticles(), effect.isAmbient());
         for (GlowPlayer player : world.getRawPlayers()) {
             if (player.canSeeEntity(this) || player == this) {
                 player.getSession().send(msg);
@@ -1147,6 +1157,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
         potionEffects.remove(type);
 
+        potionEffectsChanged = true;
+
         EntityRemoveEffectMessage msg = new EntityRemoveEffectMessage(getEntityId(), type.getId());
         for (GlowPlayer player : world.getRawPlayers()) {
             if (player.canSeeEntity(this) || player == this) {
@@ -1164,6 +1176,19 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         for (PotionEffect effect : this.getActivePotionEffects()) {
             this.removePotionEffect(effect.getType());
         }
+    }
+
+    protected void updatePotionEffectsMetadata() {
+        int color = 0;
+        if (this.potionEffects.size() > 0) {
+            Color[] colors = this.potionEffects.values().stream()
+                    .filter(PotionEffect::hasParticles)
+                    .map(effect -> effect.getColor() != null ? effect.getColor() : effect.getType().getColor())
+                    .toArray(Color[]::new);
+            color = Color.BLACK.mixColors(colors).asRGB();
+        }
+        metadata.set(MetadataIndex.POTION_COLOR, color); //TODO: calculate color like in vanilla
+        metadata.set(MetadataIndex.POTION_AMBIENT, this.potionEffects.values().stream().allMatch(PotionEffect::isAmbient));
     }
 
     @Override
