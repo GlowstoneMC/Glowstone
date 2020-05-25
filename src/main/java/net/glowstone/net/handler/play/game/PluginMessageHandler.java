@@ -128,7 +128,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                     ItemStack item = GlowBufUtils.readSlot(buf);
                     //GlowServer.logger.info(
                     //        "BookSign [" + session.getPlayer().getName() + "]: " + item);
-                    if (item == null || item.getType() != Material.WRITTEN_BOOK) {
+                    if (item == null || item.getType() != Material.BOOK_AND_QUILL) {
                         return;
                     }
                     ItemMeta meta = item.getItemMeta();

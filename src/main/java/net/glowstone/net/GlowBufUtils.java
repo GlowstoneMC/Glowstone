@@ -24,6 +24,7 @@ import net.glowstone.util.nbt.NbtOutputStream;
 import net.glowstone.util.nbt.NbtReadLimiter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MainHand;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
@@ -365,6 +366,15 @@ public final class GlowBufUtils {
      */
     public static void writeChat(ByteBuf buf, TextMessage text) throws IOException {
         ByteBufUtils.writeUTF8(buf, text.encode());
+    }
+
+    public static MainHand readHand(ByteBuf buf) throws IOException {
+        int ordinal = ByteBufUtils.readVarInt(buf);
+        return ordinal == 1 ? MainHand.LEFT : MainHand.RIGHT;
+    }
+
+    public static void writeHand(ByteBuf buf, MainHand hand) {
+        ByteBufUtils.writeVarInt(buf, hand == MainHand.LEFT ? 1 : 0);
     }
 
 }

@@ -1,7 +1,10 @@
 package net.glowstone.block.itemtype;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.PluginMessage;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.EquipmentSlot;
@@ -9,8 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class ItemWrittenBook extends ItemType {
-
-    private static final byte[] EMPTY = new byte[0];
 
     @Override
     public Context getContext() {
@@ -30,6 +31,10 @@ public class ItemWrittenBook extends ItemType {
     }
 
     private void openBook(GlowPlayer player) {
-        player.getSession().send(new PluginMessage("MC|BOpen", EMPTY));
+        ByteBuf buf = Unpooled.buffer();
+        GlowBufUtils.writeHand(buf, player.getMainHand());
+        byte[] data = new byte[buf.readableBytes()];
+        buf.readBytes(data);
+        player.getSession().send(new PluginMessage("MC|BOpen", data));
     }
 }
