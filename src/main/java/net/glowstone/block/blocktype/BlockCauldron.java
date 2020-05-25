@@ -38,12 +38,6 @@ public class BlockCauldron extends BlockNeedsTool {
             return super.blockInteract(player, block, face, clickedLoc);
         }
 
-        // if player is holding a "potion" and not an "empty bottle"
-        if (player.getItemInHand().getType() == Material.POTION
-                && new GlowMetaPotion(player.getItemInHand().getItemMeta()).getBasePotionData().getType() != PotionType.WATER) {
-            return super.blockInteract(player, block, face, clickedLoc);
-        }
-
         switch (player.getItemInHand().getType()) {
             case WATER_BUCKET:
                 emptyBucket(player, block);
@@ -54,8 +48,10 @@ public class BlockCauldron extends BlockNeedsTool {
                 return true;
 
             case POTION:
-                emptyBottle(player, block);
-                return true;
+                if (emptyBottle(player, block)) {
+                    return true;
+                }
+                break;
 
             case GLASS_BOTTLE:
                 fillBottle(player, block);
@@ -73,6 +69,7 @@ public class BlockCauldron extends BlockNeedsTool {
             default:
                 return super.blockInteract(player, block, face, clickedLoc);
         }
+        return super.blockInteract(player, block, face, clickedLoc);
     }
 
     private void emptyBucket(GlowPlayer player, GlowBlock block) {
@@ -140,18 +137,23 @@ public class BlockCauldron extends BlockNeedsTool {
 
     }
 
-    private void emptyBottle(GlowPlayer player, GlowBlock block) {
+    private boolean emptyBottle(GlowPlayer player, GlowBlock block) {
         // fired when a player partially fills the cauldron using a water bottle
+        if (new GlowMetaPotion(player.getItemInHand().getItemMeta()).getBasePotionData().getType() != PotionType.WATER) {
+            // player is holding a "potion" and not an "empty bottle"
+            return false; // block interact doesn't occur and player drinks potion
+        }
         if (block.getData() == LEVEL_FULL) {
-            return;
+            return true;
         }
         if (!setCauldronLevel(block, block.getData() + 1, player,
                 CauldronLevelChangeEvent.ChangeReason.BOTTLE_EMPTY)) {
-            return;
+            return true;
         }
         if (player.getGameMode() != GameMode.CREATIVE) {
             player.getItemInHand().setType(Material.GLASS_BOTTLE);
         }
+        return true;
     }
 
     private boolean bleachBanner(GlowPlayer player, GlowBlock block) {
