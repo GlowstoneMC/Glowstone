@@ -20,7 +20,7 @@ public class ItemWrittenBook extends ItemType {
 
     @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
-        openBook(player, EquipmentSlot.HAND);
+        openBook(player, EquipmentSlot.HAND); //TODO: off-hand interaction
     }
 
     @Override
