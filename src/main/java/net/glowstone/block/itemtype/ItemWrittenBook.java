@@ -20,19 +20,19 @@ public class ItemWrittenBook extends ItemType {
 
     @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
-        openBook(player);
+        openBook(player, EquipmentSlot.HAND);
     }
 
     @Override
     public void rightClickBlock(
             GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding,
             Vector clickedLoc, EquipmentSlot hand) {
-        openBook(player);
+        openBook(player, hand);
     }
 
-    private void openBook(GlowPlayer player) {
+    private void openBook(GlowPlayer player, EquipmentSlot hand) {
         ByteBuf buf = Unpooled.buffer();
-        GlowBufUtils.writeHand(buf, player.getMainHand());
+        GlowBufUtils.writeHand(buf, hand);
         byte[] data = new byte[buf.readableBytes()];
         buf.readBytes(data);
         player.getSession().send(new PluginMessage("MC|BOpen", data));
