@@ -186,7 +186,7 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x09, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);
         inbound(0x0A, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
         // TODO 0x0B : Edit Book packet
-        // TODO 0x0C : Query Entity NBT packet
+        inbound(0x0C, QueryEntityNBTMessage.class, QueryEntityNBTCodec.class, QueryEntityNBTHandler.class);
         inbound(0x0D, InteractEntityMessage.class, InteractEntityCodec.class,
             InteractEntityHandler.class);
         inbound(0x0E, PingMessage.class, PingCodec.class, PingHandler.class);
