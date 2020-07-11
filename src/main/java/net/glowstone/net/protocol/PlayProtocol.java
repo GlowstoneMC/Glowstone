@@ -68,13 +68,7 @@ import net.glowstone.net.codec.play.scoreboard.ScoreboardDisplayCodec;
 import net.glowstone.net.codec.play.scoreboard.ScoreboardObjectiveCodec;
 import net.glowstone.net.codec.play.scoreboard.ScoreboardScoreCodec;
 import net.glowstone.net.codec.play.scoreboard.ScoreboardTeamCodec;
-import net.glowstone.net.handler.play.game.ClientSettingsHandler;
-import net.glowstone.net.handler.play.game.CraftRecipeRequestHandler;
-import net.glowstone.net.handler.play.game.CraftingBookDataHandler;
-import net.glowstone.net.handler.play.game.IncomingChatHandler;
-import net.glowstone.net.handler.play.game.PingHandler;
-import net.glowstone.net.handler.play.game.PluginMessageHandler;
-import net.glowstone.net.handler.play.game.UpdateSignHandler;
+import net.glowstone.net.handler.play.game.*;
 import net.glowstone.net.handler.play.inv.CloseWindowHandler;
 import net.glowstone.net.handler.play.inv.CreativeItemHandler;
 import net.glowstone.net.handler.play.inv.EnchantItemHandler;
@@ -177,7 +171,8 @@ public class PlayProtocol extends GlowProtocol {
 
         inbound(0x00, TeleportConfirmMessage.class, TeleportConfirmCodec.class,
             TeleportConfirmHandler.class);
-        // TODO 0x01 : Query Block NBT packet
+        inbound(0x01, QueryBlockNBTMessage.class, QueryBlockNBTCodec.class,
+                QueryBlockNBTHandler.class);
         inbound(0x02, IncomingChatMessage.class, IncomingChatCodec.class,
             IncomingChatHandler.class);
         inbound(0x03, ClientStatusMessage.class, ClientStatusCodec.class,
@@ -267,7 +262,7 @@ public class PlayProtocol extends GlowProtocol {
         outbound(0x1A, NamedSoundEffectMessage.class, NamedSoundEffectCodec.class);
         outbound(0x1B, KickMessage.class, KickCodec.class);
         outbound(0x1C, EntityStatusMessage.class, EntityStatusCodec.class);
-        // TODO 0x1D NBT Query Response packet
+        outbound(0x1D, NBTQueryResponseMessage.class, NBTQueryResponseCodec.class);
         outbound(0x1E, ExplosionMessage.class, ExplosionCodec.class);
         outbound(0x1F, UnloadChunkMessage.class, UnloadChunkCodec.class);
         outbound(0x20, StateChangeMessage.class, StateChangeCodec.class);
