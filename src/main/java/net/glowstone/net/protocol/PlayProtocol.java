@@ -161,7 +161,7 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x08, WindowClickMessage.class, WindowClickCodec.class, WindowClickHandler.class);
         inbound(0x09, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);
         inbound(0x0A, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
-        // TODO 0x0B : Edit Book packet
+        inbound(0x0B, EditBookMessage.class, EditBookCodec.class, EditBookHandler.class);
         inbound(0x0C, QueryEntityNBTMessage.class, QueryEntityNBTCodec.class, QueryEntityNBTHandler.class);
         inbound(0x0D, InteractEntityMessage.class, InteractEntityCodec.class,
             InteractEntityHandler.class);
@@ -175,7 +175,7 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x12, PlayerLookMessage.class, PlayerLookCodec.class, PlayerUpdateHandler.class);
         inbound(0x13, VehicleMoveMessage.class, VehicleMoveCodec.class, VehicleMoveHandler.class);
         inbound(0x14, SteerBoatMessage.class, SteerBoatCodec.class, SteerBoatHandler.class);
-        inbound(0x0B, PickItemMessage.class, PickItemCodec.class, PickItemHandler.class);
+        inbound(0x15, PickItemMessage.class, PickItemCodec.class, PickItemHandler.class);
         inbound(0x16, CraftRecipeRequestMessage.class, CraftRecipeRequestCodec.class,
             CraftRecipeRequestHandler.class);
         inbound(0x17, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class,
