@@ -82,7 +82,8 @@ public class PlayProtocol extends GlowProtocol {
                 UpdateCommandBlockMinecartCodec.class, UpdateCommandBlockMinecartHandler.class);
         inbound(0x24, CreativeItemMessage.class, CreativeItemCodec.class,
             CreativeItemHandler.class);
-        // TODO 0x25 : Update Structure Block packet
+        inbound(0x25, UpdateStructureBlockMessage.class, UpdateStructureBlockCodec.class,
+                UpdateStructureBlockHandler.class);
         inbound(0x26, UpdateSignMessage.class, UpdateSignCodec.class, UpdateSignHandler.class);
         inbound(0x27, PlayerSwingArmMessage.class, PlayerSwingArmCodec.class,
             PlayerSwingArmHandler.class);

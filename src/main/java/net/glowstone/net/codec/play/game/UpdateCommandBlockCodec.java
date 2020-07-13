@@ -4,24 +4,32 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UpdateCommandBlockMessage;
+import org.bukkit.util.BlockVector;
 
 import java.io.IOException;
 
 public final class UpdateCommandBlockCodec implements Codec<UpdateCommandBlockMessage> {
     @Override
     public UpdateCommandBlockMessage decode(ByteBuf byteBuf) throws IOException {
-        long location = byteBuf.readLong();
-        int x = ((Long)(location >> 38)).intValue();
-        int y = ((Long)((location >> 26) & 0xFFF)).intValue();
-        int z = ((Long)(location << 38 >> 38)).intValue();
+        BlockVector location = GlowBufUtils.readBlockPosition(byteBuf);
         String command = ByteBufUtils.readUTF8(byteBuf);
         int mode = ByteBufUtils.readVarInt(byteBuf);
         byte flags = byteBuf.readByte();
         boolean trackOutput = (flags & 1) == 1;
         boolean isConditional = ((flags >> 1) & 1) == 1;
         boolean automatic = ((flags >> 3) & 1) == 1;
-        return new UpdateCommandBlockMessage(x, y, z, command, mode, trackOutput, isConditional, automatic);
+        return new UpdateCommandBlockMessage(
+                location.getBlockX(),
+                location.getBlockY(),
+                location.getBlockZ(),
+                command,
+                mode,
+                trackOutput,
+                isConditional,
+                automatic
+        );
     }
 
     @Override
