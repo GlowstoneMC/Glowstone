@@ -162,7 +162,8 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x09, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);
         inbound(0x0A, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
         inbound(0x0B, EditBookMessage.class, EditBookCodec.class, EditBookHandler.class);
-        inbound(0x0C, QueryEntityNBTMessage.class, QueryEntityNBTCodec.class, QueryEntityNBTHandler.class);
+        inbound(0x0C, QueryEntityNBTMessage.class, QueryEntityNBTCodec.class,
+                QueryEntityNBTHandler.class);
         inbound(0x0D, InteractEntityMessage.class, InteractEntityCodec.class,
             InteractEntityHandler.class);
         inbound(0x0E, PingMessage.class, PingCodec.class, PingHandler.class);
@@ -192,7 +193,7 @@ public class PlayProtocol extends GlowProtocol {
             ResourcePackStatusHandler.class);
         inbound(0x1E, AdvancementTabMessage.class, AdvancementTabCodec.class,
             AdvancementTabHandler.class);
-        // TODO 0x1F : Select Trade packet
+        inbound(0x1F, SelectTradeMessage.class, SelectTradeCodec.class, SelectTradeHandler.class);
         // TODO 0x20 : Set Beacon Effect packet
         inbound(0x21, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
         // TODO 0x22 : Update Command Block packet
