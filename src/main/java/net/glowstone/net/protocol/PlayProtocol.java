@@ -194,9 +194,11 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x1E, AdvancementTabMessage.class, AdvancementTabCodec.class,
             AdvancementTabHandler.class);
         inbound(0x1F, SelectTradeMessage.class, SelectTradeCodec.class, SelectTradeHandler.class);
-        inbound(0x20, SetBeaconEffectMessage.class, SetBeaconEffectCodec.class, SetBeaconEffectHandler.class);
+        inbound(0x20, SetBeaconEffectMessage.class, SetBeaconEffectCodec.class,
+                SetBeaconEffectHandler.class);
         inbound(0x21, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
-        // TODO 0x22 : Update Command Block packet
+        inbound(0x23, UpdateCommandBlockMessage.class, UpdateCommandBlockCodec.class,
+                UpdateCommandBlockHandler.class);
         // TODO 0x23 : Update Command Block Minecart packet
         inbound(0x24, CreativeItemMessage.class, CreativeItemCodec.class,
             CreativeItemHandler.class);
