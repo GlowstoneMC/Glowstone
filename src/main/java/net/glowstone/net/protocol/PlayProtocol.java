@@ -187,7 +187,7 @@ public class PlayProtocol extends GlowProtocol {
             SteerVehicleHandler.class);
         inbound(0x1B, CraftingBookDataMessage.class, CraftingBookDataCodec.class,
             CraftingBookDataHandler.class);
-        // TODO 0x1C : Name Item packet
+        inbound(0x1C, NameItemMessage.class, NameItemCodec.class, NameItemHandler.class);
         inbound(0x1D, ResourcePackStatusMessage.class, ResourcePackStatusCodec.class,
             ResourcePackStatusHandler.class);
         inbound(0x1E, AdvancementTabMessage.class, AdvancementTabCodec.class,
