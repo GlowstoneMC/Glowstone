@@ -1,4 +1,4 @@
-package net.glowstone.net.handler.play.inv;
+package net.glowstone.net.handler.play.game;
 
 import com.flowpowered.network.MessageHandler;
 import net.glowstone.net.GlowSession;
