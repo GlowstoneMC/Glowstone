@@ -7,11 +7,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import lombok.Getter;
+import net.glowstone.GlowServer;
 import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -99,15 +102,13 @@ public class GlowParticle {
             return new Float[]{red, green, blue, size};
         });
         registerParticleDataHandler(ItemStack.class, PARTICLE_HANDLER_RETURN_SELF);
-        // TODO: Figure out what the correct result for this is, since not all BlockData can be converted to a single
-        // integer.
-        /*registerParticleDataHandler(BlockData.class, o -> {
+        registerParticleDataHandler(BlockData.class, o -> {
             if (o.getClass() != BlockData.class) {
                 return ArrayUtils.EMPTY_INTEGER_OBJECT_ARRAY;
             }
-            GlowBlockData blockData = (GlowBlockData) o;
-            return new Integer[]{blockData.serialize()};
-        });*/
+            int id = ((GlowServer) Bukkit.getServer()).getBlockDataManager().convertToBlockId((BlockData) o);
+            return new Integer[]{id};
+        });
     }
 
     @Getter
