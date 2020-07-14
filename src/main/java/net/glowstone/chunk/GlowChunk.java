@@ -23,13 +23,12 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
-import net.glowstone.block.data.SimpleBlockData;
 import net.glowstone.block.entity.BlockEntity;
-import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.Material;
@@ -340,7 +339,8 @@ public class GlowChunk implements Chunk {
      */
     @Deprecated
     public BlockEntity createEntity(int cx, int cy, int cz, int type) {
-        return createEntity(cx, cy, cz, FlatteningUtil.getMaterialFromBaseId(type));
+        Material material = ((GlowServer) Bukkit.getServer()).getBlockDataManager().convertToBlockData(type).getMaterial();
+        return createEntity(cx, cy, cz, material);
     }
 
     /**
@@ -495,7 +495,7 @@ public class GlowChunk implements Chunk {
 
     public BlockData getBlockData(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? SimpleBlockData.empty() : section.getBlockData(x, y, z);
+        return section == null ? Bukkit.getServer().createBlockData(Material.AIR) : section.getBlockData(x, y, z);
     }
 
     /**

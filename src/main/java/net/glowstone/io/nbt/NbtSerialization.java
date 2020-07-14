@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import net.glowstone.GlowServer;
-import net.glowstone.block.data.SimpleBlockData;
-import net.glowstone.block.flattening.generated.FlatteningUtil;
+import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -39,9 +39,10 @@ public final class NbtSerialization {
      * @return The resulting ItemStack, or null.
      */
     public static ItemStack readItem(CompoundTag tag) {
+        BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
         final Material[] material = {null};
         if ((!tag.readString("id", id -> material[0] = ItemIds.getItem(id))
-                        && !tag.readShort("id", id -> material[0] = FlatteningUtil.getMaterialFromStateId(id)))
+                        && !tag.readShort("id", id -> material[0] = blockDataManager.convertToBlockData(id).getMaterial()))
                 || material[0] == null || material[0] == Material.AIR) {
             return null;
         }
@@ -89,8 +90,7 @@ public final class NbtSerialization {
         NamespacedKey key = namespacedKeyFromString(tag.getString("Name"));
         Material type = Material.getMaterial(key);
         Optional<CompoundTag> properties = tag.tryGetCompound("Properties");
-        // TODO: 1.13 properties
-        return new SimpleBlockData(type);
+        return Bukkit.getServer().createBlockData(type);
     }
 
     public static CompoundTag writeBlockData(BlockData blockData) {

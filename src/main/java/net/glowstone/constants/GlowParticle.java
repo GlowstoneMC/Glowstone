@@ -7,8 +7,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import lombok.Getter;
-import net.glowstone.block.flattening.GlowBlockData;
+import net.glowstone.GlowServer;
 import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.NamespacedKey;
@@ -105,8 +106,8 @@ public class GlowParticle {
             if (o.getClass() != BlockData.class) {
                 return ArrayUtils.EMPTY_INTEGER_OBJECT_ARRAY;
             }
-            GlowBlockData blockData = (GlowBlockData) o;
-            return new Integer[]{blockData.serialize()};
+            int id = ((GlowServer) Bukkit.getServer()).getBlockDataManager().convertToBlockId((BlockData) o);
+            return new Integer[]{id};
         });
     }
 

@@ -1,8 +1,8 @@
 package net.glowstone.entity.monster;
 
 import lombok.Getter;
-import net.glowstone.block.data.SimpleBlockData;
 import net.glowstone.entity.meta.MetadataIndex;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -16,7 +16,7 @@ public class GlowEnderman extends GlowMonster implements Enderman {
 
     // TODO: 1.13 block data
     @Getter
-    private BlockData carriedBlock = new SimpleBlockData(Material.AIR);
+    private BlockData carriedBlock = Bukkit.getServer().createBlockData(Material.AIR);
 
     public GlowEnderman(Location loc) {
         super(loc, EntityType.ENDERMAN, 40);

@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.MaterialUtil;
-import net.glowstone.block.flattening.generated.FlatteningUtil;
+import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.scheduler.PulseTask;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
@@ -294,8 +296,9 @@ public class BlockRedstone extends BlockNeedsAttached {
     @Override
     public void receivePulse(GlowBlock me) {
         GlowChunk.Key key = GlowChunk.Key.of(me.getX() >> 4, me.getZ() >> 4);
+        BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
         BlockChangeMessage bcmsg = new BlockChangeMessage(me.getX(), me.getY(), me.getZ(),
-                FlatteningUtil.getMaterialBaseId(me.getType()), me.getData());
+                blockDataManager.convertToBlockId(blockDataManager.createBlockData(me.getType())), me.getData());
         me.getWorld().broadcastBlockChangeInRange(key, bcmsg);
     }
 }

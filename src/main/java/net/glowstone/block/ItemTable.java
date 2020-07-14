@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import net.glowstone.GlowServer;
 import net.glowstone.block.blocktype.BlockAnvil;
 import net.glowstone.block.blocktype.BlockBeacon;
 import net.glowstone.block.blocktype.BlockBed;
@@ -99,7 +100,7 @@ import net.glowstone.block.blocktype.BlockWater;
 import net.glowstone.block.blocktype.BlockWeb;
 import net.glowstone.block.blocktype.BlockWoodenTrapDoor;
 import net.glowstone.block.blocktype.BlockWorkbench;
-import net.glowstone.block.flattening.generated.FlatteningUtil;
+import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.block.itemtype.ItemArmorStand;
 import net.glowstone.block.itemtype.ItemBanner;
 import net.glowstone.block.itemtype.ItemBoat;
@@ -141,6 +142,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.block.itemtype.ItemWrittenBook;
 import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.inventory.ToolType;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -530,7 +532,8 @@ public final class ItemTable {
 
     @Deprecated
     public ItemType getItem(int id) {
-        return getItem(FlatteningUtil.getMaterialFromBaseId(id));
+        BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
+        return getItem(blockDataManager.convertToBlockData(id).getMaterial());
     }
 
     /**
@@ -549,7 +552,8 @@ public final class ItemTable {
 
     @Deprecated
     public BlockType getBlock(int id) {
-        return getBlock(FlatteningUtil.getMaterialFromBaseId(id));
+        BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
+        return getBlock(blockDataManager.convertToBlockData(id).getMaterial());
     }
 
     /**
