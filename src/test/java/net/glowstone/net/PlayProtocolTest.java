@@ -149,7 +149,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new RelativeEntityPositionMessage(1, (short) 2, (short) 3, (short) 4, true),
         new KickMessage(ProtocolTestUtils.getTextMessage()),
         new AttachEntityMessage(1, 2),
-        new EntityEffectMessage(1, (byte) 2, (byte) 3, 4, false),
+        new EntityEffectMessage(1, (byte) 2, (byte) 3, 4, false, false),
         new EntityHeadRotationMessage(1, 2),
         new EntityMetadataMessage(1, ProtocolTestUtils.getMetadataEntry()),
         new EntityRemoveEffectMessage(1, (byte) 2),

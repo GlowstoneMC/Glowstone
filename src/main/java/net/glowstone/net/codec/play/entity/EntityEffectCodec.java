@@ -14,8 +14,10 @@ public final class EntityEffectCodec implements Codec<EntityEffectMessage> {
         byte effect = buf.readByte();
         byte amplifier = buf.readByte();
         int duration = ByteBufUtils.readVarInt(buf);
-        boolean hideParticles = buf.readBoolean();
-        return new EntityEffectMessage(id, effect, amplifier, duration, hideParticles);
+        byte flags = buf.readByte();
+        boolean ambient = (flags & 1) == 1;
+        boolean showParticles = (flags & 2) == 2;
+        return new EntityEffectMessage(id, effect, amplifier, duration, showParticles, ambient);
     }
 
     @Override
@@ -24,7 +26,16 @@ public final class EntityEffectCodec implements Codec<EntityEffectMessage> {
         buf.writeByte(message.getEffect());
         buf.writeByte(message.getAmplifier());
         ByteBufUtils.writeVarInt(buf, message.getDuration());
-        buf.writeBoolean(message.isHideParticles());
+
+        byte flags = 0;
+        if (message.isAmbient()) {
+            flags |= 1;
+        }
+        if (message.isShowParticles()) {
+            flags |= 2;
+        }
+
+        buf.writeByte(flags);
         return buf;
     }
 }

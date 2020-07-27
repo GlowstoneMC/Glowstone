@@ -90,7 +90,7 @@ public class EffectCommand extends GlowVanillaCommand {
                 }
             }
 
-            int amplifier = 1;
+            int amplifier = 0;
             if (args.length >= 4 && args[3] != null) {
                 try {
                     amplifier = Integer.parseInt(args[3]);
@@ -109,9 +109,9 @@ public class EffectCommand extends GlowVanillaCommand {
                     commandMessages.getResourceBundle());
             for (GlowPlayer player : players) {
                 player.addPotionEffect(
-                    new PotionEffect(effectType, duration, amplifier, false, hideParticles));
+                    new PotionEffect(effectType, duration, amplifier, false, !hideParticles));
                 doneMessage.send(sender, effectType.getName(),
-                        effectType.getId(), amplifier, player.getName(), duration / 20);
+                        effectType.getId(), amplifier + 1, player.getName(), duration / 20);
             }
             return true;
         }

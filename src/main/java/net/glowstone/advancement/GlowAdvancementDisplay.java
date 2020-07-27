@@ -6,6 +6,7 @@ import java.io.IOException;
 import lombok.Data;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.util.TextMessage;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 
@@ -16,6 +17,7 @@ public class GlowAdvancementDisplay {
     private final TextMessage description;
     private final ItemStack icon;
     private final FrameType type;
+    private final NamespacedKey background;
     private final float x;
     private final float y;
 
@@ -31,7 +33,8 @@ public class GlowAdvancementDisplay {
         GlowBufUtils.writeChat(buf, description);
         GlowBufUtils.writeSlot(buf, icon);
         ByteBufUtils.writeVarInt(buf, type.ordinal());
-        buf.writeInt((1 << 0x4)); // todo: flags
+        buf.writeInt(0x1 | 0x2); // todo: flags
+        ByteBufUtils.writeUTF8(buf, background.toString());
         buf.writeFloat(x);
         buf.writeFloat(y);
         return buf;
