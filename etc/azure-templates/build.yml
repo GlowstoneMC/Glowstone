@@ -12,5 +12,5 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
 
-    goals: "package -Pbuild-extras"
+    goals: "package source:jar javadoc:jar"
     options: "--batch-mode"
