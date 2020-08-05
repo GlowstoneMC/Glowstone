@@ -41,8 +41,6 @@ public class GlowVillager extends GlowAgeable implements Villager {
     private static final MerchantRecipe DEFAULT_RECIPE
             = new MerchantRecipe(new ItemStack(Material.DIRT), 10);
     @Getter
-    private Career career;
-    @Getter
     @Setter
     private int riches;
     /**
@@ -98,29 +96,6 @@ public class GlowVillager extends GlowAgeable implements Villager {
 
         metadata.set(MetadataIndex.VILLAGER_PROFESSION, profession.ordinal());
         assignCareer();
-    }
-
-    @Override
-    public void setCareer(Career career) {
-        setCareer(career, true);
-    }
-
-    @Override
-    public void setCareer(Career career, boolean resetTrades) {
-        // todo: implement resetTrades
-        Profession profession = getProfession();
-        if (profession == null || profession.isZombie()) {
-            return;
-        }
-        if (career == null) {
-            assignCareer();
-            return;
-        }
-        if (career.getProfession() != profession) {
-            setProfession(profession);
-        }
-        this.career = career;
-        this.careerLevel = 1;
     }
 
     @Override
@@ -255,50 +230,6 @@ public class GlowVillager extends GlowAgeable implements Villager {
         witch.damage(amount, source, cause);
         witch.setFireTicks(this.getFireTicks());
         remove();
-    }
-
-    /**
-     * Assigns a random career to the villager.
-     */
-    private void assignCareer() {
-        Profession profession = getProfession();
-        if (profession == null || profession.isZombie()) {
-            this.career = null;
-        } else {
-            List<Career> careers = profession.getCareers();
-            this.career = careers.get(ThreadLocalRandom.current().nextInt(careers.size()));
-            this.careerLevel = 1;
-        }
-    }
-
-    /**
-     * Gets the career associated with a given ID and profession.
-     *
-     * @param id         the id of the career
-     * @param profession the profession
-     * @return the career associated with the given ID and profession
-     */
-    public static Career getCareerById(int id, Profession profession) {
-        if (profession == null || profession.isZombie()) {
-            return null;
-        }
-        if (id >= profession.getCareers().size()) {
-            return null;
-        }
-        return profession.getCareers().get(id);
-    }
-
-    /**
-     * Gets the numerical ID of the given career.
-     *
-     * @param career the career
-     * @return the id of the career
-     */
-    public static int getCareerId(Career career) {
-        checkNotNull(career);
-
-        Profession profession = career.getProfession();
-        return profession.getCareers().indexOf(career);
     }
 
     /**

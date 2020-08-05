@@ -128,7 +128,6 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-import org.bukkit.Achievement;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -169,7 +168,6 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerChangedMainHandEvent;
@@ -223,13 +221,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public static final int HOOK_MAX_DISTANCE = 32;
 
-    private static final Achievement[] ACHIEVEMENT_VALUES = Achievement.values();
-    private static final LocalizedEnumNames<Achievement> ACHIEVEMENT_NAMES
-            = new LocalizedEnumNames<Achievement>(
-                    (Function<String, Achievement>) Achievement::valueOf,
-            "glowstone.achievement.unknown",
-            null, "maps/achievement", true);
-
     /**
      * The network session attached to this player.
      *
@@ -271,7 +262,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private final Set<String> listeningChannels = new HashSet<>();
 
     /**
-     * The player's statistics, achievements, and related data.
+     * The player's statistics, and related data.
      */
     private final StatisticMap stats = new StatisticMap();
 
@@ -2962,71 +2953,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Achievements and statistics
-
     @Override
     public void hideTitle() {
         currentTitle = new Title.Builder();
         session.send(new TitleMessage(Action.CLEAR));
     }
 
-    @Override
-    public boolean hasAchievement(Achievement achievement) {
-        throw new UnsupportedOperationException("Achievements are no longer implemented.");
-    }
-
-    @Override
-    public void awardAchievement(Achievement achievement) {
-        awardAchievement(achievement, true);
-    }
-
-    /**
-     * Awards the given achievement if the player already has the parent achievement, otherwise does
-     * nothing.
-     *
-     * <p>If {@code awardParents} is true, award the player all parent achievements and the given
-     * achievement, making this method equivalent to {@link #awardAchievement(Achievement)}.
-     *
-     * @param achievement the achievement to award.
-     * @param awardParents whether parent achievements should be awarded.
-     * @return {@code true} if the achievement was awarded, {@code false} otherwise
-     */
-    public boolean awardAchievement(Achievement achievement, boolean awardParents) {
-        if (hasAchievement(achievement)) {
-            return false;
-        }
-
-        Achievement parent = achievement.getParent();
-        if (parent != null && !hasAchievement(parent)) {
-            if (!awardParents || !awardAchievement(parent, true)) {
-                // does not have or failed to award required parent achievement
-                return false;
-            }
-        }
-
-        PlayerAchievementAwardedEvent event = new PlayerAchievementAwardedEvent(this, achievement);
-        if (EventFactory.getInstance().callEvent(event).isCancelled()) {
-            return false; // event was cancelled
-        }
-
-        stats.setAchievement(achievement, true);
-
-        if (server.getAnnounceAchievements()) {
-            // todo: make message fancier (hover)
-            server.broadcastMessage(GlowstoneMessages.Achievement.EARNED.get(
-                    getName(), ACHIEVEMENT_NAMES.valueToName(Locale.getDefault(), achievement)));
-        }
-        return true;
-    }
-
-    @Override
-    public void removeAchievement(Achievement achievement) {
-        if (!hasAchievement(achievement)) {
-            return;
-        }
-        stats.setAchievement(achievement, false);
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    // Statistics
 
     @Override
     public int getStatistic(Statistic statistic) throws IllegalArgumentException {
@@ -3034,14 +2968,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public int getStatistic(Statistic statistic,
-            Material material) throws IllegalArgumentException {
+    public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
         return stats.get(statistic, material);
     }
 
     @Override
-    public int getStatistic(Statistic statistic,
-            EntityType entityType) throws IllegalArgumentException {
+    public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
         return stats.get(statistic, entityType);
     }
 

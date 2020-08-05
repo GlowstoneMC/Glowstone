@@ -3,7 +3,6 @@ package net.glowstone.util;
 import java.util.ArrayList;
 import java.util.List;
 import net.glowstone.GlowServer;
-import org.bukkit.Achievement;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Statistic;
@@ -118,25 +117,12 @@ public final class GlowUnsafeValues implements UnsafeValues {
     }
 
     @Deprecated
-    public Achievement getAchievementFromInternalName(String name) {
-        try {
-            return Achievement.valueOf(name);
-        } catch (IllegalArgumentException ex) {
-            return null;
-        }
-    }
-
-    @Deprecated
-    public List<String> tabCompleteInternalStatisticOrAchievementName(
+    public List<String> tabCompleteInternalStatistic(
             String token, List<String> completions) {
         Statistic[] stats = Statistic.values();
-        Achievement[] achievements = Achievement.values();
-        List<String> names = new ArrayList<>(stats.length + achievements.length);
+        List<String> names = new ArrayList<>(stats.length);
         for (Statistic stat : stats) {
             names.add(stat.name());
-        }
-        for (Achievement achievement : achievements) {
-            names.add(achievement.name());
         }
         return StringUtil.copyPartialMatches(token, names, completions);
     }

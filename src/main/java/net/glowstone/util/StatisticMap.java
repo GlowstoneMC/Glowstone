@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowStatistic;
 import net.glowstone.net.message.play.game.StatisticsMessage;
 import org.bukkit.Material;
@@ -14,7 +13,7 @@ import org.bukkit.Statistic.Type;
 import org.bukkit.entity.EntityType;
 
 /**
- * A container for achievement and statistic tracking.
+ * A container for statistic tracking.
  */
 public final class StatisticMap {
 

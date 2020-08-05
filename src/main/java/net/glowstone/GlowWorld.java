@@ -1338,11 +1338,6 @@ public class GlowWorld implements World {
     }
 
     @Override
-    public boolean isChunkGenerated(int x, int z) {
-        throw new UnsupportedOperationException("Not Implemented");
-    }
-
-    @Override
     public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
         ServerProvider.getServer().getScheduler()
             .runTaskAsynchronously(null, () -> cb.onLoad(chunkManager.getChunk(x, z)));
@@ -1377,8 +1372,8 @@ public class GlowWorld implements World {
     }
 
     @Override
-    public boolean isChunkGenerated(int i, int i1) {
-        return false;
+    public boolean isChunkGenerated(int x, int z) {
+        return chunkManager.getChunk(x, z).isPopulated();
     }
 
     @Override

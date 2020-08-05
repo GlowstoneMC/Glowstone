@@ -428,8 +428,6 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
                 Boolean.class::isInstance),
         MAX_BUILD_HEIGHT("game.max-build-height", 256, Migrate.PROPS, "max-build-height",
                 Validators.POSITIVE_INTEGER),
-        ANNOUNCE_ACHIEVEMENTS("game.announce-achievements", true, Migrate.PROPS,
-                "announce-player-achievements", Boolean.class::isInstance),
 
         // server.properties keys
         ALLOW_FLIGHT("game.allow-flight", false, Migrate.PROPS, "allow-flight",

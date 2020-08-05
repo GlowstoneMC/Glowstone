@@ -33,7 +33,6 @@ public class LocalizedStringsTest {
      * GlowstoneMessages, and which GlowstoneMessages should therefore not be expected to cover.
      */
     private static final Set<String> EXEMPT_KEYS = ImmutableSet.of(
-            "glowstone.achievement.unknown",
             "glowstone.difficulty.names",
             "glowstone.difficulty.unknown",
             "glowstone.gamemode.names",

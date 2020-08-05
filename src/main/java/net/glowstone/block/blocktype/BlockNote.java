@@ -9,7 +9,7 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.NoteBlock;
+import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -23,16 +23,18 @@ public class BlockNote extends BlockType {
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
         Vector clickedLoc) {
-        NoteBlock noteBlock = (NoteBlock) block.getState();
-        Note note = noteBlock.getNote();
-        noteBlock.setNote(new Note(note.getId() == 24 ? 0 : note.getId() + 1));
-        noteBlock.update();
-        return noteBlock.play();
+        // TODO: 1.13 NoteBlock block data
+        NoteBlock noteBlockData = (NoteBlock) block.getBlockData();
+        Note note = noteBlockData.getNote();
+        noteBlockData.setNote(new Note(note.getId() == 24 ? 0 : note.getId() + 1));
+        block.setBlockData(noteBlockData);
+        // TODO: 1.13 NoteBlock replacement for play()
+        return false;
     }
 
     @Override
     public void leftClickBlock(GlowPlayer player, GlowBlock block, ItemStack holding) {
-        ((NoteBlock) block.getState()).play();
+        // TODO: 1.13 NoteBlock replacement for play()
     }
 
     @Override
@@ -51,7 +53,7 @@ public class BlockNote extends BlockType {
     public void updatePhysicsAfterEvent(GlowBlock me) {
         super.updatePhysicsAfterEvent(me);
         if (me.isBlockIndirectlyPowered()) {
-            ((NoteBlock) me.getState()).play();
+            // TODO: 1.13 NoteBlock replacement for play()
         }
     }
 }

@@ -1,10 +1,6 @@
 package net.glowstone.i18n;
 
 public interface GlowstoneMessages {
-    interface Achievement {
-        LocalizedString EARNED = new LocalizedStringImpl("glowstone.achievement.earned");
-    }
-
     interface Advancement {
         LocalizedString TITLE = new LocalizedStringImpl("glowstone.advancement.title");
     }

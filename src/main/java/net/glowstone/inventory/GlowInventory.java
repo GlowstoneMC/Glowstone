@@ -308,12 +308,6 @@ public class GlowInventory implements Inventory {
         return Collections.unmodifiableList(slots);
     }
 
-    @Override
-    public final String getName() {
-        // Can't be fully Lombokified because getTitle() is identical
-        return title;
-    }
-
     /**
      * Set the custom title of this inventory or reset it to the default.
      *

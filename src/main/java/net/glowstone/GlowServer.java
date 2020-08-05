@@ -1764,15 +1764,6 @@ public class GlowServer implements Server {
     }
 
     /**
-     * Get whether achievements should be announced.
-     *
-     * @return True if achievements should be announced in chat.
-     */
-    public boolean getAnnounceAchievements() {
-        return config.getBoolean(Key.ANNOUNCE_ACHIEVEMENTS);
-    }
-
-    /**
      * Get the time after a profile lookup should be cancelled.
      *
      * @return The maximum lookup time in seconds or zero to never cancel the lookup.
