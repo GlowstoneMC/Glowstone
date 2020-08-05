@@ -328,6 +328,7 @@
               <Launcher-Agent-Class>net.glowstone.util.ClassPathAgent</Launcher-Agent-Class>
               <Main-Class>net.glowstone.GlowServer</Main-Class>
               <Implementation-Title>${project.name}</Implementation-Title>
+              <!--suppress UnresolvedMavenProperty -->
               <Implementation-Version>${project.version}.${describe}</Implementation-Version>
               <Implementation-Vendor>${maven.build.timestamp}</Implementation-Vendor>
               <Specification-Title>Bukkit</Specification-Title>
