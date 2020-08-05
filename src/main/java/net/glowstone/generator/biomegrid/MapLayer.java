@@ -27,7 +27,8 @@ public abstract class MapLayer {
         if (environment == Environment.NORMAL && worldType == WorldType.FLAT) {
             return new MapLayer[]{new ConstantBiomeMapLayer(seed, Biome.PLAINS), null};
         } else if (environment == Environment.NETHER) {
-            return new MapLayer[]{new ConstantBiomeMapLayer(seed, Biome.NETHER), null};
+            // TODO 1.16: Nether has multiple biomes
+            return new MapLayer[]{new ConstantBiomeMapLayer(seed, Biome.NETHER_WASTES), null};
         } else if (environment == Environment.THE_END) {
             return new MapLayer[]{new ConstantBiomeMapLayer(seed, Biome.THE_END), null};
         }

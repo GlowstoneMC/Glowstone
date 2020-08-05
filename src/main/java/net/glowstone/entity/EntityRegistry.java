@@ -152,7 +152,6 @@ import org.bukkit.entity.TippedArrow;
 import org.bukkit.entity.Vex;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Vindicator;
-import org.bukkit.entity.Weather;
 import org.bukkit.entity.Witch;
 import org.bukkit.entity.Wither;
 import org.bukkit.entity.WitherSkeleton;
@@ -251,7 +250,6 @@ public class EntityRegistry {
             .put(Vex.class, GlowVex.class)
             .put(Villager.class, GlowVillager.class)
             .put(Vindicator.class, GlowVindicator.class)
-            .put(Weather.class, GlowWeather.class)
             .put(Witch.class, GlowWitch.class)
             .put(Wither.class, GlowWither.class)
             .put(WitherSkeleton.class, GlowWitherSkeleton.class)

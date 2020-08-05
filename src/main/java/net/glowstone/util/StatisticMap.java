@@ -8,7 +8,6 @@ import java.util.Map;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowStatistic;
 import net.glowstone.net.message.play.game.StatisticsMessage;
-import org.bukkit.Achievement;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.Statistic.Type;
@@ -40,7 +39,7 @@ public final class StatisticMap {
     }
 
     private void setValue(String key, int value) {
-        values.put(key, value < 0 ? 0 : value);
+        values.put(key, Math.max(value, 0));
     }
 
     private String name(Statistic stat) {
@@ -66,15 +65,7 @@ public final class StatisticMap {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Achievement and stat accessors
-
-    public boolean hasAchievement(Achievement achievement) {
-        return getValue(GlowAchievement.getName(achievement)) != 0;
-    }
-
-    public void setAchievement(Achievement achievement, boolean has) {
-        setValue(GlowAchievement.getName(achievement), has ? 1 : 0);
-    }
+    // Stat accessors
 
     public int get(Statistic stat) {
         return getValue(name(stat));
