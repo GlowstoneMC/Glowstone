@@ -29,7 +29,7 @@ import org.bukkit.util.Vector;
 /**
  * A GlowLightning strike is an entity produced during thunderstorms.
  */
-public class GlowLightningStrike extends Entity implements LightningStrike {
+public class GlowLightningStrike extends GlowEntity implements LightningStrike {
 
     /**
      * How long this lightning strike has to remain in the world.

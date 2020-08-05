@@ -17,7 +17,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.NoteBlock;
 import org.bukkit.event.block.NotePlayEvent;
 
-public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
+public class GlowNoteBlock extends GlowBlockState {
 
     @Getter
     private Note note;
@@ -227,28 +227,23 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         return result;
     }
 
-    @Override
     public void setNote(Note note) {
         checkNotNull(note);
         this.note = note;
     }
 
-    @Override
     public byte getRawNote() {
         return note.getId();
     }
 
-    @Override
     public void setRawNote(byte note) {
         this.note = new Note(note);
     }
 
-    @Override
     public boolean play() {
         return play(instrumentOf(getBlock().getRelative(BlockFace.DOWN).getType()), getNote());
     }
 
-    @Override
     public boolean play(byte instrument, byte note) {
         return play(Instrument.getByType(instrument), new Note(note));
     }
@@ -256,7 +251,6 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     ////////////////////////////////////////////////////////////////////////////
     // Internals
 
-    @Override
     public boolean play(Instrument instrument, Note note) {
         if (getBlock().getType() != Material.NOTE_BLOCK) {
             return false;
