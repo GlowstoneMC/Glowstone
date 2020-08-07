@@ -1,11 +1,6 @@
 package net.glowstone.block;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
+import com.destroystokyo.paper.block.BlockSoundGroup;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -29,6 +24,7 @@ import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Lightable;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.material.Lever;
@@ -42,6 +38,14 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Represents a single block in a world.
@@ -74,6 +78,7 @@ public class GlowBlock implements Block {
     private final int z;
     @Getter
     private GlowWorld world;
+    @Getter
 
     /**
      * Creates an object to refer to a block.
@@ -525,13 +530,25 @@ public class GlowBlock implements Block {
     }
 
     @Override
+    public boolean breakNaturally(@NotNull ItemStack tool, boolean triggerEffect) {
+        // TODO: triggerEffect
+        return breakNaturally(tool);
+    }
+
+    @Override
     public Collection<ItemStack> getDrops() {
-        return ItemTable.instance().getBlock(getType()).getMinedDrops(this);
+        return Objects.requireNonNull(ItemTable.instance().getBlock(getType())).getMinedDrops(this);
     }
 
     @Override
     public Collection<ItemStack> getDrops(ItemStack tool) {
-        return ItemTable.instance().getBlock(getType()).getDrops(this, tool);
+        return Objects.requireNonNull(ItemTable.instance().getBlock(getType())).getDrops(this, tool);
+    }
+
+    @Override
+    public @NotNull Collection<ItemStack> getDrops(@NotNull ItemStack tool, @Nullable Entity entity) {
+        // TODO: find usage for entity
+        return getDrops(tool);
     }
 
     @Override
@@ -551,6 +568,11 @@ public class GlowBlock implements Block {
             return new BoundingBox(x,y,z,x,y,z); // 0x0x0 bounding box
         }
         return BoundingBox.of(this); // TODO: Some blocks don't fill their space
+    }
+
+    @Override
+    public @NotNull BlockSoundGroup getSoundGroup() {
+        return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////

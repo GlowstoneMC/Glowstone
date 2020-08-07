@@ -1,5 +1,6 @@
 package net.glowstone.block;
 
+import com.destroystokyo.paper.MaterialSetTag;
 import com.google.common.collect.Sets;
 import java.util.EnumMap;
 import java.util.HashMap;

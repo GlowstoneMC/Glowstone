@@ -1,12 +1,13 @@
 package net.glowstone.net.message.play.entity;
 
 import com.flowpowered.network.Message;
-import java.util.UUID;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
+
+import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor

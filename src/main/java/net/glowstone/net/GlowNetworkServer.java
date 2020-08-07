@@ -1,11 +1,12 @@
 package net.glowstone.net;
 
 import io.netty.channel.ChannelFuture;
-import java.net.InetSocketAddress;
-import java.util.concurrent.CountDownLatch;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.net.protocol.ProtocolProvider;
+
+import java.net.InetSocketAddress;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Represents a network server.

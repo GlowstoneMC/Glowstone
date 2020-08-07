@@ -1,16 +1,17 @@
 package net.glowstone.io.entity;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static net.glowstone.entity.passive.GlowVillager.getRandomProfession;
-
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.monster.GlowZombie;
 import net.glowstone.entity.monster.GlowZombieVillager;
 import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
+
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static net.glowstone.entity.passive.GlowVillager.getRandomProfession;
 
 public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
 

@@ -1,10 +1,11 @@
 package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
-import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.AdvancementTabMessage;
+
+import java.util.logging.Level;
 
 public class AdvancementTabHandler implements MessageHandler<GlowSession, AdvancementTabMessage> {
 

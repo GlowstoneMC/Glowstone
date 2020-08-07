@@ -1,6 +1,5 @@
 package net.glowstone.block.entity.state;
 
-import java.util.Collection;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
@@ -11,6 +10,8 @@ import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Jukebox;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Collection;
 
 public class GlowJukebox extends GlowBlockState implements Jukebox {
 

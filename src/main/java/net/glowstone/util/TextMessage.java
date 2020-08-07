@@ -1,16 +1,17 @@
 package net.glowstone.util;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 import lombok.EqualsAndHashCode;
 import org.bukkit.ChatColor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Simple container for chat message structures until more advanced chat formatting is implemented.

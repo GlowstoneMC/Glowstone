@@ -1,9 +1,6 @@
 package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
@@ -12,6 +9,10 @@ import net.glowstone.net.message.play.player.TabCompleteResponseMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatTabCompleteEvent;
 import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public final class TabCompleteHandler implements MessageHandler<GlowSession, TabCompleteMessage> {
 

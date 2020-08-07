@@ -5,9 +5,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
-import java.util.concurrent.atomic.AtomicReference;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.GlowSession;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Experimental pipeline component, based on flow-net's MessageHandler.

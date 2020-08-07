@@ -1,10 +1,6 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import javax.annotation.Nullable;
+import com.destroystokyo.paper.block.BlockSoundGroup;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
@@ -23,6 +19,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
@@ -35,6 +32,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Base class for specific types of blocks.
@@ -55,6 +58,9 @@ public class BlockType extends ItemType {
      */
     @Getter
     protected SoundInfo placeSound = new SoundInfo(Sound.BLOCK_WOOD_BREAK, 1F, 0.75F);
+
+    @Getter
+
 
     ////////////////////////////////////////////////////////////////////////////
     // Setters for subclass use
@@ -369,17 +375,14 @@ public class BlockType extends ItemType {
 
         // call canBuild event
         boolean canBuild = true;
-        switch (targetMat) {
-            case SIGN:
-            case WALL_SIGN:
-                if (player.isSneaking()) {
-                    canBuild = canPlaceAt(player, target, face);
-                } else {
-                    return;
-                }
-                break;
-            default:
+        if (Tag.SIGNS.isTagged(targetMat)) {
+            if (player.isSneaking()) {
                 canBuild = canPlaceAt(player, target, face);
+            } else {
+                return;
+            }
+        } else {
+            canBuild = canPlaceAt(player, target, face);
         }
         BlockCanBuildEvent canBuildEvent = new BlockCanBuildEvent(target, against.getBlockData(),
             canBuild);

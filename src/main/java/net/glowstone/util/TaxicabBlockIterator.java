@@ -1,5 +1,8 @@
 package net.glowstone.util;
 
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -7,8 +10,6 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 
 public class TaxicabBlockIterator implements Iterator<Block> {
 

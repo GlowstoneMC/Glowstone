@@ -1,10 +1,6 @@
 package net.glowstone.net.handler.play.player;
 
-import static net.glowstone.net.message.play.player.DiggingMessage.START_DIGGING;
-
 import com.flowpowered.network.MessageHandler;
-import java.util.Collection;
-import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -34,6 +30,11 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+
+import java.util.Collection;
+import java.util.Objects;
+
+import static net.glowstone.net.message.play.player.DiggingMessage.START_DIGGING;
 
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
 

@@ -1,14 +1,15 @@
 package net.glowstone.net.message.play.game;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.flowpowered.network.Message;
-import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import net.glowstone.util.TextMessage;
+
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 @Data
 public final class MapDataMessage implements Message {

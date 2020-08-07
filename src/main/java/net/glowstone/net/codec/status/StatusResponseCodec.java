@@ -3,10 +3,11 @@ package net.glowstone.net.codec.status;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.message.status.StatusResponseMessage;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+
+import java.io.IOException;
 
 public final class StatusResponseCodec implements Codec<StatusResponseMessage> {
 

@@ -1,10 +1,11 @@
 package net.glowstone.io.entity;
 
-import java.util.function.Function;
 import net.glowstone.entity.monster.GlowSlime;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+
+import java.util.function.Function;
 
 class SlimeStore<T extends GlowSlime> extends MonsterStore<T> {
 

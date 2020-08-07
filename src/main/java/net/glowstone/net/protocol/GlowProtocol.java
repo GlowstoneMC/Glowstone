@@ -12,9 +12,10 @@ import com.flowpowered.network.service.HandlerLookupService;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.glowstone.GlowServer;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import net.glowstone.GlowServer;
 
 public abstract class GlowProtocol extends AbstractProtocol {
 

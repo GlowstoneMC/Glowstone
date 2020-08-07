@@ -1,16 +1,17 @@
 package net.glowstone.net.query;
 
 import io.netty.channel.ChannelFuture;
+import net.glowstone.GlowServer;
+import net.glowstone.net.GlowDatagramServer;
+import net.glowstone.net.protocol.ProtocolProvider;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
-import net.glowstone.GlowServer;
-import net.glowstone.net.GlowDatagramServer;
-import net.glowstone.net.protocol.ProtocolProvider;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Implementation of a server for the minecraft server query protocol.

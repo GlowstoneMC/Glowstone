@@ -1,10 +1,11 @@
 package net.glowstone.i18n;
 
+import net.glowstone.GlowServer;
+
 import java.text.Format;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.glowstone.GlowServer;
 
 class LoggableLocalizedStringImpl extends LocalizedStringImpl
     implements LoggableLocalizedString {

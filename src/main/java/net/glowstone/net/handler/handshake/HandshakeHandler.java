@@ -1,8 +1,6 @@
 package net.glowstone.net.handler.handshake;
 
 import com.flowpowered.network.MessageHandler;
-import java.net.InetSocketAddress;
-import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.ProxyData;
@@ -10,6 +8,9 @@ import net.glowstone.net.message.handshake.HandshakeMessage;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.StatusProtocol;
+
+import java.net.InetSocketAddress;
+import java.util.logging.Level;
 
 public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMessage> {
     private final StatusProtocol statusProtocol;

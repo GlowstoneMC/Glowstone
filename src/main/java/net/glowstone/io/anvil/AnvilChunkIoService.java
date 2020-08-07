@@ -1,10 +1,5 @@
 package net.glowstone.io.anvil;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -24,6 +19,12 @@ import net.glowstone.util.nbt.NbtOutputStream;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An implementation of the {@link ChunkIoService} which reads and writes Anvil maps, an improvement

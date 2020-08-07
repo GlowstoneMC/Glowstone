@@ -6,14 +6,30 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.*;
+import org.bukkit.Instrument;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Note;
+import org.bukkit.Tag;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.event.block.NotePlayEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import static org.bukkit.Instrument.*;
+import static org.bukkit.Instrument.BANJO;
+import static org.bukkit.Instrument.BELL;
+import static org.bukkit.Instrument.BIT;
+import static org.bukkit.Instrument.CHIME;
+import static org.bukkit.Instrument.COW_BELL;
+import static org.bukkit.Instrument.DIDGERIDOO;
+import static org.bukkit.Instrument.FLUTE;
+import static org.bukkit.Instrument.GUITAR;
+import static org.bukkit.Instrument.IRON_XYLOPHONE;
+import static org.bukkit.Instrument.PIANO;
+import static org.bukkit.Instrument.PLING;
+import static org.bukkit.Instrument.SNARE_DRUM;
+import static org.bukkit.Instrument.XYLOPHONE;
 
 public class BlockNote extends BlockType {
 

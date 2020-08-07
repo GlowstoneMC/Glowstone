@@ -2,7 +2,6 @@ package net.glowstone.block.entity;
 
 import com.destroystokyo.paper.event.block.BeaconEffectEvent;
 import com.google.common.collect.Sets;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -17,6 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Set;
 
 public class BeaconEntity extends BlockEntity {
 

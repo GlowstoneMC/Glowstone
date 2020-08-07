@@ -2,10 +2,11 @@ package net.glowstone.util;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.AbstractIterator;
-import java.util.Iterator;
-import javax.annotation.Nonnull;
 import lombok.Getter;
 import org.bukkit.Location;
+
+import javax.annotation.Nonnull;
+import java.util.Iterator;
 
 @Getter
 public class RectangularRegion {

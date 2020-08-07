@@ -1,6 +1,12 @@
 package net.glowstone.util.pathfinding.algorithms;
 
 import com.google.common.collect.Sets;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.util.pathfinding.IAlgorithm;
+import net.glowstone.util.pathfinding.PathVector;
+import org.bukkit.Material;
+import org.bukkit.util.Vector;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,11 +15,6 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
-import net.glowstone.block.GlowBlock;
-import net.glowstone.util.pathfinding.IAlgorithm;
-import net.glowstone.util.pathfinding.PathVector;
-import org.bukkit.Material;
-import org.bukkit.util.Vector;
 
 
 /**

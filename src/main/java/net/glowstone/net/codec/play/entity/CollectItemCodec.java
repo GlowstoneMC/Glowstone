@@ -3,8 +3,9 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.message.play.entity.CollectItemMessage;
+
+import java.io.IOException;
 
 public final class CollectItemCodec implements Codec<CollectItemMessage> {
 

@@ -4,12 +4,13 @@ import com.flowpowered.network.MessageHandler;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PluginMessage;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 public final class PluginMessageHandler implements MessageHandler<GlowSession, PluginMessage> {
 
     @Override

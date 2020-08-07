@@ -1,11 +1,12 @@
 package net.glowstone.block.state;
 
-import java.util.EnumMap;
-import java.util.Map;
 import net.glowstone.block.state.impl.WoolStateDataReader;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class StateSerialization {
 

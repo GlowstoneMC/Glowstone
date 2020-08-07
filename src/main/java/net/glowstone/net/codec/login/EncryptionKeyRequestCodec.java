@@ -3,8 +3,9 @@ package net.glowstone.net.codec.login;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
+
+import java.io.IOException;
 
 public final class EncryptionKeyRequestCodec implements Codec<EncryptionKeyRequestMessage> {
 

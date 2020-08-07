@@ -1,11 +1,12 @@
 package net.glowstone.util.pathfinding;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.glowstone.block.GlowBlock;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A class used for general pathfinding.

@@ -1,7 +1,6 @@
 package net.glowstone.block.state.impl;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.Set;
 import net.glowstone.block.state.BlockStateData;
 import net.glowstone.block.state.BlockStateReader;
 import net.glowstone.block.state.InvalidBlockStateException;
@@ -9,6 +8,8 @@ import net.glowstone.block.state.StateSerialization;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.material.Wool;
+
+import java.util.Set;
 
 public class WoolStateDataReader extends BlockStateReader<Wool> {
 

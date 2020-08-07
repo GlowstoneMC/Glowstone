@@ -1,14 +1,15 @@
 package net.glowstone.util.pathfinding;
 
 import com.google.common.collect.Sets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import net.glowstone.block.GlowBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The base interface for all Pathfinding algorithms to implement from.

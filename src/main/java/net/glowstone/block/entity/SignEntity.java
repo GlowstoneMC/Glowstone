@@ -1,6 +1,5 @@
 package net.glowstone.block.entity;
 
-import java.util.Arrays;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.state.GlowSign;
@@ -8,6 +7,8 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
+
+import java.util.Arrays;
 
 public class SignEntity extends BlockEntity {
 

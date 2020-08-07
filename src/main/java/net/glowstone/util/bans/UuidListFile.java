@@ -1,5 +1,10 @@
 package net.glowstone.util.bans;
 
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
+import net.glowstone.entity.meta.profile.ProfileCache;
+import net.glowstone.util.UuidUtils;
+import org.bukkit.OfflinePlayer;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,10 +14,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import net.glowstone.entity.meta.profile.GlowPlayerProfile;
-import net.glowstone.entity.meta.profile.ProfileCache;
-import net.glowstone.util.UuidUtils;
-import org.bukkit.OfflinePlayer;
 
 /**
  * Common management for whitelist and ops list files.

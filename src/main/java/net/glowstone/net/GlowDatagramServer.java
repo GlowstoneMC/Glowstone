@@ -4,11 +4,12 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import net.glowstone.GlowServer;
+import net.glowstone.net.protocol.ProtocolProvider;
+
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
-import net.glowstone.GlowServer;
-import net.glowstone.net.protocol.ProtocolProvider;
 
 public abstract class GlowDatagramServer extends GlowNetworkServer {
 
