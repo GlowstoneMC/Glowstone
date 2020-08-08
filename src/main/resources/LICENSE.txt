@@ -1,7 +1,7 @@
 Glowstone is free software licensed under the MIT license:
 
 ------------------------------------------------------------------------------
-Glowstone Copyright (C) 2015-2019 The Glowstone Project.
+Glowstone Copyright (C) 2015-2020 The Glowstone Project.
 Glowstone Copyright (C) 2011-2014 Tad Hardesty.
 Lightstone Copyright (C) 2010-2011 Graham Edgecombe.
 
@@ -25,7 +25,7 @@ THE SOFTWARE.
 ------------------------------------------------------------------------------
 
 This distribution includes a derivative of Bukkit, which is GPL-licensed, and
-is therefore the derivative, Glowkit, is licensed under the terms of the GNU GPLv3, which follows.
+therefore the derivative, Glowkit, is licensed under the terms of the GNU GPLv3, which follows.
 
 For more information, visit:
 - Glowstone: https://github.com/GlowstoneMC/Glowstone
