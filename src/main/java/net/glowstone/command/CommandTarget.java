@@ -118,26 +118,26 @@ public class CommandTarget {
         if (arguments.containsKey("m")) {
             SelectorValue value = arguments.get("m");
             if (!value.isInverted() && !value.getValue().equals("-1")) {
-                return Arrays.asList(GameMode.getByValue(Integer.valueOf(value.getValue())));
+                return Arrays.asList(GameMode.getByValue(Integer.parseInt(value.getValue())));
             } else {
                 return Arrays.stream(GameMode.values())
-                    .filter(mode -> mode.getValue() != Integer.valueOf(value.getValue()))
+                    .filter(mode -> mode.getValue() != Integer.parseInt(value.getValue()))
                     .collect(Collectors.toList());
             }
         }
         return null;
     }
 
-    private Integer getMaxRange() {
+    private int getMaxRange() {
         if (arguments.containsKey("r")) {
-            return Integer.valueOf(arguments.get("r").getValue());
+            return Integer.parseInt(arguments.get("r").getValue());
         }
         return 0;
     }
 
-    private Integer getMinRange() {
+    private int getMinRange() {
         if (arguments.containsKey("rm")) {
-            return Integer.valueOf(arguments.get("rm").getValue());
+            return Integer.parseInt(arguments.get("rm").getValue());
         }
         return 0;
     }
@@ -188,8 +188,8 @@ public class CommandTarget {
         List<EntityType> types = getTypes();
         List<GameMode> gameModes = getGameModes();
         Integer count = getCount();
-        Integer maxRadius = getMaxRange() * getMaxRange();
-        Integer minRadius = getMinRange() * getMinRange();
+        int maxRadius = getMaxRange() * getMaxRange();
+        int minRadius = getMinRange() * getMinRange();
         Integer minLevel = getMinLevel();
         Integer maxLevel = getMaxLevel();
         List<Entity> entities = new ArrayList<>();

@@ -2208,7 +2208,7 @@ public class GlowWorld implements World {
             }
             GlowBlock block = new GlowBlock(chunk, location.getBlockX(), location
                 .getBlockY(), location.getBlockZ());
-            Integer speed = type.getPulseTickSpeed(block);
+            int speed = type.getPulseTickSpeed(block);
             boolean once = type.isPulseOnce(block);
             if (speed == 0) {
                 continue;

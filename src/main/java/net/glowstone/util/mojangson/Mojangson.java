@@ -115,7 +115,7 @@ public class Mojangson {
      */
     public static IntTag parseInt(String mojangson) throws MojangsonParseException {
         try {
-            return new IntTag(Integer.valueOf(mojangson));
+            return new IntTag(Integer.parseInt(mojangson));
         } catch (NumberFormatException nfe) {
             throw new MojangsonParseException("\'" + mojangson + "\'",
                     MojangsonParseException.ParseExceptionReason.INVALID_FORMAT_NUM);
@@ -129,8 +129,8 @@ public class Mojangson {
      * @return the parsed StringTag NBT value
      */
     public static StringTag parseString(String mojangson) {
-        Character lastChar = mojangson.charAt(mojangson.length() - 1);
-        Character firstChar = mojangson.charAt(0);
+        char lastChar = mojangson.charAt(mojangson.length() - 1);
+        char firstChar = mojangson.charAt(0);
 
         if (firstChar == STRING_QUOTES.getSymbol() && lastChar == STRING_QUOTES.getSymbol()) {
             return new StringTag(mojangson.substring(1, mojangson.length() - 1));
@@ -148,13 +148,13 @@ public class Mojangson {
      *         value.
      */
     public static LongTag parseLong(String mojangson) throws MojangsonParseException {
-        Character lastChar = mojangson.charAt(mojangson.length() - 1);
-        if (lastChar.toString().toLowerCase().charAt(0) == MojangsonToken.LONG_SUFFIX.getSymbol()) {
+        char lastChar = mojangson.charAt(mojangson.length() - 1);
+        if (Character.toString(lastChar).toLowerCase().charAt(0) == MojangsonToken.LONG_SUFFIX.getSymbol()) {
             mojangson = mojangson.substring(0, mojangson.length() - 1);
         }
 
         try {
-            return new LongTag(Long.valueOf(mojangson));
+            return new LongTag(Long.parseLong(mojangson));
         } catch (NumberFormatException nfe) {
             throw new MojangsonParseException("\'" + mojangson + "\'",
                     MojangsonParseException.ParseExceptionReason.INVALID_FORMAT_NUM);
@@ -170,14 +170,14 @@ public class Mojangson {
      *         Double value.
      */
     public static DoubleTag parseDouble(String mojangson) throws MojangsonParseException {
-        Character lastChar = mojangson.charAt(mojangson.length() - 1);
-        if (lastChar.toString().toLowerCase().charAt(0) == MojangsonToken.DOUBLE_SUFFIX
+        char lastChar = mojangson.charAt(mojangson.length() - 1);
+        if (Character.toString(lastChar).toLowerCase().charAt(0) == MojangsonToken.DOUBLE_SUFFIX
                 .getSymbol()) {
             mojangson = mojangson.substring(0, mojangson.length() - 1);
         }
 
         try {
-            return new DoubleTag(Double.valueOf(mojangson));
+            return new DoubleTag(Double.parseDouble(mojangson));
         } catch (NumberFormatException nfe) {
             throw new MojangsonParseException("\'" + mojangson + "\'",
                     MojangsonParseException.ParseExceptionReason.INVALID_FORMAT_NUM);
@@ -193,14 +193,14 @@ public class Mojangson {
      *         Flaot value.
      */
     public static FloatTag parseFloat(String mojangson) throws MojangsonParseException {
-        Character lastChar = mojangson.charAt(mojangson.length() - 1);
-        if (lastChar.toString().toLowerCase().charAt(0) == MojangsonToken.FLOAT_SUFFIX
+        char lastChar = mojangson.charAt(mojangson.length() - 1);
+        if (Character.toString(lastChar).toLowerCase().charAt(0) == MojangsonToken.FLOAT_SUFFIX
                 .getSymbol()) {
             mojangson = mojangson.substring(0, mojangson.length() - 1);
         }
 
         try {
-            return new FloatTag(Float.valueOf(mojangson));
+            return new FloatTag(Float.parseFloat(mojangson));
         } catch (NumberFormatException nfe) {
             throw new MojangsonParseException("\'" + mojangson + "\'",
                     MojangsonParseException.ParseExceptionReason.INVALID_FORMAT_NUM);
@@ -216,14 +216,14 @@ public class Mojangson {
      *         Short value.
      */
     public static ShortTag parseShort(String mojangson) throws MojangsonParseException {
-        Character lastChar = mojangson.charAt(mojangson.length() - 1);
-        if (lastChar.toString().toLowerCase().charAt(0) == MojangsonToken.SHORT_SUFFIX
+        char lastChar = mojangson.charAt(mojangson.length() - 1);
+        if (Character.toString(lastChar).toLowerCase().charAt(0) == MojangsonToken.SHORT_SUFFIX
                 .getSymbol()) {
             mojangson = mojangson.substring(0, mojangson.length() - 1);
         }
 
         try {
-            return new ShortTag(Short.valueOf(mojangson));
+            return new ShortTag(Short.parseShort(mojangson));
         } catch (NumberFormatException nfe) {
             throw new MojangsonParseException("\'" + mojangson + "\'",
                     MojangsonParseException.ParseExceptionReason.INVALID_FORMAT_NUM);
@@ -239,13 +239,13 @@ public class Mojangson {
      *         value.
      */
     public static ByteTag parseByte(String mojangson) throws MojangsonParseException {
-        Character lastChar = mojangson.charAt(mojangson.length() - 1);
-        if (lastChar.toString().toLowerCase().charAt(0) == BYTE_SUFFIX.getSymbol()) {
+        char lastChar = mojangson.charAt(mojangson.length() - 1);
+        if (Character.toString(lastChar).toLowerCase().charAt(0) == BYTE_SUFFIX.getSymbol()) {
             mojangson = mojangson.substring(0, mojangson.length() - 1);
         }
 
         try {
-            return new ByteTag(Byte.valueOf(mojangson));
+            return new ByteTag(Byte.parseByte(mojangson));
         } catch (NumberFormatException nfe) {
             throw new MojangsonParseException("\'" + mojangson + "\'",
                     MojangsonParseException.ParseExceptionReason.INVALID_FORMAT_NUM);
@@ -275,7 +275,7 @@ public class Mojangson {
         CompoundTag tag = new CompoundTag();
 
         for (int index = 0; index < mojangson.length(); index++) {
-            Character character = mojangson.charAt(index);
+            char character = mojangson.charAt(index);
 
             if (character == STRING_QUOTES.getSymbol()) {
                 inString = !inString;
@@ -348,7 +348,7 @@ public class Mojangson {
         List<Tag> values = new ArrayList<>();
 
         for (int index = 0; index < mojangson.length(); index++) {
-            Character character = mojangson.charAt(index);
+            char character = mojangson.charAt(index);
 
             if (character == STRING_QUOTES.getSymbol()) {
                 inString = !inString;
