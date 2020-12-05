@@ -7,6 +7,7 @@ import lombok.Setter;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowInventorySlot {
@@ -17,6 +18,9 @@ public class GlowInventorySlot {
     @Getter
     @Setter
     private SlotType type;
+    @Getter
+    @Setter
+    private EquipmentSlot equipmentSlot;
 
     public GlowInventorySlot() {
         this(DEFAULT_TYPE);
