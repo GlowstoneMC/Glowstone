@@ -529,7 +529,7 @@ public class GlowInventory implements Inventory {
     }
 
     @Override
-    public void setStorageContents(ItemStack[] itemStacks) throws IllegalArgumentException {
+    public void setStorageContents(ItemStack[] items) throws IllegalArgumentException {
         setContents(items);
     }
 
