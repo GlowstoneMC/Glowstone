@@ -58,27 +58,6 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                                 + brand);
                     }
                     break;
-                // TODO 1.15: MC|ItemName has moved to the inbound "Name Item" packet
-//                case "MC|ItemName":
-//                    if (session.getPlayer().getOpenInventory() == null) {
-//                        break;
-//                    }
-//                    // check if player is in an anvil inventory
-//                    if (session.getPlayer().getOpenInventory().getType() != InventoryType.ANVIL) {
-//                        break;
-//                    }
-//                    // get the new name for the item
-//                    String name;
-//                    try {
-//                        name = ByteBufUtils.readUTF8(buf);
-//                    } catch (IOException e) {
-//                        GlowServer.logger
-//                            .log(Level.WARNING, "Error reading anvil item name by " + session, e);
-//                        break;
-//                    }
-//                    ((GlowAnvilInventory) session.getPlayer().getOpenInventory().getTopInventory())
-//                        .setRenameText(name);
-//                    break;
                 // TODO 1.15: MC|Beacon has moved to the inbound "Set Beacon Effect" packet
 //                case "MC|Beacon": {
 //                    Player player = session.getPlayer();

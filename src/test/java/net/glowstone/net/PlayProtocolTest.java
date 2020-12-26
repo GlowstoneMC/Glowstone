@@ -35,6 +35,7 @@ import net.glowstone.net.message.play.game.EditBookMessage;
 import net.glowstone.net.message.play.game.ExperienceMessage;
 import net.glowstone.net.message.play.game.HealthMessage;
 import net.glowstone.net.message.play.game.IncomingChatMessage;
+import net.glowstone.net.message.play.game.NameItemMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.PluginMessage;
 import net.glowstone.net.message.play.game.PositionRotationMessage;
@@ -210,6 +211,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new UnlockRecipesMessage(UnlockRecipesMessage.ACTION_INIT, true, false, true, false,
                 new int[]{1, 2}, new int[]{1, 2, 3}),
         new EditBookMessage(new ItemStack(Material.WRITABLE_BOOK), true, 0),
+        new NameItemMessage("item name"),
     };
 
     public PlayProtocolTest() {

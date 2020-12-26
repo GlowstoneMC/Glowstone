@@ -44,6 +44,7 @@ import net.glowstone.net.codec.play.game.IncomingChatCodec;
 import net.glowstone.net.codec.play.game.JoinGameCodec;
 import net.glowstone.net.codec.play.game.MapDataCodec;
 import net.glowstone.net.codec.play.game.MultiBlockChangeCodec;
+import net.glowstone.net.codec.play.game.NameItemCodec;
 import net.glowstone.net.codec.play.game.NamedSoundEffectCodec;
 import net.glowstone.net.codec.play.game.PingCodec;
 import net.glowstone.net.codec.play.game.PlayEffectCodec;
@@ -111,6 +112,7 @@ import net.glowstone.net.handler.play.game.CraftRecipeRequestHandler;
 import net.glowstone.net.handler.play.game.DisplayedRecipeHandler;
 import net.glowstone.net.handler.play.game.EditBookHandler;
 import net.glowstone.net.handler.play.game.IncomingChatHandler;
+import net.glowstone.net.handler.play.game.NameItemHandler;
 import net.glowstone.net.handler.play.game.PingHandler;
 import net.glowstone.net.handler.play.game.PluginMessageHandler;
 import net.glowstone.net.handler.play.game.RecipeBookStateHandler;
@@ -182,6 +184,7 @@ import net.glowstone.net.message.play.game.IncomingChatMessage;
 import net.glowstone.net.message.play.game.JoinGameMessage;
 import net.glowstone.net.message.play.game.MapDataMessage;
 import net.glowstone.net.message.play.game.MultiBlockChangeMessage;
+import net.glowstone.net.message.play.game.NameItemMessage;
 import net.glowstone.net.message.play.game.NamedSoundEffectMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.PlayEffectMessage;
@@ -298,7 +301,7 @@ public class PlayProtocol extends GlowProtocol {
             SteerVehicleHandler.class);
         inbound(0x1E, DisplayedRecipeMessage.class, DisplayedRecipeCodec.class, DisplayedRecipeHandler.class);
         inbound(0x1F, RecipeBookStateMessage.class, RecipeBookStateCodec.class, RecipeBookStateHandler.class);
-        // TODO 0x20 : Name Item packet
+        inbound(0x20, NameItemMessage.class, NameItemCodec.class, NameItemHandler.class);
         inbound(0x21, ResourcePackStatusMessage.class, ResourcePackStatusCodec.class,
             ResourcePackStatusHandler.class);
         inbound(0x22, AdvancementTabMessage.class, AdvancementTabCodec.class,
