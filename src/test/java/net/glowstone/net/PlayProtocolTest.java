@@ -48,7 +48,7 @@ import net.glowstone.net.message.play.game.UpdateSignMessage;
 import net.glowstone.net.message.play.game.UserListHeaderFooterMessage;
 import net.glowstone.net.message.play.inv.CloseWindowMessage;
 import net.glowstone.net.message.play.inv.CreativeItemMessage;
-import net.glowstone.net.message.play.inv.EnchantItemMessage;
+import net.glowstone.net.message.play.inv.ClickWindowButtonMessage;
 import net.glowstone.net.message.play.inv.TransactionMessage;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
 import net.glowstone.net.message.play.player.AdvancementTabMessage;
@@ -108,7 +108,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new WindowClickMessage(1, 2, 3, 4, 5, new ItemStack(Material.APPLE, 1)),
         new TransactionMessage(1, 2, true),
         new CreativeItemMessage(1, new ItemStack(Material.APPLE, 1)),
-        new EnchantItemMessage(1, 2),
+        new ClickWindowButtonMessage(1, 2),
         new UpdateSignMessage(1, 2, 3,
             new TextMessage[]{new TextMessage("hello"), new TextMessage("hi"),
                 new TextMessage("third"), new TextMessage("fourth")}),

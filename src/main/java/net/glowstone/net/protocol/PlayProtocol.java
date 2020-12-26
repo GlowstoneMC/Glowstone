@@ -65,6 +65,7 @@ import net.glowstone.net.codec.play.game.UpdateSignCodec;
 import net.glowstone.net.codec.play.game.UserListHeaderFooterCodec;
 import net.glowstone.net.codec.play.game.UserListItemCodec;
 import net.glowstone.net.codec.play.game.WorldBorderCodec;
+import net.glowstone.net.codec.play.inv.ClickWindowButtonCodec;
 import net.glowstone.net.codec.play.inv.CloseWindowCodec;
 import net.glowstone.net.codec.play.inv.CreativeItemCodec;
 import net.glowstone.net.codec.play.inv.HeldItemCodec;
@@ -112,6 +113,7 @@ import net.glowstone.net.handler.play.game.PingHandler;
 import net.glowstone.net.handler.play.game.PluginMessageHandler;
 import net.glowstone.net.handler.play.game.RecipeBookStateHandler;
 import net.glowstone.net.handler.play.game.UpdateSignHandler;
+import net.glowstone.net.handler.play.inv.ClickWindowButtonHandler;
 import net.glowstone.net.handler.play.inv.CloseWindowHandler;
 import net.glowstone.net.handler.play.inv.CreativeItemHandler;
 import net.glowstone.net.handler.play.inv.HeldItemHandler;
@@ -199,6 +201,7 @@ import net.glowstone.net.message.play.game.UpdateSignMessage;
 import net.glowstone.net.message.play.game.UserListHeaderFooterMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.game.WorldBorderMessage;
+import net.glowstone.net.message.play.inv.ClickWindowButtonMessage;
 import net.glowstone.net.message.play.inv.CloseWindowMessage;
 import net.glowstone.net.message.play.inv.CreativeItemMessage;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
@@ -259,7 +262,8 @@ public class PlayProtocol extends GlowProtocol {
             ClientSettingsHandler.class);
         inbound(0x06, TabCompleteMessage.class, TabCompleteCodec.class, TabCompleteHandler.class);
         inbound(0x07, TransactionMessage.class, TransactionCodec.class, TransactionHandler.class);
-        // TODO 0x08 : Click Window Button (replaces EnchantItemMessage)
+        inbound(0x08, ClickWindowButtonMessage.class, ClickWindowButtonCodec.class,
+                ClickWindowButtonHandler.class);
         inbound(0x09, WindowClickMessage.class, WindowClickCodec.class, WindowClickHandler.class);
         inbound(0x0A, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);
         inbound(0x0B, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);

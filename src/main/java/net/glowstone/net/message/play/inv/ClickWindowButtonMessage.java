@@ -4,9 +4,9 @@ import com.flowpowered.network.Message;
 import lombok.Data;
 
 @Data
-public final class EnchantItemMessage implements Message {
+public final class ClickWindowButtonMessage implements Message {
 
     private final int window;
-    private final int enchantment;
+    private final int button;
 
 }

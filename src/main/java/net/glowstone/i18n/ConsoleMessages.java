@@ -223,9 +223,6 @@ public interface ConsoleMessages {
             LoggableLocalizedString MISSING_RESOURCES = new LoggableLocalizedStringImpl(
                     "console.enchant.missing-resources", Level.INFO
             );
-
-            LoggableLocalizedString NOT_OPEN = new LoggableLocalizedStringImpl(
-                    "console.enchant.not-open", Level.INFO);
         }
 
         interface Icon {
@@ -257,6 +254,9 @@ public interface ConsoleMessages {
 
             LoggableLocalizedString UNKNOWN_CLIENT_STATUS_ACTION = new LoggableLocalizedStringImpl(
                     "console.net.unknown-client-status-action", Level.INFO);
+
+            LoggableLocalizedString WINDOW_NOT_OPEN = new LoggableLocalizedStringImpl(
+                    "console.net.window-not-open", Level.INFO);
         }
 
         interface Opencl {
