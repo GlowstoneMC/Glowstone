@@ -249,15 +249,15 @@ public class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = NoInline.of("1.16.1");
+    public static final String GAME_VERSION = NoInline.of("1.16.4");
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = NoInline.of(736);
+    public static final int PROTOCOL_VERSION = NoInline.of(754);
     /**
      * The data version supported by the server.
      */
-    public static final int DATA_VERSION = NoInline.of(2567);
+    public static final int DATA_VERSION = NoInline.of(2584);
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
