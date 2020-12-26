@@ -24,6 +24,7 @@ import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.net.message.play.entity.SpawnXpOrbMessage;
 import net.glowstone.net.message.play.entity.VehicleMoveMessage;
+import net.glowstone.net.message.play.game.BeaconEffectMessage;
 import net.glowstone.net.message.play.game.BlockActionMessage;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.game.ChatMessage;
@@ -212,6 +213,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
                 new int[]{1, 2}, new int[]{1, 2, 3}),
         new EditBookMessage(new ItemStack(Material.WRITABLE_BOOK), true, 0),
         new NameItemMessage("item name"),
+        new BeaconEffectMessage(0, 1),
     };
 
     public PlayProtocolTest() {

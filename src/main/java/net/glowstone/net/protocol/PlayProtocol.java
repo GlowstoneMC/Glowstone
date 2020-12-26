@@ -26,6 +26,7 @@ import net.glowstone.net.codec.play.entity.SpawnPlayerCodec;
 import net.glowstone.net.codec.play.entity.SpawnXpOrbCodec;
 import net.glowstone.net.codec.play.entity.VehicleMoveCodec;
 import net.glowstone.net.codec.play.game.AcknowledgePlayerDiggingCodec;
+import net.glowstone.net.codec.play.game.BeaconEffectCodec;
 import net.glowstone.net.codec.play.game.BlockActionCodec;
 import net.glowstone.net.codec.play.game.BlockBreakAnimationCodec;
 import net.glowstone.net.codec.play.game.BlockChangeCodec;
@@ -107,6 +108,7 @@ import net.glowstone.net.codec.play.scoreboard.ScoreboardDisplayCodec;
 import net.glowstone.net.codec.play.scoreboard.ScoreboardObjectiveCodec;
 import net.glowstone.net.codec.play.scoreboard.ScoreboardScoreCodec;
 import net.glowstone.net.codec.play.scoreboard.ScoreboardTeamCodec;
+import net.glowstone.net.handler.play.game.BeaconEffectHandler;
 import net.glowstone.net.handler.play.game.ClientSettingsHandler;
 import net.glowstone.net.handler.play.game.CraftRecipeRequestHandler;
 import net.glowstone.net.handler.play.game.DisplayedRecipeHandler;
@@ -166,6 +168,7 @@ import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.net.message.play.entity.SpawnXpOrbMessage;
 import net.glowstone.net.message.play.entity.VehicleMoveMessage;
 import net.glowstone.net.message.play.game.AcknowledgePlayerDiggingMessage;
+import net.glowstone.net.message.play.game.BeaconEffectMessage;
 import net.glowstone.net.message.play.game.BlockActionMessage;
 import net.glowstone.net.message.play.game.BlockBreakAnimationMessage;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
@@ -307,7 +310,7 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x22, AdvancementTabMessage.class, AdvancementTabCodec.class,
             AdvancementTabHandler.class);
         // TODO 0x23 : Select Trade (when a player selects a specific trade in a villager GUI)
-        // TODO 0x24 : Set Beacon Effect (changes the effect of the opened beacon GUI)
+        inbound(0x24, BeaconEffectMessage.class, BeaconEffectCodec.class, BeaconEffectHandler.class);
         inbound(0x25, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
         // TODO 0x26 : Update Command Block
         // TODO 0x27 : Update Command Block Minecart

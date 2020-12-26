@@ -58,19 +58,6 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                                 + brand);
                     }
                     break;
-                // TODO 1.15: MC|Beacon has moved to the inbound "Set Beacon Effect" packet
-//                case "MC|Beacon": {
-//                    Player player = session.getPlayer();
-//
-//                    if (player.getOpenInventory() == null || player.getOpenInventory().getType() != InventoryType.BEACON) {
-//                        break;
-//                    }
-//
-//                    GlowBeaconInventory inventory = (GlowBeaconInventory) player.getOpenInventory().getTopInventory();
-//                    inventory.setActiveEffects(buf.readInt(), buf.readInt());
-//
-//                    break;
-//                }
                 default:
                     GlowServer.logger.info(session + " used unknown Minecraft channel: " + channel);
                     break;
