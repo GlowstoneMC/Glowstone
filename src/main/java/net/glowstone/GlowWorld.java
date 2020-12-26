@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,9 +72,11 @@ import org.bukkit.Difficulty;
 import org.bukkit.Effect;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameRule;
+import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Raid;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.StructureType;
@@ -85,6 +88,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.boss.DragonBattle;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -336,6 +341,21 @@ public class GlowWorld implements World {
     @Setter
     private int ticksPerMonsterSpawns;
     /**
+     * Ticks between when water mobs are spawned.
+     */
+    @Setter
+    private int ticksPerWaterSpawns;
+    /**
+     * Ticks between when ambient water mobs are spawned.
+     */
+    @Setter
+    private int ticksPerWaterAmbientSpawns;
+    /**
+     * Ticks between when ambient mobs are spawned.
+     */
+    @Setter
+    private int ticksPerAmbientSpawns;
+    /**
      * Per-world spawn limits on hostile mobs.
      */
     @Getter
@@ -348,11 +368,17 @@ public class GlowWorld implements World {
     @Setter
     private int animalSpawnLimit;
     /**
-     * Per-world spawn limits on water mobs (squids).
+     * Per-world spawn limits on water mobs.
      */
     @Getter
     @Setter
     private int waterAnimalSpawnLimit;
+    /**
+     * Per-world spawn limits on water ambient mobs.
+     */
+    @Getter
+    @Setter
+    private int waterAmbientSpawnLimit;
     /**
      * Per-world spawn limits on ambient mobs (bats).
      */
@@ -371,6 +397,18 @@ public class GlowWorld implements World {
      */
     @Getter
     private boolean initialized;
+    /**
+     * Per-world view distance.
+     */
+    @Getter
+    @Setter
+    private int viewDistance;
+    /**
+     * Per-world hardcore setting.
+     */
+    @Getter
+    @Setter
+    private boolean hardcore;
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -398,16 +436,22 @@ public class GlowWorld implements World {
         // set up values from server defaults
         ticksPerAnimalSpawns = server.getTicksPerAnimalSpawns();
         ticksPerMonsterSpawns = server.getTicksPerMonsterSpawns();
+        ticksPerAmbientSpawns = server.getTicksPerAmbientSpawns();
+        ticksPerWaterAmbientSpawns = server.getTicksPerWaterAmbientSpawns();
+        ticksPerWaterSpawns = server.getTicksPerWaterSpawns();
         monsterSpawnLimit = server.getMonsterSpawnLimit();
         animalSpawnLimit = server.getAnimalSpawnLimit();
         waterAnimalSpawnLimit = server.getWaterAnimalSpawnLimit();
         ambientSpawnLimit = server.getAmbientSpawnLimit();
+        waterAmbientSpawnLimit = server.getWaterAnimalSpawnLimit();
         keepSpawnLoaded = server.keepSpawnLoaded();
         populateAnchoredChunks = server.populateAnchoredChunks();
         difficulty = server.getDifficulty();
         maxHeight = server.getMaxBuildHeight();
         seaLevel = GlowServer.getWorldConfig().getInt(WorldConfig.Key.SEA_LEVEL);
         worldBorder = new GlowWorldBorder(this);
+        viewDistance = server.getViewDistance();
+        hardcore = server.isHardcore();
 
         // read in world data
         WorldFinalValues values;
@@ -1119,6 +1163,24 @@ public class GlowWorld implements World {
         return ticksPerMonsterSpawns;
     }
 
+    @Override
+    public long getTicksPerWaterSpawns() {
+        // Can't be lombokified because inherited return type is long, not int
+        return ticksPerWaterSpawns;
+    }
+
+    @Override
+    public long getTicksPerWaterAmbientSpawns() {
+        // Can't be lombokified because inherited return type is long, not int
+        return ticksPerWaterAmbientSpawns;
+    }
+
+    @Override
+    public long getTicksPerAmbientSpawns() {
+        // Can't be lombokified because inherited return type is long, not int
+        return ticksPerAmbientSpawns;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // force-save
 
@@ -1287,6 +1349,30 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public int getHighestBlockYAt(int x, int z, @NotNull HeightMap heightMap) {
+        return getHighestBlockAt(x, z, heightMap).getY();
+    }
+
+    @Override
+    public int getHighestBlockYAt(@NotNull Location location, @NotNull HeightMap heightMap) {
+        return getHighestBlockAt(location, heightMap).getY();
+    }
+
+    @NotNull
+    @Override
+    public Block getHighestBlockAt(int x, int z, @NotNull HeightMap heightMap) {
+        // TODO: Support height maps
+        return getHighestBlockAt(x, z);
+    }
+
+    @NotNull
+    @Override
+    public Block getHighestBlockAt(@NotNull Location location, @NotNull HeightMap heightMap) {
+        // TODO: Support height maps
+        return getHighestBlockAt(location);
+    }
+
+    @Override
     public int getHighestBlockYAt(int x, int z) {
         return getChunkAt(x >> 4, z >> 4).getHeight(x & 0xf, z & 0xf);
     }
@@ -1354,8 +1440,22 @@ public class GlowWorld implements World {
     }
 
     @Override
-    public @NotNull CompletableFuture<Chunk> getChunkAtAsync(int i, int i1, boolean b) {
-        return null;
+    public @NotNull CompletableFuture<Chunk> getChunkAtAsync(int x, int z, boolean gen) {
+        return getChunkAtAsync(x, z, gen, false);
+    }
+
+    @NotNull
+    @Override
+    public CompletableFuture<Chunk> getChunkAtAsync(int x, int z, boolean gen, boolean urgent) {
+        // TODO: Support 'urgent'
+        CompletableFuture<Chunk> future = new CompletableFuture<>();
+        ServerProvider.getServer().getScheduler()
+                .runTaskAsynchronously(null, () -> {
+                    GlowChunk chunk = chunkManager.getChunk(x, z);
+                    chunk.load(gen);
+                    future.complete(chunk);
+                });
+        return future;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1416,7 +1516,6 @@ public class GlowWorld implements World {
         return unloadChunk(x, z, save, true);
     }
 
-    @Override
     public boolean unloadChunk(int x, int z, boolean save, boolean safe) {
         return !isChunkLoaded(x, z) || getChunkAt(x, z).unload(save, safe);
     }
@@ -1426,7 +1525,6 @@ public class GlowWorld implements World {
         return unloadChunkRequest(x, z, true);
     }
 
-    @Override
     public boolean unloadChunkRequest(int x, int z, boolean safe) {
         if (safe && isChunkInUse(x, z)) {
             return false;
@@ -1466,18 +1564,45 @@ public class GlowWorld implements World {
     }
 
     @Override
-    public boolean isChunkForceLoaded(int i, int i1) {
+    public boolean isChunkForceLoaded(int x, int z) {
         return false;
     }
 
     @Override
-    public void setChunkForceLoaded(int i, int i1, boolean b) {
-
+    public void setChunkForceLoaded(int x, int z, boolean forced) {
+        throw new UnsupportedOperationException("Force-loading chunks is not supported yet.");
     }
 
     @Override
     public @NotNull Collection<Chunk> getForceLoadedChunks() {
-        return null;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean addPluginChunkTicket(int x, int z, @NotNull Plugin plugin) {
+        throw new UnsupportedOperationException("Chunk tickets are not implemented yet.");
+    }
+
+    @Override
+    public boolean removePluginChunkTicket(int x, int z, @NotNull Plugin plugin) {
+        throw new UnsupportedOperationException("Chunk tickets are not implemented yet.");
+    }
+
+    @Override
+    public void removePluginChunkTickets(@NotNull Plugin plugin) {
+        throw new UnsupportedOperationException("Chunk tickets are not implemented yet.");
+    }
+
+    @NotNull
+    @Override
+    public Collection<Plugin> getPluginChunkTickets(int x, int z) {
+        throw new UnsupportedOperationException("Chunk tickets are not implemented yet.");
+    }
+
+    @NotNull
+    @Override
+    public Map<Plugin, Collection<Chunk>> getPluginChunkTickets() {
+        throw new UnsupportedOperationException("Chunk tickets are not implemented yet.");
     }
 
     @Override
@@ -1493,19 +1618,29 @@ public class GlowWorld implements World {
     public Biome getBiome(int x, int z) {
         if (environment == Environment.THE_END) {
             return Biome.THE_END;
-        } else if (environment == Environment.NETHER) {
-            return Biome.NETHER;
+        } else {
+            return GlowBiome.getBiome(getChunkAt(x >> 4, z >> 4).getBiome(x & 0xF, z & 0xF))
+                    .getType();
         }
+    }
 
-        return GlowBiome.getBiome(getChunkAt(x >> 4, z >> 4).getBiome(x & 0xF, z & 0xF))
-                .getType();
+    @NotNull
+    @Override
+    public Biome getBiome(int x, int y, int z) {
+        return getBiome(x, z); // TODO: Biomes are now 3-dimensional
     }
 
     @Override
-    public void setBiome(int x, int z, Biome bio) {
+    public void setBiome(int x, int z, @NotNull Biome bio) {
         getChunkAtAsync(
             x >> 4, z >> 4, chunk -> ((GlowChunk) chunk)
                 .setBiome(x & 0xF, z & 0xF, GlowBiome.getId(bio)));
+    }
+
+    @Override
+    public void setBiome(int x, int y, int z, @NotNull Biome biome) {
+        // TODO: Biomes are now 3-dimensional
+        setBiome(x, z, biome);
     }
 
     @Override
@@ -1514,8 +1649,20 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public double getTemperature(int x, int y, int z) {
+        // TODO: Biomes are now 3-dimensional
+        return getTemperature(x, z);
+    }
+
+    @Override
     public double getHumidity(int x, int z) {
         return GlowBiomeClimate.getBiomeHumidity(getBiome(x, z));
+    }
+
+    @Override
+    public double getHumidity(int x, int y, int z) {
+        // TODO: Biomes are now 3-dimensional
+        return getHumidity(x, z);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1524,13 +1671,22 @@ public class GlowWorld implements World {
     @Override
     public <T extends Entity> T spawn(Location location,
                                       Class<T> clazz) throws IllegalArgumentException {
-        return (T) spawn(location, EntityRegistry.getEntity(clazz), SpawnReason.CUSTOM);
+        return (T) spawnGlowEntity(location, EntityRegistry.getEntity(clazz), SpawnReason.CUSTOM, null);
     }
 
     @Override
     public <T extends Entity> T spawn(Location location, Class<T> clazz,
                                       Consumer<T> function) throws IllegalArgumentException {
-        return null; // TODO: work on type mismatches
+        return (T) spawnGlowEntity(location, EntityRegistry.getEntity(clazz), SpawnReason.CUSTOM, function);
+    }
+
+    @NotNull
+    @Override
+    public <T extends Entity> T spawn(Location location,
+                                      Class<T> clazz,
+                                      Consumer<T> function,
+                                      CreatureSpawnEvent.SpawnReason spawnReason) throws IllegalArgumentException {
+        return (T) spawnGlowEntity(location, EntityRegistry.getEntity(clazz), spawnReason, function);
     }
 
     /**
@@ -1542,8 +1698,8 @@ public class GlowWorld implements World {
      * @return an instance of the spawned {@link Entity}
      * @throws IllegalArgumentException TODO: document the reason this can happen
      */
-    public GlowEntity spawn(Location location, Class<? extends GlowEntity> clazz,
-                            SpawnReason reason) throws IllegalArgumentException {
+    public <T extends GlowEntity, E extends Entity> GlowEntity spawnGlowEntity(Location location, Class<T> clazz,
+                                                                               SpawnReason reason, @Nullable Consumer<E> function) throws IllegalArgumentException {
         checkNotNull(location);
         checkNotNull(clazz);
 
@@ -1553,7 +1709,9 @@ public class GlowWorld implements World {
             if (EntityRegistry.getEntity(clazz) != null) {
                 entity = EntityStorage.create(clazz, location);
             }
-            // function.accept(entity); TODO: work on type mismatches
+            if (entity != null && function != null) {
+                function.accept((E) entity);
+            }
             EntitySpawnEvent spawnEvent = null;
             if (entity instanceof LivingEntity) {
                 spawnEvent = EventFactory.getInstance()
@@ -1685,9 +1843,9 @@ public class GlowWorld implements World {
         return arrow;
     }
 
+    @NotNull
     @Override
-    public <T extends Arrow> T spawnArrow(Location location, Vector direction, float speed,
-                                          float spread, Class<T> clazz) {
+    public <T extends AbstractArrow> T spawnArrow(@NotNull Location location, @NotNull Vector vector, float v, float v1, @NotNull Class<T> aClass) {
         return null;
     }
 
@@ -1852,6 +2010,16 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public boolean createExplosion(@NotNull Location location, float power, boolean setFire, boolean breakBlocks) {
+        return createExplosion(null, location, power, setFire, breakBlocks);
+    }
+
+    @Override
+    public boolean createExplosion(@NotNull Location location, float power, boolean setFire, boolean breakBlocks, @Nullable Entity source) {
+        return createExplosion(source, location, power, setFire, breakBlocks);
+    }
+
+    @Override
     public boolean createExplosion(double x, double y, double z, float power) {
         return createExplosion(x, y, z, power, false, true);
     }
@@ -1865,6 +2033,11 @@ public class GlowWorld implements World {
     public boolean createExplosion(double x, double y, double z, float power, boolean setFire,
                                    boolean breakBlocks) {
         return createExplosion(null, x, y, z, power, setFire, breakBlocks);
+    }
+
+    @Override
+    public boolean createExplosion(double x, double y, double z, float power, boolean setFire, boolean breakBlocks, @Nullable Entity source) {
+        return createExplosion(source, x, y, z, power, setFire, breakBlocks);
     }
 
     /**
@@ -1968,6 +2141,28 @@ public class GlowWorld implements World {
     @Override
     public Spigot spigot() {
         return spigot;
+    }
+
+    @Nullable
+    @Override
+    public Raid locateNearestRaid(@NotNull Location location, int radius) {
+        throw new UnsupportedOperationException("Raids are not supported yet.");
+    }
+
+    @NotNull
+    @Override
+    public List<Raid> getRaids() {
+        throw new UnsupportedOperationException("Raids are not supported yet.");
+    }
+
+    @Nullable
+    @Override
+    public DragonBattle getEnderDragonBattle() {
+        if (this.getEnvironment() == Environment.THE_END) {
+            throw new UnsupportedOperationException("The DragonBattle API is not supported yet.");
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2278,6 +2473,18 @@ public class GlowWorld implements World {
     public @Nullable Location locateNearestStructure(@NotNull Location location,
             @NotNull StructureType structureType, int i, boolean b) {
         return null;
+    }
+
+    @Override
+    public int getNoTickViewDistance() {
+        // TODO: Distinction between no-tick and tick view distance
+        return this.getViewDistance();
+    }
+
+    @Override
+    public void setNoTickViewDistance(int viewDistance) {
+        // TODO: Distinction between no-tick and tick view distance
+        this.setViewDistance(viewDistance);
     }
 
     @Override
