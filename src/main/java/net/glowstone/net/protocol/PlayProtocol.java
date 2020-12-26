@@ -303,7 +303,7 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x2C, PlayerSwingArmMessage.class, PlayerSwingArmCodec.class,
             PlayerSwingArmHandler.class);
         inbound(0x2D, SpectateMessage.class, SpectateCodec.class, SpectateHandler.class);
-        inbound(0x2D, BlockPlacementMessage.class, BlockPlacementCodec.class,
+        inbound(0x2E, BlockPlacementMessage.class, BlockPlacementCodec.class,
             BlockPlacementHandler.class);
         inbound(0x2F, UseItemMessage.class, UseItemCodec.class, UseItemHandler.class);
 
