@@ -91,6 +91,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                     return false;
                 }
                 StringBuilder builder = new StringBuilder();
+
                 for (int i = 1; i < args.length; i++) {
                     builder.append(args[i] + (i == args.length - 1 ? "" : " "));
                 }
