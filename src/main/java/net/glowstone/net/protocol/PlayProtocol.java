@@ -36,6 +36,7 @@ import net.glowstone.net.codec.play.game.CraftRecipeRequestCodec;
 import net.glowstone.net.codec.play.game.CraftRecipeResponseCodec;
 import net.glowstone.net.codec.play.game.DeclareCommandsCodec;
 import net.glowstone.net.codec.play.game.DisplayedRecipeCodec;
+import net.glowstone.net.codec.play.game.EditBookCodec;
 import net.glowstone.net.codec.play.game.ExperienceCodec;
 import net.glowstone.net.codec.play.game.ExplosionCodec;
 import net.glowstone.net.codec.play.game.HealthCodec;
@@ -108,6 +109,7 @@ import net.glowstone.net.codec.play.scoreboard.ScoreboardTeamCodec;
 import net.glowstone.net.handler.play.game.ClientSettingsHandler;
 import net.glowstone.net.handler.play.game.CraftRecipeRequestHandler;
 import net.glowstone.net.handler.play.game.DisplayedRecipeHandler;
+import net.glowstone.net.handler.play.game.EditBookHandler;
 import net.glowstone.net.handler.play.game.IncomingChatHandler;
 import net.glowstone.net.handler.play.game.PingHandler;
 import net.glowstone.net.handler.play.game.PluginMessageHandler;
@@ -172,6 +174,7 @@ import net.glowstone.net.message.play.game.CraftRecipeRequestMessage;
 import net.glowstone.net.message.play.game.CraftRecipeResponseMessage;
 import net.glowstone.net.message.play.game.DeclareCommandsMessage;
 import net.glowstone.net.message.play.game.DisplayedRecipeMessage;
+import net.glowstone.net.message.play.game.EditBookMessage;
 import net.glowstone.net.message.play.game.ExperienceMessage;
 import net.glowstone.net.message.play.game.ExplosionMessage;
 import net.glowstone.net.message.play.game.HealthMessage;
@@ -267,7 +270,7 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x09, WindowClickMessage.class, WindowClickCodec.class, WindowClickHandler.class);
         inbound(0x0A, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);
         inbound(0x0B, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
-        // TODO 0x0C : Edit Book (editing a book draft, and optionally signing)
+        inbound(0x0C, EditBookMessage.class, EditBookCodec.class, EditBookHandler.class);
         // TODO 0x0D : Query Entity NBT
         inbound(0x0E, InteractEntityMessage.class, InteractEntityCodec.class,
             InteractEntityHandler.class);
