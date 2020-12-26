@@ -35,6 +35,7 @@ import net.glowstone.net.codec.play.game.ClientSettingsCodec;
 import net.glowstone.net.codec.play.game.CraftRecipeRequestCodec;
 import net.glowstone.net.codec.play.game.CraftRecipeResponseCodec;
 import net.glowstone.net.codec.play.game.DeclareCommandsCodec;
+import net.glowstone.net.codec.play.game.DisplayedRecipeCodec;
 import net.glowstone.net.codec.play.game.ExperienceCodec;
 import net.glowstone.net.codec.play.game.ExplosionCodec;
 import net.glowstone.net.codec.play.game.HealthCodec;
@@ -48,6 +49,7 @@ import net.glowstone.net.codec.play.game.PlayEffectCodec;
 import net.glowstone.net.codec.play.game.PlayParticleCodec;
 import net.glowstone.net.codec.play.game.PluginMessageCodec;
 import net.glowstone.net.codec.play.game.PositionRotationCodec;
+import net.glowstone.net.codec.play.game.RecipeBookStateCodec;
 import net.glowstone.net.codec.play.game.RespawnCodec;
 import net.glowstone.net.codec.play.game.SignEditorCodec;
 import net.glowstone.net.codec.play.game.SoundEffectCodec;
@@ -104,9 +106,11 @@ import net.glowstone.net.codec.play.scoreboard.ScoreboardScoreCodec;
 import net.glowstone.net.codec.play.scoreboard.ScoreboardTeamCodec;
 import net.glowstone.net.handler.play.game.ClientSettingsHandler;
 import net.glowstone.net.handler.play.game.CraftRecipeRequestHandler;
+import net.glowstone.net.handler.play.game.DisplayedRecipeHandler;
 import net.glowstone.net.handler.play.game.IncomingChatHandler;
 import net.glowstone.net.handler.play.game.PingHandler;
 import net.glowstone.net.handler.play.game.PluginMessageHandler;
+import net.glowstone.net.handler.play.game.RecipeBookStateHandler;
 import net.glowstone.net.handler.play.game.UpdateSignHandler;
 import net.glowstone.net.handler.play.inv.CloseWindowHandler;
 import net.glowstone.net.handler.play.inv.CreativeItemHandler;
@@ -165,6 +169,7 @@ import net.glowstone.net.message.play.game.ClientSettingsMessage;
 import net.glowstone.net.message.play.game.CraftRecipeRequestMessage;
 import net.glowstone.net.message.play.game.CraftRecipeResponseMessage;
 import net.glowstone.net.message.play.game.DeclareCommandsMessage;
+import net.glowstone.net.message.play.game.DisplayedRecipeMessage;
 import net.glowstone.net.message.play.game.ExperienceMessage;
 import net.glowstone.net.message.play.game.ExplosionMessage;
 import net.glowstone.net.message.play.game.HealthMessage;
@@ -178,6 +183,7 @@ import net.glowstone.net.message.play.game.PlayEffectMessage;
 import net.glowstone.net.message.play.game.PlayParticleMessage;
 import net.glowstone.net.message.play.game.PluginMessage;
 import net.glowstone.net.message.play.game.PositionRotationMessage;
+import net.glowstone.net.message.play.game.RecipeBookStateMessage;
 import net.glowstone.net.message.play.game.RespawnMessage;
 import net.glowstone.net.message.play.game.SignEditorMessage;
 import net.glowstone.net.message.play.game.SoundEffectMessage;
@@ -283,8 +289,8 @@ public class PlayProtocol extends GlowProtocol {
             PlayerActionHandler.class);
         inbound(0x1D, SteerVehicleMessage.class, SteerVehicleCodec.class,
             SteerVehicleHandler.class);
-        // TODO 0x1E : Set Displayed Book (replaces CraftingBookDataMessage type 0)
-        // TODO 0x1F : Set Recipe Book State (replaces CraftingBookDataMessage type 1)
+        inbound(0x1E, DisplayedRecipeMessage.class, DisplayedRecipeCodec.class, DisplayedRecipeHandler.class);
+        inbound(0x1F, RecipeBookStateMessage.class, RecipeBookStateCodec.class, RecipeBookStateHandler.class);
         // TODO 0x20 : Name Item packet
         inbound(0x21, ResourcePackStatusMessage.class, ResourcePackStatusCodec.class,
             ResourcePackStatusHandler.class);

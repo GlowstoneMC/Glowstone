@@ -1,13 +1,11 @@
 package net.glowstone.net;
 
 import com.flowpowered.network.Message;
-import java.util.Arrays;
-import java.util.UUID;
 import net.glowstone.net.message.KickMessage;
-import net.glowstone.net.message.play.entity.EntityAnimationMessage;
 import net.glowstone.net.message.play.entity.AttachEntityMessage;
 import net.glowstone.net.message.play.entity.CollectItemMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
+import net.glowstone.net.message.play.entity.EntityAnimationMessage;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
@@ -32,13 +30,14 @@ import net.glowstone.net.message.play.game.ChatMessage;
 import net.glowstone.net.message.play.game.ClientSettingsMessage;
 import net.glowstone.net.message.play.game.CraftRecipeRequestMessage;
 import net.glowstone.net.message.play.game.CraftRecipeResponseMessage;
-import net.glowstone.net.message.play.game.CraftingBookDataMessage;
+import net.glowstone.net.message.play.game.DisplayedRecipeMessage;
 import net.glowstone.net.message.play.game.ExperienceMessage;
 import net.glowstone.net.message.play.game.HealthMessage;
 import net.glowstone.net.message.play.game.IncomingChatMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.PluginMessage;
 import net.glowstone.net.message.play.game.PositionRotationMessage;
+import net.glowstone.net.message.play.game.RecipeBookStateMessage;
 import net.glowstone.net.message.play.game.RespawnMessage;
 import net.glowstone.net.message.play.game.SpawnPositionMessage;
 import net.glowstone.net.message.play.game.StateChangeMessage;
@@ -73,7 +72,6 @@ import net.glowstone.net.message.play.player.SteerBoatMessage;
 import net.glowstone.net.message.play.player.SteerVehicleMessage;
 import net.glowstone.net.message.play.player.TabCompleteMessage;
 import net.glowstone.net.message.play.player.TeleportConfirmMessage;
-import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.net.message.play.player.UseItemMessage;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.TextMessage;
@@ -82,6 +80,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.Arrays;
+import java.util.UUID;
 
 /**
  * Test cases for {@link PlayProtocol}.
@@ -192,7 +193,6 @@ public class PlayProtocolTest extends BaseProtocolTest {
         //CombatEvent
         new ResourcePackSendMessage("url", "hash"),
         new ServerDifficultyMessage(Difficulty.NORMAL),
-        new UseBedMessage(1, 2, 3, 4),
         //TabCompleteResponse
         new UseItemMessage(0),
         new VehicleMoveMessage(1.0, 2.0, 3.0, 4f, 5f),
@@ -202,8 +202,8 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new SteerBoatMessage(false, false),
         new CraftRecipeRequestMessage(0, 1, true),
         new CraftRecipeResponseMessage(0, 1),
-        new CraftingBookDataMessage(CraftingBookDataMessage.TYPE_DISPLAYED_RECIPE, 0),
-        new CraftingBookDataMessage(CraftingBookDataMessage.TYPE_STATUS, true, false, true, false),
+        new RecipeBookStateMessage(RecipeBookStateMessage.RecipeBookType.CRAFTING, true, false),
+        new DisplayedRecipeMessage("minecraft:test"),
         new UnlockRecipesMessage(UnlockRecipesMessage.ACTION_ADD, true, false, true, false,
                 new int[]{1, 2, 3}),
         new UnlockRecipesMessage(UnlockRecipesMessage.ACTION_INIT, true, false, true, false,
