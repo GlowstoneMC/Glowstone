@@ -115,6 +115,7 @@ import org.bukkit.Statistic;
 import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.WorldType;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Block;
@@ -671,15 +672,23 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         reader.close();
 
         int gameMode = getGameMode().getValue();
-        if (server.isHardcore()) {
-            gameMode |= 0x8;
-        }
-
         setGameModeDefaults();
 
-        session.send(new JoinGameMessage(getEntityId(), gameMode, world.getEnvironment().getId(), world
-                .getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, world
-                .getGameRuleMap().getBoolean(GameRules.REDUCED_DEBUG_INFO)));
+        session.send(new JoinGameMessage(
+                getEntityId(),
+                world.isHardcore(),
+                gameMode,
+                -1, // TODO: determine previous gamemode
+                server.getWorlds().stream().map(World::getName).toArray(String[]::new),
+                world.getName(),
+                world.getSeedHash(),
+                server.getMaxPlayers(),
+                world.getViewDistance(),
+                world.getGameRuleMap().getBoolean(GameRules.REDUCED_DEBUG_INFO),
+                !world.getGameRuleMap().getBoolean(GameRules.DO_IMMEDIATE_RESPAWN),
+                false, // TODO: Debug worlds
+                world.getWorldType() == WorldType.FLAT
+        ));
 
         // send server brand and supported plugin channels
         Message pluginMessage = PluginMessage.fromString("minecraft:brand", server.getName());
@@ -1159,9 +1168,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         chunkLock = world.newChunkLock(getName());
 
         // spawn into world
-        String type = world.getWorldType().getName().toLowerCase();
-        session.send(new RespawnMessage(world.getEnvironment().getId(), world.getDifficulty()
-                .getValue(), getGameMode().getValue(), type));
+        session.send(new RespawnMessage(
+                world.getName(),
+                world.getSeedHash(),
+                getGameMode().getValue(),
+                -1,
+                false,
+                world.getWorldType() == WorldType.FLAT,
+                oldWorld.getEnvironment() != world.getEnvironment()
+        ));
 
         setRawLocation(location, false); // take us to spawn position
         session.send(new PositionRotationMessage(location));

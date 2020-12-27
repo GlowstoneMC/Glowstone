@@ -6,6 +6,9 @@ import com.destroystokyo.paper.HeightmapType;
 import com.flowpowered.network.Message;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -211,6 +214,11 @@ public class GlowWorld implements World {
      */
     @Getter
     private final long seed;
+    /**
+     * The SHA-256 hash of the world seed.
+     */
+    @Getter
+    private final byte[] seedHash;
     /**
      * Contains how regular blocks should be pulsed.
      */
@@ -466,6 +474,18 @@ public class GlowWorld implements World {
         } else {
             seed = creator.seed();
             uid = UUID.randomUUID();
+        }
+
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        if (digest != null) {
+            seedHash = digest.digest(String.valueOf(seed).getBytes(StandardCharsets.UTF_8));
+        } else {
+            seedHash = new byte[32];
         }
 
         chunkManager = new ChunkManager(this, storage.getChunkIoService(), generator);

@@ -6,9 +6,13 @@ import lombok.Data;
 @Data
 public final class RespawnMessage implements Message {
 
-    private final int dimension;
-    private final int difficulty;
+    // TODO: Dimension (NBT compound)
+    private final String world;
+    private final byte[] seedHash;
     private final int mode;
-    private final String levelType;
+    private final int previousMode;
+    private final boolean debug;
+    private final boolean flat;
+    private final boolean copyMetadata;
 
 }
