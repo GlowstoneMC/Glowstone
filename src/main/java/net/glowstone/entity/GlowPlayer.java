@@ -1,42 +1,12 @@
 package net.glowstone.entity;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static net.glowstone.GlowServer.logger;
-
 import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.flowpowered.network.Message;
-import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -53,7 +23,6 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
-import net.glowstone.command.LocalizedEnumNames;
 import net.glowstone.constants.GameRules;
 import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.constants.GlowEffect;
@@ -67,7 +36,6 @@ import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.monster.GlowBoss;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.passive.GlowFishingHook;
-import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
@@ -76,8 +44,8 @@ import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.map.GlowMapCanvas;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.entity.EntityAnimationMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
+import net.glowstone.net.message.play.entity.EntityAnimationMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.entity.SetPassengerMessage;
@@ -99,6 +67,7 @@ import net.glowstone.net.message.play.game.SignEditorMessage;
 import net.glowstone.net.message.play.game.SpawnPositionMessage;
 import net.glowstone.net.message.play.game.StateChangeMessage;
 import net.glowstone.net.message.play.game.StateChangeMessage.Reason;
+import net.glowstone.net.message.play.game.StopSoundMessage;
 import net.glowstone.net.message.play.game.TimeMessage;
 import net.glowstone.net.message.play.game.TitleMessage;
 import net.glowstone.net.message.play.game.TitleMessage.Action;
@@ -114,7 +83,6 @@ import net.glowstone.net.message.play.inv.SetWindowContentsMessage;
 import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
 import net.glowstone.net.message.play.inv.WindowPropertyMessage;
 import net.glowstone.net.message.play.player.ResourcePackSendMessage;
-import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.Convert;
@@ -206,6 +174,32 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
+
+import javax.annotation.Nullable;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 
 /**
@@ -2583,10 +2577,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         stopSound(null, sound);
     }
 
-    public void stopSound(SoundCategory category) {
-        stopSound("", category);
-    }
-
     @Override
     public void stopSound(Sound sound, SoundCategory soundCategory) {
         stopSound(GlowSound.getVanillaId(sound), soundCategory);
@@ -2594,23 +2584,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void stopSound(String sound, SoundCategory category) {
-        String source = "";
-        if (category != null) {
-            source = category.name().toLowerCase();
+        if (sound.equalsIgnoreCase("all")) {
+            sound = null;
         }
-        if (sound == null || sound.equalsIgnoreCase("all")) {
-            sound = "";
-        }
-        ByteBuf buffer = Unpooled.buffer();
-        try {
-            ByteBufUtils.writeUTF8(buffer, source); //Source
-            ByteBufUtils.writeUTF8(buffer, sound); //Sound
-            session.sendAndRelease(new PluginMessage("MC|StopSound", buffer.array()), // NON-NLS
-                buffer);
-        } catch (IOException e) {
-            logger.info("Failed to send stop-sound event.");
-            e.printStackTrace();
-        }
+        session.send(new StopSoundMessage(category, sound));
     }
 
     public void stopSound(SoundCategory category, Sound sound) {
@@ -2623,10 +2600,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             sound = "";
         }
         stopSound(sound, null);
-    }
-
-    public void stopAllSounds() {
-        stopSound("");
     }
 
     @Override

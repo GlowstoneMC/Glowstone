@@ -59,6 +59,7 @@ import net.glowstone.net.codec.play.game.SoundEffectCodec;
 import net.glowstone.net.codec.play.game.SpawnPositionCodec;
 import net.glowstone.net.codec.play.game.StateChangeCodec;
 import net.glowstone.net.codec.play.game.StatisticsCodec;
+import net.glowstone.net.codec.play.game.StopSoundCodec;
 import net.glowstone.net.codec.play.game.TimeCodec;
 import net.glowstone.net.codec.play.game.TitleCodec;
 import net.glowstone.net.codec.play.game.UnloadChunkCodec;
@@ -201,6 +202,7 @@ import net.glowstone.net.message.play.game.SoundEffectMessage;
 import net.glowstone.net.message.play.game.SpawnPositionMessage;
 import net.glowstone.net.message.play.game.StateChangeMessage;
 import net.glowstone.net.message.play.game.StatisticsMessage;
+import net.glowstone.net.message.play.game.StopSoundMessage;
 import net.glowstone.net.message.play.game.TimeMessage;
 import net.glowstone.net.message.play.game.TitleMessage;
 import net.glowstone.net.message.play.game.UnloadChunkMessage;
@@ -408,7 +410,7 @@ public class PlayProtocol extends GlowProtocol {
         outbound(0x4E, TimeMessage.class, TimeCodec.class);
         outbound(0x4F, TitleMessage.class, TitleCodec.class);
         outbound(0x51, SoundEffectMessage.class, SoundEffectCodec.class);
-        // TODO 0x52 : Stop Sound
+        outbound(0x52, StopSoundMessage.class, StopSoundCodec.class);
         outbound(0x53, UserListHeaderFooterMessage.class, UserListHeaderFooterCodec.class);
         // TODO 0x54 : NBT Query Response (response to Query Block/Entity NBT packets)
         outbound(0x55, CollectItemMessage.class, CollectItemCodec.class);

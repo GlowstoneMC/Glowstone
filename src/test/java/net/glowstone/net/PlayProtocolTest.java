@@ -44,6 +44,7 @@ import net.glowstone.net.message.play.game.RecipeBookStateMessage;
 import net.glowstone.net.message.play.game.RespawnMessage;
 import net.glowstone.net.message.play.game.SpawnPositionMessage;
 import net.glowstone.net.message.play.game.StateChangeMessage;
+import net.glowstone.net.message.play.game.StopSoundMessage;
 import net.glowstone.net.message.play.game.TimeMessage;
 import net.glowstone.net.message.play.game.TitleMessage;
 import net.glowstone.net.message.play.game.UnlockRecipesMessage;
@@ -81,6 +82,7 @@ import net.glowstone.util.TextMessage;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.SoundCategory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -214,6 +216,10 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new EditBookMessage(new ItemStack(Material.WRITABLE_BOOK), true, 0),
         new NameItemMessage("item name"),
         new BeaconEffectMessage(0, 1),
+        new StopSoundMessage(null, null),
+        new StopSoundMessage(SoundCategory.AMBIENT, null),
+        new StopSoundMessage(SoundCategory.PLAYERS, "minecraft:test"),
+        new StopSoundMessage(null, "minecraft:test"),
     };
 
     public PlayProtocolTest() {
