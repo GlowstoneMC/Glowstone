@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         java: [ 8, 11, 15 ]
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v2
