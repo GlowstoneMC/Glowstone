@@ -461,9 +461,17 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
                 Validators.NON_NEGATIVE_INTEGER),
         AMBIENT_LIMIT("creatures.limit.ambient", 15, Migrate.BUKKIT, "spawn-limits.ambient",
                 Validators.NON_NEGATIVE_INTEGER),
+        WATER_AMBIENT_LIMIT("creatures.limit.water-ambient", 20, Migrate.BUKKIT, "spawn-limits.water-ambient",
+                Validators.NON_NEGATIVE_INTEGER),
         MONSTER_TICKS("creatures.ticks.monsters", 1, Migrate.BUKKIT, "ticks-per.monster-spawns",
                 Validators.NON_NEGATIVE_INTEGER),
         ANIMAL_TICKS("creatures.ticks.animal", 400, Migrate.BUKKIT, "ticks-per.animal-spawns",
+                Validators.NON_NEGATIVE_INTEGER),
+        WATER_TICKS("creatures.ticks.water", 1, Migrate.BUKKIT, "ticks-per.water-spawns",
+                Validators.NON_NEGATIVE_INTEGER),
+        WATER_AMBIENT_TICKS("creatures.ticks.water-ambient", 1, Migrate.BUKKIT, "ticks-per.water-ambient-spawns",
+                Validators.NON_NEGATIVE_INTEGER),
+        AMBIENT_TICKS("creatures.ticks.ambient", 1, Migrate.BUKKIT, "ticks-per.ambient-spawns",
                 Validators.NON_NEGATIVE_INTEGER),
 
         // folders
@@ -514,6 +522,7 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
         SUGGEST_PLAYER_NAMES_WHEN_NULL_TAB_COMPLETIONS(
                 "advanced.suggest-player-name-when-null-tab-completions", true,
                 Boolean.class::isInstance),
+        MAX_WORLD_SIZE("advanced.max-world-size", 29999984, Validators.POSITIVE_INTEGER),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query",

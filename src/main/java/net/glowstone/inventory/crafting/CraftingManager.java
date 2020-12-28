@@ -87,6 +87,18 @@ public final class CraftingManager implements Iterable<Recipe> {
     }
 
     /**
+     * Removes a recipe from the crafting manager.
+     *
+     * @param key The key of the recipe to remove.
+     * @return Whether a recipe was found and removed.
+     */
+    public boolean removeRecipe(NamespacedKey key) {
+        return shapedRecipes.removeIf(recipe -> recipe.getKey().equals(key))
+                || shapelessRecipes.removeIf(recipe -> recipe.getKey().equals(key))
+                || furnaceRecipes.removeIf(recipe -> recipe.getKey().equals(key));
+    }
+
+    /**
      * Get a furnace recipe from the crafting manager.
      *
      * @param input The furnace input.
@@ -367,6 +379,11 @@ public final class CraftingManager implements Iterable<Recipe> {
                 return shapelessRecipe;
             }
         }
+        for (FurnaceRecipe furnaceRecipe : furnaceRecipes) {
+            if (furnaceRecipe.getKey().equals(key)) {
+                return furnaceRecipe;
+            }
+        }
         return null;
     }
 
@@ -428,7 +445,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.RED_MUSHROOM_BLOCK, 300);
         furnaceFuels.put(Material.NOTE_BLOCK, 300);
         putAllAsFuels(MaterialUtil.SAPLINGS, 100);
-        furnaceFuels.put(Material.SIGN, 200);
+        putAllAsFuels(MaterialUtil.SIGNS, 200);
         furnaceFuels.put(Material.STICK, 100);
         putAllAsFuels(MaterialUtil.TRAPDOORS, 300);
         furnaceFuels.put(Material.TRAPPED_CHEST, 300);

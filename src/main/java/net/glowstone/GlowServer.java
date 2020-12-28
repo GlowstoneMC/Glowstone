@@ -2,6 +2,7 @@ package net.glowstone;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
@@ -55,6 +56,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
@@ -118,6 +120,7 @@ import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.FishingRewardManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
+import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.NetherGenerator;
 import net.glowstone.generator.OverworldGenerator;
@@ -166,6 +169,7 @@ import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
@@ -466,6 +470,9 @@ public class GlowServer implements Server {
     private static final Set<LibraryKey> blacklistedRuntimeLibs = ImmutableSet.of(
             new LibraryKey("it.unimi.dsi", "fastutil")
     );
+    @Getter
+    @Setter
+    private int maxPlayers;
 
     /**
      * Creates a new server.
@@ -1023,6 +1030,7 @@ public class GlowServer implements Server {
         spawnRadius = config.getInt(Key.SPAWN_RADIUS);
         whitelistEnabled = config.getBoolean(Key.WHITELIST);
         idleTimeout = config.getInt(Key.PLAYER_IDLE_TIMEOUT);
+        maxPlayers = config.getInt(Key.MAX_PLAYERS);
         craftingManager.initialize();
 
         // special handling
@@ -1811,6 +1819,11 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public String getMinecraftVersion() {
+        return GAME_VERSION;
+    }
+
+    @Override
     public Logger getLogger() {
         return logger;
     }
@@ -2152,6 +2165,16 @@ public class GlowServer implements Server {
         return new GlowOfflinePlayer(this, new GlowPlayerProfile(null, uuid, false));
     }
 
+    @Override
+    public OfflinePlayer getOfflinePlayerIfCached(@NotNull String username) {
+        UUID cached = ProfileCache.getUuidCached(username);
+        if (cached != null) {
+            return getOfflinePlayer(cached);
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Creates a new {@link GlowOfflinePlayer} instance for the given name.
      *
@@ -2423,13 +2446,18 @@ public class GlowServer implements Server {
         return false;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Inventory and crafting
+
     @Override
     public List<Recipe> getRecipesFor(ItemStack result) {
         return craftingManager.getRecipesFor(result);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Inventory and crafting
+    @Override
+    public Recipe getRecipe(@NotNull NamespacedKey key) {
+        return craftingManager.getRecipeByKey(key);
+    }
 
     @Override
     public Iterator<Recipe> recipeIterator() {
@@ -2449,6 +2477,11 @@ public class GlowServer implements Server {
     @Override
     public void resetRecipes() {
         craftingManager.resetRecipes();
+    }
+
+    @Override
+    public boolean removeRecipe(@NotNull NamespacedKey key) {
+        return craftingManager.removeRecipe(key);
     }
 
     @Override
@@ -2568,6 +2601,13 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public ChunkData createVanillaChunkData(World world, int x, int z) {
+        ChunkData chunkData = createChunkData(world);
+        // TODO: This function should populate the chunk.
+        return chunkData;
+    }
+
+    @Override
     public BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags) {
         return new GlowBossBar(title, color, style, flags);
     }
@@ -2655,19 +2695,12 @@ public class GlowServer implements Server {
         return worldConfig;
     }
 
-    @Override
     public String getServerName() {
         return config.getString(Key.SERVER_NAME);
     }
 
-    @Override
     public String getServerId() {
         return Integer.toHexString(getServerName().hashCode());
-    }
-
-    @Override
-    public int getMaxPlayers() {
-        return config.getInt(Key.MAX_PLAYERS);
     }
 
     @Override
@@ -2754,6 +2787,46 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public int getTicksPerWaterSpawns() {
+        return config.getInt(Key.WATER_TICKS);
+    }
+
+    @Override
+    public int getTicksPerWaterAmbientSpawns() {
+        return config.getInt(Key.WATER_AMBIENT_TICKS);
+    }
+
+    @Override
+    public int getTicksPerAmbientSpawns() {
+        return config.getInt(Key.AMBIENT_TICKS);
+    }
+
+    @Override
+    public long[] getTickTimes() {
+        throw new UnsupportedOperationException("Glowstone does not have a global tick loop.");
+    }
+
+    @Override
+    public double getAverageTickTime() {
+        throw new UnsupportedOperationException("Glowstone does not have a global tick loop.");
+    }
+
+    @Override
+    public int getCurrentTick() {
+        throw new UnsupportedOperationException("Glowstone does not have a global tick loop.");
+    }
+
+    @Override
+    public boolean isStopping() {
+        return isShuttingDown;
+    }
+
+    @Override
+    public MobGoals getMobGoals() {
+        throw new NotImplementedException("Mob AI is not implemented yet.");
+    }
+
+    @Override
     public boolean isHardcore() {
         return config.getBoolean(Key.HARDCORE);
     }
@@ -2788,6 +2861,11 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public int getWaterAmbientSpawnLimit() {
+        return config.getInt(Key.WATER_AMBIENT_LIMIT);
+    }
+
+    @Override
     public String getShutdownMessage() {
         return config.getString(Key.SHUTDOWN_MESSAGE);
     }
@@ -2804,6 +2882,11 @@ public class GlowServer implements Server {
      */
     public int getMaxBuildHeight() {
         return Math.max(64, Math.min(256, config.getInt(Key.MAX_BUILD_HEIGHT)));
+    }
+
+    @Override
+    public int getMaxWorldSize() {
+        return Math.max(1, Math.min(29999984, config.getInt(Key.MAX_WORLD_SIZE)));
     }
 
     /**
