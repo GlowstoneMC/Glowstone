@@ -13,6 +13,12 @@ import org.bukkit.entity.Player;
 @RequiredArgsConstructor
 public class SoundInfo {
 
+    public static final SoundInfo DEFAULT_BREAK_SOUND = new SoundInfo(Sound.BLOCK_WOOD_BREAK, 1F, 0.75F);
+    public static final SoundInfo DEFAULT_STEP_SOUND = new SoundInfo(Sound.BLOCK_WOOD_STEP, 1F, 0.75F);
+    public static final SoundInfo DEFAULT_PLACE_SOUND = new SoundInfo(Sound.BLOCK_WOOD_PLACE, 1F, 0.75F);
+    public static final SoundInfo DEFAULT_HIT_SOUND = new SoundInfo(Sound.BLOCK_WOOD_HIT, 1F, 0.75F);
+    public static final SoundInfo DEFAULT_FALL_SOUND = new SoundInfo(Sound.BLOCK_WOOD_FALL, 1F, 0.75F);
+
     /** The Bukkit sound enum constant. */
     private final Sound sound;
     /** The volume. */

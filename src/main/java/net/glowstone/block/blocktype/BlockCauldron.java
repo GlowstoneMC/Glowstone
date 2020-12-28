@@ -1,9 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
@@ -23,6 +19,11 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class BlockCauldron extends BlockNeedsTool {
 
@@ -213,7 +214,7 @@ public class BlockCauldron extends BlockNeedsTool {
     }
 
     @Override
-    protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
+    public MaterialMatcher getNeededMiningTool(GlowBlock block) {
         return ToolType.PICKAXE;
     }
 }

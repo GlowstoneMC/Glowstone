@@ -77,8 +77,7 @@ public class GlowBlock implements Block {
     @Getter
     private final int z;
     @Getter
-    private GlowWorld world;
-    @Getter
+    private final GlowWorld world;
 
     /**
      * Creates an object to refer to a block.
@@ -536,6 +535,11 @@ public class GlowBlock implements Block {
     }
 
     @Override
+    public boolean applyBoneMeal(@NotNull BlockFace blockFace) {
+        return false;
+    }
+
+    @Override
     public Collection<ItemStack> getDrops() {
         return Objects.requireNonNull(ItemTable.instance().getBlock(getType())).getMinedDrops(this);
     }
@@ -573,6 +577,19 @@ public class GlowBlock implements Block {
     @Override
     public @NotNull BlockSoundGroup getSoundGroup() {
         return null;
+    }
+
+    @NotNull
+    @Override
+    public String getTranslationKey() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public float getDestroySpeed(@NotNull ItemStack tool) {
+        // TODO: not implemented
+        return 1.0f;
     }
 
     ////////////////////////////////////////////////////////////////////////////

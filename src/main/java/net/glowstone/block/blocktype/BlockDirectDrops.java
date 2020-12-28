@@ -1,13 +1,14 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class BlockDirectDrops extends BlockNeedsTool {
 
@@ -87,7 +88,7 @@ public class BlockDirectDrops extends BlockNeedsTool {
     }
 
     @Override
-    protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
+    public MaterialMatcher getNeededMiningTool(GlowBlock block) {
         return neededTool;
     }
 

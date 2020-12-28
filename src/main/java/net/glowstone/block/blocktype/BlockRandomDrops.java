@@ -80,7 +80,7 @@ public class BlockRandomDrops extends BlockNeedsTool {
     }
 
     @Override
-    protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
+    public MaterialMatcher getNeededMiningTool(GlowBlock block) {
         return neededTool;
     }
 }

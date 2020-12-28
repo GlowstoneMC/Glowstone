@@ -97,7 +97,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                         // can never be broken (client does not send DONE_DIGGING).
                         blockBroken = damageEvent.getInstaBreak();
                         if (!blockBroken) {
-                            /// TODO: add a delay here based on hardness
+                            // TODO: add a delay here based on hardness
                             player.setDigging(block);
                         }
                     }

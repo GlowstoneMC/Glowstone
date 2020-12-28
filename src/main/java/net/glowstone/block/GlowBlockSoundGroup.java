@@ -21,7 +21,6 @@ public class GlowBlockSoundGroup implements BlockSoundGroup {
     @Getter
     private SoundInfo fallSoundInfo;
 
-
     @Override
     public @NotNull Sound getBreakSound() {
         return breakSoundInfo.getSound();
