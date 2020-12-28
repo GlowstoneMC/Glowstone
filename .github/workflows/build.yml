@@ -23,7 +23,7 @@ jobs:
           java-version: ${{ matrix.java }}
 
       - name: Maven Build
-        run: mvn --batch-mode package -Pbuild-extras -X
+        run: mvn --batch-mode package -Pbuild-extras
         env:
           JAVA_TOOL_OPTIONS: -XX:+UseG1GC -Xss4m
 
