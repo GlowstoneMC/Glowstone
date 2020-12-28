@@ -3,16 +3,6 @@ package net.glowstone.chunk;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,11 +23,28 @@ import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * Represents a chunk of the map.
@@ -147,7 +154,7 @@ public class GlowChunk implements Chunk {
 
     @Override
     public Entity[] getEntities() {
-        return entities.toArray(new Entity[entities.size()]);
+        return entities.toArray(new Entity[0]);
     }
 
     public Collection<GlowEntity> getRawEntities() {
@@ -169,6 +176,13 @@ public class GlowChunk implements Chunk {
         throw new UnsupportedOperationException("getTileEntities(true) not yet implemented"); // TODO
     }
 
+    @NotNull
+    @Override
+    public Collection<BlockState> getTileEntities(@NotNull Predicate<Block> blockPredicate, boolean useSnapshot) {
+        BlockState[] allBlockEntities = getTileEntities(useSnapshot);
+        return Arrays.stream(allBlockEntities).filter(state -> blockPredicate.test(state.getBlock())).collect(Collectors.toList());
+    }
+
     /**
      * Returns the states of the block entities (e.g. container blocks) in this chunk.
      *
@@ -183,7 +197,7 @@ public class GlowChunk implements Chunk {
             }
         }
 
-        return states.toArray(new GlowBlockState[states.size()]);
+        return states.toArray(new GlowBlockState[0]);
     }
 
     public Collection<BlockEntity> getRawBlockEntities() {
@@ -220,6 +234,29 @@ public class GlowChunk implements Chunk {
     }
 
     @Override
+    public boolean addPluginChunkTicket(@NotNull Plugin plugin) {
+        return false;
+    }
+
+    @Override
+    public boolean removePluginChunkTicket(@NotNull Plugin plugin) {
+        return false;
+    }
+
+    @NotNull
+    @Override
+    public Collection<Plugin> getPluginChunkTickets() {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public boolean contains(@NotNull BlockData block) {
+        // TODO
+        return false;
+    }
+
+    @Override
     public GlowChunkSnapshot getChunkSnapshot() {
         return getChunkSnapshot(true, false, false);
     }
@@ -249,16 +286,17 @@ public class GlowChunk implements Chunk {
 
     @Override
     public boolean unload() {
-        return unload(true, true);
+        return unload(true, false);
     }
 
     @Override
     public boolean unload(boolean save) {
-        return unload(save, true);
+        return unload(save, false);
     }
 
-    @Override
+    @Deprecated
     public boolean unload(boolean save, boolean safe) {
+        safe = false;
         if (!isLoaded()) {
             return true;
         }
@@ -271,10 +309,7 @@ public class GlowChunk implements Chunk {
             return false;
         }
 
-        if (EventFactory.getInstance()
-            .callEvent(new ChunkUnloadEvent(this)).isCancelled()) {
-            return false;
-        }
+        EventFactory.getInstance().callEvent(new ChunkUnloadEvent(this));
 
         sections = null;
         biomes = null;
@@ -355,8 +390,6 @@ public class GlowChunk implements Chunk {
     public BlockEntity createEntity(int cx, int cy, int cz, Material type) {
         switch (type) {
             // TODO: List may be incomplete
-            case SIGN:
-            case WALL_SIGN:
             case BLACK_BED:
             case BLUE_BED:
             case GREEN_BED:
@@ -756,7 +789,7 @@ public class GlowChunk implements Chunk {
      * @return the regional difficulty
      */
     public double getRegionalDifficulty() {
-        final double moonPhase = world.getMoonPhase();
+        final double moonPhase = world.getMoonPhaseFraction();
         final long worldTime = world.getFullTime();
         final Difficulty worldDifficulty = world.getDifficulty();
 
@@ -960,6 +993,12 @@ public class GlowChunk implements Chunk {
 
     public void addTick() {
         inhabitedTime++;
+    }
+
+    @NotNull
+    @Override
+    public PersistentDataContainer getPersistentDataContainer() {
+        return null;
     }
 
     /**

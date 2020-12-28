@@ -1,22 +1,10 @@
 package net.glowstone.entity;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.destroystokyo.paper.event.player.PlayerInitialSpawnEvent;
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -59,6 +47,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -87,6 +76,19 @@ import org.jetbrains.annotations.NotNull;
 import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents some entity in the world such as an item on the floor or a player.
@@ -299,12 +301,6 @@ public abstract class GlowEntity implements Entity {
     @Getter
     @Setter
     private boolean op;
-    private Spigot spigot = new Spigot() {
-        @Override
-        public boolean isInvulnerable() {
-            return GlowEntity.this.isInvulnerable();
-        }
-    };
 
     /**
      * Creates an entity and adds it to the specified world.
@@ -459,6 +455,13 @@ public abstract class GlowEntity implements Entity {
         return Position.getDirection((byte) (facing % 16));
     }
 
+    @NotNull
+    @Override
+    public Pose getPose() {
+        // TODO
+        return Pose.STANDING;
+    }
+
     @Override
     public Vector getVelocity() {
         return velocity.clone();
@@ -563,6 +566,11 @@ public abstract class GlowEntity implements Entity {
      * @return True if the entity should be saved.
      */
     public boolean shouldSave() {
+        return true;
+    }
+
+    @Override
+    public boolean isTicking() {
         return true;
     }
 
@@ -926,7 +934,7 @@ public abstract class GlowEntity implements Entity {
         Location target = server.getWorlds().get(0).getSpawnLocation();
 
         EntityPortalEvent event = EventFactory.getInstance()
-            .callEvent(new EntityPortalEvent(this, location.clone(), target, null));
+            .callEvent(new EntityPortalEvent(this, location.clone(), target));
         if (event.isCancelled()) {
             return false;
         }
@@ -960,7 +968,7 @@ public abstract class GlowEntity implements Entity {
         }
 
         EntityPortalEvent event = EventFactory.getInstance()
-            .callEvent(new EntityPortalEvent(this, location.clone(), target, null));
+            .callEvent(new EntityPortalEvent(this, location.clone(), target));
         if (event.isCancelled()) {
             return false;
         }
@@ -1568,10 +1576,6 @@ public abstract class GlowEntity implements Entity {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Spigot spigot() {
-        return spigot;
-    }
-
     @Override
     public int hashCode() {
         int prime = 31;
@@ -1674,5 +1678,14 @@ public abstract class GlowEntity implements Entity {
         protected String disambiguate(Entity subject, String metadataKey) {
             return UuidUtils.toString(subject.getUniqueId()) + ":" + metadataKey;
         }
+    }
+
+    public boolean isInMaterial(Material type) {
+        return location.getBlock().getType() == type;
+    }
+
+    @Override
+    public boolean isInLava() {
+        return isInMaterial(Material.LAVA);
     }
 }

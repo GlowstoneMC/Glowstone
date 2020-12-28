@@ -102,6 +102,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.Effect;
 import org.bukkit.Effect.Type;
+import org.bukkit.EntityAnimation;
 import org.bukkit.GameMode;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
@@ -457,11 +458,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         @Override
         public void sendMessage(BaseComponent component) {
             GlowPlayer.this.sendMessage(component);
-        }
-
-        @Override
-        public String getLocale() {
-            return GlowPlayer.this.getLocale();
         }
     };
     /**

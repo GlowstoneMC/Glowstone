@@ -2,14 +2,6 @@ package net.glowstone.chunk;
 
 import com.google.common.collect.ConcurrentHashMultiset;
 import com.google.common.collect.Multiset;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
@@ -27,6 +19,16 @@ import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.material.MaterialData;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * A class which manages the {@link GlowChunk}s currently loaded in memory.
@@ -457,7 +459,7 @@ public final class ChunkManager {
      */
     private static class BiomeGrid implements ChunkGenerator.BiomeGrid {
 
-        private final byte[] biomes = new byte[256];
+        private final byte[] biomes = new byte[4096];
 
         @Override
         public Biome getBiome(int x, int z) {
@@ -465,9 +467,20 @@ public final class ChunkManager {
             return GlowBiome.getBiome(biomes[x | z << 4] & 0xFF).getType();
         }
 
+        @NotNull
+        @Override
+        public Biome getBiome(int x, int y, int z) {
+            return GlowBiome.getBiome(biomes[x | z << 4 | y << 8] & 0xFF).getType();
+        }
+
         @Override
         public void setBiome(int x, int z, Biome bio) {
             biomes[x | z << 4] = (byte) GlowBiome.getId(bio);
+        }
+
+        @Override
+        public void setBiome(int x, int y, int z, @NotNull Biome bio) {
+            biomes[x | z << 4 | y << 8] = (byte) GlowBiome.getId(bio);
         }
     }
 }

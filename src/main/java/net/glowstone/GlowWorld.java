@@ -25,6 +25,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import io.papermc.paper.world.MoonPhase;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -822,7 +824,7 @@ public class GlowWorld implements World {
      *
      * @return the fraction of the moon that is illuminated
      */
-    public double getMoonPhase() {
+    public double getMoonPhaseFraction() {
         double actualPhase = Math.floor((double) fullTime / TickUtil.TICKS_PER_DAY) % 8;
         if (actualPhase >= 0 && actualPhase < 1) {
             return 1.0;
@@ -835,6 +837,11 @@ public class GlowWorld implements World {
         }
 
         return 0;
+    }
+
+    public MoonPhase getMoonPhase() {
+        long actualPhase = fullTime / TickUtil.TICKS_PER_DAY;
+        return MoonPhase.getPhase(actualPhase);
     }
 
     public Collection<GlowPlayer> getRawPlayers() {

@@ -4,7 +4,6 @@ import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.AttackDamage;
-import net.glowstone.entity.EntityAnimation;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
