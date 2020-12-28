@@ -22,7 +22,9 @@ jobs:
           java-version: ${{ matrix.java }}
 
       - name: Maven Build
-        run: mvn --batch-mode package -Pbuild-extras
+        run: mvn --batch-mode package -Pbuild-extras -X
+        env:
+          JAVA_TOOL_OPTIONS: -XX:+UseG1GC -Xss4m
 
       - name: "Upload Artifact: Glowstone Server"
         uses: actions/upload-artifact@v2
