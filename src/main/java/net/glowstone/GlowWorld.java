@@ -817,6 +817,12 @@ public class GlowWorld implements World {
         return null; // TODO
     }
 
+    @Override
+    public MoonPhase getMoonPhase() {
+        long actualPhase = (fullTime / TickUtil.TICKS_PER_DAY) % 8;
+        return MoonPhase.getPhase(actualPhase);
+    }
+
     /**
      * Returns the fraction of the moon that is illuminated, ranging from 0.0 at new moon to 1.0 at
      * full moon. Always a multiple of 0.25. See
@@ -825,23 +831,8 @@ public class GlowWorld implements World {
      * @return the fraction of the moon that is illuminated
      */
     public double getMoonPhaseFraction() {
-        double actualPhase = Math.floor((double) fullTime / TickUtil.TICKS_PER_DAY) % 8;
-        if (actualPhase >= 0 && actualPhase < 1) {
-            return 1.0;
-        } else if ((actualPhase >= 1 && actualPhase < 2) || (actualPhase >= 7 && actualPhase < 8)) {
-            return 0.75;
-        } else if ((actualPhase >= 2 && actualPhase < 3) || (actualPhase >= 6 && actualPhase < 7)) {
-            return 0.50;
-        } else if ((actualPhase >= 3 && actualPhase < 4) || (actualPhase >= 5 && actualPhase < 6)) {
-            return 0.25;
-        }
-
-        return 0;
-    }
-
-    public MoonPhase getMoonPhase() {
-        long actualPhase = fullTime / TickUtil.TICKS_PER_DAY;
-        return MoonPhase.getPhase(actualPhase);
+        MoonPhase phase = getMoonPhase();
+        return 0.25 * Math.abs(phase.ordinal() - 4);
     }
 
     public Collection<GlowPlayer> getRawPlayers() {

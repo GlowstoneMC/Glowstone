@@ -789,7 +789,6 @@ public class GlowChunk implements Chunk {
      * @return the regional difficulty
      */
     public double getRegionalDifficulty() {
-        final double moonPhase = world.getMoonPhaseFraction();
         final long worldTime = world.getFullTime();
         final Difficulty worldDifficulty = world.getDifficulty();
 
@@ -813,6 +812,7 @@ public class GlowChunk implements Chunk {
             chunkFactor *= 3d / 4d;
         }
 
+        final double moonPhase = world.getMoonPhaseFraction();
         if (moonPhase / 4 > totalTimeFactor) {
             chunkFactor += totalTimeFactor;
         } else {
