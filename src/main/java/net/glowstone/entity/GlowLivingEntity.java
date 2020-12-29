@@ -1,23 +1,8 @@
 package net.glowstone.entity;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-
 import com.destroystokyo.paper.block.TargetBlockInfo;
 import com.destroystokyo.paper.entity.TargetEntityInfo;
 import com.flowpowered.network.Message;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -37,6 +22,7 @@ import net.glowstone.entity.passive.GlowWolf;
 import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.message.play.entity.CollectItemMessage;
 import net.glowstone.net.message.play.entity.EntityAnimationMessage;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
@@ -68,6 +54,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -96,6 +83,22 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 
 /**
  * A GlowLivingEntity is a {@link Player} or {@link Monster}.
@@ -264,6 +267,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * If potion effects of entity changed
      */
     private boolean potionEffectsChanged;
+    /**
+     * If the entity is jumping.
+     */
+    private boolean jumping;
 
     /**
      * Creates a mob within the specified world.
@@ -419,6 +426,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         // convert movement x/z to a velocity
         Vector velMovement = getVelocityFromMovement();
         velocity.add(velMovement);
+        if (jumping) {
+            jump();
+        }
         super.pulsePhysics();
     }
 
@@ -473,6 +483,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             // jump normally
             velocity.setY(velocity.getY() + 0.42);
         }
+    }
+
+    @Override
+    public boolean isJumping() {
+        return jumping;
+    }
+
+    @Override
+    public void setJumping(boolean jumping) {
+        this.jumping = jumping;
     }
 
     @Override
@@ -1443,5 +1463,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         playEffectKnownAndSelf(EntityEffect.TOTEM_RESURRECT);
 
         return true;
+    }
+
+    @Override
+    public void playPickupItemAnimation(@NotNull Item item, int quantity) {
+        CollectItemMessage message = new CollectItemMessage(item.getEntityId(), getEntityId(), quantity);
+        world.playSound(location, Sound.ENTITY_ITEM_PICKUP, 0.3f, (float) (1 + Math.random()));
+        world.getRawPlayers().stream().filter(other -> other.canSeeEntity(this))
+                .forEach(other -> other.getSession().send(message));
+        item.remove();
     }
 }

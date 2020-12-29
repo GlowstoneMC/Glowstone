@@ -70,9 +70,11 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
@@ -346,12 +348,22 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
-    public void sendMessage(String s) {
+    public void sendMessage(String message) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
     public void sendMessage(String[] strings) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID sender, @NotNull String message) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID sender, @NotNull String[] messages) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
@@ -571,7 +583,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean isTicking() {
-        return true;
+        return getLocation().getChunk().isLoaded();
     }
 
     /**
@@ -579,10 +591,11 @@ public abstract class GlowEntity implements Entity {
      * e.g. mob AI.
      */
     public void pulse() {
-        ticksLived++;
-        if (!getLocation().getChunk().isLoaded()) {
+        if (!isTicking()) {
             return;
         }
+
+        ticksLived++;
 
         if (fireTicks > 0) {
             --fireTicks;
@@ -1685,7 +1698,43 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
+    public boolean isInWater() {
+        return isInMaterial(Material.WATER);
+    }
+
+    @Override
+    public boolean isInRain() {
+        return getWorld().hasStorm();
+    }
+
+    @Override
+    public boolean isInBubbleColumn() {
+        return isInMaterial(Material.BUBBLE_COLUMN);
+    }
+
+    @Override
+    public boolean isInWaterOrRain() {
+        return isInWater() || isInRain();
+    }
+
+    @Override
+    public boolean isInWaterOrBubbleColumn() {
+        return isInWater() || isInBubbleColumn();
+    }
+
+    @Override
+    public boolean isInWaterOrRainOrBubbleColumn() {
+        return isInWater() || isInRain() || isInBubbleColumn();
+    }
+
+    @Override
     public boolean isInLava() {
         return isInMaterial(Material.LAVA);
+    }
+
+    @NotNull
+    @Override
+    public PersistentDataContainer getPersistentDataContainer() {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

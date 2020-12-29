@@ -4,6 +4,7 @@ import com.flowpowered.network.Message;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.util.TextMessage;
+import net.md_5.bungee.api.ChatMessageType;
 import org.json.simple.JSONObject;
 
 @Data
@@ -19,6 +20,18 @@ public final class ChatMessage implements Message {
 
     public ChatMessage(String text) {
         this(new TextMessage(text), 0);
+    }
+
+    public ChatMessage(TextMessage text, ChatMessageType type) {
+        this(text, type.ordinal());
+    }
+
+    public ChatMessage(JSONObject json, ChatMessageType type) {
+        this(new TextMessage(json), type.ordinal());
+    }
+
+    public ChatMessage(String text, ChatMessageType type) {
+        this(new TextMessage(text), type.ordinal());
     }
 
 }

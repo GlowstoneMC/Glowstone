@@ -1,12 +1,18 @@
 package net.glowstone.entity.meta.profile;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.concurrent.CompletableFuture.completedFuture;
-
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import lombok.Getter;
+import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
+import net.glowstone.util.UuidUtils;
+import net.glowstone.util.nbt.CompoundTag;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -15,14 +21,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
-import javax.annotation.Nullable;
-import lombok.Getter;
-import net.glowstone.GlowServer;
-import net.glowstone.ServerProvider;
-import net.glowstone.util.UuidUtils;
-import net.glowstone.util.nbt.CompoundTag;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 /**
  * Information about a player's name, UUID, and other properties.
@@ -337,6 +338,16 @@ public class GlowPlayerProfile implements PlayerProfile {
         return completeCached();
     }
 
+    @Override
+    public boolean completeFromCache(boolean onlineMode) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean completeFromCache(boolean lookupUUID, boolean onlineMode) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
     /**
      * Looks up the UUID if it's missing and hasn't already been attempted, and waits for it.
      *
@@ -350,6 +361,11 @@ public class GlowPlayerProfile implements PlayerProfile {
 
     @Override
     public boolean complete(boolean textures) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean complete(boolean textures, boolean onlineMode) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 

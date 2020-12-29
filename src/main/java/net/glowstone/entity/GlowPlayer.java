@@ -33,6 +33,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
+import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.entity.monster.GlowBoss;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.passive.GlowFishingHook;
@@ -129,6 +130,7 @@ import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Villager;
@@ -398,6 +400,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     @Getter
     private boolean bedSpawnForced;
+    // TODO: 1.16 what does this do?
+    @Getter
+    @Setter
+    private float hurtDirection;
     private final Player.Spigot spigot = new Player.Spigot() {
         @Deprecated
         public void playEffect(Location location, Effect effect, int id, int data, float offsetX,
@@ -415,7 +421,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         @Override
-        public InetSocketAddress getRawAddress() {
+        public @NotNull InetSocketAddress getRawAddress() {
             return session.getAddress();
         }
 
@@ -435,18 +441,18 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         @Override
-        public Set<Player> getHiddenPlayers() {
+        public @NotNull Set<Player> getHiddenPlayers() {
             return hiddenEntities.stream().map(Bukkit::getPlayer).filter(Objects::nonNull)
                     .collect(Collectors.toSet());
         }
 
         @Override
-        public void sendMessage(ChatMessageType position, BaseComponent... components) {
+        public void sendMessage(@NotNull ChatMessageType position, BaseComponent... components) {
             GlowPlayer.this.sendMessage(position, components);
         }
 
         @Override
-        public void sendMessage(ChatMessageType position, BaseComponent component) {
+        public void sendMessage(@NotNull ChatMessageType position, @NotNull BaseComponent component) {
             GlowPlayer.this.sendMessage(position, component);
         }
 
@@ -456,7 +462,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         @Override
-        public void sendMessage(BaseComponent component) {
+        public void sendMessage(@NotNull BaseComponent component) {
             GlowPlayer.this.sendMessage(component);
         }
     };
@@ -2164,7 +2170,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(@NotNull String message) {
         sendRawMessage(message);
     }
 
@@ -2176,39 +2182,91 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void sendMessage(BaseComponent component) {
-        sendMessage(ChatMessageType.CHAT, component);
+    public void sendMessage(@NotNull BaseComponent component) {
+        sendMessage(ChatMessageType.SYSTEM, component);
     }
 
     @Override
     public void sendMessage(BaseComponent... components) {
-        sendMessage(ChatMessageType.CHAT, components);
+        sendMessage(ChatMessageType.SYSTEM, components);
     }
 
     @Override
-    public void sendMessage(ChatMessageType chatMessageType, BaseComponent... baseComponents) {
+    public void sendMessage(ChatMessageType type, BaseComponent... components) {
         session.send(new ChatMessage(TextMessage
-                .decode(ComponentSerializer.toString(baseComponents)), chatMessageType.ordinal()));
+                .decode(ComponentSerializer.toString(components)), type));
+    }
+
+    public void sendRawMessages(ChatMessageType type, String... messages) {
+        for (String message : messages) {
+            session.send(new ChatMessage(message, type));
+        }
     }
 
     @Override
-    public void sendRawMessage(String message) {
+    public void sendRawMessage(@NotNull String message) {
         // old-style formatting to json conversion is in TextMessage
-        session.send(new ChatMessage(message));
+        sendRawMessages(ChatMessageType.SYSTEM, message);
+    }
+
+    public void sendRawMessages(String senderName, String... messages) {
+        sendRawMessages(ChatMessageType.CHAT, String.format("<%1$s> %2$s", senderName, messages));
+    }
+
+    public void sendMessages(UUID sender, String... messages) {
+        ProfileCache.getProfile(sender).thenAccept(profile -> {
+            String name = profile.getName();
+            if (name != null) {
+                sendRawMessages(name, messages);
+            }
+        });
     }
 
     @Override
-    public void sendActionBar(String message) {
+    public void sendMessage(@Nullable UUID sender, @NotNull String message) {
+        if (sender == null) {
+            sendMessage(message);
+        }
+
+        sendMessages(sender, message);
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID sender, @NotNull String[] messages) {
+        if (sender == null) {
+            sendMessage(messages);
+        }
+
+        sendMessages(sender, messages);
+    }
+
+    @Override
+    public void sendRawMessage(@Nullable UUID sender, @NotNull String message) {
+        if (sender == null) {
+            sendRawMessage(message);
+        }
+
+        sendMessage(sender, message);
+    }
+
+    @Override
+    public void sendActionBar(@NotNull String message) {
         // "old" formatting workaround because apparently "new" styling doesn't work as of
         // 01/18/2015
         JSONObject json = new JSONObject();
         json.put("text", message);
-        session.send(new ChatMessage(new TextMessage(json), 2));
+        session.send(new ChatMessage(json, ChatMessageType.ACTION_BAR));
     }
 
     @Override
     public void sendActionBar(char alternateChar, String message) {
         sendActionBar(message); // TODO: don't ignore formatting codes
+    }
+
+    @Override
+    public void sendActionBar(@NotNull BaseComponent... components) {
+        session.send(new ChatMessage(TextMessage
+                .decode(ComponentSerializer.toString(components)), ChatMessageType.ACTION_BAR));
     }
 
     @Override
