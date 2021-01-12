@@ -50,12 +50,13 @@ jobs:
           ControlPersist 120
         EOF
         echo $SSH_KNOWN_HOSTS >> ~/.ssh/known_hosts
+        apt-get install sshpass
       env:
         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
     - name: Deploy to Test Server
       run: |
         scp target/glowstone.jar $SSH_USERNAME@$SSH_ADDRESS:
-        ssh $SSH_USERNAME@$SSH_ADDRESS sudo systemctl restart glowstone
+        sshpass -p '$SSH_PASSWORD' $SSH_USERNAME@$SSH_ADDRESS sudo systemctl restart glowstone
       env:
         SSH_ADDRESS: ${{ secrets.SSH_ADDRESS }}
         SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
