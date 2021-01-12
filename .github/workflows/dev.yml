@@ -55,9 +55,8 @@ jobs:
         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
     - name: Deploy to Test Server
       run: |
-        sshpass -p $SSH_PASSWORD scp target/glowstone.jar $SSH_USERNAME@$SSH_ADDRESS:
-        sshpass -p $SSH_PASSWORD $SSH_USERNAME@$SSH_ADDRESS sudo systemctl restart glowstone
+        sshpass scp target/glowstone.jar glowstone@$SSH_ADDRESS:
+        sshpass ssh glowstone@$SSH_ADDRESS sudo systemctl restart glowstone
       env:
         SSH_ADDRESS: ${{ secrets.SSH_ADDRESS }}
-        SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        SSHPASS: ${{ secrets.SSH_PASSWORD }}
