@@ -1,6 +1,9 @@
-name: PR CI
+name: CI
 
-on: [pull_request]
+on:
+  push:
+    branches-ignore: [dev]
+  pull_request:
 
 jobs:
   build:
