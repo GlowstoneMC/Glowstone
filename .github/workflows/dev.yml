@@ -50,7 +50,7 @@ jobs:
           ControlPersist 120
         EOF
         echo $SSH_KNOWN_HOSTS >> ~/.ssh/known_hosts
-        apt-get install sshpass
+        sudo apt-get install sshpass
       env:
         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
     - name: Deploy to Test Server
