@@ -1,6 +1,8 @@
 name: Dev CI
 
-on: [push]
+on:
+  push:
+    branches: [dev]
 
 jobs:
   build:
