@@ -3,6 +3,11 @@ name: Dev Build
 on:
   push:
     branches: [dev]
+    paths: 
+      - .github/workflows
+      - etc/checkstyle.xml
+      - src
+      - pom.xml
 
 jobs:
   build:
