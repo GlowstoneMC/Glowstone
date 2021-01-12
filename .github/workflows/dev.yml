@@ -40,3 +40,20 @@ jobs:
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         JAVA_TOOL_OPTIONS: -Xmx2G
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        cat << EOF > ~/.ssh/config
+        Host *
+          ControlMaster auto
+          ControlPath ~/.ssh/-%r@%h:%p
+          ControlPersist 120
+        EOF
+    - name: Deploy to Test Server
+      run: |
+        scp target/glowstone.jar $SSH_USERNAME@$SSH_ADDRESS:
+        ssh $SSH_USERNAME@$SSH_ADDRESS sudo systemctl restart glowstone
+      env:
+        SSH_ADDRESS: ${{ secrets.SSH_ADDRESS }}
+        SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
