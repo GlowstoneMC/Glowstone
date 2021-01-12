@@ -49,6 +49,8 @@ jobs:
           ControlPath ~/.ssh/-%r@%h:%p
           ControlPersist 120
         EOF
+        echo $SSH_KNOWN_HOSTS >> ~/.ssh/known_hosts
+        chmod -R 644 ~/.ssh
     - name: Deploy to Test Server
       run: |
         scp target/glowstone.jar $SSH_USERNAME@$SSH_ADDRESS:
