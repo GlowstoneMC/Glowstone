@@ -4,9 +4,9 @@ on:
   push:
     branches: [dev]
     paths: 
-      - .github/workflows
+      - .github/workflows/**
       - etc/checkstyle.xml
-      - src
+      - src/**
       - pom.xml
 
 jobs:
