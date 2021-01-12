@@ -50,6 +50,8 @@ jobs:
           ControlPersist 120
         EOF
         echo $SSH_KNOWN_HOSTS >> ~/.ssh/known_hosts
+      env:
+        SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
     - name: Deploy to Test Server
       run: |
         scp target/glowstone.jar $SSH_USERNAME@$SSH_ADDRESS:
