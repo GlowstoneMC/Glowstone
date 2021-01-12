@@ -1,0 +1,25 @@
+name: Dev CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [8, 11]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Maven (Java ${{ matrix.java }})
+      uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+        server-id: glowstone-upstream
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_PASSWORD
+    - name: Publish to Maven
+      run: mvn -T 1C -B source:jar javadoc:jar deploy -Pbuild-extras --file pom.xml
+      env:
+        MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+        JAVA_TOOL_OPTIONS: -Xmx2G
