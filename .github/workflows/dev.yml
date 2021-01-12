@@ -15,9 +15,10 @@ jobs:
     strategy:
       matrix:
         java: [8, 11]
+    name: Dev Build (Java ${{ matrix.java }})
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Maven (Java ${{ matrix.java }})
+    - name: Set up Maven
       uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.java }}
