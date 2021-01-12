@@ -25,6 +25,15 @@ jobs:
         server-id: glowstone-upstream
         server-username: MAVEN_USERNAME
         server-password: MAVEN_PASSWORD
+    - name: Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Cache Maven
+      run: mvn -T 1C -B dependency:go-offline
     - name: Publish to Maven
       run: mvn -T 1C -B source:jar javadoc:jar deploy -Pbuild-extras --file pom.xml
       env:
