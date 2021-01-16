@@ -35,7 +35,7 @@ jobs:
     - name: Cache Maven
       run: mvn -T 1C -B dependency:go-offline
     - name: Publish to Maven
-      run: mvn -T 1C -B source:jar javadoc:jar deploy -Pbuild-extras --file pom.xml
+      run: mvn -T 1C -B source:jar javadoc:jar deploy -Pbuild-extras
       env:
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
