@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import net.glowstone.linkstone.annotations.LField;
 import net.glowstone.linkstone.runtime.Boxes;
 import net.glowstone.linkstone.runtime.FieldSet;
