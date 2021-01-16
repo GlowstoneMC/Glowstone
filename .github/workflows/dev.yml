@@ -35,12 +35,19 @@ jobs:
     - name: Cache Maven
       run: mvn -T 1C -B dependency:go-offline
     - name: Publish to Maven
+      if: ${{ matrix.java == 8 }}
       run: mvn -T 1C -B source:jar javadoc:jar deploy -Pbuild-extras
       env:
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         JAVA_TOOL_OPTIONS: -Xmx2G
+    - name: Build with Maven
+      if: ${{ matrix.java == 11 }}
+      run: mvn -T 1C -B package -Pbuild-extras
+      env:
+        JAVA_TOOL_OPTIONS: -Xmx2G
     - name: Setup SSH
+      if: ${{ matrix.java == 8 }}
       run: |
         mkdir -p ~/.ssh
         cat << EOF > ~/.ssh/config
@@ -54,6 +61,7 @@ jobs:
       env:
         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
     - name: Deploy to Test Server
+      if: ${{ matrix.java == 8 }}
       run: |
         sshpass -e scp target/glowstone.jar glowstone@$SSH_ADDRESS:
         sshpass -e ssh glowstone@$SSH_ADDRESS sudo systemctl restart glowstone
