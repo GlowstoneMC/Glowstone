@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class GameModeUtils {
 
-    private static final LocalizedEnumNames<GameMode> MAP = new LocalizedEnumNames(
+    private static final LocalizedEnumNames<GameMode> MAP = new LocalizedEnumNames<>(
             GameMode::getByValue, "glowstone.gamemode.unknown", "glowstone.gamemode.names",
             "maps/gamemode", false);
 

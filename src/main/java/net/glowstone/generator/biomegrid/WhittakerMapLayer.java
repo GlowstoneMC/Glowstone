@@ -1,11 +1,11 @@
 package net.glowstone.generator.biomegrid;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class WhittakerMapLayer extends MapLayer {
 
-    private static final Map<ClimateType, Climate> MAP = new HashMap<>();
+    private static final Map<ClimateType, Climate> MAP = new EnumMap<>(ClimateType.class);
 
     static {
         MAP.put(ClimateType.WARM_WET, new Climate(2, new int[]{3, 1}, 4));

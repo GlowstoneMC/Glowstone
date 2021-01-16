@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GameRules;
 import net.glowstone.generator.decorators.EntityDecorator;

@@ -2,11 +2,11 @@ package net.glowstone.entity;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.AbstractCollection;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.junit.Test;
@@ -22,10 +22,10 @@ public class AttributeManagerTest {
          */
         @Test
         public void requireKeysForAttributes() {
-            Set<Attribute> attributes = new HashSet<>(Arrays.asList(Attribute.values()));
+            Set<Attribute> attributes = EnumSet.copyOf(Arrays.asList(Attribute.values()));
             Set<Attribute> implementedAttributes = Arrays.stream(AttributeManager.Key.values())
                     .map(AttributeManager.Key::getAttribute)
-                    .collect(Collectors.toSet());
+                    .collect(() -> EnumSet.noneOf(Attribute.class), AbstractCollection::add, AbstractCollection::addAll);
 
             attributes.removeAll(implementedAttributes);
 

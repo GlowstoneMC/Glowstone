@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.flowpowered.network.Message;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -1265,6 +1263,11 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public boolean isChunkGenerated(int x, int z) {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    @Override
     public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
         ServerProvider.getServer().getScheduler()
             .runTaskAsynchronously(null, () -> cb.onLoad(chunkManager.getChunk(x, z)));
@@ -2140,6 +2143,11 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public <T> void spawnParticle(Particle particle, List<Player> receivers, Player source, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra, T data, boolean force) {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
         checkNotNull(metadataKey);
         checkNotNull(newMetadataValue);
@@ -2200,7 +2208,7 @@ public class GlowWorld implements World {
             }
             GlowBlock block = new GlowBlock(chunk, location.getBlockX(), location
                 .getBlockY(), location.getBlockZ());
-            Integer speed = type.getPulseTickSpeed(block);
+            int speed = type.getPulseTickSpeed(block);
             boolean once = type.isPulseOnce(block);
             if (speed == 0) {
                 continue;

@@ -91,6 +91,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                     return false;
                 }
                 StringBuilder builder = new StringBuilder();
+
                 for (int i = 1; i < args.length; i++) {
                     builder.append(args[i] + (i == args.length - 1 ? "" : " "));
                 }
@@ -224,8 +225,8 @@ public class GlowstoneCommand extends GlowVanillaCommand {
     static {
         Collator englishCaseInsensitive = Collator.getInstance(Locale.ENGLISH);
         englishCaseInsensitive.setStrength(Collator.PRIMARY);
-        ImmutableSortedMap.Builder subcommandMapBuilder
-                = new ImmutableSortedMap.Builder(englishCaseInsensitive);
+        ImmutableSortedMap.Builder<String, Subcommand> subcommandMapBuilder
+                = new ImmutableSortedMap.Builder<>(englishCaseInsensitive);
         for (Subcommand subcommand : Subcommand.values()) {
             subcommandMapBuilder.put(subcommand.mainName, subcommand);
             for (String name : subcommand.otherNames) {

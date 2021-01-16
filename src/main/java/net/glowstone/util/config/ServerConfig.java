@@ -86,7 +86,7 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
                         + "It contains everything from server.properties and bukkit.yml in a\n"
                         + "normal CraftBukkit installation.\n\n"
                         + "Configuration entries are documented on the wiki: "
-                        + "https://github.com/GlowstoneMC/Glowstone/wiki/Configuration-Guide\n"
+                        + "https://docs.glowstone.net/en/latest/Configuration_Guide/index.html\n"
                         + "For help, join us on Discord: https://discord.gg/TFJqhsC");
     }
 
@@ -559,7 +559,7 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
         LIBRARY_CHECKSUM_VALIDATION("libraries.checksum-validation", true,
                 Boolean.class::isInstance),
         LIBRARY_REPOSITORY_URL("libraries.repository-url",
-                "https://repo.glowstone.net/service/local/repositories/central/content/",
+                "https://repo.glowstone.net/repository/maven-public/",
                 String.class::isInstance),
         LIBRARY_DOWNLOAD_ATTEMPTS("libraries.download-attempts", 2,
                 Validators.POSITIVE_INTEGER),
@@ -607,7 +607,7 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
      *
      * @param <T> the type of the enum
      */
-    static final class EnumPredicate<T extends Enum> implements Predicate<String> {
+    static final class EnumPredicate<T extends Enum<T>> implements Predicate<String> {
         final Class<T> enumClass;
 
         EnumPredicate(Class<T> enumClass) {
@@ -674,7 +674,7 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
          * @param <T>       the type of the enum
          * @return the predicate
          */
-        static <T extends Enum> EnumPredicate<T> forEnum(Class<T> enumClass) {
+        static <T extends Enum<T>> EnumPredicate<T> forEnum(Class<T> enumClass) {
             return new EnumPredicate<>(enumClass);
         }
 

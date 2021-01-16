@@ -120,7 +120,7 @@ import com.jogamp.opencl.CLKernel;
 import com.jogamp.opencl.CLMemory;
 import com.jogamp.opencl.CLProgram;
 import java.nio.FloatBuffer;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 import lombok.Getter;
@@ -155,8 +155,8 @@ import org.bukkit.util.noise.OctaveGenerator;
 public class OverworldGenerator extends GlowChunkGenerator {
 
     private static final double[][] ELEVATION_WEIGHT = new double[5][5];
-    private static final Map<Biome, GroundGenerator> GROUND_MAP = new HashMap<>();
-    private static final Map<Biome, BiomeHeight> HEIGHT_MAP = new HashMap<>();
+    private static final Map<Biome, GroundGenerator> GROUND_MAP = new EnumMap<>(Biome.class);
+    private static final Map<Biome, BiomeHeight> HEIGHT_MAP = new EnumMap<>(Biome.class);
     private static double coordinateScale;
     private static double heightScale;
     private static double heightNoiseScaleX; // depthNoiseScaleX

@@ -1,7 +1,6 @@
 ![Built with Love](https://forthebadge.com/images/badges/built-with-love.svg)
 [![Join the Discord chat](https://img.shields.io/badge/discord-glowstone-7289da.svg?style=flat-square&logo=discord)](https://discord.gg/TFJqhsC)
-[![Build Status](https://dev.azure.com/glowstonemc/Glowstone/_apis/build/status/Glowstone?branchName=dev)](https://dev.azure.com/glowstonemc/Glowstone/_build/latest?definitionId=1&branchName=dev)
-[![Release Status](https://vsrm.dev.azure.com/glowstonemc/_apis/public/Release/badge/bce4eb30-17cf-4f26-b394-a6a5d1eea1fa/1/1)](https://dev.azure.com/glowstonemc/Glowstone/_release?definitionId=1)
+![Dev Build](https://github.com/GlowstoneMC/Glowstone/workflows/Dev%20Build/badge.svg)
 
 <img align="right" alt="Glowstone logo" width="100" src="../etc/logo/logo.png">
 
@@ -21,7 +20,7 @@ not needed or higher performance is desired than the official software can
 deliver. Glowstone makes use of a thread-per-world model and performs
 synchronization only when necessitated by the Bukkit API.
 
-Still have questions? Check out our [FAQ](https://github.com/GlowstoneMC/Glowstone/wiki/Frequently-Asked-Questions).
+Still have questions? Check out our [FAQ](https://docs.glowstone.net/en/latest/FAQ/frequently_asked_features.html).
 
 ## Features
 

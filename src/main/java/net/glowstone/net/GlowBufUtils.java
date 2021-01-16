@@ -1,6 +1,7 @@
 package net.glowstone.net;
 
 import com.flowpowered.network.util.ByteBufUtils;
+import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,6 +24,7 @@ import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
 import net.glowstone.util.nbt.NbtReadLimiter;
 import org.bukkit.Material;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.EulerAngle;
@@ -365,6 +367,16 @@ public final class GlowBufUtils {
      */
     public static void writeChat(ByteBuf buf, TextMessage text) throws IOException {
         ByteBufUtils.writeUTF8(buf, text.encode());
+    }
+
+    public static EquipmentSlot readHand(ByteBuf buf) throws IOException {
+        int ordinal = ByteBufUtils.readVarInt(buf);
+        return ordinal == 1 ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
+    }
+
+    public static void writeHand(ByteBuf buf, EquipmentSlot hand) {
+        Preconditions.checkArgument(hand == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND, "hand can be only OFF_HAND or HAND");
+        ByteBufUtils.writeVarInt(buf, hand == EquipmentSlot.OFF_HAND ? 1 : 0);
     }
 
 }

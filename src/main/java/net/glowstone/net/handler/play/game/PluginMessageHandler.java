@@ -9,10 +9,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.inventory.GlowAnvilInventory;
+import net.glowstone.inventory.GlowBeaconInventory;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PluginMessage;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -126,7 +128,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                     ItemStack item = GlowBufUtils.readSlot(buf);
                     //GlowServer.logger.info(
                     //        "BookSign [" + session.getPlayer().getName() + "]: " + item);
-                    if (item == null || item.getType() != Material.WRITTEN_BOOK) {
+                    if (item == null || item.getType() != Material.BOOK_AND_QUILL) {
                         return;
                     }
                     ItemMeta meta = item.getItemMeta();
@@ -177,6 +179,18 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                     ((GlowAnvilInventory) session.getPlayer().getOpenInventory().getTopInventory())
                         .setRenameText(name);
                     break;
+                case "MC|Beacon": {
+                    Player player = session.getPlayer();
+
+                    if (player.getOpenInventory() == null || player.getOpenInventory().getType() != InventoryType.BEACON) {
+                        break;
+                    }
+
+                    GlowBeaconInventory inventory = (GlowBeaconInventory) player.getOpenInventory().getTopInventory();
+                    inventory.setActiveEffects(buf.readInt(), buf.readInt());
+
+                    break;
+                }
                 default:
                     GlowServer.logger.info(session + " used unknown Minecraft channel: " + channel);
                     break;

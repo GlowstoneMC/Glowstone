@@ -3,6 +3,7 @@ package net.glowstone.boss;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +22,7 @@ public class GlowBossBar implements BossBar {
 
     @Getter
     private final UUID uniqueId;
-    private final Set<BarFlag> flags = new HashSet<>();
+    private final Set<BarFlag> flags = EnumSet.noneOf(BarFlag.class);
     private final Set<Player> players = new HashSet<>();
     @Getter
     private String title;

@@ -14,9 +14,9 @@ import static org.bukkit.Statistic.PLAY_ONE_TICK;
 import static org.bukkit.Statistic.USE_ITEM;
 import static org.bukkit.Statistic.values;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Creature;
@@ -32,7 +32,7 @@ public final class GlowStatistic {
     @NonNls
     private static final Map<Statistic, String> STATISTICS = new HashMap<>(values().length);
     @NonNls
-    private static final Map<Statistic, Map<Enum, String>> SUB_STATISTICS = new HashMap<>();
+    private static final Map<Statistic, Map<Enum, String>> SUB_STATISTICS = new EnumMap<>(Statistic.class);
     @NonNls
     private static final String STAT_PREFIX = "stat.";
 

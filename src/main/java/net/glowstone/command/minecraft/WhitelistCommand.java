@@ -108,8 +108,8 @@ public class WhitelistCommand extends GlowVanillaCommand {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
             throws IllegalArgumentException {
         if (args.length == 1) {
-            return (List) StringUtil
-                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList(SUBCOMMANDS.size()));
+            return StringUtil
+                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
         }
         if (args.length > 1) {
             String subcommand = args[0];
@@ -120,8 +120,8 @@ public class WhitelistCommand extends GlowVanillaCommand {
                 Set<OfflinePlayer> whitelistedPlayers = sender.getServer().getWhitelistedPlayers();
                 List<String> names = whitelistedPlayers.stream().map(OfflinePlayer::getName)
                         .collect(Collectors.toList());
-                return (List) StringUtil
-                        .copyPartialMatches(args[1], names, new ArrayList(names.size()));
+                return StringUtil
+                        .copyPartialMatches(args[1], names, new ArrayList<>(names.size()));
             }
             return Collections.emptyList();
         }

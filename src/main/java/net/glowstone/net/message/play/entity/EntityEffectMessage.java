@@ -10,6 +10,7 @@ public final class EntityEffectMessage implements Message {
     private final int effect;
     private final int amplifier;
     private final int duration;
-    private final boolean hideParticles;
+    private final boolean showParticles;
+    private final boolean ambient;
 
 }

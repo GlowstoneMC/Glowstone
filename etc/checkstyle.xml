@@ -14,6 +14,12 @@
     <property name="eachLine" value="true"/>
   </module>
 
+  <module name="LineLength">
+    <property name="severity" value="warning"/>
+    <property name="max" value="100"/>
+    <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+  </module>
+
   <module name="TreeWalker">
     <module name="Indentation"> <!-- TODO: indent by 2 -->
       <property name="basicOffset" value="4"/>
@@ -39,11 +45,6 @@
     </module>
 
     <!-- Code -->
-    <module name="LineLength">
-      <property name="severity" value="warning"/>
-      <property name="max" value="100"/>
-      <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
-    </module>
     <module name="OuterTypeFilename"/>
     <module name="OneTopLevelClass"/>
     <module name="NoLineWrap"/>
@@ -110,11 +111,14 @@
       <property name="severity" value="warning"/>
       <property name="scope" value="public"/>
       <property name="allowMissingParamTags" value="true"/>
-      <property name="allowMissingThrowsTags" value="true"/>
+      <property name="validateThrows" value="false"/>
       <property name="allowMissingReturnTag" value="true"/>
-      <property name="minLineCount" value="2"/>
       <property name="allowedAnnotations" value="Override, Test"/>
-      <property name="allowThrowsTagsForSubclasses" value="true"/>
+    </module>
+    <module name="MissingJavadocMethod">
+      <property name="severity" value="warning"/>
+      <property name="minLineCount" value="2"/>
+      <property name="scope" value="public"/>
     </module>
     <module name="SingleLineJavadoc">
       <property name="severity" value="warning"/>
@@ -127,6 +131,7 @@
       <property name="sortImportsInGroupAlphabetically" value="true"/>
       <property name="separateLineBetweenGroups" value="true"/>
       <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
+      <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
     </module>
     <module name="RedundantImport"/>
     <module name="UnusedImports"/>
@@ -144,14 +149,11 @@
     <module name="LeftCurly"/>
     <module name="RightCurly">
       <property name="id" value="RightCurlySame"/>
+      <property name="option" value="same"/>
       <property name="tokens"
-        value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_DO"/>
-    </module>
-    <module name="RightCurly">
-      <property name="id" value="RightCurlyAlone"/>
-      <property name="option" value="alone"/>
-      <property name="tokens"
-        value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT, INSTANCE_INIT"/>
+       value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
+              LITERAL_DO, CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
+              INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF"/>
     </module>
     <module name="EmptyCatchBlock">
       <property name="exceptionVariableName" value="expected"/>

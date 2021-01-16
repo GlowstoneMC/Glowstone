@@ -1,22 +1,19 @@
 package net.glowstone.block.entity.state;
 
 import java.util.Collection;
-import java.util.Collections;
-import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BeaconEntity;
+import net.glowstone.inventory.GlowBeaconInventory;
 import org.bukkit.block.Beacon;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.BeaconInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class GlowBeacon extends GlowContainer implements Beacon {
 
-    @Getter
-    private PotionEffect primaryEffect;
-    @Getter
-    private PotionEffect secondaryEffect;
+    private static final int RADIUS_MULTIPLIER = 10;
 
     /**
      * Creates an entity for the given beacon block.
@@ -25,12 +22,6 @@ public class GlowBeacon extends GlowContainer implements Beacon {
      */
     public GlowBeacon(GlowBlock block) {
         super(block);
-        if (getBlockEntity().getPrimaryId() > 0) {
-            setPrimaryEffect(PotionEffectType.getById(getBlockEntity().getPrimaryId()));
-        }
-        if (getBlockEntity().getSecondaryId() > 0) {
-            setSecondaryEffect(PotionEffectType.getById(getBlockEntity().getSecondaryId()));
-        }
     }
 
     private BeaconEntity getBlockEntity() {
@@ -39,7 +30,7 @@ public class GlowBeacon extends GlowContainer implements Beacon {
 
     @Override
     public Collection<LivingEntity> getEntitiesInRange() {
-        return Collections.emptyList();
+        return getWorld().getNearbyEntitiesByType(Player.class, getLocation(), getTier() * RADIUS_MULTIPLIER, getWorld().getMaxHeight());
     }
 
     @Override
@@ -49,19 +40,27 @@ public class GlowBeacon extends GlowContainer implements Beacon {
 
     @Override
     public void setPrimaryEffect(PotionEffectType primary) {
-        this.primaryEffect = new PotionEffect(primary, 7, getTier(), true);
-        getBlockEntity().setPrimaryId(primary.getId());
+        getBlockEntity().setPrimaryEffectId(primary.getId());
     }
 
     @Override
     public void setSecondaryEffect(PotionEffectType secondary) {
-        this.secondaryEffect = new PotionEffect(secondary, 7, getTier(), true);
-        getBlockEntity().setSecondaryId(secondary.getId());
+        getBlockEntity().setSecondaryEffectId(secondary.getId());
+    }
+
+    @Override
+    public PotionEffect getPrimaryEffect() {
+        return getBlockEntity().getEffect(BeaconEntity.BeaconEffectPriority.PRIMARY);
+    }
+
+    @Override
+    public PotionEffect getSecondaryEffect() {
+        return getBlockEntity().getEffect(BeaconEntity.BeaconEffectPriority.SECONDARY);
     }
 
     @Override
     public BeaconInventory getInventory() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new GlowBeaconInventory(this);
     }
 
     @Override
