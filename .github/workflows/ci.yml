@@ -28,6 +28,6 @@ jobs:
     - name: Cache Maven
       run: mvn -T 1C -B dependency:go-offline
     - name: Build with Maven
-      run: mvn -T 1C -B package -Pbuild-extras --file pom.xml
+      run: mvn -T 1C -B package -Pbuild-extras
       env:
         JAVA_TOOL_OPTIONS: -Xmx2G
