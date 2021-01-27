@@ -21,6 +21,10 @@ public class GlowAdvancementDisplay {
     private final float x;
     private final float y;
 
+    private final int HAS_BACKGROUND_TEXTURE = 0x1;
+    private final int SHOW_TOAST = 0x2;
+    private final int HIDDEN = 0x4;
+
     /**
      * Writes this notification to the given {@link ByteBuf}.
      *
@@ -33,7 +37,7 @@ public class GlowAdvancementDisplay {
         GlowBufUtils.writeChat(buf, description);
         GlowBufUtils.writeSlot(buf, icon);
         ByteBufUtils.writeVarInt(buf, type.ordinal());
-        buf.writeInt(0x1 | 0x2); // todo: flags
+        buf.writeInt(HAS_BACKGROUND_TEXTURE | SHOW_TOAST);
         ByteBufUtils.writeUTF8(buf, background.toString());
         buf.writeFloat(x);
         buf.writeFloat(y);
