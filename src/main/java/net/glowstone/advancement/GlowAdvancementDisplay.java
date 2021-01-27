@@ -21,9 +21,9 @@ public class GlowAdvancementDisplay {
     private final float x;
     private final float y;
 
-    private final int HAS_BACKGROUND_TEXTURE = 0x1;
-    private final int SHOW_TOAST = 0x2;
-    private final int HIDDEN = 0x4;
+    private static final int HAS_BACKGROUND_TEXTURE = 0x1;
+    private static final int SHOW_TOAST = 0x2;
+    private static final int HIDDEN = 0x4;
 
     /**
      * Writes this notification to the given {@link ByteBuf}.
