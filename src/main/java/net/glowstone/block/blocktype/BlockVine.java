@@ -108,15 +108,13 @@ public class BlockVine extends BlockClimbable {
         boolean connectedAbove = above.getType() == Material.VINE && (above.getData() & data) != 0;
         // if not connected to a vine above we need to be attached to a solid block
         if (!connectedAbove) {
-            if ((data & VINE_NORTH) == VINE_NORTH && !me.getRelative(BlockFace.NORTH).getType().isSolid()) {
+            if ((data & VINE_NORTH) != 0 && !me.getRelative(BlockFace.NORTH).getType().isSolid()) {
                 me.breakNaturally();
-            } else if ((data & VINE_EAST) == VINE_EAST && !me.getRelative(BlockFace.EAST).getType().isSolid()) {
+            } else if ((data & VINE_EAST) != 0 && !me.getRelative(BlockFace.EAST).getType().isSolid()) {
                 me.breakNaturally();
-            } else if ((data & VINE_SOUTH) == VINE_SOUTH && !me.getRelative(BlockFace.SOUTH).getType().isSolid()) {
+            } else if ((data & VINE_SOUTH) != 0 && !me.getRelative(BlockFace.SOUTH).getType().isSolid()) {
                 me.breakNaturally();
-            } else if ((data & VINE_WEST) == VINE_WEST && !me.getRelative(BlockFace.WEST).getType().isSolid()) {
-                me.breakNaturally();
-            } else if ((data & VINE_WEST) == VINE_WEST && !me.getRelative(BlockFace.WEST).getType().isSolid()) {
+            } else if ((data & VINE_WEST) != 0 && !me.getRelative(BlockFace.WEST).getType().isSolid()) {
                 me.breakNaturally();
             }
         }
