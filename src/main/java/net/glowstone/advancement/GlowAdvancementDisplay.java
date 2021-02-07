@@ -29,15 +29,22 @@ public class GlowAdvancementDisplay {
      * Writes this notification to the given {@link ByteBuf}.
      *
      * @param buf the buffer to write to
+     * @param hasBackgroundTexture Whether the advancement notification has a background texture
+     * @param showToast Whether the advancement should be displayed as a toast notification
+     * @param hidden
      * @return {@code buf}, with this notification written to it
      * @throws IOException if a string is too long
      */
-    public ByteBuf encode(ByteBuf buf) throws IOException {
+    public ByteBuf encode(ByteBuf buf, boolean hasBackgroundTexture, boolean showToast, boolean hidden) throws IOException {
+        int flags = (hasBackgroundTexture ? HAS_BACKGROUND_TEXTURE : 0)
+        | (showToast ? SHOW_TOAST : 0)
+        | (hidden ? HIDDEN : 0);
+
         GlowBufUtils.writeChat(buf, title);
         GlowBufUtils.writeChat(buf, description);
         GlowBufUtils.writeSlot(buf, icon);
         ByteBufUtils.writeVarInt(buf, type.ordinal());
-        buf.writeInt(HAS_BACKGROUND_TEXTURE | SHOW_TOAST);
+        buf.writeInt(flags);
         ByteBufUtils.writeUTF8(buf, background.toString());
         buf.writeFloat(x);
         buf.writeFloat(y);
