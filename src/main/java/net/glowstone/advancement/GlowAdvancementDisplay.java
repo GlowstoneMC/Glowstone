@@ -37,8 +37,8 @@ public class GlowAdvancementDisplay {
      */
     public ByteBuf encode(ByteBuf buf, boolean hasBackgroundTexture, boolean showToast, boolean hidden) throws IOException {
         int flags = (hasBackgroundTexture ? HAS_BACKGROUND_TEXTURE : 0)
-        | (showToast ? SHOW_TOAST : 0)
-        | (hidden ? HIDDEN : 0);
+            | (showToast ? SHOW_TOAST : 0)
+            | (hidden ? HIDDEN : 0);
 
         GlowBufUtils.writeChat(buf, title);
         GlowBufUtils.writeChat(buf, description);
