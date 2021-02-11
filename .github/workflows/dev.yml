@@ -1,0 +1,70 @@
+name: Dev Build
+
+on:
+  push:
+    branches: [dev]
+    paths: 
+      - .github/workflows/**
+      - etc/checkstyle.xml
+      - src/**
+      - pom.xml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [8, 11]
+    name: Dev Build (Java ${{ matrix.java }})
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Maven
+      uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+        server-id: glowstone-upstream
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_PASSWORD
+    - name: Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Cache Maven
+      run: mvn -T 1C -B dependency:go-offline
+    - name: Publish to Maven
+      if: ${{ matrix.java == 8 }}
+      run: mvn -T 1C -B source:jar javadoc:jar deploy -Pbuild-extras
+      env:
+        MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+        JAVA_TOOL_OPTIONS: -Xmx2G
+    - name: Build with Maven
+      if: ${{ matrix.java == 11 }}
+      run: mvn -T 1C -B package -Pbuild-extras
+      env:
+        JAVA_TOOL_OPTIONS: -Xmx2G
+    - name: Setup SSH
+      if: ${{ matrix.java == 8 }}
+      run: |
+        mkdir -p ~/.ssh
+        cat << EOF > ~/.ssh/config
+        Host *
+          ControlMaster auto
+          ControlPath ~/.ssh/-%r@%h:%p
+          ControlPersist 120
+        EOF
+        echo $SSH_KNOWN_HOSTS >> ~/.ssh/known_hosts
+        sudo apt-get install sshpass
+      env:
+        SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+    - name: Deploy to Test Server
+      if: ${{ matrix.java == 8 }}
+      run: |
+        sshpass -e scp target/glowstone.jar glowstone@$SSH_ADDRESS:
+        sshpass -e ssh glowstone@$SSH_ADDRESS sudo systemctl restart glowstone
+      env:
+        SSH_ADDRESS: ${{ secrets.SSH_ADDRESS }}
+        SSHPASS: ${{ secrets.SSH_PASSWORD }}
