@@ -19,6 +19,12 @@ import org.bukkit.util.Vector;
 
 public class BlockVine extends BlockClimbable {
 
+    // constants used in vine data
+    private static final int VINE_NORTH = 0x4;
+    private static final int VINE_EAST = 0x8;
+    private static final int VINE_WEST = 0x2;
+    private static final int VINE_SOUTH = 0x1;
+
     private static final BlockFace[] HORIZONTAL_FACES = {BlockFace.NORTH, BlockFace.SOUTH,
         BlockFace.EAST, BlockFace.WEST};
 
@@ -82,6 +88,36 @@ public class BlockVine extends BlockClimbable {
             state.setData(data);
         } else {
             warnMaterialData(Vine.class, data);
+        }
+    }
+
+    @Override
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+                                   Material oldType, byte oldData, Material newType, byte newData) {
+        updatePhysics(block);
+    }
+
+    @Override
+    public void updatePhysicsAfterEvent(GlowBlock me) {
+        super.updatePhysicsAfterEvent(me);
+
+        byte data = me.getData();
+
+        GlowBlock above = me.getRelative(BlockFace.UP);
+        // above block is a vine and shares the same face
+        boolean connectedAbove = above.getType() == Material.VINE && (above.getData() & data) != 0;
+        // if not connected to a vine above we need to be attached to a solid block
+        if (!connectedAbove) {
+            if ((data & VINE_NORTH) != 0 && me.getRelative(BlockFace.NORTH).getType().isSolid()) {
+                return;
+            } else if ((data & VINE_EAST) != 0 && me.getRelative(BlockFace.EAST).getType().isSolid()) {
+                return;
+            } else if ((data & VINE_SOUTH) != 0 && me.getRelative(BlockFace.SOUTH).getType().isSolid()) {
+                return;
+            } else if ((data & VINE_WEST) != 0 && me.getRelative(BlockFace.WEST).getType().isSolid()) {
+                return;
+            }
+            me.breakNaturally();
         }
     }
 
