@@ -56,17 +56,11 @@ public class BlockFalling extends BlockType {
         }
     }
 
+    /**
+     * @param material A Material
+     * @return true if material will support this block and prevent it from falling or breaking
+     */
     private boolean supportingBlock(Material material) {
-        switch (material) {
-            case AIR:
-            case FIRE:
-            case WATER:
-            case STATIONARY_WATER:
-            case LAVA:
-            case STATIONARY_LAVA:
-                return false;
-            default:
-                return true;
-        }
+        return material.isSolid();
     }
 }
