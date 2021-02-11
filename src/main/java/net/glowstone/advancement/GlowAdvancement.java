@@ -75,7 +75,7 @@ public class GlowAdvancement implements Advancement {
         }
         buf.writeBoolean(display != null);
         if (display != null) {
-            display.encode(buf);
+            display.encode(buf, true, true, false);
         }
         ByteBufUtils.writeVarInt(buf, criteriaIds.size());
         for (String criteriaId : criteriaIds) {
