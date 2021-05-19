@@ -46,6 +46,11 @@ jobs:
       run: mvn -T 1C -B package -Pbuild-extras
       env:
         JAVA_TOOL_OPTIONS: -Xmx2G
+    - name: GitHub Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: glowstone
+        path: target/glowstone.jar
     - name: Setup SSH
       if: ${{ matrix.java == 8 }}
       run: |
