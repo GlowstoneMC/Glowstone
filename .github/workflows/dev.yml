@@ -47,6 +47,7 @@ jobs:
       env:
         JAVA_TOOL_OPTIONS: -Xmx2G
     - name: GitHub Artifact
+      if: ${{ matrix.java == 8 }}
       uses: actions/upload-artifact@v2
       with:
         name: glowstone
