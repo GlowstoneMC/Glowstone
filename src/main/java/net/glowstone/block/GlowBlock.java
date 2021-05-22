@@ -280,6 +280,12 @@ public class GlowBlock implements Block {
         return mat == Material.WATER || mat == Material.LAVA;
     }
 
+    @Override
+    public boolean isBuildable() {
+        // TODO: This may not be the right implementation
+        return this.isSolid();
+    }
+
     /**
      * Get block material's flammable ability. (ability to have fire spread to it)
      *
@@ -296,6 +302,17 @@ public class GlowBlock implements Block {
      */
     public boolean isBurnable() {
         return getMaterialValues().getFireResistance() >= 0;
+    }
+
+    @Override
+    public boolean isReplaceable() {
+        // TODO: This may not be the right implementation
+        return !this.isSolid();
+    }
+
+    @Override
+    public boolean isSolid() {
+        return getType().isSolid();
     }
 
     public ValueCollection getMaterialValues() {
@@ -347,6 +364,11 @@ public class GlowBlock implements Block {
     @Override
     public byte getLightFromBlocks() {
         return ((GlowChunk) world.getChunkAt(this)).getBlockLight(x & 0xf, z & 0xf, y);
+    }
+
+    @Override
+    public boolean isValidTool(@NotNull ItemStack itemStack) {
+        return true;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -556,6 +578,11 @@ public class GlowBlock implements Block {
     }
 
     @Override
+    public boolean isPreferredTool(@NotNull ItemStack itemStack) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public boolean isPassable() {
         return isEmpty(); // TODO
     }
@@ -588,6 +615,12 @@ public class GlowBlock implements Block {
     @NotNull
     @Override
     public float getDestroySpeed(@NotNull ItemStack tool) {
+        // TODO: not implemented
+        return 1.0f;
+    }
+
+    @Override
+    public @NotNull float getDestroySpeed(@NotNull ItemStack itemStack, boolean considerEnchants) {
         // TODO: not implemented
         return 1.0f;
     }

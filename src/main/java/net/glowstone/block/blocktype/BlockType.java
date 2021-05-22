@@ -119,6 +119,9 @@ public class BlockType extends ItemType {
      */
     @NotNull
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+        if (!block.isValidTool(tool)) {
+            return Collections.emptyList();
+        }
         if (drops == null) {
             // default calculation
             return Collections.singletonList(new ItemStack(block.getType(), 1, block.getData()));
