@@ -1,9 +1,8 @@
 package net.glowstone.util.nbt;
 
-import lombok.Getter;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
 /**
  * The {@code TAG_List} tag.
@@ -27,7 +26,7 @@ public final class ListTag<T extends Tag> extends Tag<List<T>> {
      * Creates the tag.
      *
      * @param childType The type of item in the list.
-     * @param value The value.
+     * @param value     The value.
      */
     public ListTag(TagType childType, List<T> value) {
         super(TagType.LIST);

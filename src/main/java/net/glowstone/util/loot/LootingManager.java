@@ -1,5 +1,12 @@
 package net.glowstone.util.loot;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.util.InventoryUtil;
@@ -10,17 +17,10 @@ import org.jetbrains.annotations.NonNls;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class LootingManager {
 
-    private static final Map<EntityType, EntityLootTable> entities = new EnumMap<>(EntityType.class);
+    private static final Map<EntityType, EntityLootTable> entities =
+        new EnumMap<>(EntityType.class);
 
     /**
      * Registers the built-in loot data.

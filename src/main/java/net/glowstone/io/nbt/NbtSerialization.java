@@ -43,7 +43,7 @@ public final class NbtSerialization {
         final Material[] material = {null};
         if ((!tag.readString("id", id -> material[0] = ItemIds.getItem(id))
             && !tag.readShort("id",
-            id -> material[0] = blockDataManager.convertToBlockData(id).getMaterial()))
+                id -> material[0] = blockDataManager.convertToBlockData(id).getMaterial()))
             || material[0] == null || material[0] == Material.AIR) {
             return null;
         }

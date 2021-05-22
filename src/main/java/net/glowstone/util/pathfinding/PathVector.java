@@ -13,7 +13,8 @@ public class PathVector implements Comparable<PathVector> {
 
     /**
      * Creates a new PathVector object.
-     * @param cost The cost of this {@link PathVector} as determined during calculation.
+     *
+     * @param cost   The cost of this {@link PathVector} as determined during calculation.
      * @param vector The vector of this {@link PathVector}.
      */
     public PathVector(double cost, Vector vector) {
@@ -41,8 +42,8 @@ public class PathVector implements Comparable<PathVector> {
 
     /**
      * Compares this {@link PathVector} to another. This is based on cost.
-     * @param vector The {@link PathVector} we're comparing this one to.
      *
+     * @param vector The {@link PathVector} we're comparing this one to.
      * @return -1, 0, 1 based on less than, equal to, or greater than
      */
     @Override

@@ -73,6 +73,7 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
     @Getter
     @Setter
     private Color color;
+
     /**
      * Creates an entity and adds it to the specified world.
      *

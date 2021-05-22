@@ -1,9 +1,8 @@
 package net.glowstone.util.nbt;
 
+import java.io.IOException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.io.IOException;
 
 /**
  * The types of NBT tags that exist.

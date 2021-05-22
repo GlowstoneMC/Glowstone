@@ -28,6 +28,16 @@ public class BoundingBox implements Cloneable {
     }
 
     /**
+     * Tests whether this intersects another bounding box.
+     *
+     * @param other another bounding box
+     * @return true if this bounding box and {@code other} intersect; false otherwise
+     */
+    public final boolean intersects(BoundingBox other) {
+        return intersects(this, other);
+    }
+
+    /**
      * Converts two Vector instances to a BoundingBox.
      *
      * @param a any corner
@@ -70,16 +80,6 @@ public class BoundingBox implements Cloneable {
         box.minCorner.copy(original.minCorner);
         box.maxCorner.copy(original.maxCorner);
         return box;
-    }
-
-    /**
-     * Tests whether this intersects another bounding box.
-     *
-     * @param other another bounding box
-     * @return true if this bounding box and {@code other} intersect; false otherwise
-     */
-    public final boolean intersects(BoundingBox other) {
-        return intersects(this, other);
     }
 
     /**

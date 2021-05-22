@@ -1,7 +1,5 @@
 package net.glowstone.util;
 
-import net.glowstone.GlowServer;
-
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -10,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.logging.Level;
+import net.glowstone.GlowServer;
 
 /**
  * Utility class for performing encrypted authentication.

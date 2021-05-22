@@ -1,19 +1,18 @@
 package net.glowstone.util.config;
 
-import lombok.Getter;
-import net.glowstone.GlowServer;
-import net.glowstone.util.DynamicallyTypedMapWithDoubles;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.yaml.snakeyaml.error.YAMLException;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import lombok.Getter;
+import net.glowstone.GlowServer;
+import net.glowstone.util.DynamicallyTypedMapWithDoubles;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.yaml.snakeyaml.error.YAMLException;
 
 /**
  * Utilities for handling the server configuration files.
@@ -45,7 +44,7 @@ public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldCo
     /**
      * Initialize a new ServerConfig and associated settings.
      *
-     * @param directory The config directory, or null for default.
+     * @param directory  The config directory, or null for default.
      * @param configFile The config file, or null for default.
      */
     public WorldConfig(File directory, File configFile) {
@@ -74,7 +73,7 @@ public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldCo
     /**
      * Change a configuration value at runtime.
      *
-     * @param key the config key to write the value to
+     * @param key   the config key to write the value to
      * @param value value to write to config key
      * @see #save()
      */
@@ -188,7 +187,7 @@ public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldCo
             GlowServer.logger.severe("Config file " + file + " isn't valid!");
         } else {
             GlowServer.logger
-                    .log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
+                .log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
         }
     }
 
@@ -275,7 +274,8 @@ public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldCo
         END_HEIGHT_SCALE("end.height.scale", 1368.824),
         END_DETAIL_NOISE_SCALE_X("end.detail.noise-scale.x", 80D),
         END_DETAIL_NOISE_SCALE_Y("end.detail.noise-scale.y", 160D),
-        END_DETAIL_NOISE_SCALE_Z("end.detail.noise-scale.z", 80D),;
+        END_DETAIL_NOISE_SCALE_Z("end.detail.noise-scale.z", 80D),
+        ;
 
         private final String path;
         private final Object def;

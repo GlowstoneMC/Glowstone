@@ -37,8 +37,8 @@ public class LibraryKey implements Comparable<LibraryKey> {
     @Override
     public int compareTo(LibraryKey o) {
         return ComparisonChain.start()
-                .compare(groupId, o.groupId)
-                .compare(artifactId, o.artifactId)
-                .result();
+            .compare(groupId, o.groupId)
+            .compare(artifactId, o.artifactId)
+            .result();
     }
 }

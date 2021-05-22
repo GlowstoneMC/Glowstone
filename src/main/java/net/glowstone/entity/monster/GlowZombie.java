@@ -71,6 +71,11 @@ public class GlowZombie extends GlowMonster implements Zombie {
     }
 
     @Override
+    public void setBaby() {
+        this.setBaby(true);
+    }
+
+    @Override
     public boolean isVillager() {
         return false;
     }
@@ -172,11 +177,6 @@ public class GlowZombie extends GlowMonster implements Zombie {
     @Override
     public boolean isUndead() {
         return true;
-    }
-
-    @Override
-    public void setBaby() {
-        this.setBaby(true);
     }
 
     @Override

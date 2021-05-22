@@ -1,9 +1,5 @@
 package net.glowstone.util.bans;
 
-import net.glowstone.GlowServer;
-import org.bukkit.BanEntry;
-import org.bukkit.BanList;
-
 import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -15,6 +11,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.glowstone.GlowServer;
+import org.bukkit.BanEntry;
+import org.bukkit.BanList;
 
 /**
  * Ban list implementation.
@@ -32,7 +31,7 @@ public class GlowBanList extends JsonListFile implements BanList {
      * Creates a new BanList of the given type.
      *
      * @param server The server this BanList belongs to.
-     * @param type The type of BanList.
+     * @param type   The type of BanList.
      */
     public GlowBanList(GlowServer server, Type type) {
         super(getFile(server, type));

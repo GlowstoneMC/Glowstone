@@ -1,12 +1,11 @@
 package net.glowstone.util.collection;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Generic super collection. This is an abstract collection which delegates (ie redirects
@@ -125,7 +124,7 @@ public abstract class SuperCollection<E> implements Collection<E> {
                 return parents.get(parents.size() - 1).add(object);
             default:
                 throw new IllegalStateException(
-                        "This SuperCollection has an invalid addition mode!");
+                    "This SuperCollection has an invalid addition mode!");
         }
     }
 
@@ -148,7 +147,7 @@ public abstract class SuperCollection<E> implements Collection<E> {
                 return parents.get(parents.size() - 1).addAll(objects);
             default:
                 throw new IllegalStateException(
-                        "This SuperCollection has an invalid addition mode!");
+                    "This SuperCollection has an invalid addition mode!");
         }
     }
 

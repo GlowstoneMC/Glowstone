@@ -19,7 +19,7 @@ public class EntityLootTable {
     public EntityLootTable(JSONObject object) {
         if (object.containsKey("experience")) { // NON-NLS
             this.experience
-                    = new LootRandomValues((JSONObject) object.get("experience")); // NON-NLS
+                = new LootRandomValues((JSONObject) object.get("experience")); // NON-NLS
         } else {
             this.experience = null;
         }

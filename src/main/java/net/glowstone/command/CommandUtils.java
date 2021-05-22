@@ -59,7 +59,7 @@ public class CommandUtils {
      *
      * @param sender a command sender
      * @return the command sender's world if the sender is a block or entity, or the default world
-     * otherwise
+     *     otherwise
      */
     public static GlowWorld getWorld(CommandSender sender) {
         if (sender instanceof ConsoleCommandSender) {
@@ -77,7 +77,7 @@ public class CommandUtils {
      *
      * @param sender a command sender
      * @return the sender's location if the sender is a block or entity, or the default world's
-     * coordinate origin otherwise.
+     *     coordinate origin otherwise.
      */
     public static Location getLocation(CommandSender sender) {
         if (sender instanceof Entity) {

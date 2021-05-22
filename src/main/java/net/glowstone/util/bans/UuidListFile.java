@@ -1,10 +1,5 @@
 package net.glowstone.util.bans;
 
-import net.glowstone.entity.meta.profile.GlowPlayerProfile;
-import net.glowstone.entity.meta.profile.ProfileCache;
-import net.glowstone.util.UuidUtils;
-import org.bukkit.OfflinePlayer;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +9,10 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
+import net.glowstone.entity.meta.profile.ProfileCache;
+import net.glowstone.util.UuidUtils;
+import org.bukkit.OfflinePlayer;
 
 /**
  * Common management for whitelist and ops list files.
@@ -21,6 +20,10 @@ import java.util.stream.Collectors;
 public final class UuidListFile extends JsonListFile {
 
     private Map<UUID, Entry> entriesByUuid = new ConcurrentHashMap<>();
+
+    public UuidListFile(File file) {
+        super(file);
+    }
 
     @Override
     public void load() {
@@ -30,10 +33,6 @@ public final class UuidListFile extends JsonListFile {
         }
     }
 
-    public UuidListFile(File file) {
-        super(file);
-    }
-
     /**
      * Returns a {@link GlowPlayerProfile} for each player whose UUID is in the list file.
      *
@@ -41,16 +40,16 @@ public final class UuidListFile extends JsonListFile {
      */
     public List<GlowPlayerProfile> getProfiles() {
         return entries
-                .stream()
-                .parallel()
-                .map(entry -> {
-                    try {
-                        return ProfileCache.getProfile(((Entry) entry).uuid).get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toList());
+            .stream()
+            .parallel()
+            .map(entry -> {
+                try {
+                    return ProfileCache.getProfile(((Entry) entry).uuid).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            })
+            .collect(Collectors.toList());
     }
 
     /**

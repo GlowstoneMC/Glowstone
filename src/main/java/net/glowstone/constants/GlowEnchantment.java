@@ -1,13 +1,12 @@
 package net.glowstone.constants;
 
+import io.papermc.paper.enchantments.EnchantmentRarity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import io.papermc.paper.enchantments.EnchantmentRarity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.inventory.MaterialMatcher;
@@ -257,39 +256,53 @@ public final class GlowEnchantment extends Enchantment implements Choice {
             EnchantmentTarget.ARMOR, "minecraft:blast_protection"),
         PROTECTION_PROJECTILE(4, "Projectile Protection", 4, EnchantmentRarity.UNCOMMON, 3, 6, 15,
             EnchantmentTarget.ARMOR, Group.PROTECT, "minecraft:projectile_protection"),
-        OXYGEN(5, "Respiration", 3, EnchantmentRarity.RARE, 10, 10, 30, EnchantmentTarget.ARMOR_HEAD,
+        OXYGEN(5, "Respiration", 3, EnchantmentRarity.RARE, 10, 10, 30,
+            EnchantmentTarget.ARMOR_HEAD,
             "minecraft:respiration"),
-        WATER_WORKER(6, "Aqua Affinity", 1, EnchantmentRarity.RARE, 1, 0, 40, EnchantmentTarget.ARMOR_HEAD,
-                "minecraft:aqua_affinity"),
-        THORNS(7, "Thorns", 3, EnchantmentRarity.VERY_RARE, 10, 20, 50, EnchantmentTarget.ARMOR_TORSO,
-                new MatcherAdapter(EnchantmentTarget.ARMOR), "minecraft:thorns"),
-        DEPTH_STRIDER(8, "Depth Strider", 3, EnchantmentRarity.RARE, 10, 10, 15, EnchantmentTarget.ARMOR_FEET,
-                "minecraft:depth_strider"),
-        FROST_WALKER(9, "Frost Walker", 2, EnchantmentRarity.RARE, 10, 10, 15, EnchantmentTarget.ARMOR_FEET,
-                "minecraft:frost_walker"),
+        WATER_WORKER(6, "Aqua Affinity", 1, EnchantmentRarity.RARE, 1, 0, 40,
+            EnchantmentTarget.ARMOR_HEAD,
+            "minecraft:aqua_affinity"),
+        THORNS(7, "Thorns", 3, EnchantmentRarity.VERY_RARE, 10, 20, 50,
+            EnchantmentTarget.ARMOR_TORSO,
+            new MatcherAdapter(EnchantmentTarget.ARMOR), "minecraft:thorns"),
+        DEPTH_STRIDER(8, "Depth Strider", 3, EnchantmentRarity.RARE, 10, 10, 15,
+            EnchantmentTarget.ARMOR_FEET,
+            "minecraft:depth_strider"),
+        FROST_WALKER(9, "Frost Walker", 2, EnchantmentRarity.RARE, 10, 10, 15,
+            EnchantmentTarget.ARMOR_FEET,
+            "minecraft:frost_walker"),
         BINDING_CURSE(10, "Curse of Binding", 1, EnchantmentRarity.VERY_RARE, true, 25, 0, 25,
-                EnchantmentTarget.ARMOR, new MatcherAdapter(EnchantmentTarget.ARMOR), Group.NONE,
-                "minecraft:binding_curse"),
-        DAMAGE_ALL(16, "Sharpness", 5, EnchantmentRarity.COMMON, 1, 11, 20, EnchantmentTarget.WEAPON,
-                MELEE, Group.ATTACK, "minecraft:sharpness"),
-        DAMAGE_UNDEAD(17, "Smite", 5, EnchantmentRarity.UNCOMMON, 5, 8, 20, EnchantmentTarget.WEAPON,
-                MELEE, Group.ATTACK, "minecraft:smite"),
+            EnchantmentTarget.ARMOR, new MatcherAdapter(EnchantmentTarget.ARMOR), Group.NONE,
+            "minecraft:binding_curse"),
+        DAMAGE_ALL(16, "Sharpness", 5, EnchantmentRarity.COMMON, 1, 11, 20,
+            EnchantmentTarget.WEAPON,
+            MELEE, Group.ATTACK, "minecraft:sharpness"),
+        DAMAGE_UNDEAD(17, "Smite", 5, EnchantmentRarity.UNCOMMON, 5, 8, 20,
+            EnchantmentTarget.WEAPON,
+            MELEE, Group.ATTACK, "minecraft:smite"),
         DAMAGE_ARTHROPODS(18, "Bane of Arthropods", 5, EnchantmentRarity.UNCOMMON, 5, 8, 20,
-                EnchantmentTarget.WEAPON, MELEE, Group.ATTACK, "minecraft:bane_of_arthropods"),
-        KNOCKBACK(19, "Knockback", 2, EnchantmentRarity.UNCOMMON, 5, 20, 50, EnchantmentTarget.WEAPON,
-                "minecraft:knockback"),
-        FIRE_ASPECT(20, "Fire Aspect", 2, EnchantmentRarity.RARE, 10, 20, 50, EnchantmentTarget.WEAPON,
-                "minecraft:fire_aspect"),
-        LOOT_BONUS_MOBS(21, "Looting", 3, EnchantmentRarity.RARE, 15, 9, 50, EnchantmentTarget.WEAPON,
+            EnchantmentTarget.WEAPON, MELEE, Group.ATTACK, "minecraft:bane_of_arthropods"),
+        KNOCKBACK(19, "Knockback", 2, EnchantmentRarity.UNCOMMON, 5, 20, 50,
+            EnchantmentTarget.WEAPON,
+            "minecraft:knockback"),
+        FIRE_ASPECT(20, "Fire Aspect", 2, EnchantmentRarity.RARE, 10, 20, 50,
+            EnchantmentTarget.WEAPON,
+            "minecraft:fire_aspect"),
+        LOOT_BONUS_MOBS(21, "Looting", 3, EnchantmentRarity.RARE, 15, 9, 50,
+            EnchantmentTarget.WEAPON,
             "minecraft:looting"),
-        SWEEPING_EDGE(22, "Sweeping Edge", 3, EnchantmentRarity.RARE, 5, 9, 15, EnchantmentTarget.WEAPON,
+        SWEEPING_EDGE(22, "Sweeping Edge", 3, EnchantmentRarity.RARE, 5, 9, 15,
+            EnchantmentTarget.WEAPON,
             "minecraft:sweeping"),
-        DIG_SPEED(32, "Efficiency", 5, EnchantmentRarity.COMMON, 1, 10, 50, EnchantmentTarget.TOOL, DIGGING_TOOLS, "minecraft:efficiency"),
+        DIG_SPEED(32, "Efficiency", 5, EnchantmentRarity.COMMON, 1, 10, 50, EnchantmentTarget.TOOL,
+            DIGGING_TOOLS, "minecraft:efficiency"),
         SILK_TOUCH(33, "Silk Touch", 1, EnchantmentRarity.VERY_RARE, false, 15, 0, 50,
             EnchantmentTarget.TOOL, BASE_TOOLS, Group.DIG, "minecraft:silk_touch"),
-        DURABILITY(34, "Unbreaking", 3, EnchantmentRarity.UNCOMMON, 5, 8, 50, EnchantmentTarget.TOOL,
-                ALL_EQUIPMENT, "minecraft:unbreaking"),
-        LOOT_BONUS_BLOCKS(35, "Fortune", 3, EnchantmentRarity.RARE, 15, 9, 50, EnchantmentTarget.TOOL,
+        DURABILITY(34, "Unbreaking", 3, EnchantmentRarity.UNCOMMON, 5, 8, 50,
+            EnchantmentTarget.TOOL,
+            ALL_EQUIPMENT, "minecraft:unbreaking"),
+        LOOT_BONUS_BLOCKS(35, "Fortune", 3, EnchantmentRarity.RARE, 15, 9, 50,
+            EnchantmentTarget.TOOL,
             BASE_TOOLS, Group.DIG, "minecraft:fortune"),
         ARROW_DAMAGE(48, "Power", 5, EnchantmentRarity.COMMON, 1, 10, 15, EnchantmentTarget.BOW,
             "minecraft:power"),
@@ -297,21 +310,28 @@ public final class GlowEnchantment extends Enchantment implements Choice {
             "minecraft:punch"),
         ARROW_FIRE(50, "Flame", 1, EnchantmentRarity.RARE, 20, 0, 30, EnchantmentTarget.BOW,
             "minecraft:flame"),
-        ARROW_INFINITE(51, "Infinity", 1, EnchantmentRarity.VERY_RARE, 20, 0, 30, EnchantmentTarget.BOW, Group.USAGE,
+        ARROW_INFINITE(51, "Infinity", 1, EnchantmentRarity.VERY_RARE, 20, 0, 30,
+            EnchantmentTarget.BOW, Group.USAGE,
             "minecraft:infinity"),
-        LUCK(61, "Luck of the Sea", 3, EnchantmentRarity.RARE, 15, 9, 50, EnchantmentTarget.FISHING_ROD,
+        LUCK(61, "Luck of the Sea", 3, EnchantmentRarity.RARE, 15, 9, 50,
+            EnchantmentTarget.FISHING_ROD,
             "minecraft:luck_of_the_sea"),
         LURE(62, "Lure", 3, EnchantmentRarity.RARE, 15, 9, 50, EnchantmentTarget.FISHING_ROD,
             "minecraft:lure"),
-        LOYALTY(65, "Loyalty", 3, EnchantmentRarity.UNCOMMON, 17, 5, 23, 50, EnchantmentTarget.TRIDENT, Group.TRIDENT_THROW, "minecraft:loyalty"),
-        IMPALING(66, "Impaling", 5, EnchantmentRarity.RARE, 1, 8, 20, EnchantmentTarget.TRIDENT, "minecraft:impaling"),
-        RIPTIDE(67, "Riptide", 3, EnchantmentRarity.RARE, 17, 10, 13, 50, EnchantmentTarget.TRIDENT, Group.TRIDENT_THROW, "minecraft:riptide"),
-        CHANNELING(68, "Channeling", 1, EnchantmentRarity.VERY_RARE, 25, 0, 25, EnchantmentTarget.TRIDENT, "minecraft:channeling"),
-        MENDING(70, "Mending", 1, EnchantmentRarity.RARE, 25, 0, 50, EnchantmentTarget.ALL, Group.USAGE,
-                "minecraft:mending"),
+        LOYALTY(65, "Loyalty", 3, EnchantmentRarity.UNCOMMON, 17, 5, 23, 50,
+            EnchantmentTarget.TRIDENT, Group.TRIDENT_THROW, "minecraft:loyalty"),
+        IMPALING(66, "Impaling", 5, EnchantmentRarity.RARE, 1, 8, 20, EnchantmentTarget.TRIDENT,
+            "minecraft:impaling"),
+        RIPTIDE(67, "Riptide", 3, EnchantmentRarity.RARE, 17, 10, 13, 50, EnchantmentTarget.TRIDENT,
+            Group.TRIDENT_THROW, "minecraft:riptide"),
+        CHANNELING(68, "Channeling", 1, EnchantmentRarity.VERY_RARE, 25, 0, 25,
+            EnchantmentTarget.TRIDENT, "minecraft:channeling"),
+        MENDING(70, "Mending", 1, EnchantmentRarity.RARE, 25, 0, 50, EnchantmentTarget.ALL,
+            Group.USAGE,
+            "minecraft:mending"),
         VANISHING_CURSE(71, "Curse of Vanishing", 1, EnchantmentRarity.VERY_RARE, true, 25, 0, 25,
-                EnchantmentTarget.ALL, new MatcherAdapter(EnchantmentTarget.ALL), Group.NONE,
-                "minecraft:vanishing_curse");
+            EnchantmentTarget.ALL, new MatcherAdapter(EnchantmentTarget.ALL), Group.NONE,
+            "minecraft:vanishing_curse");
 
 
         private final int id;
@@ -327,41 +347,50 @@ public final class GlowEnchantment extends Enchantment implements Choice {
         private final EnchantmentTarget target;
         private final MaterialMatcher matcher;
         private final Group group;
-        @Getter private final String vanillaId;
+        @Getter
+        private final String vanillaId;
 
-        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc, int maxInc,
-            EnchantmentTarget target, String vanillaId) {
+        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc,
+             int maxInc,
+             EnchantmentTarget target, String vanillaId) {
             this(id, name, max, rarity, false, minValue, minInc, maxInc, target,
                 new MatcherAdapter(target), Group.NONE, vanillaId);
         }
 
-        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc, int maxInc,
-            EnchantmentTarget target, Group group, String vanillaId) {
+        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc,
+             int maxInc,
+             EnchantmentTarget target, Group group, String vanillaId) {
             this(id, name, max, rarity, false, minValue, minInc, maxInc, target,
                 new MatcherAdapter(target), group, vanillaId);
         }
 
-        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc, int maxInc,
-            EnchantmentTarget target, MaterialMatcher matcher,
-            String vanillaId) {
+        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc,
+             int maxInc,
+             EnchantmentTarget target, MaterialMatcher matcher,
+             String vanillaId) {
             this(id, name, max, rarity, false, minValue, minInc, maxInc, target,
                 matcher, Group.NONE, vanillaId);
         }
 
-        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc, int maxInc, EnchantmentTarget target, MatcherAdapter matcherAdapter, String vanillaId) {
-            this(id, name, max, rarity, false, minValue, minInc, maxInc, target, matcherAdapter, Group.NONE, vanillaId);
+        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc,
+             int maxInc, EnchantmentTarget target, MatcherAdapter matcherAdapter,
+             String vanillaId) {
+            this(id, name, max, rarity, false, minValue, minInc, maxInc, target, matcherAdapter,
+                Group.NONE, vanillaId);
         }
 
-        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc, int maxInc,
-            EnchantmentTarget target, MaterialMatcher matcher, Group group, String vanillaId) {
+        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc,
+             int maxInc,
+             EnchantmentTarget target, MaterialMatcher matcher, Group group, String vanillaId) {
             this(id, name, max, rarity, false, minValue, minInc, maxInc, target, matcher,
                 group, vanillaId);
         }
 
         Impl(int id, String name, int max, EnchantmentRarity rarity, boolean treasure, int minValue,
-            int minInc, int maxInc, EnchantmentTarget target,
-            MaterialMatcher matcher, Group group, String vanillaId) {
-            this(id, name, max, rarity, treasure, minValue, minInc, maxInc, Integer.MAX_VALUE, target,
+             int minInc, int maxInc, EnchantmentTarget target,
+             MaterialMatcher matcher, Group group, String vanillaId) {
+            this(id, name, max, rarity, treasure, minValue, minInc, maxInc, Integer.MAX_VALUE,
+                target,
                 matcher, group, vanillaId);
         }
 
@@ -369,11 +398,13 @@ public final class GlowEnchantment extends Enchantment implements Choice {
              int minInc, int maxInc, int maxValue, EnchantmentTarget target,
              MaterialMatcher matcher, Group group, String vanillaId) {
             this(id, name, max, rarity, treasure, false, minValue, minInc, maxInc, maxValue, target,
-                    matcher, group, vanillaId);
+                matcher, group, vanillaId);
         }
 
-        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc, int maxInc, int maxValue, EnchantmentTarget target, Group group, String vanillaId) {
-            this(id, name, max, rarity, false, minValue, minInc, maxInc, maxValue, target, new MatcherAdapter(target), group, vanillaId);
+        Impl(int id, String name, int max, EnchantmentRarity rarity, int minValue, int minInc,
+             int maxInc, int maxValue, EnchantmentTarget target, Group group, String vanillaId) {
+            this(id, name, max, rarity, false, minValue, minInc, maxInc, maxValue, target,
+                new MatcherAdapter(target), group, vanillaId);
         }
 
         int getMinRange(int modifier) {
@@ -385,23 +416,6 @@ public final class GlowEnchantment extends Enchantment implements Choice {
             return Math.min(getMinRange(modifier) + maxIncrement, maxValue);
         }
     }
-
-//    private enum Rarity {
-//        COMMON(10),
-//        UNCOMMON(5),
-//        RARE(2),
-//        VERY_RARE(1);
-//
-//        private final int weight;
-//
-//        Rarity(int weight) {
-//            this.weight = weight;
-//        }
-//
-//        public int getWeight() {
-//            return weight;
-//        }
-//    }
 
     private enum Group {
         NONE,

@@ -1,9 +1,8 @@
 package net.glowstone.util.loot;
 
+import java.util.Collection;
 import lombok.Data;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Collection;
 
 @Data
 public class LootData {

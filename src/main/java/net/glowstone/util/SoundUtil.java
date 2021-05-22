@@ -1,16 +1,15 @@
 package net.glowstone.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.Sets;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A collection of utility methods to play sounds.
@@ -28,7 +27,7 @@ public class SoundUtil {
      * @throws NullPointerException if any of the location, sound, or exclude parameters is null.
      */
     public static void playSoundAtLocationExcept(Location location, Sound sound, float volume,
-            float pitch, GlowPlayer... exclude) {
+                                                 float pitch, GlowPlayer... exclude) {
         checkNotNull(location);
         checkNotNull(sound);
         checkNotNull(exclude);
@@ -37,10 +36,10 @@ public class SoundUtil {
         GlowWorld world = (GlowWorld) location.getWorld();
         double radiusSquared = volume * volume * 256;
         world.getRawPlayers()
-                .stream()
-                .filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared
-                        && !excludeSet.contains(player))
-                .forEach(player -> player.playSound(location, sound, volume, pitch));
+            .stream()
+            .filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared
+                && !excludeSet.contains(player))
+            .forEach(player -> player.playSound(location, sound, volume, pitch));
     }
 
     /**
@@ -52,12 +51,13 @@ public class SoundUtil {
      * @param pitchBase     if {@code allowNegative}, the average pitch modifier; otherwise, the
      *                      minimum
      * @param pitchRange    the maximum deviation of the pitch modifier compared to {@code
-     * pitchBase}
+     *                      pitchBase}
      * @param allowNegative if true, distribution is triangular rather than uniform
      * @param exclude       the players not to play the sound for
      */
     public static void playSoundPitchRange(Location location, Sound sound, float volume,
-            float pitchBase, float pitchRange, boolean allowNegative, GlowPlayer... exclude) {
+                                           float pitchBase, float pitchRange, boolean allowNegative,
+                                           GlowPlayer... exclude) {
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         float pitch = pitchBase;
         if (allowNegative) {
@@ -79,7 +79,8 @@ public class SoundUtil {
      * @param exclude    the players not to play the sound for
      */
     public static void playSoundPitchRange(Location location, Sound sound, float volume,
-            float pitchBase, float pitchRange, GlowPlayer... exclude) {
+                                           float pitchBase, float pitchRange,
+                                           GlowPlayer... exclude) {
         playSoundPitchRange(location, sound, volume, pitchBase, pitchRange, true, exclude);
     }
 

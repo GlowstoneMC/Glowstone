@@ -1,16 +1,15 @@
 package net.glowstone.util.loot;
 
-import lombok.Data;
-import net.glowstone.util.ReflectionProcessor;
-import org.bukkit.entity.LivingEntity;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import lombok.Data;
+import net.glowstone.util.ReflectionProcessor;
+import org.bukkit.entity.LivingEntity;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 @Data
 public class LootRandomValues {

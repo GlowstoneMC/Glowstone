@@ -1,17 +1,16 @@
 package net.glowstone.util;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import net.glowstone.constants.GlowStatistic;
 import net.glowstone.net.message.play.game.StatisticsMessage;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.Statistic.Type;
 import org.bukkit.entity.EntityType;
-
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * A container for statistic tracking.
@@ -49,18 +48,18 @@ public final class StatisticMap {
     private String name(Statistic stat, Material mat) {
         if (mat.isBlock()) {
             checkArgument(
-                    stat.getType() == Type.BLOCK,
-                    "Statistic " + stat + " is not a block statistic");
+                stat.getType() == Type.BLOCK,
+                "Statistic " + stat + " is not a block statistic");
         } else {
             checkArgument(
-                    stat.getType() == Type.ITEM, "Statistic " + stat + " is not an item statistic");
+                stat.getType() == Type.ITEM, "Statistic " + stat + " is not an item statistic");
         }
         return GlowStatistic.getName(stat, mat);
     }
 
     private String name(Statistic stat, EntityType type) {
         checkArgument(
-                stat.getType() == Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
+            stat.getType() == Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
         return GlowStatistic.getName(stat, type);
     }
 
@@ -99,9 +98,9 @@ public final class StatisticMap {
     /**
      * Increment the given Statistic for the given Material.
      *
-     * @param stat the Statistic
+     * @param stat     the Statistic
      * @param material the Material
-     * @param modify the amount to add
+     * @param modify   the amount to add
      */
     public void add(Statistic stat, Material material, int modify) {
         String name = name(stat);
@@ -117,9 +116,9 @@ public final class StatisticMap {
     /**
      * Increment the given Statistic for the given EntityType.
      *
-     * @param stat the Statistic
+     * @param stat       the Statistic
      * @param entityType the EntityType
-     * @param modify the amount to add
+     * @param modify     the amount to add
      */
     public void add(Statistic stat, EntityType entityType, int modify) {
         String name = name(stat);

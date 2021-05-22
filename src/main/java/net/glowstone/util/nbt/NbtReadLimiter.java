@@ -18,6 +18,7 @@ public class NbtReadLimiter {
 
     /**
      * Increments the read-length count, and throws an exception if the limit is exceeded.
+     *
      * @param length the length to add to the read-length count
      * @throws IllegalStateException if the limit is exceeded
      */

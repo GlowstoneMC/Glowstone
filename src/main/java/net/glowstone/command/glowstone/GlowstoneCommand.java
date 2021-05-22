@@ -34,8 +34,7 @@ import org.jetbrains.annotations.NonNls;
 
 public class GlowstoneCommand extends GlowVanillaCommand {
 
-    private static final @NonNls
-    List<String> SUBCOMMANDS = Arrays.stream(Subcommand.values())
+    private static final @NonNls List<String> SUBCOMMANDS = Arrays.stream(Subcommand.values())
         .map(subcommand -> subcommand.mainName)
         .collect(ImmutableList.toImmutableList());
     private static final ImmutableSortedMap<String, Subcommand> SUBCOMMAND_MAP;
@@ -281,14 +280,10 @@ public class GlowstoneCommand extends GlowVanillaCommand {
 
         private final String[] otherNames;
 
-        private final @NonNls
-        String mainName;
-        private final @NonNls
-        String keyPrefix;
-        private final @NonNls
-        String usageKey;
-        private final @NonNls
-        String descriptionKey;
+        private final @NonNls String mainName;
+        private final @NonNls String keyPrefix;
+        private final @NonNls String usageKey;
+        private final @NonNls String descriptionKey;
 
         Subcommand(String mainName, String... otherNames) {
             this.otherNames = otherNames;

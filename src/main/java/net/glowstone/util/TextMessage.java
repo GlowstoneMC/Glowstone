@@ -1,17 +1,16 @@
 package net.glowstone.util;
 
-import lombok.EqualsAndHashCode;
-import org.bukkit.ChatColor;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import lombok.EqualsAndHashCode;
+import org.bukkit.ChatColor;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Simple container for chat message structures until more advanced chat formatting is implemented.
@@ -179,7 +178,7 @@ public final class TextMessage {
 
     @SuppressWarnings("unchecked")
     private static void append(List<JSONObject> items, StringBuilder current, ChatColor color,
-            Set<ChatColor> formatting) {
+                               Set<ChatColor> formatting) {
         if (current.length() == 0) {
             return;
         }

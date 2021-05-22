@@ -1,10 +1,9 @@
 package net.glowstone.util.noise;
 
+import java.util.Random;
 import lombok.Getter;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.OctaveGenerator;
-
-import java.util.Random;
 
 public class PerlinOctaveGenerator extends OctaveGenerator {
 
@@ -28,13 +27,13 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
      * Creates a generator for multiple layers of Perlin noise.
      *
      * @param octaves the noise generators
-     * @param rand the PRNG
-     * @param sizeX the size on the X axis
-     * @param sizeY the size on the Y axis
-     * @param sizeZ the size on the Z axis
+     * @param rand    the PRNG
+     * @param sizeX   the size on the X axis
+     * @param sizeY   the size on the Y axis
+     * @param sizeZ   the size on the Z axis
      */
     public PerlinOctaveGenerator(NoiseGenerator[] octaves, Random rand, int sizeX, int sizeY,
-        int sizeZ) {
+                                 int sizeZ) {
         super(octaves);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
@@ -59,29 +58,29 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
     /**
      * Generates multiple layers of noise.
      *
-     * @param x the starting X coordinate
-     * @param z the starting Z coordinate
-     * @param lacunarity layer n's frequency as a fraction of layer {@code n - 1}'s frequency
+     * @param x           the starting X coordinate
+     * @param z           the starting Z coordinate
+     * @param lacunarity  layer n's frequency as a fraction of layer {@code n - 1}'s frequency
      * @param persistence layer n's amplitude as a multiple of layer {@code n - 1}'s amplitude
      * @return The noise array
      */
     public double[] getFractalBrownianMotion(
-            double x, double z, double lacunarity, double persistence) {
+        double x, double z, double lacunarity, double persistence) {
         return getFractalBrownianMotion(x, 0, z, lacunarity, persistence);
     }
 
     /**
      * Generates multiple layers of noise.
      *
-     * @param x the starting X coordinate
-     * @param y the starting Y coordinate
-     * @param z the starting Z coordinate
-     * @param lacunarity layer n's frequency as a fraction of layer {@code n - 1}'s frequency
+     * @param x           the starting X coordinate
+     * @param y           the starting Y coordinate
+     * @param z           the starting Z coordinate
+     * @param lacunarity  layer n's frequency as a fraction of layer {@code n - 1}'s frequency
      * @param persistence layer n's amplitude as a multiple of layer {@code n - 1}'s amplitude
      * @return The noise array
      */
     public double[] getFractalBrownianMotion(double x, double y, double z, double lacunarity,
-            double persistence) {
+                                             double persistence) {
         for (int i = 0; i < noise.length; i++) {
             noise[i] = 0;
         }

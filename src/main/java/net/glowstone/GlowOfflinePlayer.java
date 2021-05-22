@@ -12,12 +12,15 @@ import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.UuidUtils;
-import org.bukkit.*;
 import org.bukkit.BanList.Type;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
+import org.bukkit.Statistic;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 
 /**
  * Represents a player which is not connected to the server.

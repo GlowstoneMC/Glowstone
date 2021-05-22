@@ -1,6 +1,8 @@
 package net.glowstone.util;
 
 import io.papermc.paper.inventory.ItemRarity;
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.GlowServer;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -19,9 +21,6 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implementation of Bukkit's internal-use UnsafeValues.
@@ -162,7 +161,7 @@ public final class GlowUnsafeValues implements UnsafeValues {
 
     @Deprecated
     public List<String> tabCompleteInternalStatistic(
-            String token, List<String> completions) {
+        String token, List<String> completions) {
         Statistic[] stats = Statistic.values();
         List<String> names = new ArrayList<>(stats.length);
         for (Statistic stat : stats) {
@@ -237,7 +236,8 @@ public final class GlowUnsafeValues implements UnsafeValues {
     }
 
     @Override
-    public boolean isValidRepairItemStack(@NotNull ItemStack itemStack, @NotNull ItemStack itemStack1) {
+    public boolean isValidRepairItemStack(@NotNull ItemStack itemStack,
+                                          @NotNull ItemStack itemStack1) {
         throw new UnsupportedOperationException();
     }
 

@@ -38,7 +38,7 @@ public final class NbtInputStream implements Closeable {
      *
      * <p>A flag must be passed which indicates if the stream is compressed with GZIP or not.
      *
-     * @param is The input stream.
+     * @param is         The input stream.
      * @param compressed A flag indicating if the stream is compressed.
      * @throws IOException if an I/O error occurs.
      */
@@ -105,7 +105,7 @@ public final class NbtInputStream implements Closeable {
     /**
      * Reads the payload of a {@link Tag}, given the name and type.
      *
-     * @param type The type.
+     * @param type  The type.
      * @param depth The depth.
      * @return The tag.
      * @throws IOException if an I/O error occurs.

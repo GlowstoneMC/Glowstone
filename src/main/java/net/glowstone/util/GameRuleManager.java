@@ -1,10 +1,5 @@
 package net.glowstone.util;
 
-import org.jetbrains.annotations.NonNls;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import static net.glowstone.constants.GameRules.ANNOUNCE_ADVANCEMENTS;
 import static net.glowstone.constants.GameRules.COMMAND_BLOCK_OUTPUT;
 import static net.glowstone.constants.GameRules.DO_DAYLIGHT_CYCLE;
@@ -24,6 +19,10 @@ import static net.glowstone.constants.GameRules.RANDOM_TICK_SPEED;
 import static net.glowstone.constants.GameRules.REDUCED_DEBUG_INFO;
 import static net.glowstone.constants.GameRules.SEND_COMMAND_FEEDBACK;
 import static net.glowstone.constants.GameRules.SHOW_DEATH_MESSAGES;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Container for the game rule map for worlds.
@@ -74,7 +73,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * <p>The helper methods provided in this class may be used to retrieve the value, such as
      * {@link #getBoolean(String)}.</p>
      *
-     * @param rule the rule to set, cannot be null
+     * @param rule  the rule to set, cannot be null
      * @param value the value to set, cannot be null or be represented as null
      * @return true if set, false otherwise
      */
@@ -137,7 +136,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * the default will be returned.
      *
      * @param rule the rule to look up
-     * @param def the default value
+     * @param def  the default value
      * @return the integer value of the rule, or the default
      */
     public int getInt(@NonNls String rule, int def) {

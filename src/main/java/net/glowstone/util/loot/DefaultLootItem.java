@@ -1,9 +1,8 @@
 package net.glowstone.util.loot;
 
+import java.util.Optional;
 import lombok.Data;
 import org.json.simple.JSONObject;
-
-import java.util.Optional;
 
 @Data
 public class DefaultLootItem {

@@ -1546,8 +1546,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             mainHand.setAmount(mainHand.getAmount() - 1);
             human.getInventory().setItemInMainHand(InventoryUtil.createEmptyStack());
             hasTotem = true;
-        } else if (!InventoryUtil.isEmpty(offHand) &&
-            offHand.getType() == Material.TOTEM_OF_UNDYING) {
+        } else if (!InventoryUtil.isEmpty(offHand)
+            && offHand.getType() == Material.TOTEM_OF_UNDYING) {
             human.getInventory().setItemInOffHand(InventoryUtil.createEmptyStack());
             hasTotem = true;
         }

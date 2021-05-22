@@ -1,9 +1,8 @@
 package net.glowstone.util.loot;
 
+import java.util.Optional;
 import lombok.Data;
 import org.json.simple.JSONObject;
-
-import java.util.Optional;
 
 @Data
 public class ConditionalLootItem {
@@ -16,6 +15,7 @@ public class ConditionalLootItem {
 
     /**
      * Parses a conditional loot item from its JSONObject form.
+     *
      * @param object a JSON object describing the loot item
      */
     public ConditionalLootItem(JSONObject object) {

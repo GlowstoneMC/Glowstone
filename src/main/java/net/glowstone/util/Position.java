@@ -1,12 +1,5 @@
 package net.glowstone.util;
 
-import com.google.common.collect.ImmutableList;
-import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
-import org.bukkit.util.BlockVector;
-
-import java.util.List;
-
 import static org.bukkit.block.BlockFace.EAST;
 import static org.bukkit.block.BlockFace.EAST_NORTH_EAST;
 import static org.bukkit.block.BlockFace.EAST_SOUTH_EAST;
@@ -24,6 +17,12 @@ import static org.bukkit.block.BlockFace.WEST;
 import static org.bukkit.block.BlockFace.WEST_NORTH_WEST;
 import static org.bukkit.block.BlockFace.WEST_SOUTH_WEST;
 
+import com.google.common.collect.ImmutableList;
+import java.util.List;
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
+import org.bukkit.util.BlockVector;
+
 /**
  * A static class housing position-related utilities and constants.
  *
@@ -36,9 +35,9 @@ public final class Position {
      * the data/tag that is applied to the block on placing.
      */
     public static final List<BlockFace> ROTATIONS = ImmutableList
-            .of(NORTH, NORTH_NORTH_EAST, NORTH_EAST, EAST_NORTH_EAST, EAST, EAST_SOUTH_EAST,
-                    SOUTH_EAST, SOUTH_SOUTH_EAST, SOUTH, SOUTH_SOUTH_WEST, SOUTH_WEST,
-                    WEST_SOUTH_WEST, WEST, WEST_NORTH_WEST, NORTH_WEST, NORTH_NORTH_WEST);
+        .of(NORTH, NORTH_NORTH_EAST, NORTH_EAST, EAST_NORTH_EAST, EAST, EAST_SOUTH_EAST,
+            SOUTH_EAST, SOUTH_SOUTH_EAST, SOUTH, SOUTH_SOUTH_WEST, SOUTH_WEST,
+            WEST_SOUTH_WEST, WEST, WEST_NORTH_WEST, NORTH_WEST, NORTH_NORTH_WEST);
 
     private Position() {
     }
@@ -76,19 +75,19 @@ public final class Position {
     /**
      * Gets whether there has been a position change between the two Locations.
      *
-     * @param first The initial location.
+     * @param first  The initial location.
      * @param second The final location.
      * @return A boolean.
      */
     public static boolean hasMoved(Location first, Location second) {
         return first.getX() != second.getX() || first.getY() != second.getY()
-                || first.getZ() != second.getZ();
+            || first.getZ() != second.getZ();
     }
 
     /**
      * Gets whether there has been a rotation change between the two Locations.
      *
-     * @param first The initial location.
+     * @param first  The initial location.
      * @param second The final location.
      * @return A boolean.
      */
@@ -100,7 +99,7 @@ public final class Position {
      * Copy the contents of one Location to another.
      *
      * @param source The Location to read from.
-     * @param dest The Location to modify. May be null.
+     * @param dest   The Location to modify. May be null.
      * @return The dest parameter, modified if not null.
      */
     public static Location copyLocation(Location source, Location dest) {
@@ -120,7 +119,7 @@ public final class Position {
      * Copy the position contents (x,y,z) of one Location to another.
      *
      * @param source The Location to read the x, y and z values from.
-     * @param dest The Location to modify the x, y and z values. May be null.
+     * @param dest   The Location to modify the x, y and z values. May be null.
      * @return The dest parameter, modified if not null.
      */
     public static Location copyPosition(Location source, Location dest) {
@@ -162,8 +161,8 @@ public final class Position {
      */
     public static long getPosition(BlockVector vector) {
         return (((long) vector.getBlockX() & 0x3FFFFFF) << 38) | (
-                ((long) vector.getBlockY() & 0xFFF) << 26) | ((long) vector.getBlockZ()
-                & 0x3FFFFFF);
+            ((long) vector.getBlockY() & 0xFFF) << 26) | ((long) vector.getBlockZ()
+            & 0x3FFFFFF);
     }
 
     /**

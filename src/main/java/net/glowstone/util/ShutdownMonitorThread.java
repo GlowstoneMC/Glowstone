@@ -1,10 +1,9 @@
 package net.glowstone.util;
 
-import net.glowstone.GlowServer;
-
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import net.glowstone.GlowServer;
 
 /**
  * Thread started on shutdown that monitors for and kills rogue non-daemon threads.

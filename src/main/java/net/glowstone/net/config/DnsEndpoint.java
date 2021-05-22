@@ -9,6 +9,7 @@ public class DnsEndpoint {
     private static final String PORT_KEY = "port";
     private final String host;
     private final int port;
+
     public DnsEndpoint(String host, int port) {
         this.host = host;
         this.port = port;

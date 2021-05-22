@@ -1626,6 +1626,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         setBedSpawnLocation(bedSpawn, false);
     }
 
+    @Override
+    public void setBedSpawnLocation(Location location, boolean force) {
+        bedSpawn = location;
+        bedSpawnForced = force;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Entity status
 
@@ -1637,12 +1643,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public long getLastSeen() {
         return 0;
-    }
-
-    @Override
-    public void setBedSpawnLocation(Location location, boolean force) {
-        bedSpawn = location;
-        bedSpawnForced = force;
     }
 
     @Override
@@ -1875,11 +1875,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return getExpToLevel(level);
     }
 
-    @Override
-    public float getAttackCooldown() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     private int getExpToLevel(int level) {
         if (level >= 30) {
             return 62 + (level - 30) * 7;
@@ -1888,6 +1883,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         } else {
             return 17;
         }
+    }
+
+    @Override
+    public float getAttackCooldown() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private void sendExperience() {
@@ -2301,31 +2301,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             .decode(ComponentSerializer.toString(components)), type));
     }
 
-    public void sendRawMessages(ChatMessageType type, String... messages) {
-        for (String message : messages) {
-            session.send(new ChatMessage(message, type));
-        }
-    }
-
-    @Override
-    public void sendRawMessage(@NotNull String message) {
-        // old-style formatting to json conversion is in TextMessage
-        sendRawMessages(ChatMessageType.SYSTEM, message);
-    }
-
-    public void sendRawMessages(String senderName, String... messages) {
-        sendRawMessages(ChatMessageType.CHAT, String.format("<%1$s> %2$s", senderName, messages));
-    }
-
-    public void sendMessages(UUID sender, String... messages) {
-        ProfileCache.getProfile(sender).thenAccept(profile -> {
-            String name = profile.getName();
-            if (name != null) {
-                sendRawMessages(name, messages);
-            }
-        });
-    }
-
     @Override
     public void sendMessage(@Nullable UUID sender, @NotNull String message) {
         if (sender == null) {
@@ -2342,6 +2317,32 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         sendMessages(sender, messages);
+    }
+
+    public void sendMessages(UUID sender, String... messages) {
+        ProfileCache.getProfile(sender).thenAccept(profile -> {
+            String name = profile.getName();
+            if (name != null) {
+                sendRawMessages(name, messages);
+            }
+        });
+    }
+
+    public void sendRawMessages(ChatMessageType type, String... messages) {
+        for (String message : messages) {
+            session.send(new ChatMessage(message, type));
+        }
+    }
+
+    public void sendRawMessages(String senderName, String... messages) {
+        sendRawMessages(ChatMessageType.CHAT, String.format("<%1$s> %2$s", senderName, messages));
+    }
+
+
+    @Override
+    public void sendRawMessage(@NotNull String message) {
+        // old-style formatting to json conversion is in TextMessage
+        sendRawMessages(ChatMessageType.SYSTEM, message);
     }
 
     @Override
@@ -2511,14 +2512,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         session.disconnect(message == null ? "" : message);
     }
 
-    @Override
-    public void kick(@org.jetbrains.annotations.Nullable Component component) {
-        throw new UnsupportedOperationException("Adventure API is not yet supported.");
-    }
-
     public void kickPlayer(String message, boolean async) {
         remove(async);
         session.disconnect(message == null ? "" : message);
+    }
+
+
+    @Override
+    public void kick(@org.jetbrains.annotations.Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -2870,11 +2872,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public void sendBlockDamage(@NotNull Location location, float v) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     @Deprecated
     public void sendBlockChange(Location loc, int material, byte data) {
         sendBlockChange(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc
@@ -2897,6 +2894,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Deprecated
     public void sendBlockChangeForce(BlockChangeMessage message) {
         blockChanges.add(message);
+    }
+
+    @Override
+    public void sendBlockDamage(@NotNull Location location, float v) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -3502,8 +3504,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void sendTime() {
         long time = getPlayerTime();
-        if (!playerTimeRelative ||
-            !world.getGameRuleMap().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
+        if (!playerTimeRelative
+            || !world.getGameRuleMap().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
             time *= -1; // negative value indicates fixed time
         }
         session.send(new TimeMessage(world.getFullTime(), time));

@@ -1,7 +1,6 @@
 package net.glowstone.util;
 
 import com.eatthepath.uuid.FastUUID;
-
 import java.util.UUID;
 
 /**
@@ -30,10 +29,10 @@ public final class UuidUtils {
      */
     public static UUID fromFlatString(String str) {
         return fromString(str.substring(0, 8)
-                + "-" + str.substring(8, 12)
-                + "-" + str.substring(12, 16)
-                + "-" + str.substring(16, 20)
-                + "-" + str.substring(20, 32));
+            + "-" + str.substring(8, 12)
+            + "-" + str.substring(12, 16)
+            + "-" + str.substring(16, 20)
+            + "-" + str.substring(20, 32));
     }
 
     /**

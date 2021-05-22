@@ -73,6 +73,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
     private boolean applyLure;
     private int lived;
     private int lifeTime;
+
     /**
      * Creates a fishing bob.
      *

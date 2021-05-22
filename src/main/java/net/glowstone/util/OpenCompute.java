@@ -6,15 +6,14 @@ import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLKernel;
 import com.jogamp.opencl.CLPlatform;
 import com.jogamp.opencl.CLProgram;
-import lombok.Getter;
-import net.glowstone.GlowServer;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
+import lombok.Getter;
+import net.glowstone.GlowServer;
 
 public class OpenCompute {
 
@@ -50,17 +49,17 @@ public class OpenCompute {
                         return program;
                     } catch (IOException ex) {
                         GlowServer.logger.log(Level.WARNING,
-                                "Could not load custom OpenCL program.", ex);
+                            "Could not load custom OpenCL program.", ex);
                     }
                 } else {
                     try (InputStream input = CLASS_LOADER
-                            .getResourceAsStream("builtin/opencl/" + name)) {
+                        .getResourceAsStream("builtin/opencl/" + name)) {
                         CLProgram program = context.createProgram(input).build();
                         programs.put(name, program);
                         return program;
                     } catch (IOException ex) {
                         GlowServer.logger.log(Level.WARNING,
-                                "Could not load builtin OpenCL program.", ex);
+                            "Could not load builtin OpenCL program.", ex);
                     }
                 }
             }
@@ -75,8 +74,8 @@ public class OpenCompute {
     /**
      * Returns a {@link CLKernel} that is part of the given {@link CLProgram}.
      *
-     * @param program the {@link CLProgram} that contains the kernel
-     * @param name the name of the kernel
+     * @param program  the {@link CLProgram} that contains the kernel
+     * @param name     the name of the kernel
      * @param threaded if true, always create a new {@link CLKernel} instance
      * @return the {@link CLKernel}
      */
@@ -135,7 +134,7 @@ public class OpenCompute {
     /**
      * Calculates the number of work groups.
      *
-     * @param size the total number of local work units
+     * @param size          the total number of local work units
      * @param localWorkSize the number of local work units per work group
      * @return the number of work groups
      */
