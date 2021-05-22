@@ -1,10 +1,12 @@
 package net.glowstone.entity.monster;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Shulker;
 import org.bukkit.util.BlockVector;
@@ -13,6 +15,14 @@ public class GlowShulker extends GlowMonster implements Shulker {
 
     @Getter
     private Location attachment;
+
+    @Getter
+    @Setter
+    private float peek;
+
+    @Getter
+    @Setter
+    private BlockFace attachedFace;
 
     /**
      * Creates a shulker facing down.
@@ -26,7 +36,7 @@ public class GlowShulker extends GlowMonster implements Shulker {
     /**
      * Creates a shulker facing the given direction.
      *
-     * @param loc the location
+     * @param loc       the location
      * @param direction the direction to initially face
      */
     public GlowShulker(Location loc, Facing direction) {
@@ -61,7 +71,7 @@ public class GlowShulker extends GlowMonster implements Shulker {
         this.attachment = attachment;
         if (attachment != null) {
             this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION,
-                new BlockVector(attachment.toVector()));
+                    new BlockVector(attachment.toVector()));
         } else {
             this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION, null);
         }

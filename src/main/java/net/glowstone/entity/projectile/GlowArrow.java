@@ -5,6 +5,7 @@ import lombok.Setter;
 import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.meta.MetadataIndex;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,8 +15,16 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class GlowArrow extends GlowProjectile implements Arrow {
 
@@ -130,7 +139,17 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     protected int getObjectId() {
-        return EntityNetworkUtil.getObjectId(EntityType.TIPPED_ARROW);
+        return EntityNetworkUtil.getObjectId(EntityType.ARROW);
+    }
+
+    @Override
+    public int getPierceLevel() {
+        return 0;
+    }
+
+    @Override
+    public void setPierceLevel(int i) {
+
     }
 
     @Override
@@ -157,6 +176,23 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     }
 
     @Override
+    public boolean isShotFromCrossbow() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setShotFromCrossbow(boolean b) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public @NotNull ItemStack getItemStack() {
+        return new ItemStack(Material.ARROW);
+    }
+
+    @Override
     public Block getAttachedBlock() {
         if (isInBlock()) {
             return getLocation().getBlock();
@@ -174,15 +210,66 @@ public class GlowArrow extends GlowProjectile implements Arrow {
         return spigot;
     }
 
-    private class Spigot extends Arrow.Spigot {
-        @Override
-        public double getDamage() {
-            return GlowArrow.this.getDamage();
-        }
+    @Override
+    public void setBasePotionData(@NotNull PotionData potionData) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
 
-        @Override
-        public void setDamage(double damage) {
-            GlowArrow.this.setDamage(damage);
-        }
+    @Override
+    public @NotNull PotionData getBasePotionData() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public @NotNull Color getColor() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setColor(@NotNull Color color) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean hasCustomEffects() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public @NotNull List<PotionEffect> getCustomEffects() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean addCustomEffect(@NotNull PotionEffect potionEffect, boolean b) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean removeCustomEffect(@NotNull PotionEffectType potionEffectType) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean hasCustomEffect(@Nullable PotionEffectType potionEffectType) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void clearCustomEffects() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    private class Spigot extends Arrow.Spigot {
     }
 }

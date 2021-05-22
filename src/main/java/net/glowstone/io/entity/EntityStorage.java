@@ -104,7 +104,6 @@ public final class EntityStorage {
         bind(new SlimeStore<>(GlowMagmaCube.class, EntityType.MAGMA_CUBE, GlowMagmaCube::new));
         bind(new ZombieStore<>());
         bind(new ZombieStore<>(GlowHusk.class, EntityType.HUSK, GlowHusk::new));
-        bind(new PigZombieStore());
         bind(new MonsterStore<>(GlowSkeleton.class, EntityType.SKELETON, GlowSkeleton::new));
         bind(new MonsterStore<>(GlowStray.class, EntityType.STRAY, GlowStray::new));
         bind(new MonsterStore<>(GlowWitherSkeleton.class, EntityType.WITHER_SKELETON,

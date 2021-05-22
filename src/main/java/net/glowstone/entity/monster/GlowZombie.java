@@ -2,6 +2,9 @@ package net.glowstone.entity.monster;
 
 import com.flowpowered.network.Message;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.ai.EntityDirector;
 import net.glowstone.entity.ai.HostileMobState;
 import net.glowstone.entity.ai.MobState;
@@ -15,7 +18,14 @@ import org.bukkit.entity.Zombie;
 
 public class GlowZombie extends GlowMonster implements Zombie {
 
+    @Setter
     private boolean canBreakDoors;
+    @Getter
+    @Setter
+    private int age;
+    private boolean canBreed;
+    @Setter
+    private boolean ageLock;
     private boolean shouldBurnInDay = true;
 
     /**
@@ -128,16 +138,13 @@ public class GlowZombie extends GlowMonster implements Zombie {
     }
 
     @Override
-    public void setVillagerProfession(Profession profession) {
-        //Field has been removed as of 1.11
-    }
-
-    public boolean isCanBreakDoors() {
+    public boolean canBreakDoors() {
         return canBreakDoors;
     }
 
-    public void setCanBreakDoors(boolean canBreakDoors) {
-        this.canBreakDoors = canBreakDoors;
+    @Override
+    public void setVillagerProfession(Profession profession) {
+        //Field has been removed as of 1.11
     }
 
     @Override
@@ -166,5 +173,35 @@ public class GlowZombie extends GlowMonster implements Zombie {
     @Override
     public boolean isUndead() {
         return true;
+    }
+
+    @Override
+    public void setBaby() {
+        this.setBaby(true);
+    }
+
+    @Override
+    public void setAdult() {
+        this.setBaby(false);
+    }
+
+    @Override
+    public boolean isAdult() {
+        return !this.isBaby();
+    }
+
+    @Override
+    public boolean canBreed() {
+        return canBreed;
+    }
+
+    @Override
+    public void setBreed(boolean b) {
+        this.canBreed = b;
+    }
+
+    @Override
+    public boolean getAgeLock() {
+        return ageLock;
     }
 }

@@ -20,7 +20,7 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
     private UUID hurtBy;
 
     public GlowPigZombie(Location loc) {
-        super(loc, EntityType.PIG_ZOMBIE);
+        super(loc, EntityType.ZOMBIFIED_PIGLIN);
     }
 
     @Override
@@ -39,17 +39,17 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
 
     @Override
     protected Sound getHurtSound() {
-        return Sound.ENTITY_ZOMBIE_PIGMAN_HURT;
+        return Sound.ENTITY_ZOMBIFIED_PIGLIN_HURT;
     }
 
     @Override
     protected Sound getDeathSound() {
-        return Sound.ENTITY_ZOMBIE_PIGMAN_DEATH;
+        return Sound.ENTITY_ZOMBIFIED_PIGLIN_DEATH;
     }
 
     @Override
     protected Sound getAmbientSound() {
-        return Sound.ENTITY_ZOMBIE_PIGMAN_AMBIENT;
+        return Sound.ENTITY_ZOMBIFIED_PIGLIN_AMBIENT;
     }
 
     @Override

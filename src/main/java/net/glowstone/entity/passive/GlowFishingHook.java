@@ -8,6 +8,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiomeClimate;
@@ -42,6 +45,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class GlowFishingHook extends GlowProjectile implements FishHook {
     public static final Message[] EMPTY_MESSAGE_ARRAY = new Message[0];
+
+    @Getter
+    @Setter
+    private int minWaitTime;
+    @Getter
+    @Setter
+    private int maxWaitTime;
+    @Setter
+    private boolean applyLure;
 
     @Override
     public void setShooter(ProjectileSource shooter) {
@@ -193,14 +205,32 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         // Not supported in newer mc versions anymore
     }
 
-    private Entity getHookedEntity() {
+    @Override
+    public boolean isInOpenWater() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    public Entity getHookedEntity() {
         return world.getEntityManager().getEntity(
                 metadata.getInt(MetadataIndex.FISHING_HOOK_HOOKED_ENTITY) - 1);
     }
 
-    private void setHookedEntity(Entity entity) {
+    public void setHookedEntity(Entity entity) {
         metadata.set(MetadataIndex.FISHING_HOOK_HOOKED_ENTITY,
                 entity == null ? 0 : entity.getEntityId() + 1);
+    }
+
+    @Override
+    public boolean pullHookedEntity() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public @NotNull HookState getState() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -343,5 +373,10 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
     @Override
     public CreatureSpawnEvent.@NotNull SpawnReason getEntitySpawnReason() {
         return null;
+    }
+
+    @Override
+    public boolean getApplyLure() {
+        return this.applyLure;
     }
 }

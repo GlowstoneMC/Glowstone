@@ -1,5 +1,7 @@
 package net.glowstone.entity.monster;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -9,7 +11,15 @@ import org.bukkit.entity.Witch;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class GlowWitch extends GlowMonster implements Witch {
+public class GlowWitch extends GlowRaider implements Witch {
+
+    @Getter
+    @Setter
+    private int potionUseTimeLeft;
+
+    @Getter
+    @Setter
+    private ItemStack drinkingPotion;
 
     public GlowWitch(Location loc) {
         super(loc, EntityType.WITCH, 26);
@@ -53,20 +63,5 @@ public class GlowWitch extends GlowMonster implements Witch {
     @Override
     public boolean isDrinkingPotion() {
         return false;
-    }
-
-    @Override
-    public int getPotionUseTimeLeft() {
-        return 0;
-    }
-
-    @Override
-    public @Nullable ItemStack getDrinkingPotion() {
-        return null;
-    }
-
-    @Override
-    public void setDrinkingPotion(@Nullable ItemStack potion) {
-
     }
 }

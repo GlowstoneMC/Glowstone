@@ -1,6 +1,8 @@
 package net.glowstone.entity;
 
 import com.destroystokyo.paper.entity.Pathfinder;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
@@ -9,6 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class GlowMob extends GlowLivingEntity implements Mob {
+
+    @Getter
+    @Setter
+    private boolean aware;
 
     public GlowMob(Location location, double maxHealth) {
         super(location, maxHealth);

@@ -61,9 +61,12 @@ public class GlowItem extends GlowEntity implements Item {
     @Setter
     private GlowPlayer bias;
 
-    @Getter
     @Setter
     private boolean canMobPickup;
+    @Setter
+    private boolean canPlayerPickup;
+    @Setter
+    private boolean willAge;
 
     @Getter
     @Setter
@@ -222,5 +225,20 @@ public class GlowItem extends GlowEntity implements Item {
     public void setItemStack(@NotNull ItemStack stack) {
         // stone is the "default state" for the item stack according to the client
         metadata.set(MetadataIndex.ITEM_ITEM, stack.clone());
+    }
+
+    @Override
+    public boolean canMobPickup() {
+        return canMobPickup;
+    }
+
+    @Override
+    public boolean canPlayerPickup() {
+        return canPlayerPickup;
+    }
+
+    @Override
+    public boolean willAge() {
+        return willAge;
     }
 }

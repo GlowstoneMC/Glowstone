@@ -3,6 +3,9 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
@@ -34,6 +37,16 @@ import org.jetbrains.annotations.Nullable;
 
 
 public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
+
+    @Getter
+    @Setter
+    private float itemDropChance;
+    @Getter
+    @Setter
+    private boolean visible;
+    @Getter
+    @Setter
+    private boolean fixed;
 
     /**
      * Creates an item frame entity, and consumes the item frame item if a player is hanging it.

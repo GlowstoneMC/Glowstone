@@ -1,6 +1,7 @@
 package net.glowstone.entity.monster;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.Explosion;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
@@ -25,6 +26,11 @@ public class GlowWither extends GlowBoss implements Wither {
     private Entity leftTarget;
     @Getter
     private Entity rightTarget;
+    @Getter
+    @Setter
+    private boolean charged;
+    @Setter
+    private boolean canTravelThroughPortals;
 
     /**
      * Creates a wither.
@@ -134,5 +140,10 @@ public class GlowWither extends GlowBoss implements Wither {
     @Override
     public void setChargingAttack(boolean raiseHands) {
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean canTravelThroughPortals() {
+        return this.canTravelThroughPortals;
     }
 }

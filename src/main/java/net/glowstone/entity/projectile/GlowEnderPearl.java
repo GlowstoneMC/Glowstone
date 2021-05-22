@@ -11,6 +11,7 @@ import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
@@ -19,8 +20,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
     private static final double ENDER_PEARL_DAMAGE = 5.0;
@@ -123,5 +126,16 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
                 new EntityTeleportMessage(entityId, location),
                 new EntityVelocityMessage(entityId, getVelocity())
         );
+    }
+
+    @Override
+    public @NotNull ItemStack getItem() {
+        return new ItemStack(Material.ENDER_PEARL);
+    }
+
+    @Override
+    public void setItem(@NotNull ItemStack itemStack) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

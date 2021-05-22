@@ -28,7 +28,6 @@ public class GlowStatisticTest {
     @Test
     public void testEntityStatistic() {
         assertEquals("stat.entityKilledBy.Enderman", GlowStatistic.getName(Statistic.ENTITY_KILLED_BY, EntityType.ENDERMAN));
-        assertEquals("stat.entityKilledBy.PigZombie", GlowStatistic.getName(Statistic.ENTITY_KILLED_BY, EntityType.PIG_ZOMBIE));
 
         assertEquals("stat.killEntity.Enderman", GlowStatistic.getName(Statistic.KILL_ENTITY, EntityType.ENDERMAN));
         assertEquals("stat.killEntity.CaveSpider", GlowStatistic.getName(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER));

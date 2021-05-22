@@ -7,10 +7,13 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.ZombieVillager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
 
@@ -48,6 +51,17 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     }
 
     @Override
+    public Villager.Type getVillagerType() {
+        return Villager.Type.PLAINS;
+    }
+
+    @Override
+    public void setVillagerType(@NotNull Villager.Type type) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
     public void setVillagerProfession(Villager.Profession profession) {
         checkNotNull(profession);
         metadata.set(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION, profession.ordinal());
@@ -76,5 +90,11 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     public void setConversionTime(int conversionTime) {
         this.conversionTime = Math.max(-1, conversionTime);
         metadata.set(MetadataIndex.ZOMBIE_VILLAGER_IS_CONVERTING, this.conversionTime != -1);
+    }
+
+    @Override
+    public void setConversionPlayer(@Nullable OfflinePlayer offlinePlayer) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

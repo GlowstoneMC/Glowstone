@@ -51,6 +51,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityCategory;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.HumanEntity;
@@ -59,6 +60,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -93,6 +95,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -134,6 +137,38 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Getter
     @Setter
     private int arrowsStuck = 0;
+    /**
+     * The number of arrows in an entity's body.
+     *
+     * TODO: Investigate difference between this and `arrowsStuck`.
+     */
+    @Getter
+    @Setter
+    private int arrowsInBody = 0;
+    /**
+     * The time in ticks until the next arrow leaves the entity's body.
+     */
+    @Getter
+    @Setter
+    private int arrowCooldown = 0;
+    /**
+     * The entity's absorption amount (the amount of health supplementing its max health).
+     */
+    @Getter
+    @Setter
+    private double absorptionAmount = 0;
+    /**
+     * Whether the entity is invisible.
+     */
+    @Getter
+    @Setter
+    private boolean invisible = false;
+    /**
+     * The entity's hurt direction (angle).
+     */
+    @Getter
+    @Setter
+    private float hurtDirection;
     /**
      * The entity's AI task manager.
      */
@@ -1302,6 +1337,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
+    public void clearActiveItem() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
     public int getItemUseRemainingTime() {
         return 0;
     }
@@ -1334,6 +1375,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
+    @Override
+    public boolean isSleeping() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
     /**
      * Sets the AI state.
      *
@@ -1362,6 +1409,48 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return state != MobState.NO_AI;
     }
 
+    @Override
+    public void attack(@NotNull Entity entity) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void swingMainHand() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void swingOffHand() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public @NotNull Set<UUID> getCollidableExemptions() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public <T> @Nullable T getMemory(@NotNull MemoryKey<T> memoryKey) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public <T> void setMemory(@NotNull MemoryKey<T> memoryKey, @Nullable T t) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public @NotNull EntityCategory getCategory() {
+        // TODO: Overload this
+        return EntityCategory.NONE;
+    }
+
     public void playAnimation(EntityAnimation animation) {
         EntityAnimationMessage message = new EntityAnimationMessage(getEntityId(), animation.ordinal());
         getWorld().getRawPlayers().stream()
@@ -1377,6 +1466,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             return getAttributeManager().getProperty(attributeKey);
         }
         return null;
+    }
+
+    @Override
+    public void registerAttribute(@NotNull Attribute attribute) {
+        // TODO: Determine whether this is needed; our attribute system is pretty leniert and doesn't need registration
     }
 
     @Override

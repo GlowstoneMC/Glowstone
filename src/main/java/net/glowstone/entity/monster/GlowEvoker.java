@@ -1,17 +1,25 @@
 package net.glowstone.entity.monster;
 
-import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Evoker;
+import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Spellcaster;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class GlowEvoker extends GlowMonster implements Evoker {
+import java.util.concurrent.ThreadLocalRandom;
+
+public class GlowEvoker extends GlowSpellcaster implements Evoker {
+
+    @Getter
+    @Setter
+    private Sheep wololoTarget;
 
     /**
      * Creates an evoker.
@@ -25,13 +33,50 @@ public class GlowEvoker extends GlowMonster implements Evoker {
     }
 
     @Override
-    public Spell getCurrentSpell() {
-        return Spell.values()[(int) metadata.getByte(MetadataIndex.EVOKER_SPELL)];
+    @Deprecated
+    public Evoker.Spell getCurrentSpell() {
+        switch (this.getSpell()) {
+            case FANGS:
+                return Evoker.Spell.FANGS;
+            case BLINDNESS:
+                return Evoker.Spell.BLINDNESS;
+            case DISAPPEAR:
+                return Evoker.Spell.DISAPPEAR;
+            case SUMMON_VEX:
+                return Evoker.Spell.SUMMON;
+            case WOLOLO:
+                return Evoker.Spell.WOLOLO;
+            default:
+                return Evoker.Spell.NONE;
+        }
     }
 
     @Override
-    public void setCurrentSpell(Spell spell) {
-        metadata.set(MetadataIndex.EVOKER_SPELL, (byte) spell.ordinal());
+    @Deprecated
+    public void setCurrentSpell(Evoker.Spell spell) {
+        if (spell == null) {
+            setSpell(Spellcaster.Spell.NONE);
+            return;
+        }
+        switch (spell) {
+            case FANGS:
+                setSpell(Spellcaster.Spell.FANGS);
+                break;
+            case BLINDNESS:
+                setSpell(Spellcaster.Spell.BLINDNESS);
+                break;
+            case DISAPPEAR:
+                setSpell(Spellcaster.Spell.DISAPPEAR);
+                break;
+            case SUMMON:
+                setSpell(Spellcaster.Spell.SUMMON_VEX);
+                break;
+            case WOLOLO:
+                setSpell(Spellcaster.Spell.WOLOLO);
+                break;
+            default:
+                setSpell(Spellcaster.Spell.NONE);
+        }
     }
 
     @Override
@@ -50,11 +95,17 @@ public class GlowEvoker extends GlowMonster implements Evoker {
         castSpell(Spellcaster.Spell.SUMMON_VEX); // todo: remove this, demo purposes
     }
 
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_EVOKER_AMBIENT;
+    }
+
     /**
      * Casts the given spell.
      *
      * @param spell the spell to cast
      */
+    @Override
     public void castSpell(Spellcaster.Spell spell) {
         setSpell(spell);
         ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -64,7 +115,7 @@ public class GlowEvoker extends GlowMonster implements Evoker {
                 break;
             case SUMMON_VEX:
                 world
-                    .playSound(location, Sound.ENTITY_EVOKER_PREPARE_SUMMON, 1.0f, 1.0f);
+                        .playSound(location, Sound.ENTITY_EVOKER_PREPARE_SUMMON, 1.0f, 1.0f);
                 int count = 3;
                 for (int i = 0; i < count; i++) {
                     double y = random.nextDouble() + 0.5 + location.getY();
@@ -82,20 +133,5 @@ public class GlowEvoker extends GlowMonster implements Evoker {
             default:
                 // TODO: Should this raise a warning?
         }
-    }
-
-    @Override
-    protected Sound getAmbientSound() {
-        return Sound.ENTITY_EVOKER_AMBIENT;
-    }
-
-    @Override
-    public Spellcaster.Spell getSpell() {
-        return Spellcaster.Spell.values()[(int) metadata.getByte(MetadataIndex.EVOKER_SPELL)];
-    }
-
-    @Override
-    public void setSpell(Spellcaster.Spell spell) {
-        metadata.set(MetadataIndex.EVOKER_SPELL, (byte) spell.ordinal());
     }
 }

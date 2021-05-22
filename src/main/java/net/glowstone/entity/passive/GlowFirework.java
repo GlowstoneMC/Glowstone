@@ -3,6 +3,7 @@ package net.glowstone.entity.passive;
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.InventoryUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,7 +30,9 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FireworkExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
@@ -38,6 +42,9 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
     private UUID spawningEntity;
     @Getter
     private LivingEntity boostedEntity;
+    @Getter
+    @Setter
+    private boolean shotAtAngle;
     /**
      * The number of ticks before this fireworks rocket explodes.
      */
@@ -233,5 +240,31 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
         if (boostedEntity != null) {
             metadata.set(MetadataIndex.FIREWORK_ENTITY, boostedEntity.getEntityId());
         }
+    }
+
+    @Override
+    public @Nullable ProjectileSource getShooter() {
+        return (ProjectileSource) Optional.ofNullable(spawningEntity).map(Bukkit::getEntity).get();
+    }
+
+    @Override
+    public void setShooter(@Nullable ProjectileSource shooter) {
+        if (shooter instanceof Entity) {
+            this.setSpawningEntity(((Entity) shooter).getUniqueId());
+        } else {
+            // TODO: Support non-entity shooters?
+            throw new UnsupportedOperationException("Not implemented yet.");
+        }
+    }
+
+    @Override
+    public boolean doesBounce() {
+        return false;
+    }
+
+    @Override
+    public void setBounce(boolean b) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

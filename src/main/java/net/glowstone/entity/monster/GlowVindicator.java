@@ -5,7 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Vindicator;
 
-public class GlowVindicator extends GlowMonster implements Vindicator {
+public class GlowVindicator extends GlowIllager implements Vindicator {
 
     private boolean johnny;
 

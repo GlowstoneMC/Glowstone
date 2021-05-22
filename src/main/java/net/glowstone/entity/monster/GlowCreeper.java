@@ -26,6 +26,9 @@ public class GlowCreeper extends GlowMonster implements Creeper {
     private int maxFuseTicks;
     @Getter
     @Setter
+    private int fuseTicks;
+    @Getter
+    @Setter
     private boolean ignited;
 
     public GlowCreeper(Location loc) {
@@ -50,14 +53,15 @@ public class GlowCreeper extends GlowMonster implements Creeper {
     }
 
     @Override
-    public int getFuseTicks() {
-        // TODO: fuse
-        return 0;
+    public void explode() {
+        // TODO: explode immediately.
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public void explode() {
-        // TODO: explosion;
+    public void ignite() {
+        // TODO: start ticking down the fuse.
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override

@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEgg extends GlowProjectile implements Egg {
     private static final double VERTICAL_GRAVITY_ACCEL = -0.03;
@@ -117,5 +118,16 @@ public class GlowEgg extends GlowProjectile implements Egg {
     @Override
     protected int getObjectId() {
         return EntityNetworkUtil.getObjectId(EntityType.EGG);
+    }
+
+    @Override
+    public @NotNull ItemStack getItem() {
+        return new ItemStack(Material.EGG);
+    }
+
+    @Override
+    public void setItem(@NotNull ItemStack itemStack) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

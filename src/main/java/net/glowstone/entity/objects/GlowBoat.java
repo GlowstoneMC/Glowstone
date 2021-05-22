@@ -25,6 +25,7 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowBoat extends GlowVehicle implements Boat {
     private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
@@ -199,6 +200,25 @@ public class GlowBoat extends GlowVehicle implements Boat {
     @Override
     public void setWorkOnLand(boolean workOnLand) {
         this.workOnLand = workOnLand;
+    }
+
+    @Override
+    public @NotNull Material getBoatMaterial() {
+        switch (this.woodType) {
+            case REDWOOD:
+                return Material.SPRUCE_BOAT;
+            case BIRCH:
+                return Material.BIRCH_BOAT;
+            case JUNGLE:
+                return Material.JUNGLE_BOAT;
+            case ACACIA:
+                return Material.ACACIA_BOAT;
+            case DARK_OAK:
+                return Material.DARK_OAK_BOAT;
+            case GENERIC:
+            default:
+                return Material.OAK_BOAT;
+        }
     }
 
     public boolean getRightPaddleTurning() {

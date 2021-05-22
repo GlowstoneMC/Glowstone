@@ -610,6 +610,24 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
+    public void addEquipmentLock(@NotNull EquipmentSlot equipmentSlot, @NotNull LockType lockType) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void removeEquipmentLock(@NotNull EquipmentSlot equipmentSlot, @NotNull LockType lockType) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean hasEquipmentLock(@NotNull EquipmentSlot equipmentSlot, @NotNull LockType lockType) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
     public EntityEquipment getEquipment() {
         return this.equipment;
     }

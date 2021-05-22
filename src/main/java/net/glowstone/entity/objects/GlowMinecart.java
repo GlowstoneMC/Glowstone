@@ -3,6 +3,7 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import lombok.Getter;
@@ -100,6 +101,11 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
     }
 
     @Override
+    public @NotNull Material getMinecartMaterial() {
+        return Optional.ofNullable(minecartType).map(MinecartType::getMaterial).orElse(Material.MINECART);
+    }
+
+    @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (message.getAction() == InteractEntityMessage.Action.ATTACK.ordinal()) {
             // todo: damage points
@@ -124,15 +130,15 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
 
     @RequiredArgsConstructor
     public enum MinecartType {
-        RIDEABLE(Rideable.class, EntityType.MINECART, RideableMinecart.class, Rideable::new),
-        CHEST(Storage.class, EntityType.MINECART_CHEST, StorageMinecart.class, Storage::new),
+        RIDEABLE(Rideable.class, EntityType.MINECART, RideableMinecart.class, Rideable::new, Material.MINECART),
+        CHEST(Storage.class, EntityType.MINECART_CHEST, StorageMinecart.class, Storage::new, Material.CHEST_MINECART),
         FURNACE(Powered.class, EntityType.MINECART_FURNACE, PoweredMinecart.class, Powered
-                ::new),
-        TNT(Explosive.class, EntityType.MINECART_TNT, ExplosiveMinecart.class, Explosive::new),
+                ::new, Material.FURNACE_MINECART),
+        TNT(Explosive.class, EntityType.MINECART_TNT, ExplosiveMinecart.class, Explosive::new, Material.TNT_MINECART),
         SPAWNER(Spawner.class, EntityType.MINECART_MOB_SPAWNER, SpawnerMinecart.class,
-                Spawner::new),
-        HOPPER(Hopper.class, EntityType.MINECART_HOPPER, HopperMinecart.class, Hopper::new),
-        COMMAND(Command.class, EntityType.MINECART_COMMAND, CommandMinecart.class, Command::new);
+                Spawner::new, Material.MINECART),
+        HOPPER(Hopper.class, EntityType.MINECART_HOPPER, HopperMinecart.class, Hopper::new, Material.HOPPER_MINECART),
+        COMMAND(Command.class, EntityType.MINECART_COMMAND, CommandMinecart.class, Command::new, Material.COMMAND_BLOCK_MINECART);
 
         @Getter
         private final Class<? extends GlowMinecart> minecartClass;
@@ -142,6 +148,8 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
         private final Class<? extends Minecart> entityClass;
         @Getter
         private final Function<? super Location, ? extends GlowMinecart> creator;
+        @Getter
+        private final Material material;
     }
 
     public static class Rideable extends GlowMinecart implements RideableMinecart {
@@ -270,6 +278,10 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
     }
 
     public static class Powered extends GlowMinecart implements PoweredMinecart {
+
+        @Getter
+        @Setter
+        private int fuel = 0;
 
         public Powered(Location location) {
             super(location, MinecartType.FURNACE);

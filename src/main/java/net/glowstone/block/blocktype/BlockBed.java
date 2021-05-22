@@ -341,7 +341,7 @@ public class BlockBed extends BlockType {
         // Check for hostile mobs relative to the block below the head of the bed
         // (Don't use getEntitiesByType etc., because they copy the entire list of entities)
         for (Entity e : world.getEntityManager()) {
-            if (e instanceof Creature && (e.getType() != EntityType.PIG_ZOMBIE || ((PigZombie) e)
+            if (e instanceof Creature && (e.getType() != EntityType.ZOMBIFIED_PIGLIN || ((PigZombie) e)
                 .isAngry()) && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
                 GlowstoneMessages.Bed.MOB.send(player);
                 return true;

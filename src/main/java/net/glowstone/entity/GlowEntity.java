@@ -34,6 +34,7 @@ import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.UuidUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -472,6 +473,11 @@ public abstract class GlowEntity implements Entity {
     public Pose getPose() {
         // TODO
         return Pose.STANDING;
+    }
+
+    @Override
+    public @NotNull Spigot spigot() {
+        return null;
     }
 
     @Override
@@ -1256,6 +1262,16 @@ public abstract class GlowEntity implements Entity {
 
     ////////////////////////////////////////////////////////////////////////////
     // Custom name
+
+    @Override
+    public @Nullable Component customName() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void customName(@Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
 
     @Override
     public String getCustomName() {
