@@ -1,5 +1,6 @@
 package net.glowstone.entity;
 
+import com.destroystokyo.paper.ClientOption;
 import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.flowpowered.network.Message;
@@ -94,6 +95,7 @@ import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.nbt.CompoundTag;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -101,6 +103,7 @@ import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
+import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.Effect.Type;
 import org.bukkit.EntityAnimation;
@@ -130,6 +133,7 @@ import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -190,6 +194,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
@@ -1499,10 +1504,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public List<Message> createSpawnMessage() {
         List<Message> result = super.createSpawnMessage();
-        if (bed != null) {
-            result.add(new UseBedMessage(getEntityId(), bed.getX(), bed.getY(), bed.getZ()));
-        }
         return result;
+    }
+
+    @Override
+    public @NotNull Component displayName() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void displayName(@org.jetbrains.annotations.Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -1522,6 +1534,26 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void setDisplayName(String name) {
         displayName = name;
+    }
+
+    @Override
+    public void playerListName(@org.jetbrains.annotations.Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable Component playerListName() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable Component playerListHeader() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable Component playerListFooter() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -1774,6 +1806,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void sendExperienceChange(float v) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sendExperienceChange(float v, int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public void giveExp(int xp) {
         PlayerExpChangeEvent event = EventFactory.getInstance()
             .callEvent(new PlayerExpChangeEvent(this, xp));
@@ -1820,6 +1862,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return getExpToLevel(level);
     }
 
+    @Override
+    public float getAttackCooldown() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     private int getExpToLevel(int level) {
         if (level >= 30) {
             return 62 + (level - 30) * 7;
@@ -1852,6 +1899,21 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public int undiscoverRecipes(@NotNull Collection<NamespacedKey> recipes) {
         return 0;
+    }
+
+    @Override
+    public boolean hasDiscoveredRecipe(@NotNull NamespacedKey namespacedKey) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @NotNull Set<NamespacedKey> getDiscoveredRecipes() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean dropItem(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1949,6 +2011,36 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public void setFoodLevel(int food) {
         this.foodLevel = Math.min(food, 20);
         sendHealth();
+    }
+
+    @Override
+    public int getSaturatedRegenRate() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setSaturatedRegenRate(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getUnsaturatedRegenRate() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setUnsaturatedRegenRate(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getStarvationRate() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setStarvationRate(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private boolean shouldCalculateExhaustion() {
@@ -2125,10 +2217,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sleeping = true;
         setRawLocation(head.getLocation(), false);
 
-        UseBedMessage msg = new UseBedMessage(getEntityId(), head.getX(), head.getY(), head.getZ());
-        getSession().send(msg);
-        world.getRawPlayers().stream().filter(p -> p.canSeeEntity(this))
-                .forEach(p -> p.getSession().send(msg));
+        // TODO: Set bed metadata (LivingEntity)
     }
 
     /**
@@ -2167,6 +2256,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         playAnimationToSelf(EntityAnimation.LEAVE_BED);
         playAnimation(EntityAnimation.LEAVE_BED);
+
+        // TODO: Set bed metadata (LivingEntity)
     }
 
     @Override
@@ -2361,6 +2452,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public @NotNull Locale locale() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getPing() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public String getLocale() {
         return settings.getLocale();
     }
@@ -2373,6 +2474,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void updateCommands() {
 
+    }
+
+    @Override
+    public void openBook(@NotNull ItemStack itemStack) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -2389,6 +2495,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public void kickPlayer(String message) {
         remove();
         session.disconnect(message == null ? "" : message);
+    }
+
+    @Override
+    public void kick(@org.jetbrains.annotations.Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     public void kickPlayer(String message, boolean async) {
@@ -2556,6 +2667,31 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public <T> @NotNull T getClientOption(@NotNull ClientOption<T> clientOption) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable Firework boostElytra(@NotNull ItemStack itemStack) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sendOpLevel(byte b) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @NotNull Set<Player> getTrackedPlayers() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable String getClientBrandName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public void playNote(Location loc, Instrument instrument, Note note) {
         Sound sound;
         switch (instrument) {
@@ -2717,7 +2853,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendBlockChange(@NotNull Location loc, @NotNull BlockData block) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
+    @Override
+    public void sendBlockDamage(@NotNull Location location, float v) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Deprecated
@@ -2750,6 +2891,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void sendSignChange(@NotNull Location location, @org.jetbrains.annotations.Nullable List<Component> list) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sendSignChange(@NotNull Location location, @org.jetbrains.annotations.Nullable List<Component> list, @NotNull DyeColor dyeColor) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public void sendSignChange(Location location, String[] lines) throws IllegalArgumentException {
         checkNotNull(location, "location cannot be null");
         checkNotNull(lines, "lines cannot be null");
@@ -2758,6 +2909,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         afterBlockChanges.add(UpdateSignMessage
                 .fromPlainText(location.getBlockX(), location.getBlockY(), location
                         .getBlockZ(), lines));
+    }
+
+    @Override
+    public void sendSignChange(@NotNull Location location, @org.jetbrains.annotations.Nullable String[] strings, @NotNull DyeColor dyeColor) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
@@ -3172,6 +3328,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public boolean isDeeplySleeping() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable Location getPotentialBedLocation() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public MainHand getMainHand() {
         return metadata.getByte(MetadataIndex.PLAYER_MAIN_HAND) == 0 ? MainHand.LEFT
                 : MainHand.RIGHT;
@@ -3223,6 +3389,36 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public InventoryView openMerchant(Merchant merchant, boolean b) {
         return null;
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable InventoryView openAnvil(@org.jetbrains.annotations.Nullable Location location, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable InventoryView openCartographyTable(@org.jetbrains.annotations.Nullable Location location, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable InventoryView openGrindstone(@org.jetbrains.annotations.Nullable Location location, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable InventoryView openLoom(@org.jetbrains.annotations.Nullable Location location, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable InventoryView openSmithingTable(@org.jetbrains.annotations.Nullable Location location, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable InventoryView openStonecutter(@org.jetbrains.annotations.Nullable Location location, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     ////////////////////////////////////////////////////////////////////////////
