@@ -89,7 +89,7 @@ public final class NbtSerialization {
 
     public static BlockData readBlockData(CompoundTag tag) {
         NamespacedKey key = namespacedKeyFromString(tag.getString("Name"));
-        Material type = Material.getMaterial(key);
+        Material type = Material.getMaterial(key.toString());
         Optional<CompoundTag> properties = tag.tryGetCompound("Properties");
         return Bukkit.getServer().createBlockData(type);
     }

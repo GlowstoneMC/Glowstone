@@ -10,6 +10,8 @@ import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Jukebox;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
@@ -60,6 +62,11 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
     }
 
     @Override
+    public void stopPlaying() {
+        setPlaying(null);
+    }
+
+    @Override
     public void setPlaying(Material record) {
         int id = 0;
         if (record == null || record == Material.AIR) {
@@ -85,4 +92,8 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
         return false;
     }
 
+    @Override
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
+        throw new UnsupportedOperationException();
+    }
 }

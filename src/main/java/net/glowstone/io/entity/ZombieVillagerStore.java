@@ -4,6 +4,7 @@ import net.glowstone.entity.monster.GlowZombie;
 import net.glowstone.entity.monster.GlowZombieVillager;
 import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 
@@ -32,7 +33,7 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
                 .orElseGet(() -> getRandomProfession(ThreadLocalRandom.current())));
         entity.setConversionTime(compound.tryGetInt("ConversionTime").orElse(-1));
         compound.readUuid("ConversionPlayerMost", "ConversionPlayerLeast",
-                entity::setConversionPlayer);
+                entity::setConversionPlayerId);
     }
 
     @Override
@@ -42,13 +43,13 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
         super.save(entity, compound);
 
         final Villager.Profession profession = entity.getVillagerProfession();
-        if (profession != null && profession != Villager.Profession.HUSK) {
+        if (profession != null) {
             compound.putInt("Profession", profession.ordinal());
         }
 
         compound.putInt("ConversionTime", entity.getConversionTime());
 
-        final UUID conversionPlayer = entity.getConversionPlayer();
+        final UUID conversionPlayer = entity.getConversionPlayerId();
         if (conversionPlayer != null) {
             compound.putLong("ConversionPlayerMost", conversionPlayer.getMostSignificantBits());
             compound.putLong("ConversionPlayerLeast", conversionPlayer.getLeastSignificantBits());

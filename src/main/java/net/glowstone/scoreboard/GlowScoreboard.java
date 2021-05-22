@@ -20,6 +20,7 @@ import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardScoreMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import net.glowstone.util.TextMessage;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -28,6 +29,8 @@ import org.bukkit.scoreboard.RenderType;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Scoreboard implementation.
@@ -236,6 +239,16 @@ public final class GlowScoreboard implements Scoreboard {
             .create(name, new TextMessage(objective.getDisplayName()), RenderType.INTEGER));
 
         return objective;
+    }
+
+    @Override
+    public @NotNull Objective registerNewObjective(@NotNull String s, @NotNull String s1, @Nullable Component component) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Objective registerNewObjective(@NotNull String s, @NotNull String s1, @Nullable Component component, @NotNull RenderType renderType) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override

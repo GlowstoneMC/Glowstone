@@ -151,6 +151,10 @@ public class MaterialUtil {
             Material.OAK_SIGN, Material.DARK_OAK_SIGN, Material.ACACIA_SIGN,
             Material.BIRCH_SIGN,
             Material.JUNGLE_SIGN, Material.SPRUCE_SIGN));
+    public static final ImmutableSet<Material> WALL_SIGNS = ImmutableSet.copyOf(EnumSet.of(
+            Material.OAK_WALL_SIGN, Material.DARK_OAK_WALL_SIGN, Material.ACACIA_WALL_SIGN,
+            Material.BIRCH_WALL_SIGN,
+            Material.JUNGLE_WALL_SIGN, Material.SPRUCE_WALL_SIGN));
     public static final ImmutableSet<Material> BOATS = ImmutableSet.copyOf(EnumSet.of(
             Material.OAK_BOAT, Material.DARK_OAK_BOAT, Material.ACACIA_BOAT, Material.BIRCH_BOAT,
             Material.JUNGLE_BOAT, Material.SPRUCE_BOAT));

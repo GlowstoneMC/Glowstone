@@ -2,10 +2,12 @@ package net.glowstone.entity.monster;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -22,7 +24,7 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
      */
     @Getter
     @Setter
-    private UUID conversionPlayer;
+    private UUID conversionPlayerId;
     /**
      * The conversion time of this Zombie Villager, in ticks.
      *
@@ -93,8 +95,12 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     }
 
     @Override
+    public @Nullable OfflinePlayer getConversionPlayer() {
+        return Bukkit.getOfflinePlayer(conversionPlayerId);
+    }
+
+    @Override
     public void setConversionPlayer(@Nullable OfflinePlayer offlinePlayer) {
-        // TODO: 1.16
-        throw new UnsupportedOperationException("Not implemented yet.");
+        conversionPlayerId = Optional.ofNullable(offlinePlayer).map(OfflinePlayer::getUniqueId).get();
     }
 }

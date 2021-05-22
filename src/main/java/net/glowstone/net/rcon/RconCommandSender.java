@@ -9,8 +9,11 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.UUID;
 
 public class RconCommandSender implements RemoteConsoleCommandSender {
 
@@ -67,6 +70,22 @@ public class RconCommandSender implements RemoteConsoleCommandSender {
     public void sendMessage(String[] strings) {
         for (String line : strings) {
             sendMessage(line);
+        }
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID uuid, @NotNull String s) {
+        if (uuid == null) {
+            sendMessage(s);
+        } else {
+            sendMessage(String.format("[%s] %s", uuid, s));
+        }
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID uuid, @NotNull String[] strings) {
+        for (String line : strings) {
+            sendMessage(uuid, line);
         }
     }
 

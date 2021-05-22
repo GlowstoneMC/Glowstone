@@ -14,6 +14,7 @@ import lombok.Setter;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.InventoryUtil;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -24,6 +25,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A class which represents an inventory.
@@ -324,6 +326,12 @@ public class GlowInventory implements Inventory {
     @Override
     public List<HumanEntity> getViewers() {
         return new ArrayList<>(viewers);
+    }
+
+    @Override
+    public @Nullable InventoryHolder getHolder(boolean snapshotBlockEntity) {
+        // TODO: 1.16
+        throw new NotImplementedException();
     }
 
     @Override
@@ -646,6 +654,11 @@ public class GlowInventory implements Inventory {
         return first((Material) null);
     }
 
+    @Override
+    public boolean isEmpty() {
+        return firstEmpty() == -1;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Remove
 
@@ -674,6 +687,12 @@ public class GlowInventory implements Inventory {
         for (GlowInventorySlot slot : slots) {
             slot.setItem(InventoryUtil.createEmptyStack());
         }
+    }
+
+    @Override
+    public int close() {
+        // TODO: 1.16
+        throw new NotImplementedException();
     }
 
     /**

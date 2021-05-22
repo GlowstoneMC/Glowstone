@@ -21,6 +21,8 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
+import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -29,6 +31,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -269,6 +272,26 @@ public class GlowMetaItem implements ItemMeta {
         return !Strings.isNullOrEmpty(displayName);
     }
 
+    @Override
+    public @Nullable Component displayName() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void displayName(@Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull BaseComponent[] getDisplayNameComponent() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void setDisplayNameComponent(@Nullable BaseComponent[] baseComponents) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
     // TODO: support localization
 
     @Override
@@ -292,9 +315,24 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     @Override
+    public @Nullable List<Component> lore() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void lore(@Nullable List<Component> list) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
     public List<String> getLore() {
         // TODO: Defensive copy
         return lore;
+    }
+
+    @Override
+    public @Nullable List<BaseComponent[]> getLoreComponents() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -302,6 +340,26 @@ public class GlowMetaItem implements ItemMeta {
         // todo: fancy validation things
         // TODO: Defensive copy
         this.lore = lore;
+    }
+
+    @Override
+    public void setLoreComponents(@Nullable List<BaseComponent[]> list) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public boolean hasCustomModelData() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getCustomModelData() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setCustomModelData(@Nullable Integer integer) {
+        throw new UnsupportedOperationException();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -453,7 +511,17 @@ public class GlowMetaItem implements ItemMeta {
         return null;
     }
 
+    @Override
+    public void setVersion(int version) {
+        throw new UnsupportedOperationException();
+    }
+
     private byte getBitModifier(ItemFlag hideFlag) {
         return (byte) (1 << hideFlag.ordinal());
+    }
+
+    @Override
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
+        throw new UnsupportedOperationException();
     }
 }

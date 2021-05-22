@@ -3,11 +3,14 @@ package net.glowstone.entity.passive;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.destroystokyo.paper.entity.villager.Reputation;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +37,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowVillager extends GlowAgeable implements Villager {
 
@@ -92,10 +96,84 @@ public class GlowVillager extends GlowAgeable implements Villager {
 
     @Override
     public void setProfession(Profession profession) {
-        checkArgument(profession != Profession.HUSK);
-
         metadata.set(MetadataIndex.VILLAGER_PROFESSION, profession.ordinal());
-        assignCareer();
+        setProfession(getRandomProfession(ThreadLocalRandom.current()));
+    }
+
+    @Override
+    public @NotNull Type getVillagerType() {
+        // TODO
+        return Type.PLAINS;
+    }
+
+    @Override
+    public void setVillagerType(@NotNull Type type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getVillagerLevel() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setVillagerLevel(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getVillagerExperience() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setVillagerExperience(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getRestocksToday() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setRestocksToday(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean sleep(@NotNull Location location) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void wakeup() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public @Nullable Reputation getReputation(@NotNull UUID uuid) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public @NotNull Map<UUID, Reputation> getReputations() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setReputation(@NotNull UUID uuid, @NotNull Reputation reputation) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setReputations(@NotNull Map<UUID, Reputation> map) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void clearReputations() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -133,6 +211,11 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Override
     public Inventory getInventory() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void resetOffers() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

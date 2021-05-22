@@ -189,8 +189,8 @@ public final class ItemTable {
         reg(Material.SPAWNER, new BlockMobSpawner());
         regAll(MaterialUtil.INFESTED, new BlockMonsterEgg());
         reg(Material.DRAGON_EGG, new BlockFalling(Material.DRAGON_EGG));
-        reg(Material.SIGN, new BlockSign(), Sound.BLOCK_WOOD_BREAK);
-        reg(Material.WALL_SIGN, new BlockSign(), Sound.BLOCK_WOOD_BREAK);
+        regAll(MaterialUtil.SIGNS, new BlockSign(), Sound.BLOCK_WOOD_BREAK);
+        regAll(MaterialUtil.WALL_SIGNS, new BlockSign(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.CRAFTING_TABLE, new BlockWorkbench(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.ENDER_CHEST, new BlockEnderChest());
         reg(Material.CHEST, new BlockChest(), Sound.BLOCK_WOOD_BREAK);
@@ -341,7 +341,7 @@ public final class ItemTable {
 
         // Non-block and ItemPlaceAs items:
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
-        reg(Material.SIGN, new ItemSign());
+        regAll(MaterialUtil.SIGNS, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
         reg(Material.BREWING_STAND, new ItemPlaceAs(Material.BREWING_STAND));
         reg(Material.CAULDRON, new ItemPlaceAs(Material.CAULDRON));

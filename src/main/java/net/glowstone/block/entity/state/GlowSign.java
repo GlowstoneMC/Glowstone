@@ -4,10 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.MaterialUtil;
 import net.glowstone.block.entity.SignEntity;
+import net.kyori.adventure.text.Component;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class GlowSign extends GlowBlockState implements Sign {
 
@@ -23,15 +30,31 @@ public class GlowSign extends GlowBlockState implements Sign {
      */
     public GlowSign(GlowBlock block) {
         super(block);
-        if (block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN) {
+        final Material type = block.getType();
+        if (!MaterialUtil.SIGNS.contains(type) && !MaterialUtil.WALL_SIGNS.contains(type)) {
             throw new IllegalArgumentException(
-                "GlowSign: expected WALL_SIGN or SIGN got " + block.getType());
+                "GlowSign: expected WALL_SIGN or SIGN got " + type);
         }
         lines = getBlockEntity().getLines();
     }
 
     private SignEntity getBlockEntity() {
         return (SignEntity) getBlock().getBlockEntity();
+    }
+
+    @Override
+    public @NotNull List<Component> lines() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Component line(int i) throws IndexOutOfBoundsException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void line(int i, @NotNull Component component) throws IndexOutOfBoundsException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @NotNull
@@ -62,4 +85,18 @@ public class GlowSign extends GlowBlockState implements Sign {
         return result;
     }
 
+    @Override
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public @Nullable DyeColor getColor() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setColor(DyeColor dyeColor) {
+        throw new UnsupportedOperationException();
+    }
 }

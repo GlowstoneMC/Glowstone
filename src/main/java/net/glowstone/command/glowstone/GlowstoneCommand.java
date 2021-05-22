@@ -21,6 +21,7 @@ import net.glowstone.command.CommandUtils;
 import net.glowstone.command.minecraft.GlowVanillaCommand;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.LocalizedStringImpl;
+import net.glowstone.util.GlowUnsafeValues;
 import net.glowstone.util.ReflectionProcessor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -49,7 +50,6 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                 LocalizedStringImpl tpl
                         = new LocalizedStringImpl("glowstone.about._template", bundle);
                 sendBullet(sender, tpl, bundle, "glowstone.about.brand", Bukkit.getName());
-                sendBullet(sender, tpl, bundle, "glowstone.about.name", Bukkit.getServerName());
                 sendBullet(sender, tpl, bundle, "glowstone.about.version", Bukkit.getVersion());
                 sendBullet(sender, tpl, bundle, "glowstone.about.api-version",
                         Bukkit.getBukkitVersion());

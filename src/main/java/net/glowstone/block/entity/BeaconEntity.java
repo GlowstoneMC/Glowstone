@@ -1,11 +1,13 @@
 package net.glowstone.block.entity;
 
 import com.destroystokyo.paper.event.block.BeaconEffectEvent;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.MaterialUtil;
 import net.glowstone.block.entity.state.GlowBeacon;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
@@ -17,7 +19,9 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BeaconEntity extends BlockEntity {
 
@@ -25,10 +29,10 @@ public class BeaconEntity extends BlockEntity {
             Material.EMERALD_BLOCK, Material.GOLD_BLOCK,
             Material.DIAMOND_BLOCK, Material.IRON_BLOCK
     );
-    private static final Set<Material> TRANSPARENT_BLOCKS = Sets.newHashSet(
-            Material.AIR, Material.GLASS, Material.THIN_GLASS,
-            Material.STAINED_GLASS, Material.STAINED_GLASS_PANE
-    );
+    private static final Set<Material> TRANSPARENT_BLOCKS = ImmutableSet.of(
+            Sets.newHashSet(Material.AIR, Material.GLASS, Material.GLASS_PANE),
+            MaterialUtil.STAINED_GLASS_PANES, MaterialUtil.STAINED_GLASS_BLOCKS
+    ).stream().flatMap(Collection::stream).collect(Collectors.toSet());
 
     private String lock = null; // todo: support item locks
     @Getter

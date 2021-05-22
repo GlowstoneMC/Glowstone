@@ -118,7 +118,7 @@ public class ItemBow extends ItemTimedUsage {
                 // Plugin may change projectile to non arrow.
                 if (launchedProjectile instanceof Arrow) {
                     Arrow launchedArrow = (Arrow) launchedProjectile;
-                    launchedArrow.spigot().setDamage(damage);
+                    launchedArrow.setDamage(damage);
                     launchedArrow
                             .setKnockbackStrength(bow
                                     .getEnchantmentLevel(Enchantment.ARROW_KNOCKBACK));

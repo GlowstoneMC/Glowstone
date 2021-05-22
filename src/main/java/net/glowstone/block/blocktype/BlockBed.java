@@ -34,7 +34,8 @@ import java.util.EnumSet;
 public class BlockBed extends BlockType {
 
     private static final ImmutableSet<Biome> EXPLOSIVE_IN_BIOMES = ImmutableSet.copyOf(EnumSet.of(
-            Biome.NETHER, Biome.THE_END, Biome.END_BARRENS, Biome.END_MIDLANDS,
+            Biome.NETHER_WASTES, Biome.SOUL_SAND_VALLEY, Biome.CRIMSON_FOREST, Biome.WARPED_FOREST, Biome.BASALT_DELTAS,
+            Biome.THE_END, Biome.END_BARRENS, Biome.END_MIDLANDS,
             Biome.END_HIGHLANDS, Biome.SMALL_END_ISLANDS));
 
     /**

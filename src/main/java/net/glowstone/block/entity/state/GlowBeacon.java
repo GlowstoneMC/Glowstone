@@ -50,6 +50,21 @@ public class GlowBeacon extends GlowContainer implements Beacon {
     }
 
     @Override
+    public double getEffectRange() {
+        return getTier() * RADIUS_MULTIPLIER;
+    }
+
+    @Override
+    public void setEffectRange(double v) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void resetEffectRange() {
+        // TODO
+    }
+
+    @Override
     public PotionEffect getPrimaryEffect() {
         return getBlockEntity().getEffect(BeaconEntity.BeaconEffectPriority.PRIMARY);
     }

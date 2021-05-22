@@ -12,11 +12,16 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import net.glowstone.util.TextMessage;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Team;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Implementation for scoreboard teams.
@@ -87,6 +92,46 @@ public final class GlowTeam implements Team {
     public String getName() throws IllegalStateException {
         checkValid();
         return name;
+    }
+
+    @Override
+    public @NotNull Component displayName() throws IllegalStateException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void displayName(@Nullable Component component) throws IllegalStateException, IllegalArgumentException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Component prefix() throws IllegalStateException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void prefix(@Nullable Component component) throws IllegalStateException, IllegalArgumentException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Component suffix() throws IllegalStateException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void suffix(@Nullable Component component) throws IllegalStateException, IllegalArgumentException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull TextColor color() throws IllegalStateException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void color(@Nullable NamedTextColor namedTextColor) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override

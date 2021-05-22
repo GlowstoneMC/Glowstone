@@ -10,10 +10,12 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.DragonBattle;
 import org.bukkit.entity.ComplexEntityPart;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowEnderDragon extends GlowBoss implements EnderDragon {
 
@@ -53,6 +55,16 @@ public class GlowEnderDragon extends GlowBoss implements EnderDragon {
     @Override
     public void setPhase(Phase phase) {
         metadata.set(MetadataIndex.ENDERDRAGON_PHASE, phase.ordinal());
+    }
+
+    @Override
+    public @Nullable DragonBattle getDragonBattle() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getDeathAnimationTicks() {
+        throw new UnsupportedOperationException();
     }
 
     @NotNull

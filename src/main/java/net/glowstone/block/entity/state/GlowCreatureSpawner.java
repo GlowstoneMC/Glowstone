@@ -7,6 +7,9 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.MobSpawnerEntity;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawner {
 
@@ -114,6 +117,21 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
+    @Override
+    public boolean isActivated() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void resetTimer() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setSpawnedItem(@NotNull ItemStack itemStack) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Spawned Type
 
@@ -130,4 +148,8 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
         return spawnedType.getName();
     }
 
+    @Override
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
 }

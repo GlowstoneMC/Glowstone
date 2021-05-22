@@ -5,11 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Nameable;
 import org.bukkit.block.Container;
 import org.bukkit.block.Lockable;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.loot.LootTable;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -19,7 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class GlowContainer extends GlowBlockState implements LootableBlockInventory,
-    Lockable, Nameable, Container {
+        Lockable, Nameable, Container {
     private final AtomicLong lastFilled = new AtomicLong(-1);
     private final AtomicLong nextRefill = new AtomicLong(-1);
     private final AtomicLong lootTableSeed = new AtomicLong(0);
@@ -132,6 +135,27 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
     @Override
     public Inventory getSnapshotInventory() {
         // TODO
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public @NotNull Inventory getInventory() {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public @Nullable Component customName() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void customName(@Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
         throw new UnsupportedOperationException();
     }
 }

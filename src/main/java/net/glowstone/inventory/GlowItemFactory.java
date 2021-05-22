@@ -1,15 +1,23 @@
 package net.glowstone.inventory;
 
 import java.util.Locale;
+import java.util.function.UnaryOperator;
+
 import net.glowstone.util.nbt.CompoundTag;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.hover.content.Content;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An implementation of {@link ItemFactory} responsible for creating ItemMetas.
@@ -88,6 +96,16 @@ public final class GlowItemFactory implements ItemFactory {
     }
 
     @Override
+    public @NotNull HoverEvent<HoverEvent.ShowItem> asHoverEvent(@NotNull ItemStack itemStack, @NotNull UnaryOperator<HoverEvent.ShowItem> unaryOperator) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Component displayName(@NotNull ItemStack itemStack) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
     public ItemStack ensureServerConversions(ItemStack itemStack) {
         // TODO: Implementation (1.12.1)
         return itemStack.clone();
@@ -99,12 +117,37 @@ public final class GlowItemFactory implements ItemFactory {
         return WordUtils.capitalize(itemStack.getType().name().replaceAll("_", " ").toLowerCase(Locale.ROOT));
     }
 
+    @Override
+    public @NotNull Content hoverContentOf(@NotNull ItemStack itemStack) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Content hoverContentOf(@NotNull Entity entity) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Content hoverContentOf(@NotNull Entity entity, @Nullable String s) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Content hoverContentOf(@NotNull Entity entity, @Nullable BaseComponent baseComponent) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Content hoverContentOf(@NotNull Entity entity, @NotNull BaseComponent[] baseComponents) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
     /**
      * Writes an {@link ItemMeta} to an NBT tag.
      *
      * @param meta an {@link ItemMeta}
      * @return a compound tag that can become the "tag" subtag of an item NBT tag, or null if
-     *          {@code meta} matches an item with no "tag" subtag
+     * {@code meta} matches an item with no "tag" subtag
      */
     public CompoundTag writeNbt(ItemMeta meta) {
         CompoundTag result = new CompoundTag();
@@ -116,7 +159,7 @@ public final class GlowItemFactory implements ItemFactory {
      * Reads an {@link ItemMeta} from an NBT tag.
      *
      * @param material the material
-     * @param tag the "tag" subtag of an item NBT tag
+     * @param tag      the "tag" subtag of an item NBT tag
      * @return the tag's contents as an {@link ItemMeta}
      */
     public ItemMeta readNbt(Material material, CompoundTag tag) {
@@ -142,7 +185,7 @@ public final class GlowItemFactory implements ItemFactory {
             return (GlowMetaItem) meta;
         }
         throw new IllegalArgumentException(
-            "Item meta " + meta + " was not created by GlowItemFactory");
+                "Item meta " + meta + " was not created by GlowItemFactory");
     }
 
     /**

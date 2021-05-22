@@ -17,11 +17,13 @@ public class ItemSign extends ItemType {
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         BlockType placeAs;
         if (face == BlockFace.UP) {
-            placeAs = ItemTable.instance().getBlock(Material.SIGN);
+            // TODO: Support other kinds of wood
+            placeAs = ItemTable.instance().getBlock(Material.OAK_SIGN);
         } else if (face == BlockFace.DOWN) {
             return;
         } else {
-            placeAs = ItemTable.instance().getBlock(Material.WALL_SIGN);
+            // TODO: Support other kinds of wood
+            placeAs = ItemTable.instance().getBlock(Material.OAK_WALL_SIGN);
         }
         placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
     }

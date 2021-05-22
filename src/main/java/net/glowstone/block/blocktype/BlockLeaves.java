@@ -19,12 +19,12 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockLeaves extends BlockType {
-    
+
     private static final int LEAVE_BLOCK_DECAY_RANGE = 6;
     private static final int LEAVE_BLOCK_MAP_RANGE = (LEAVE_BLOCK_DECAY_RANGE * 2) + 1;
-    
+
     //map of neighbouring blocks within decay range, center is current leave block, includes blocks bordering max range
-    private final byte[] blockMap = new byte[Math.pow(LEAVE_BLOCK_MAP_RANGE + 2, 3)];
+    private final byte[] blockMap = new byte[(int) Math.pow(LEAVE_BLOCK_MAP_RANGE + 2, 3)];
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -34,7 +35,7 @@ public class GlowLightningStrike extends GlowEntity implements LightningStrike {
     /**
      * How long this lightning strike has to remain in the world.
      */
-    private final int ticksToLive;
+    private int ticksToLive;
     /**
      * Whether the lightning strike is just for effect.
      */
@@ -50,6 +51,10 @@ public class GlowLightningStrike extends GlowEntity implements LightningStrike {
             return isSilent;
         }
     };
+
+    @Getter
+    @Setter
+    private int flashCount;
 
     public GlowLightningStrike(Location location) {
         this(location, false, false);
@@ -170,5 +175,15 @@ public class GlowLightningStrike extends GlowEntity implements LightningStrike {
     @Override
     public LightningStrike.Spigot spigot() {
         return spigot;
+    }
+
+    @Override
+    public int getLifeTicks() {
+        return ticksToLive;
+    }
+
+    @Override
+    public void setLifeTicks(int i) {
+        this.ticksToLive = i;
     }
 }

@@ -10,6 +10,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -400,6 +401,11 @@ public final class GlowScheduler implements BukkitScheduler {
     public BukkitTask runTaskTimerAsynchronously(Plugin plugin, BukkitRunnable task, long delay,
         long period) throws IllegalArgumentException {
         return task.runTaskTimerAsynchronously(plugin, delay, period);
+    }
+
+    @Override
+    public @NotNull Executor getMainThreadExecutor(@NotNull Plugin plugin) {
+        return executor;
     }
 
     @Override

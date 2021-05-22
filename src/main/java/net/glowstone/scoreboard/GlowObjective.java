@@ -10,6 +10,7 @@ import java.util.Set;
 import lombok.Getter;
 import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
 import net.glowstone.util.TextMessage;
+import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -17,6 +18,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.RenderType;
 import org.bukkit.scoreboard.Score;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Scoreboard objective and associated data.
@@ -76,6 +78,16 @@ public final class GlowObjective implements Objective {
     public String getName() throws IllegalStateException {
         checkValid();
         return name;
+    }
+
+    @Override
+    public @NotNull Component displayName() throws IllegalStateException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void displayName(@Nullable Component component) throws IllegalStateException, IllegalArgumentException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Class representing a snapshot of a chunk.
@@ -111,6 +112,12 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         return sy < 0 || sy >= rawSections.length || rawSections[sy] == null;
     }
 
+    @Override
+    public boolean contains(@NotNull BlockData blockData) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public int getBlockTypeId(int x, int y, int z) {
         ChunkSection section = getSection(y);
         return section == null ? 0 : section.getType(x, y, z) >> 4;
@@ -157,8 +164,20 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     }
 
     @Override
+    public @NotNull Biome getBiome(int x, int y, int z) {
+        // TODO: Support 3D biomes
+        return getBiome(x, z);
+    }
+
+    @Override
     public double getRawBiomeTemperature(int x, int z) {
         return temp[coordToIndex(x, z)];
+    }
+
+    @Override
+    public double getRawBiomeTemperature(int x, int y, int z) {
+        // TODO: Support 3D biomes
+        return getRawBiomeTemperature(x, z);
     }
 
     public double getRawBiomeRainfall(int x, int z) {

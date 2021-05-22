@@ -70,6 +70,7 @@ import net.glowstone.util.RayUtil;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.collection.ConcurrentSet;
 import net.glowstone.util.config.WorldConfig;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -80,6 +81,7 @@ import org.bukkit.GameRule;
 import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Raid;
 import org.bukkit.Sound;
@@ -995,6 +997,12 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public boolean setSpawnLocation(int x, int y, int z, float angle) {
+        // TODO: Not clear how to split angle in pitch & yaw
+        return setSpawnLocation(new Location(this, x, y, z, angle, angle), true);
+    }
+
+    @Override
     public boolean setSpawnLocation(int x, int y, int z) {
         return setSpawnLocation(new Location(this, x, y, z), true);
     }
@@ -1476,6 +1484,11 @@ public class GlowWorld implements World {
         return future;
     }
 
+    @Override
+    public @NotNull NamespacedKey getKey() {
+        return NamespacedKey.minecraft(name);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Chunk loading and unloading
 
@@ -1683,6 +1696,11 @@ public class GlowWorld implements World {
         return getHumidity(x, z);
     }
 
+    @Override
+    public int getMinHeight() {
+        return 0;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Entity spawning
 
@@ -1812,6 +1830,15 @@ public class GlowWorld implements World {
         return entity;
     }
 
+    @Override
+    public @NotNull Item dropItem(@NotNull Location location, @NotNull ItemStack stack, @Nullable Consumer<Item> consumer) {
+        final GlowItem item = dropItem(location, stack);
+        if (!item.isRemoved() && consumer != null) {
+            consumer.accept(item);
+        }
+        return item;
+    }
+
     /**
      * Spawn an item at the given {@link Location} with shooting effect.
      *
@@ -1843,6 +1870,15 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public @NotNull Item dropItemNaturally(@NotNull Location location, @NotNull ItemStack stack, @Nullable Consumer<Item> consumer) {
+        final GlowItem item = dropItemNaturally(location, stack);
+        if (!item.isRemoved() && consumer != null) {
+            consumer.accept(item);
+        }
+        return item;
+    }
+
+    @Override
     public Arrow spawnArrow(Location location, Vector velocity, float speed, float spread) {
         // Transformative magic
         Vector randVec = new Vector(ThreadLocalRandom.current().nextGaussian(), ThreadLocalRandom
@@ -1863,8 +1899,9 @@ public class GlowWorld implements World {
 
     @NotNull
     @Override
-    public <T extends AbstractArrow> T spawnArrow(@NotNull Location location, @NotNull Vector vector, float v, float v1, @NotNull Class<T> aClass) {
-        return null;
+    public <T extends AbstractArrow> T spawnArrow(@NotNull Location location, @NotNull Vector vector, float speed, float spread, @NotNull Class<T> aClass) {
+        // TODO: 1.16
+        throw new NotImplementedException();
     }
 
     @Override
@@ -1933,6 +1970,11 @@ public class GlowWorld implements World {
         return false;
     }
 
+    @Override
+    public long getGameTime() {
+        return 0;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Weather
 
@@ -1987,6 +2029,24 @@ public class GlowWorld implements World {
             setThunderDuration(ThreadLocalRandom.current().nextInt(TickUtil.TICKS_PER_WEEK)
                 + TickUtil.TICKS_PER_WEEK);
         }
+    }
+
+    @Override
+    public boolean isClearWeather() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void setClearWeatherDuration(int i) {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public int getClearWeatherDuration() {
+        // TODO: 1.16
+        throw new NotImplementedException();
     }
 
     private void updateWeather() {
@@ -2491,6 +2551,84 @@ public class GlowWorld implements World {
     public @Nullable Location locateNearestStructure(@NotNull Location location,
             @NotNull StructureType structureType, int i, boolean b) {
         return null;
+    }
+
+    @Override
+    public @Nullable Location locateNearestBiome(@NotNull Location location, @NotNull Biome biome, int i) {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public @Nullable Location locateNearestBiome(@NotNull Location location, @NotNull Biome biome, int i, int i1) {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isUltrawarm() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isNatural() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public double getCoordinateScale() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean hasSkylight() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean hasBedrockCeiling() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isPiglinSafe() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean doesBedWork() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean doesRespawnAnchorWork() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean hasRaids() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isFixedTime() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public @NotNull Collection<Material> getInfiniburn() {
+        // TODO: 1.16
+        throw new NotImplementedException();
     }
 
     @Override

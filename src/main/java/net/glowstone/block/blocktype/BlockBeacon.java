@@ -4,11 +4,11 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BeaconEntity;
 import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.state.GlowBeacon;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
-import org.bukkit.block.Beacon;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -32,7 +32,7 @@ public class BlockBeacon extends BlockDirectDrops {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
-        Beacon beacon = (Beacon) block.getState();
+        GlowBeacon beacon = (GlowBeacon) block.getState();
         player.openInventory(beacon.getInventory());
         player.incrementStatistic(Statistic.BEACON_INTERACTION);
         return true;
