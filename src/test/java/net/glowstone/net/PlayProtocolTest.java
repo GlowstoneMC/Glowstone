@@ -134,7 +134,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new EntityEquipmentMessage(1, 2, new ItemStack(Material.APPLE, 1)),
         new SpawnPositionMessage(1, 2, 3),
         new HealthMessage(1f, 2, 3f),
-        new RespawnMessage(1, 2, 3, "world"),
+        new RespawnMessage("world", new byte[]{1, 2, 3}, 3, 4, false, true, false),
         new PositionRotationMessage(1.0, 2.0, 3.0, 1f, 2f),
         new PositionRotationMessage(1.0, 2.0, 3.0, 4f, 5f, 6, 1),
         new PositionRotationMessage(new Location(null, 1.0, 2.0, 3.0, 4f, 5f)),

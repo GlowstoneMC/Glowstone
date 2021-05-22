@@ -20,11 +20,8 @@ public class EntityNetworkUtilTest {
             EntityType.MINECART_HOPPER,
             EntityType.MINECART_MOB_SPAWNER,
             EntityType.MINECART_TNT,
-            EntityType.LINGERING_POTION,    // Lingering Potions have no ID (???)
             EntityType.LIGHTNING,           // Lightning is spawned using SpawnLightningMessage
             EntityType.PLAYER,              // Players are spawned using SpawnPlayerMessage
-            EntityType.COMPLEX_PART,        // Legacy
-            EntityType.WEATHER,             // Legacy
             EntityType.UNKNOWN
     );
 

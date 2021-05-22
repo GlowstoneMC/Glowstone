@@ -1,6 +1,8 @@
 package net.glowstone.testutils;
 
+import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.destroystokyo.paper.profile.PlayerProfile;
+import io.papermc.paper.datapack.DatapackManager;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
@@ -20,6 +22,8 @@ import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.util.GlowUnsafeValues;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -67,6 +71,7 @@ import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.mockito.Mockito;
 
@@ -114,6 +119,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @NotNull String getMinecraftVersion() {
+        return "1.16.5";
+    }
+
+    @Override
     public ItemFactory getItemFactory() {
         return GlowItemFactory.instance();
     }
@@ -136,6 +146,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public void setMaxPlayers(int i) {
+
+    }
+
+    @Override
     public int getPort() {
         return 0;
     }
@@ -151,16 +166,6 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public String getServerName() {
-        return null;
-    }
-
-    @Override
-    public String getServerId() {
-        return null;
-    }
-
-    @Override
     public String getWorldType() {
         return null;
     }
@@ -168,6 +173,11 @@ public class ServerShim implements Server {
     @Override
     public boolean getGenerateStructures() {
         return false;
+    }
+
+    @Override
+    public int getMaxWorldSize() {
+        return 0;
     }
 
     @Override
@@ -241,6 +251,21 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public int getTicksPerWaterSpawns() {
+        return 0;
+    }
+
+    @Override
+    public int getTicksPerWaterAmbientSpawns() {
+        return 0;
+    }
+
+    @Override
+    public int getTicksPerAmbientSpawns() {
+        return 0;
+    }
+
+    @Override
     public Player getPlayer(String name) {
         return null;
     }
@@ -302,6 +327,12 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @org.jetbrains.annotations.Nullable World getWorld(
+        @NotNull NamespacedKey namespacedKey) {
+        return null;
+    }
+
+    @Override
     public @org.jetbrains.annotations.Nullable MapView getMap(int id) {
         return null;
     }
@@ -358,6 +389,12 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @org.jetbrains.annotations.Nullable Recipe getRecipe(
+        @NotNull NamespacedKey namespacedKey) {
+        return null;
+    }
+
+    @Override
     public Iterator<Recipe> recipeIterator() {
         return null;
     }
@@ -370,6 +407,11 @@ public class ServerShim implements Server {
     @Override
     public void resetRecipes() {
 
+    }
+
+    @Override
+    public boolean removeRecipe(@NotNull NamespacedKey namespacedKey) {
+        return false;
     }
 
     @Override
@@ -413,7 +455,18 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public int broadcast(@NotNull Component component, @NotNull String s) {
+        return 0;
+    }
+
+    @Override
     public OfflinePlayer getOfflinePlayer(String name) {
+        return null;
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable OfflinePlayer getOfflinePlayerIfCached(
+        @NotNull String s) {
         return null;
     }
 
@@ -493,6 +546,13 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @NotNull Inventory createInventory(
+        @org.jetbrains.annotations.Nullable InventoryHolder inventoryHolder,
+        @NotNull InventoryType inventoryType, @NotNull Component component) {
+        return null;
+    }
+
+    @Override
     public Inventory createInventory(InventoryHolder owner, InventoryType type, String title) {
         return null;
     }
@@ -504,8 +564,21 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @NotNull Inventory createInventory(
+        @org.jetbrains.annotations.Nullable InventoryHolder inventoryHolder, int i,
+        @NotNull Component component) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
     public Inventory createInventory(InventoryHolder owner, int size, String title)
         throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
+    public @NotNull Merchant createMerchant(
+        @org.jetbrains.annotations.Nullable Component component) {
         return null;
     }
 
@@ -530,6 +603,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public int getWaterAmbientSpawnLimit() {
+        return 0;
+    }
+
+    @Override
     public int getAmbientSpawnLimit() {
         return 0;
     }
@@ -540,7 +618,17 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @NotNull Component motd() {
+        return null;
+    }
+
+    @Override
     public String getMotd() {
+        return null;
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable Component shutdownMessage() {
         return null;
     }
 
@@ -590,6 +678,12 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public ChunkGenerator.@NotNull ChunkData createVanillaChunkData(@NotNull World world, int i,
+                                                                    int i1) {
+        return null;
+    }
+
+    @Override
     public BossBar createBossBar(String s, BarColor barColor, BarStyle barStyle,
         BarFlag... barFlags) {
         return null;
@@ -618,6 +712,16 @@ public class ServerShim implements Server {
     @Override
     public double[] getTPS() {
         return new double[0];
+    }
+
+    @Override
+    public @NotNull long[] getTickTimes() {
+        return new long[0];
+    }
+
+    @Override
+    public double getAverageTickTime() {
+        return 0;
     }
 
     @Override
@@ -726,12 +830,37 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public int getCurrentTick() {
+        return 0;
+    }
+
+    @Override
+    public boolean isStopping() {
+        return false;
+    }
+
+    @Override
+    public @NotNull MobGoals getMobGoals() {
+        return null;
+    }
+
+    @Override
+    public @NotNull DatapackManager getDatapackManager() {
+        return null;
+    }
+
+    @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
 
     }
 
     @Override
     public Set<String> getListeningPluginChannels() {
+        return null;
+    }
+
+    @Override
+    public @NonNull Iterable<? extends Audience> audiences() {
         return null;
     }
 }
