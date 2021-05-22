@@ -2,9 +2,8 @@ package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.game.DeclareCommandsMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.game.DeclareCommandsMessage;
 
 // TODO
 
@@ -15,7 +14,8 @@ public class DeclareCommandsCodec implements Codec<DeclareCommandsMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf byteBuf, DeclareCommandsMessage declareCommandsMessage) throws IOException {
+    public ByteBuf encode(ByteBuf byteBuf, DeclareCommandsMessage declareCommandsMessage)
+        throws IOException {
         return null;
     }
 }

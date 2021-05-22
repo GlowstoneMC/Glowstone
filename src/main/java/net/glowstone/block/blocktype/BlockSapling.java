@@ -25,6 +25,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
+    private static boolean isMatchingSapling(GlowBlock block, int data) {
+        // TODO: 1.13 sapling types
+        return block.getType() == Material.LEGACY_SAPLING && block.getData() == data;
+    }
+
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         Material typeBelow = block.getWorld()
@@ -144,11 +149,6 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         }
     }
 
-    private static boolean isMatchingSapling(GlowBlock block, int data) {
-        // TODO: 1.13 sapling types
-        return block.getType() == Material.LEGACY_SAPLING && block.getData() == data;
-    }
-
     private GlowBlock searchSourceBlockForHugeTree(GlowBlock block) {
 
         GlowWorld world = block.getWorld();
@@ -160,9 +160,9 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             for (int z = -1; z <= 0; z++) {
                 GlowBlock b = world.getBlockAt(sourceX + x, sourceY, sourceZ + z);
                 if (isMatchingSapling(b, data)
-                        && isMatchingSapling(b.getRelative(BlockFace.SOUTH), data)
-                        && isMatchingSapling(b.getRelative(BlockFace.EAST), data)
-                        && isMatchingSapling(b.getRelative(BlockFace.SOUTH_EAST), data)) {
+                    && isMatchingSapling(b.getRelative(BlockFace.SOUTH), data)
+                    && isMatchingSapling(b.getRelative(BlockFace.EAST), data)
+                    && isMatchingSapling(b.getRelative(BlockFace.SOUTH_EAST), data)) {
                     return b;
                 }
             }
@@ -175,7 +175,8 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         // TODO: 1.13 sapling types
-        return Arrays.asList(new ItemStack(Material.LEGACY_SAPLING, 1, (short) (block.getData() % 8)));
+        return Arrays
+            .asList(new ItemStack(Material.LEGACY_SAPLING, 1, (short) (block.getData() % 8)));
     }
 
     @Override

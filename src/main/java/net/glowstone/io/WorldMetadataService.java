@@ -1,9 +1,8 @@
 package net.glowstone.io;
 
-import lombok.Data;
-
 import java.io.IOException;
 import java.util.UUID;
+import lombok.Data;
 
 /**
  * Provider of I/O for world metadata.

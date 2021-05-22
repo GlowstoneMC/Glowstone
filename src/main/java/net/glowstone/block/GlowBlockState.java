@@ -58,11 +58,6 @@ public class GlowBlockState implements BlockState {
     }
 
     @Override
-    public void setBlockData(@NotNull BlockData data) {
-        getBlock().setBlockData(data);
-    }
-
-    @Override
     public GlowBlock getBlock() {
         return world.getBlockAt(x, y, z);
     }
@@ -70,6 +65,11 @@ public class GlowBlockState implements BlockState {
     @Override
     public @NotNull BlockData getBlockData() {
         return getBlock().getBlockData();
+    }
+
+    @Override
+    public void setBlockData(@NotNull BlockData data) {
+        getBlock().setBlockData(data);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class FunctionCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -41,7 +41,7 @@ public class FunctionCommand extends GlowVanillaCommand {
         Map<String, CommandFunction> functions = world.getFunctions();
         if (!functions.containsKey(functionName)) {
             new LocalizedStringImpl("function.unknown", commandMessages.getResourceBundle())
-                    .sendInColor(ChatColor.RED, sender, functionName);
+                .sendInColor(ChatColor.RED, sender, functionName);
             return false;
         }
         CommandFunction function = functions.get(functionName);
@@ -50,15 +50,15 @@ public class FunctionCommand extends GlowVanillaCommand {
             if (condition.equals("if")) { // NON-NLS
                 if (!anyMatch(sender, args[2], location)) {
                     new LocalizedStringImpl("function.skipped",
-                            commandMessages.getResourceBundle())
-                            .send(sender, function.getFullName());
+                        commandMessages.getResourceBundle())
+                        .send(sender, function.getFullName());
                     return false;
                 }
             } else if (condition.equals("unless")) { // NON-NLS
                 if (anyMatch(sender, args[2], location)) {
                     new LocalizedStringImpl("function.skipped",
-                            commandMessages.getResourceBundle())
-                            .send(sender, function.getFullName());
+                        commandMessages.getResourceBundle())
+                        .send(sender, function.getFullName());
                     return false;
                 }
             } else {

@@ -4,16 +4,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
-import net.glowstone.GlowServer;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import net.glowstone.GlowServer;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Class for handling UDP packets according to the minecraft server query protocol.
@@ -138,14 +137,14 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
         buf.writeInt(sessionId);
         // constant: splitnum\x00\x80\x00
         buf.writeBytes(
-            new byte[]{0x73, 0x70, 0x6C, 0x69, 0x74, 0x6E, 0x75, 0x6D, 0x00, (byte) 0x80, 0x00});
+            new byte[] {0x73, 0x70, 0x6C, 0x69, 0x74, 0x6E, 0x75, 0x6D, 0x00, (byte) 0x80, 0x00});
         for (Entry<String, Object> e : data.entrySet()) {
             writeString(buf, e.getKey());
             writeString(buf, String.valueOf(e.getValue()));
         }
         buf.writeByte(0);
         // constant: \x01player_\x00\x00
-        buf.writeBytes(new byte[]{0x01, 0x70, 0x6C, 0x61, 0x79, 0x65, 0x72, 0x5F, 0x00, 0x00});
+        buf.writeBytes(new byte[] {0x01, 0x70, 0x6C, 0x61, 0x79, 0x65, 0x72, 0x5F, 0x00, 0x00});
         for (Player player : server.getOnlinePlayers()) {
             writeString(buf, player.getName());
         }

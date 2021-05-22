@@ -45,7 +45,7 @@ public class BlockFlowerPot extends BlockType {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();
 
@@ -78,7 +78,7 @@ public class BlockFlowerPot extends BlockType {
             case RED_MUSHROOM:
             case BROWN_MUSHROOM:
             case CACTUS:
-            // TODO: sapling types
+                // TODO: sapling types
             case LEGACY_SAPLING:
             case LARGE_FERN:
                 return true;

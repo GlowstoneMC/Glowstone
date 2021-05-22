@@ -32,17 +32,12 @@ public abstract class GlowMob extends GlowLivingEntity implements Mob {
     }
 
     @Override
-    public void setTarget(@Nullable LivingEntity target) {
-
-    }
-
-    @Override
     public @Nullable LivingEntity getTarget() {
         return null;
     }
 
     @Override
-    public void setLootTable(@Nullable LootTable table) {
+    public void setTarget(@Nullable LivingEntity target) {
 
     }
 
@@ -52,12 +47,17 @@ public abstract class GlowMob extends GlowLivingEntity implements Mob {
     }
 
     @Override
-    public void setSeed(long seed) {
+    public void setLootTable(@Nullable LootTable table) {
 
     }
 
     @Override
     public long getSeed() {
         return 0;
+    }
+
+    @Override
+    public void setSeed(long seed) {
+
     }
 }

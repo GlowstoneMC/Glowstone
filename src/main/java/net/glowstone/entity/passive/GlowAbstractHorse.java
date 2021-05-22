@@ -24,17 +24,17 @@ import org.bukkit.entity.Horse;
 public abstract class GlowAbstractHorse extends GlowTameable implements AbstractHorse {
 
     private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.GOLDEN_APPLE,
-            Material.GOLDEN_CARROT);
+        Material.GOLDEN_CARROT);
 
     private static final Map<Material, Integer> GROWING_FOODS = ImmutableMap
-            .<Material, Integer>builder()
-            .put(Material.SUGAR, TickUtil.secondsToTicks(30))
-            .put(Material.WHEAT, TickUtil.secondsToTicks(20))
-            .put(Material.APPLE, TickUtil.minutesToTicks(1))
-            .put(Material.GOLDEN_CARROT, TickUtil.minutesToTicks(1))
-            .put(Material.GOLDEN_APPLE, TickUtil.minutesToTicks(4))
-            .put(Material.HAY_BLOCK, TickUtil.minutesToTicks(3))
-            .build();
+        .<Material, Integer>builder()
+        .put(Material.SUGAR, TickUtil.secondsToTicks(30))
+        .put(Material.WHEAT, TickUtil.secondsToTicks(20))
+        .put(Material.APPLE, TickUtil.minutesToTicks(1))
+        .put(Material.GOLDEN_CARROT, TickUtil.minutesToTicks(1))
+        .put(Material.GOLDEN_APPLE, TickUtil.minutesToTicks(4))
+        .put(Material.HAY_BLOCK, TickUtil.minutesToTicks(3))
+        .build();
 
     @Getter
     @Setter

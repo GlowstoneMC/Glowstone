@@ -28,7 +28,7 @@ public class BlockDoubleSlab extends BlockType {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (MaterialUtil.WOODEN_SLABS.contains(block.getType())
-                || tool != null && ToolType.PICKAXE.matches(tool.getType())) {
+            || tool != null && ToolType.PICKAXE.matches(tool.getType())) {
             return getMinedDrops(block);
         }
         return Collections.emptyList();

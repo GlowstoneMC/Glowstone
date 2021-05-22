@@ -1,11 +1,10 @@
 package net.glowstone.io.entity;
 
+import java.util.function.Function;
 import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NonNls;
-
-import java.util.function.Function;
 
 public class ArrowStore<T extends GlowArrow> extends ProjectileStore<T> {
 

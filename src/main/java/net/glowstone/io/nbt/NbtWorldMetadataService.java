@@ -1,5 +1,13 @@
 package net.glowstone.io.nbt;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.UUID;
 import net.glowstone.GlowWorld;
 import net.glowstone.GlowWorldBorder;
 import net.glowstone.ServerProvider;
@@ -11,15 +19,6 @@ import net.glowstone.util.nbt.NbtOutputStream;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.WorldType;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.UUID;
 
 @SuppressWarnings("HardCodedStringLiteral")
 public class NbtWorldMetadataService implements WorldMetadataService {
@@ -36,8 +35,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
      * Creates the instance for the given world's metadata.
      *
      * @param world the world
-     * @param dir the world's metadata folder, containing uid.dat and level.dat if the world has
-     *         been previously saved; if this folder doesn't exist, it is created
+     * @param dir   the world's metadata folder, containing uid.dat and level.dat if the world has
+     *              been previously saved; if this folder doesn't exist, it is created
      */
     public NbtWorldMetadataService(GlowWorld world, File dir) {
         this.world = world;
@@ -118,8 +117,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         // game rules
         if (level.readCompound("GameRules", gameRules ->
-                gameRules.getValue().keySet().stream().filter(gameRules::isString)
-                    .forEach(key -> world.setGameRuleValue(key, gameRules.getString(key)))
+            gameRules.getValue().keySet().stream().filter(gameRules::isString)
+                .forEach(key -> world.setGameRuleValue(key, gameRules.getString(key)))
         )) {
             level.remove("GameRules");
         }

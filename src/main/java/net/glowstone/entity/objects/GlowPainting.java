@@ -163,7 +163,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(
             Collections.singletonList(this.getEntityId()));
         List<Message> spawnMessages = this.createSpawnMessage();
-        Message[] messages = new Message[]{destroyMessage, spawnMessages.get(0)};
+        Message[] messages = new Message[] {destroyMessage, spawnMessages.get(0)};
 
         getWorld()
             .getRawPlayers()
@@ -240,7 +240,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
         if (ticksLived % (20 * 5) == 0 && isObstructed()) {
             if (EventFactory.getInstance()
-                    .callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
+                .callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
                 return;
             }
 

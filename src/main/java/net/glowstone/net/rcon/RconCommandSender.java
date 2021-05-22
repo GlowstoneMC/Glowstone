@@ -1,5 +1,7 @@
 package net.glowstone.net.rcon;
 
+import java.util.Set;
+import java.util.UUID;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -12,16 +14,13 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
-import java.util.UUID;
-
 public class RconCommandSender implements RemoteConsoleCommandSender {
 
     @Getter
     private final GlowServer server;
     private final StringBuffer buffer = new StringBuffer();
     private final PermissibleBase perm = new PermissibleBase(this);
-    private Spigot spigot = new Spigot() {
+    private final Spigot spigot = new Spigot() {
         @Override
         public void sendMessage(BaseComponent component) {
             RconCommandSender.this.sendMessage(component);
@@ -124,7 +123,7 @@ public class RconCommandSender implements RemoteConsoleCommandSender {
 
     @Override
     public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value,
-        int ticks) {
+                                              int ticks) {
         return perm.addAttachment(plugin, name, value, ticks);
     }
 

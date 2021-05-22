@@ -2,9 +2,8 @@ package net.glowstone.net.codec.play.inv;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.inv.HeldItemMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.inv.HeldItemMessage;
 
 public final class HeldItemCodec implements Codec<HeldItemMessage> {
 

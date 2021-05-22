@@ -2,9 +2,8 @@ package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.entity.VehicleMoveMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.entity.VehicleMoveMessage;
 
 public class VehicleMoveCodec implements Codec<VehicleMoveMessage> {
 

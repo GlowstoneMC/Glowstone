@@ -6,7 +6,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.RecipeBookStateMessage;
 
 public final class RecipeBookStateHandler implements
-        MessageHandler<GlowSession, RecipeBookStateMessage> {
+    MessageHandler<GlowSession, RecipeBookStateMessage> {
 
     @Override
     public void handle(GlowSession session, RecipeBookStateMessage message) {

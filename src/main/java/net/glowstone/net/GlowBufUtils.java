@@ -5,6 +5,12 @@ import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.GlowParticle;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -29,13 +35,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
 
 /**
  * Contains several utility methods for writing special data types to @{link ByteBuf}s.
@@ -143,7 +142,7 @@ public final class GlowBufUtils {
     }
 
     public static void writeValue(ByteBuf buf, Object value, MetadataType type)
-            throws IOException {
+        throws IOException {
         switch (type) {
             case BYTE:
                 buf.writeByte((Byte) value);
@@ -219,7 +218,7 @@ public final class GlowBufUtils {
         buf.readerIndex(idx);
         try (NbtInputStream str = new NbtInputStream(new ByteBufInputStream(buf), false)) {
             return str.readCompound(
-                    network ? new NbtReadLimiter(2097152L) : NbtReadLimiter.UNLIMITED);
+                network ? new NbtReadLimiter(2097152L) : NbtReadLimiter.UNLIMITED);
         } catch (IOException e) {
             return null;
         }
@@ -394,7 +393,8 @@ public final class GlowBufUtils {
     }
 
     public static void writeHand(ByteBuf buf, EquipmentSlot hand) {
-        Preconditions.checkArgument(hand == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND, "hand can be only OFF_HAND or HAND");
+        Preconditions.checkArgument(hand == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND,
+            "hand can be only OFF_HAND or HAND");
         ByteBufUtils.writeVarInt(buf, hand == EquipmentSlot.OFF_HAND ? 1 : 0);
     }
 
@@ -412,7 +412,7 @@ public final class GlowBufUtils {
         ByteBufUtils.writeVarInt(buf, particleId);
         Class<?> dataType = particle.particle().getDataType();
         if (data != null && !particle.particle().getDataType().equals(Void.class)
-                && particle.particle().getDataType().isInstance(data)) {
+            && particle.particle().getDataType().isInstance(data)) {
             if (dataType.equals(Particle.DustOptions.class)) {
                 Particle.DustOptions options = (Particle.DustOptions) data;
                 buf.writeFloat(options.getColor().getRed() / 255.0F);

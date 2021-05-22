@@ -1,6 +1,8 @@
 package net.glowstone.net.handler.handshake;
 
 import com.flowpowered.network.MessageHandler;
+import java.net.InetSocketAddress;
+import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.ProxyData;
@@ -8,9 +10,6 @@ import net.glowstone.net.message.handshake.HandshakeMessage;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.StatusProtocol;
-
-import java.net.InetSocketAddress;
-import java.util.logging.Level;
 
 public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMessage> {
     private final StatusProtocol statusProtocol;
@@ -35,7 +34,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
         session.setVersion(message.getVersion());
         session.setVirtualHost(InetSocketAddress.createUnresolved(
-                message.getAddress(), message.getPort()));
+            message.getAddress(), message.getPort()));
 
         // Proxies modify the hostname in the HandshakeMessage to contain
         // the client's UUID and (optionally) properties
@@ -53,7 +52,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
             } catch (Exception ex) {
                 if (protocol == loginProtocol) {
                     GlowServer.logger.log(Level.SEVERE,
-                            "Error parsing proxy data for " + session, ex);
+                        "Error parsing proxy data for " + session, ex);
                     session.disconnect("Failed to parse proxy data.");
                 }
                 return; // silently ignore parse data in PING protocol

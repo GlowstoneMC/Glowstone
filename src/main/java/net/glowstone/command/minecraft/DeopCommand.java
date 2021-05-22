@@ -26,7 +26,7 @@ public class DeopCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages messages) {
+                           CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
@@ -40,17 +40,17 @@ public class DeopCommand extends GlowVanillaCommand {
         server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
             if (ex != null) {
                 new LocalizedStringImpl("deop.failed", messages.getResourceBundle())
-                        .sendInColor(ChatColor.RED, sender, name, ex.getMessage());
+                    .sendInColor(ChatColor.RED, sender, name, ex.getMessage());
                 ConsoleMessages.Error.Command.DEOP_FAILED.log(ex, name);
                 return;
             }
             if (player.isOp()) {
                 player.setOp(false);
                 new LocalizedStringImpl("deop.done", messages.getResourceBundle())
-                        .send(sender, name);
+                    .send(sender, name);
             } else {
                 new LocalizedStringImpl("deop.not-op", messages.getResourceBundle())
-                        .sendInColor(ChatColor.RED, sender, name);
+                    .sendInColor(ChatColor.RED, sender, name);
             }
         });
         // todo: asynchronous command callbacks?
@@ -59,14 +59,14 @@ public class DeopCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length == 1) {
             List<String> operators = new ArrayList<>();
             Bukkit.getOperators().stream().map(OfflinePlayer::getName)
-                    .filter(Objects::nonNull)
-                    .forEach(player -> operators.add(player));
+                .filter(Objects::nonNull)
+                .forEach(player -> operators.add(player));
             return StringUtil.copyPartialMatches(args[0], operators,
-                    new ArrayList<>(operators.size()));
+                new ArrayList<>(operators.size()));
         } else if (args.length > 1) {
             return Collections.emptyList();
         }

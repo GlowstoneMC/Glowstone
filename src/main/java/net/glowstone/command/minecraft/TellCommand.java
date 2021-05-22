@@ -27,7 +27,7 @@ public class TellCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -45,7 +45,7 @@ public class TellCommand extends GlowVanillaCommand {
             Entity[] matched = target.getMatched(location);
             if (matched.length == 0) {
                 commandMessages.getGeneric(GenericMessage.NO_MATCHES)
-                        .sendInColor(ChatColor.RED, sender, name);
+                    .sendInColor(ChatColor.RED, sender, name);
                 return false;
             }
             players = new Player[matched.length];
@@ -56,10 +56,10 @@ public class TellCommand extends GlowVanillaCommand {
             Player player = Bukkit.getPlayer(name);
             if (player == null) {
                 commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                        .sendInColor(ChatColor.RED, sender, name);
+                    .sendInColor(ChatColor.RED, sender, name);
                 return false;
             }
-            players = new Player[]{player};
+            players = new Player[] {player};
         }
         String senderName = CommandUtils.getName(sender);
         String message = StringUtils.join(args, ' ', 1, args.length);
@@ -68,11 +68,11 @@ public class TellCommand extends GlowVanillaCommand {
         for (Player player : players) {
             if (sender.equals(player)) {
                 new LocalizedStringImpl("tell.self", bundle)
-                        .sendInColor(ChatColor.RED, sender);
+                    .sendInColor(ChatColor.RED, sender);
                 continue;
             }
             new LocalizedStringImpl("tell.recipient", getBundle(player))
-                    .send(player, senderName, message);
+                .send(player, senderName, message);
             senderMessage.send(sender, senderName, player.getName(), message);
         }
         return true;

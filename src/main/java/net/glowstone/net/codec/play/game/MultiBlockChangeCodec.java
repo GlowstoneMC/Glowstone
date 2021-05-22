@@ -4,11 +4,10 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.net.message.play.game.BlockChangeMessage;
-import net.glowstone.net.message.play.game.MultiBlockChangeMessage;
-
 import java.io.IOException;
 import java.util.List;
+import net.glowstone.net.message.play.game.BlockChangeMessage;
+import net.glowstone.net.message.play.game.MultiBlockChangeMessage;
 
 public final class MultiBlockChangeCodec implements Codec<MultiBlockChangeMessage> {
 
@@ -28,7 +27,7 @@ public final class MultiBlockChangeCodec implements Codec<MultiBlockChangeMessag
         for (BlockChangeMessage record : records) {
             // XZY
             int pos = (record.getX() & 0xF) << 12
-                    | (record.getZ() & 0xF) << 8 | record.getY() & 0xFF;
+                | (record.getZ() & 0xF) << 8 | record.getY() & 0xFF;
             buf.writeShort(pos);
             ByteBufUtils.writeVarInt(buf, record.getType());
         }

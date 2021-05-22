@@ -29,6 +29,15 @@ import org.jetbrains.annotations.NotNull;
 public class BlockSkull extends BlockType {
 
     private static final ImmutableMap<SkullType, Material> SKULL_MATERIALS;
+    private static final BlockPattern WITHER_PATTERN = new BlockPattern(
+        new BlockPattern.PatternItem(WITHER_SKELETON_SKULL, (byte) 1, 0, 0),
+        new BlockPattern.PatternItem(WITHER_SKELETON_SKULL, (byte) 1, 1, 0),
+        new BlockPattern.PatternItem(WITHER_SKELETON_SKULL, (byte) 1, 2, 0),
+        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 0, 1),
+        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 1, 1),
+        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 2, 1),
+        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 1, 2)
+    );
 
     static {
         EnumMap<SkullType, Material> skullTypesBuilder = new EnumMap<>(SkullType.class);
@@ -41,22 +50,13 @@ public class BlockSkull extends BlockType {
         SKULL_MATERIALS = ImmutableMap.copyOf(skullTypesBuilder);
     }
 
-    private static final BlockPattern WITHER_PATTERN = new BlockPattern(
-        new BlockPattern.PatternItem(WITHER_SKELETON_SKULL, (byte) 1, 0, 0),
-        new BlockPattern.PatternItem(WITHER_SKELETON_SKULL, (byte) 1, 1, 0),
-        new BlockPattern.PatternItem(WITHER_SKELETON_SKULL, (byte) 1, 2, 0),
-        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 0, 1),
-        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 1, 1),
-        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 2, 1),
-        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 1, 2)
-    );
-
     public BlockSkull() {
         setDrops(new ItemStack(Material.SKELETON_SKULL));
     }
 
     /**
      * Returns the SkullType with the given ID.
+     *
      * @param id the ID to look up
      * @return the skull type
      */
@@ -82,7 +82,7 @@ public class BlockSkull extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (!(data instanceof Skull)) {
@@ -100,7 +100,7 @@ public class BlockSkull extends BlockType {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         GlowSkull skull = (GlowSkull) block.getState();
         skull.setSkullType(getType(holding.getDurability()));
         if (skull.getSkullType() == SkullType.PLAYER) {

@@ -14,7 +14,7 @@ public class BlockSponge extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         // TODO: Move this to a new method when physics works and run this on neighbour change too.
 
         MaterialData data = holding.getData();

@@ -33,7 +33,7 @@ public class ClearCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages messages) {
+                           CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
@@ -63,7 +63,7 @@ public class ClearCommand extends GlowVanillaCommand {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
                 messages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                        .sendInColor(ChatColor.RED, sender, name);
+                    .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 players.add(player);
@@ -71,7 +71,7 @@ public class ClearCommand extends GlowVanillaCommand {
         }
         if (players.size() == 0) {
             messages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                    .sendInColor(ChatColor.RED, sender, name);
+                .sendInColor(ChatColor.RED, sender, name);
             return false;
         }
         if (args.length >= 2) {
@@ -79,7 +79,7 @@ public class ClearCommand extends GlowVanillaCommand {
             Material type = ItemIds.getItem(itemName);
             if (type == null) {
                 new LocalizedStringImpl("clear.no-such-item", resourceBundle)
-                        .sendInColor(ChatColor.RED, sender, itemName);
+                    .sendInColor(ChatColor.RED, sender, itemName);
                 return false;
             }
             if (args.length >= 3) {
@@ -89,12 +89,12 @@ public class ClearCommand extends GlowVanillaCommand {
                     data = Integer.valueOf(dataString);
                 } catch (NumberFormatException ex) {
                     messages.getGeneric(GenericMessage.NAN)
-                            .sendInColor(ChatColor.RED, sender, dataString);
+                        .sendInColor(ChatColor.RED, sender, dataString);
                     return false;
                 }
                 if (data < -1) {
                     new LocalizedStringImpl("clear.negative", resourceBundle)
-                            .sendInColor(ChatColor.RED, sender, data);
+                        .sendInColor(ChatColor.RED, sender, data);
                     return false;
                 }
                 if (args.length >= 4) {
@@ -104,17 +104,17 @@ public class ClearCommand extends GlowVanillaCommand {
                         amount = Integer.valueOf(amountString);
                     } catch (NumberFormatException ex) {
                         messages.getGeneric(GenericMessage.NAN)
-                                .sendInColor(ChatColor.RED, sender, amountString);
+                            .sendInColor(ChatColor.RED, sender, amountString);
                         return false;
                     }
                     if (amount < -1) {
                         new LocalizedStringImpl("clear.negative", resourceBundle)
-                                .sendInColor(ChatColor.RED, sender, amount);
+                            .sendInColor(ChatColor.RED, sender, amount);
                         return false;
                     }
                     if (args.length >= 5) {
                         new LocalizedStringImpl("clear.tag-unsupported", resourceBundle)
-                                .sendInColor(ChatColor.RED, sender);
+                            .sendInColor(ChatColor.RED, sender);
                         return false;
                     } else {
                         boolean success = true;
@@ -181,16 +181,16 @@ public class ClearCommand extends GlowVanillaCommand {
     }
 
     private boolean clearAll(CommandSender sender, Player player, Material material, int data,
-            int maxCount, ResourceBundle resourceBundle) {
+                             int maxCount, ResourceBundle resourceBundle) {
         int count = countAllItems(player.getInventory(), material, data, maxCount);
         if (maxCount == 0) {
             new LocalizedStringImpl("clear.count", resourceBundle).send(
-                    sender, player.getName(), count);
+                sender, player.getName(), count);
             return true;
         }
         if (count == 0) {
             new LocalizedStringImpl("clear.empty", resourceBundle).send(
-                    sender, player.getName());
+                sender, player.getName());
             return false;
         }
         if (material == null) {
@@ -217,10 +217,10 @@ public class ClearCommand extends GlowVanillaCommand {
         }
         if (count == 1) {
             new LocalizedStringImpl("clear.done.singular", resourceBundle).send(
-                    sender, player.getName());
+                sender, player.getName());
         } else {
             new LocalizedStringImpl("clear.done", resourceBundle).send(
-                    sender, player.getName(), count);
+                sender, player.getName(), count);
         }
         return true;
     }

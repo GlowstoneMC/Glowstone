@@ -32,39 +32,13 @@ import org.jetbrains.annotations.Nullable;
 public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
 
     private static final int NETWORK_TYPE_ID =
-            EntityNetworkUtil.getObjectId(EntityType.AREA_EFFECT_CLOUD);
+        EntityNetworkUtil.getObjectId(EntityType.AREA_EFFECT_CLOUD);
 
     /**
      * Used to implement the reapplication delay. Note that this isn't serialized -- all
      * reapplication delays will effectively end when the chunk unloads.
      */
     private final Map<LivingEntity, Long> temporaryImmunities = new WeakHashMap<>();
-
-    @Override
-    public void pulse() {
-        super.pulse();
-        radius += radiusPerTick;
-        waitTime--;
-        duration--;
-        if (duration <= 0 || radius <= 0) {
-            remove();
-        }
-        if (waitTime <= 0) {
-            long currentTick = world.getFullTime();
-            for (Entity entity : world.getNearbyEntities(location, radius, radius, radius)) {
-                if (entity instanceof LivingEntity
-                        && temporaryImmunities.getOrDefault(entity, Long.MIN_VALUE) <= currentTick
-                        && location.distanceSquared(entity.getLocation()) < radius * radius) {
-                    customEffects.values().forEach(
-                        effect -> EntityUtils.applyPotionEffectWithIntensity(
-                                effect, (LivingEntity) entity, 0.5, 0.25));
-                    temporaryImmunities.put((LivingEntity) entity,
-                            currentTick + reapplicationDelay);
-                }
-            }
-        }
-    }
-
     private final Map<PotionEffectType, PotionEffect> customEffects = new ConcurrentHashMap<>();
     @Getter
     @Setter
@@ -99,7 +73,6 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
     @Getter
     @Setter
     private Color color;
-
     /**
      * Creates an entity and adds it to the specified world.
      *
@@ -107,6 +80,31 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
      */
     public GlowAreaEffectCloud(Location location) {
         super(location);
+    }
+
+    @Override
+    public void pulse() {
+        super.pulse();
+        radius += radiusPerTick;
+        waitTime--;
+        duration--;
+        if (duration <= 0 || radius <= 0) {
+            remove();
+        }
+        if (waitTime <= 0) {
+            long currentTick = world.getFullTime();
+            for (Entity entity : world.getNearbyEntities(location, radius, radius, radius)) {
+                if (entity instanceof LivingEntity
+                    && temporaryImmunities.getOrDefault(entity, Long.MIN_VALUE) <= currentTick
+                    && location.distanceSquared(entity.getLocation()) < radius * radius) {
+                    customEffects.values().forEach(
+                        effect -> EntityUtils.applyPotionEffectWithIntensity(
+                            effect, (LivingEntity) entity, 0.5, 0.25));
+                    temporaryImmunities.put((LivingEntity) entity,
+                        currentTick + reapplicationDelay);
+                }
+            }
+        }
     }
 
     @Override
@@ -118,8 +116,8 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
             metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_PARTICLE, new ParticleBuilder(particle));
         }
         return Arrays.asList(
-                new SpawnObjectMessage(entityId, getUniqueId(), NETWORK_TYPE_ID, location),
-                new EntityMetadataMessage(entityId, metadataMap.getEntryList()));
+            new SpawnObjectMessage(entityId, getUniqueId(), NETWORK_TYPE_ID, location),
+            new EntityMetadataMessage(entityId, metadataMap.getEntryList()));
     }
 
     @Override

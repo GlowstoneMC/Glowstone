@@ -1,5 +1,9 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
@@ -20,11 +24,6 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 public class BlockCauldron extends BlockNeedsTool {
 
     private static final byte LEVEL_EMPTY = 0;
@@ -35,7 +34,7 @@ public class BlockCauldron extends BlockNeedsTool {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         switch (player.getItemInHand().getType()) {
             case WATER_BUCKET:
                 emptyBucket(player, block);
@@ -76,7 +75,7 @@ public class BlockCauldron extends BlockNeedsTool {
             return;
         }
         if (!setCauldronLevel(block, LEVEL_FULL, player,
-                CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY)) {
+            CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY)) {
             return;
         }
         if (player.getGameMode() != GameMode.CREATIVE) {
@@ -91,7 +90,7 @@ public class BlockCauldron extends BlockNeedsTool {
             return;
         }
         if (!setCauldronLevel(block, LEVEL_EMPTY, player,
-                CauldronLevelChangeEvent.ChangeReason.BUCKET_FILL)) {
+            CauldronLevelChangeEvent.ChangeReason.BUCKET_FILL)) {
             return;
         }
         if (player.getGameMode() != GameMode.CREATIVE) {
@@ -99,10 +98,11 @@ public class BlockCauldron extends BlockNeedsTool {
                 player.getItemInHand().setType(Material.WATER_BUCKET);
             } else {  // player has at least 2 empty buckets
                 Map<Integer, ItemStack> drops = player.getInventory()
-                        .addItem(new ItemStack(Material.WATER_BUCKET));
+                    .addItem(new ItemStack(Material.WATER_BUCKET));
                 if (!drops.isEmpty()) {
                     player.getWorld()
-                            .dropItemNaturally(player.getLocation(), new ItemStack(Material.WATER_BUCKET));
+                        .dropItemNaturally(player.getLocation(),
+                            new ItemStack(Material.WATER_BUCKET));
                 }
                 player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
             }
@@ -116,7 +116,7 @@ public class BlockCauldron extends BlockNeedsTool {
             return;
         }
         if (!setCauldronLevel(block, block.getData() - 1, player,
-                CauldronLevelChangeEvent.ChangeReason.BOTTLE_FILL)) {
+            CauldronLevelChangeEvent.ChangeReason.BOTTLE_FILL)) {
             return;
         }
         if (player.getGameMode() != GameMode.CREATIVE) {
@@ -124,10 +124,10 @@ public class BlockCauldron extends BlockNeedsTool {
                 player.getItemInHand().setType(Material.POTION);
             } else {  // player has at least 2 glass bottles
                 Map<Integer, ItemStack> drops = player.getInventory()
-                        .addItem(new ItemStack(Material.POTION));
+                    .addItem(new ItemStack(Material.POTION));
                 if (!drops.isEmpty()) {
                     player.getWorld()
-                            .dropItemNaturally(player.getLocation(), new ItemStack(Material.POTION));
+                        .dropItemNaturally(player.getLocation(), new ItemStack(Material.POTION));
                 }
                 player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
             }
@@ -137,7 +137,8 @@ public class BlockCauldron extends BlockNeedsTool {
 
     private boolean emptyBottle(GlowPlayer player, GlowBlock block) {
         // fired when a player partially fills the cauldron using a water bottle
-        if (new GlowMetaPotion(player.getItemInHand().getItemMeta()).getBasePotionData().getType() != PotionType.WATER) {
+        if (new GlowMetaPotion(player.getItemInHand().getItemMeta()).getBasePotionData()
+            .getType() != PotionType.WATER) {
             // player is holding a "potion" and not an "empty bottle"
             return false; // block interact doesn't occur and player drinks potion
         }
@@ -145,7 +146,7 @@ public class BlockCauldron extends BlockNeedsTool {
             return true;
         }
         if (!setCauldronLevel(block, block.getData() + 1, player,
-                CauldronLevelChangeEvent.ChangeReason.BOTTLE_EMPTY)) {
+            CauldronLevelChangeEvent.ChangeReason.BOTTLE_EMPTY)) {
             return true;
         }
         if (player.getGameMode() != GameMode.CREATIVE) {
@@ -168,7 +169,7 @@ public class BlockCauldron extends BlockNeedsTool {
                 return false;
             }
             if (!setCauldronLevel(block, block.getData() - 1, player,
-                    CauldronLevelChangeEvent.ChangeReason.BANNER_WASH)) {
+                CauldronLevelChangeEvent.ChangeReason.BANNER_WASH)) {
                 return false;
             }
             meta.setPatterns(layers);
@@ -183,7 +184,7 @@ public class BlockCauldron extends BlockNeedsTool {
         // fired when a player bleaches a leather armor piece using the cauldron
         if (block.getData() > LEVEL_EMPTY) {
             if (!setCauldronLevel(block, block.getData() - 1, player,
-                    CauldronLevelChangeEvent.ChangeReason.ARMOR_WASH)) {
+                CauldronLevelChangeEvent.ChangeReason.ARMOR_WASH)) {
                 return false;
             }
             ItemStack inHand = player.getItemInHand();
@@ -200,7 +201,7 @@ public class BlockCauldron extends BlockNeedsTool {
                                      CauldronLevelChangeEvent.ChangeReason reason) {
         int oldLevel = (int) block.getData();
         CauldronLevelChangeEvent event = EventFactory.getInstance().callEvent(
-                new CauldronLevelChangeEvent(block, entity, reason, oldLevel, newLevel));
+            new CauldronLevelChangeEvent(block, entity, reason, oldLevel, newLevel));
         if (!event.isCancelled()) {
             block.setData((byte) event.getNewLevel());
         }

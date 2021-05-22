@@ -1,9 +1,8 @@
 package net.glowstone.block.state;
 
+import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
-
-import java.util.Set;
 
 public abstract class BlockStateReader<T extends MaterialData> {
 

@@ -45,7 +45,7 @@ public class GlowFireball extends GlowProjectile implements Fireball {
     private void explode() {
         ProjectileSource source = getShooter();
         world.createExplosion(source instanceof Entity ? (Entity) source : this,
-                location.getX(), location.getY(), location.getZ(), yield, incendiary, true);
+            location.getX(), location.getY(), location.getZ(), yield, incendiary, true);
         remove();
     }
 
@@ -61,13 +61,13 @@ public class GlowFireball extends GlowProjectile implements Fireball {
     }
 
     @Override
-    public void setDirection(Vector vector) {
-        setVelocity(vector.normalize().multiply(velocity.length()));
+    public Vector getDirection() {
+        return velocity.normalize();
     }
 
     @Override
-    public Vector getDirection() {
-        return velocity.normalize();
+    public void setDirection(Vector vector) {
+        setVelocity(vector.normalize().multiply(velocity.length()));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package net.glowstone.io.entity;
 
+import java.util.stream.Collectors;
 import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowTippedArrow;
 import net.glowstone.inventory.GlowMetaPotion;
@@ -8,8 +9,6 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.potion.PotionData;
-
-import java.util.stream.Collectors;
 
 public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
     private static final String COLOR = "Color";
@@ -29,7 +28,7 @@ public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
                 tag.putString(POTION, GlowMetaPotion.dataToString(potion));
             }
             tag.putCompoundList(CUSTOM_POTION_EFFECTS,
-                    ((TippedArrow) entity).getCustomEffects()
+                ((TippedArrow) entity).getCustomEffects()
                     .stream()
                     .map(GlowMetaPotion::toNbt)
                     .collect(Collectors.toList()));
@@ -44,9 +43,9 @@ public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
             tag.readInt(COLOR, rgb -> tippedArrow.setColor(Color.fromRGB(rgb)));
             // TODO: POTION
             tag.readCompoundList(CUSTOM_POTION_EFFECTS, list -> list
-                    .stream()
-                    .map(GlowMetaPotion::fromNbt)
-                    .forEach(effect -> tippedArrow.addCustomEffect(effect, false)));
+                .stream()
+                .map(GlowMetaPotion::fromNbt)
+                .forEach(effect -> tippedArrow.addCustomEffect(effect, false)));
         }
     }
 

@@ -25,13 +25,15 @@ public class BlockBeacon extends BlockDirectDrops {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         state.getBlock().getWorld().requestPulse(state.getBlock());
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+                                 Vector clickedLoc) {
         GlowBeacon beacon = (GlowBeacon) block.getState();
         player.openInventory(beacon.getInventory());
         player.incrementStatistic(Statistic.BEACON_INTERACTION);

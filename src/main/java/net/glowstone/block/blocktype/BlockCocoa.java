@@ -22,7 +22,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         state.setType(getMaterial());
         MaterialData data = state.getData();
         if (data instanceof CocoaPlant) {
@@ -43,7 +43,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         BlockFace face = against.getOppositeFace();
         return Arrays.asList(SIDES).contains(face)
-                && block.getRelative(face).getType() == Material.JUNGLE_LOG;
+            && block.getRelative(face).getType() == Material.JUNGLE_LOG;
     }
 
     @NotNull

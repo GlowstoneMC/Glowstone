@@ -23,7 +23,7 @@ public class SetWorldSpawnCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -35,10 +35,10 @@ public class SetWorldSpawnCommand extends GlowVanillaCommand {
         if (args.length == 0) { // Get the player current location
             if (CommandUtils.isPhysical(sender)) {
                 spawnLocation = sender instanceof Entity ? ((Entity) sender).getLocation()
-                        : ((BlockCommandSender) sender).getBlock().getLocation();
+                    : ((BlockCommandSender) sender).getBlock().getLocation();
             } else {
                 commandMessages.getGeneric(GenericMessage.NOT_PHYSICAL_COORDS)
-                        .sendInColor(ChatColor.RED, sender);
+                    .sendInColor(ChatColor.RED, sender);
                 return false;
             }
         } else if (args.length >= 3) { // manage arguments
@@ -48,11 +48,11 @@ public class SetWorldSpawnCommand extends GlowVanillaCommand {
             if (args[0].startsWith("~") || args[1].startsWith("~") || args[2].startsWith("~")) {
                 if (!CommandUtils.isPhysical(sender)) {
                     commandMessages.getGeneric(GenericMessage.NOT_PHYSICAL_COORDS)
-                            .sendInColor(ChatColor.RED, sender);
+                        .sendInColor(ChatColor.RED, sender);
                     return false;
                 } else {
                     senderLocation = sender instanceof Entity ? ((Entity) sender).getLocation()
-                            : ((BlockCommandSender) sender).getBlock().getLocation();
+                        : ((BlockCommandSender) sender).getBlock().getLocation();
                 }
             } else { // Otherwise, the current location can be set to 0/0/0 (since it's absolute)
                 senderLocation = new Location(world, 0, 0, 0);
@@ -70,22 +70,22 @@ public class SetWorldSpawnCommand extends GlowVanillaCommand {
             return false;
         } else if (newY > world.getMaxHeight()) {
             commandMessages.getGeneric(GenericMessage.TOO_HIGH)
-                    .sendInColor(ChatColor.RED, sender, world.getMaxHeight());
+                .sendInColor(ChatColor.RED, sender, world.getMaxHeight());
             return false;
         }
 
         int newX = spawnLocation.getBlockX();
         int newZ = spawnLocation.getBlockZ();
         world.setSpawnLocation(newX, newY,
-                newZ);
+            newZ);
         new LocalizedStringImpl("setworldspawn.done", commandMessages.getResourceBundle())
-                .send(sender, newX, newY, newZ);
+            .send(sender, newX, newY, newZ);
         return true;
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         return Collections.emptyList();
     }
 }

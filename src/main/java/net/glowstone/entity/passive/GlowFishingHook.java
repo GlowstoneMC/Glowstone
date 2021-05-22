@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -45,48 +44,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class GlowFishingHook extends GlowProjectile implements FishHook {
     public static final Message[] EMPTY_MESSAGE_ARRAY = new Message[0];
-
-    @Getter
-    @Setter
-    private int minWaitTime;
-    @Getter
-    @Setter
-    private int maxWaitTime;
-    @Setter
-    private boolean applyLure;
-
-    @Override
-    public void setShooter(ProjectileSource shooter) {
-        ProjectileSource oldShooter = getShooter();
-        if (oldShooter == shooter) {
-            return;
-        }
-        // Shooter is immutable client-side (a situation peculiar to fishing hooks), so if it
-        // changes then all clients who can see this fishing hook must be told that this hook has
-        // despawned and a new one has spawned.
-        super.setShooter(shooter);
-        World world = location.getWorld();
-        if (world instanceof GlowWorld) {
-            List<Message> respawnMessages = new LinkedList<>();
-            DestroyEntitiesMessage destroyOldCopy = new DestroyEntitiesMessage(
-                    Collections.singletonList(getObjectId()));
-            respawnMessages.add(destroyOldCopy);
-            respawnMessages.addAll(createSpawnMessage(getShooterId()));
-            ((GlowWorld) world).getRawPlayers()
-                    .stream()
-                    .filter(player -> !Objects.equal(player, shooter))
-                    .filter(player -> player.canSeeEntity(this))
-                    .forEach(player -> player.getSession().sendAll(
-                            respawnMessages.toArray(EMPTY_MESSAGE_ARRAY)));
-            if (shooter instanceof GlowPlayer) {
-                GlowSession session = ((GlowPlayer) shooter).getSession();
-                session.send(destroyOldCopy);
-                session.sendAll(
-                        createSpawnMessage(getEntityId()).toArray(EMPTY_MESSAGE_ARRAY));
-            }
-        }
-    }
-
     /**
      * The minimum time, in seconds, to make the player wait for a bite when using an unenchanted
      * fishing pole.
@@ -105,16 +62,23 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
      * clicked.
      */
     private static final int CLICK_TIMEOUT_TICKS = 10;
+    private final ItemStack itemStack;
+    @Getter
+    @Setter
+    private int minWaitTime;
+    @Getter
+    @Setter
+    private int maxWaitTime;
+    @Setter
+    private boolean applyLure;
     private int lived;
     private int lifeTime;
-    private final ItemStack itemStack;
-
     /**
      * Creates a fishing bob.
      *
-     * @param location the location
+     * @param location  the location
      * @param itemStack the fishing rod (used to handle enchantments) or null (equivalent to
-     * @param angler the player who is casting this fish hook (must be set at spawn time)
+     * @param angler    the player who is casting this fish hook (must be set at spawn time)
      */
     public GlowFishingHook(Location location, ItemStack itemStack, Player angler) {
         super(location);
@@ -127,6 +91,48 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         Vector direction = location.getDirection();
         setVelocity(direction.multiply(1.5));
         super.setShooter(angler);
+    }
+
+    /**
+     * Adds a random set of enchantments, which may include treasure enchantments, to an item.
+     *
+     * @param reward       the item to enchant
+     * @param enchantLevel the level of enchantment to use
+     */
+    private static void enchant(ItemStack reward, int enchantLevel) {
+        // TODO
+    }
+
+    @Override
+    public void setShooter(ProjectileSource shooter) {
+        ProjectileSource oldShooter = getShooter();
+        if (oldShooter == shooter) {
+            return;
+        }
+        // Shooter is immutable client-side (a situation peculiar to fishing hooks), so if it
+        // changes then all clients who can see this fishing hook must be told that this hook has
+        // despawned and a new one has spawned.
+        super.setShooter(shooter);
+        World world = location.getWorld();
+        if (world instanceof GlowWorld) {
+            List<Message> respawnMessages = new LinkedList<>();
+            DestroyEntitiesMessage destroyOldCopy = new DestroyEntitiesMessage(
+                Collections.singletonList(getObjectId()));
+            respawnMessages.add(destroyOldCopy);
+            respawnMessages.addAll(createSpawnMessage(getShooterId()));
+            ((GlowWorld) world).getRawPlayers()
+                .stream()
+                .filter(player -> !Objects.equal(player, shooter))
+                .filter(player -> player.canSeeEntity(this))
+                .forEach(player -> player.getSession().sendAll(
+                    respawnMessages.toArray(EMPTY_MESSAGE_ARRAY)));
+            if (shooter instanceof GlowPlayer) {
+                GlowSession session = ((GlowPlayer) shooter).getSession();
+                session.send(destroyOldCopy);
+                session.sendAll(
+                    createSpawnMessage(getEntityId()).toArray(EMPTY_MESSAGE_ARRAY));
+            }
+        }
     }
 
     private int calculateLifeTime() {
@@ -162,14 +168,14 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         int intHeadYaw = Position.getIntHeadYaw(location.getYaw());
 
         spawnMessage.set(0, new SpawnObjectMessage(getEntityId(), getUniqueId(),
-                EntityNetworkUtil.getObjectId(EntityType.FISHING_HOOK),
-                x, y, z, intPitch, intHeadYaw, shooterId, velocity));
+            EntityNetworkUtil.getObjectId(EntityType.FISHING_HOOK),
+            x, y, z, intPitch, intHeadYaw, shooterId, velocity));
         return spawnMessage;
     }
 
     private int getShooterId() {
         return getShooter() instanceof Entity ? ((Entity) getShooter()).getEntityId()
-                : ENTITY_ID_NOBODY;
+            : ENTITY_ID_NOBODY;
     }
 
     @Override
@@ -213,12 +219,12 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
     public Entity getHookedEntity() {
         return world.getEntityManager().getEntity(
-                metadata.getInt(MetadataIndex.FISHING_HOOK_HOOKED_ENTITY) - 1);
+            metadata.getInt(MetadataIndex.FISHING_HOOK_HOOKED_ENTITY) - 1);
     }
 
     public void setHookedEntity(Entity entity) {
         metadata.set(MetadataIndex.FISHING_HOOK_HOOKED_ENTITY,
-                entity == null ? 0 : entity.getEntityId() + 1);
+            entity == null ? 0 : entity.getEntityId() + 1);
     }
 
     @Override
@@ -278,7 +284,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
             ProjectileSource shooter = getShooter();
             if (shooter instanceof Player) {
                 PlayerFishEvent fishEvent
-                        = new PlayerFishEvent((Player) shooter, this, null, CAUGHT_FISH);
+                    = new PlayerFishEvent((Player) shooter, this, null, CAUGHT_FISH);
                 fishEvent.setExpToDrop(ThreadLocalRandom.current().nextInt(1, 7));
                 fishEvent = EventFactory.getInstance().callEvent(fishEvent);
                 if (!fishEvent.isCancelled()) {
@@ -296,11 +302,11 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         int level = getEnchantmentLevel(Enchantment.LUCK);
 
         if (rewardCategory == null || world.getServer().getFishingRewardManager()
-                .getCategoryItems(rewardCategory).isEmpty()) {
+            .getCategoryItems(rewardCategory).isEmpty()) {
             return InventoryUtil.createEmptyStack();
         }
         double rewardCategoryChance = rewardCategory.getChance()
-                + rewardCategory.getModifier() * level;
+            + rewardCategory.getModifier() * level;
         double random;
         // This loop is needed because rounding errors make the probabilities add up to less than
         // 100%. It will rarely iterate more than once.
@@ -308,8 +314,8 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
             random = ThreadLocalRandom.current().nextDouble(100);
 
             for (RewardItem rewardItem
-                    : world.getServer().getFishingRewardManager()
-                    .getCategoryItems(rewardCategory)) {
+                : world.getServer().getFishingRewardManager()
+                .getCategoryItems(rewardCategory)) {
                 random -= rewardItem.getChance() * rewardCategoryChance / 100.0;
                 if (random < 0) {
                     ItemStack reward = rewardItem.getItem().clone();
@@ -317,7 +323,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
                     int maxEnchantLevel = rewardItem.getMaxEnchantmentLevel();
                     if (maxEnchantLevel > enchantLevel) {
                         enchantLevel = ThreadLocalRandom.current().nextInt(
-                                enchantLevel, maxEnchantLevel + 1);
+                            enchantLevel, maxEnchantLevel + 1);
                     }
                     if (enchantLevel > 0) {
                         enchant(reward, enchantLevel);
@@ -330,20 +336,10 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         return InventoryUtil.createEmptyStack();
     }
 
-    /**
-     * Adds a random set of enchantments, which may include treasure enchantments, to an item.
-     *
-     * @param reward the item to enchant
-     * @param enchantLevel the level of enchantment to use
-     */
-    private static void enchant(ItemStack reward, int enchantLevel) {
-        // TODO
-    }
-
     private int getEnchantmentLevel(Enchantment enchantment) {
         return !InventoryUtil.isEmpty(itemStack) && itemStack.getType() == Material.FISHING_ROD
-                ? itemStack.getEnchantmentLevel(enchantment)
-                : 0;
+            ? itemStack.getEnchantmentLevel(enchantment)
+            : 0;
     }
 
     private RewardCategory getRewardCategory() {

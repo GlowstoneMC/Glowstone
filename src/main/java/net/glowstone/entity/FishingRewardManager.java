@@ -26,15 +26,15 @@ import org.jetbrains.annotations.NonNls;
 public class FishingRewardManager {
 
     private final Multimap<RewardCategory, RewardItem> values = MultimapBuilder
-            .enumKeys(RewardCategory.class).arrayListValues().build();
+        .enumKeys(RewardCategory.class).arrayListValues().build();
 
     /**
      * Creates the instance.
      */
     public FishingRewardManager() {
         YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(
-                new InputStreamReader(getClass().getClassLoader()
-                        .getResourceAsStream("builtin/fishingRewards.yml")));
+            new InputStreamReader(getClass().getClassLoader()
+                .getResourceAsStream("builtin/fishingRewards.yml")));
 
         registerBuiltins(builtinValues);
     }
@@ -42,7 +42,7 @@ public class FishingRewardManager {
     @SuppressWarnings("unchecked")
     private void registerBuiltins(ConfigurationSection mainSection) {
         ConfigurationSection valuesSection
-                = mainSection.getConfigurationSection("rewards"); // NON-NLS
+            = mainSection.getConfigurationSection("rewards"); // NON-NLS
         if (valuesSection == null) {
             ConsoleMessages.Warn.Fishing.REWARDS_INVALID.log();
             return;
@@ -111,18 +111,11 @@ public class FishingRewardManager {
          */
         private int maxEnchantmentLevel;
 
-        private RewardItem() {}
-
-        @Override
-        public Map<String, Object> serialize() {
-            @NonNls Map<String, Object> args = new HashMap<>();
-            args.put("item", item.serialize());
-            args.put("chance", chance);
-            return args;
+        private RewardItem() {
         }
 
         private static int getAsIntOrDefault(
-                Map<String, ?> args, @NonNls String key, int defaultValue) {
+            Map<String, ?> args, @NonNls String key, int defaultValue) {
             Object value = args.get(key);
             if (value == null) {
                 return defaultValue;
@@ -159,12 +152,20 @@ public class FishingRewardManager {
 
             if (itemYaml.containsKey("enchantment_level_min")) {
                 result.minEnchantmentLevel = getAsIntOrDefault(
-                        itemYaml, "enchantment_level_min", 0);
+                    itemYaml, "enchantment_level_min", 0);
                 result.maxEnchantmentLevel = getAsIntOrDefault(
-                        itemYaml, "enchantment_level_max", result.minEnchantmentLevel);
+                    itemYaml, "enchantment_level_max", result.minEnchantmentLevel);
             }
 
             return result;
+        }
+
+        @Override
+        public Map<String, Object> serialize() {
+            @NonNls Map<String, Object> args = new HashMap<>();
+            args.put("item", item.serialize());
+            args.put("chance", chance);
+            return args;
         }
     }
 }

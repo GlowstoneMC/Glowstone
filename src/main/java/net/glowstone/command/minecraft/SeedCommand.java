@@ -13,12 +13,12 @@ public class SeedCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         new LocalizedStringImpl("seed.output", commandMessages.getResourceBundle())
-                .send(sender, CommandUtils.getWorld(sender).getSeed());
+            .send(sender, CommandUtils.getWorld(sender).getSeed());
         return true;
     }
 }

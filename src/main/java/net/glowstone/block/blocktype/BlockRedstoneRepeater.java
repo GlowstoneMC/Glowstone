@@ -19,7 +19,7 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         Diode diode = (Diode) block.getState().getData();
         diode.setDelay(diode.getDelay() == 4 ? 1 : diode.getDelay() + 1);
         block.setData(diode.getData());
@@ -28,19 +28,19 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
-        Material oldType, byte oldData, Material newType, byte newData) {
+                                   Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof Diode) {
@@ -106,10 +106,12 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
             && ((Diode) target.getState().getData()).getFacing() == diode.getFacing();
 
         if (!powered && block.getType() == Material.REPEATER) {
-            block.setTypeIdAndData(Material.REPEATER.getId(), block.getData(), true); // TODO: repeater off data
+            block.setTypeIdAndData(Material.REPEATER.getId(), block.getData(),
+                true); // TODO: repeater off data
             extraUpdate(block);
         } else if (powered && block.getType() == Material.REPEATER) { // TODO: repeater off data
-            block.setTypeIdAndData(Material.REPEATER.getId(), block.getData(), true); // TODO: repeater on data
+            block.setTypeIdAndData(Material.REPEATER.getId(), block.getData(),
+                true); // TODO: repeater on data
             extraUpdate(block);
         }
     }

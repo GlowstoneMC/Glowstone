@@ -31,7 +31,7 @@ public class SetBlockCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -43,12 +43,12 @@ public class SetBlockCommand extends GlowVanillaCommand {
         Material type = ItemIds.getBlock(itemName);
         if (type == null) {
             new LocalizedStringImpl("setblock.invalid.type",
-                    commandMessages.getResourceBundle())
-                    .sendInColor(ChatColor.RED, sender, itemName);
+                commandMessages.getResourceBundle())
+                .sendInColor(ChatColor.RED, sender, itemName);
             return false;
         }
         Location location = CommandUtils
-                .getLocation(CommandUtils.getLocation(sender), args[0], args[1], args[2]);
+            .getLocation(CommandUtils.getLocation(sender), args[0], args[1], args[2]);
         GlowBlock block = (GlowBlock) location.getBlock();
         byte dataValue = 0;
         if (args.length > 4) {
@@ -71,7 +71,7 @@ public class SetBlockCommand extends GlowVanillaCommand {
         block.setType(type, dataValue, true);
         if (args.length > 5 && block.getBlockEntity() != null) {
             String dataTag = String
-                    .join(" ", new ArrayList<>(Arrays.asList(args)).subList(5, args.length));
+                .join(" ", new ArrayList<>(Arrays.asList(args)).subList(5, args.length));
             try {
                 CompoundTag prev = new CompoundTag();
                 block.getBlockEntity().saveNbt(prev);
@@ -80,18 +80,18 @@ public class SetBlockCommand extends GlowVanillaCommand {
                 block.getBlockEntity().loadNbt(prev);
             } catch (MojangsonParseException e) {
                 commandMessages.getGeneric(GenericMessage.INVALID_JSON)
-                        .sendInColor(ChatColor.RED, sender, e.getMessage());
+                    .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
         }
         new LocalizedStringImpl("setblock.done", commandMessages.getResourceBundle())
-                .send(sender);
+            .send(sender);
         return true;
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length == 4) {
             return ItemIds.getTabCompletion(args[3]);
         }

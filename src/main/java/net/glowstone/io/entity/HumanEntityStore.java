@@ -1,5 +1,6 @@
 package net.glowstone.io.entity;
 
+import java.util.List;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
 import net.glowstone.entity.GlowHumanEntity;
@@ -10,8 +11,6 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
-
-import java.util.List;
 
 abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityStore<T> {
 

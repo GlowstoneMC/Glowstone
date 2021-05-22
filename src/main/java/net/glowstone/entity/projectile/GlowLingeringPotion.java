@@ -29,7 +29,7 @@ public class GlowLingeringPotion extends GlowSplashPotion implements LingeringPo
 
     private void createEffectCloud() {
         AreaEffectCloud cloud = (AreaEffectCloud)
-                location.getWorld().spawnEntity(location, EntityType.AREA_EFFECT_CLOUD);
+            location.getWorld().spawnEntity(location, EntityType.AREA_EFFECT_CLOUD);
         cloud.setRadius(3);
         cloud.setRadiusPerTick(-.005f);
         ItemMeta meta = getItem().getItemMeta();

@@ -32,7 +32,7 @@ public class BlockSnow extends BlockNeedsAttached {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         // note: does not emulate certain weird broken Vanilla behaviors,
         // such as placing snow an extra block away from where it should
 
@@ -43,7 +43,7 @@ public class BlockSnow extends BlockNeedsAttached {
             if (data < 6) {
                 state.setRawData((byte) (data + 1));
 
-            // set to snow block if high enough
+                // set to snow block if high enough
             } else {
                 state.setType(Material.SNOW_BLOCK);
             }

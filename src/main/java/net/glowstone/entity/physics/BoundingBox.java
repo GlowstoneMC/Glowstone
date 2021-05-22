@@ -11,16 +11,8 @@ public class BoundingBox implements Cloneable {
     public final Vector maxCorner = new Vector();
 
     /**
-     * Tests whether this intersects another bounding box.
-     * @param other another bounding box
-     * @return true if this bounding box and {@code other} intersect; false otherwise
-     */
-    public final boolean intersects(BoundingBox other) {
-        return intersects(this, other);
-    }
-
-    /**
      * Tests whether two bounding boxes intersect.
+     *
      * @param a a bounding box
      * @param b a bounding box
      * @return true if {@code a} and {@code b} intersect; false otherwise
@@ -37,6 +29,7 @@ public class BoundingBox implements Cloneable {
 
     /**
      * Converts two Vector instances to a BoundingBox.
+     *
      * @param a any corner
      * @param b the corner opposite {@code a}
      * @return a bounding box from {@code a} to {@code b}
@@ -54,7 +47,8 @@ public class BoundingBox implements Cloneable {
 
     /**
      * Creates a bounding box given its minimum corner and its size.
-     * @param pos the minimum corner
+     *
+     * @param pos  the minimum corner
      * @param size the displacement of the maximum corner from the minimum corner
      * @return a bounding box from {@code pos} to {@code pos.clone().add(size)}
      */
@@ -67,6 +61,7 @@ public class BoundingBox implements Cloneable {
 
     /**
      * Returns a deep copy of a BoundingBox.
+     *
      * @param original the BoundingBox to copy
      * @return a copy of {@code original}
      */
@@ -78,7 +73,18 @@ public class BoundingBox implements Cloneable {
     }
 
     /**
+     * Tests whether this intersects another bounding box.
+     *
+     * @param other another bounding box
+     * @return true if this bounding box and {@code other} intersect; false otherwise
+     */
+    public final boolean intersects(BoundingBox other) {
+        return intersects(this, other);
+    }
+
+    /**
      * Returns the displacement of the maximum corner from the minimum corner.
+     *
      * @return the displacement of the maximum corner from the minimum corner
      */
     public Vector getSize() {

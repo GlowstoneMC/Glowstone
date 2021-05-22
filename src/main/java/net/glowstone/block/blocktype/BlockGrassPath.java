@@ -12,7 +12,7 @@ public class BlockGrassPath extends BlockDirectDrops {
 
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
-        Material oldType, byte oldData, Material newType, byte newData) {
+                                   Material oldType, byte oldData, Material newType, byte newData) {
         if (face == BlockFace.UP && newType.isSolid()) {
             block.setType(Material.DIRT);
         }

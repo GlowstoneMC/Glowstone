@@ -64,7 +64,7 @@ public class GlowLightningStrike extends GlowEntity implements LightningStrike {
      * Creates a lightning strike.
      *
      * @param location the location to strike
-     * @param effect true if this lightning strike doesn't damage entities or start fires
+     * @param effect   true if this lightning strike doesn't damage entities or start fires
      * @param isSilent true to suppress the sound effect
      */
     public GlowLightningStrike(Location location, boolean effect, boolean isSilent) {

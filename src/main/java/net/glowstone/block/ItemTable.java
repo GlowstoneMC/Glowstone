@@ -1,6 +1,5 @@
 package net.glowstone.block;
 
-import com.destroystokyo.paper.MaterialSetTag;
 import com.google.common.collect.Sets;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -223,7 +222,8 @@ public final class ItemTable {
         reg(Material.RED_SANDSTONE, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.SANDSTONE, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.NETHER_BRICK, new BlockDirectDrops(ToolType.PICKAXE));
-        reg(Material.NETHER_BRICK_FENCE, new BlockFence(Material.NETHER_BRICK_FENCE, ToolType.PICKAXE));
+        reg(Material.NETHER_BRICK_FENCE,
+            new BlockFence(Material.NETHER_BRICK_FENCE, ToolType.PICKAXE));
         regAll(MaterialUtil.WOODEN_FENCES, BlockFence::new);
         reg(Material.NETHERRACK, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.IRON_BARS, new BlockDirectDrops(ToolType.PICKAXE)); // TODO: Convert
@@ -245,7 +245,8 @@ public final class ItemTable {
         reg(Material.DIAMOND_BLOCK, new BlockDirectDrops(ToolType.IRON_PICKAXE));
         reg(Material.EMERALD_ORE, new BlockOre(Material.EMERALD, ToolType.IRON_PICKAXE));
         reg(Material.EMERALD_BLOCK, new BlockDirectDrops(ToolType.PICKAXE));
-        reg(Material.LAPIS_ORE, new BlockOre(Material.LAPIS_LAZULI, ToolType.STONE_PICKAXE, 4, 4, 8));
+        reg(Material.LAPIS_ORE,
+            new BlockOre(Material.LAPIS_LAZULI, ToolType.STONE_PICKAXE, 4, 4, 8));
         reg(Material.LAPIS_BLOCK, new BlockDirectDrops(ToolType.STONE_PICKAXE));
         reg(Material.NETHER_QUARTZ_ORE, new BlockOre(Material.QUARTZ, ToolType.PICKAXE));
         reg(Material.REDSTONE_ORE, new BlockRedstoneOre());
@@ -290,9 +291,12 @@ public final class ItemTable {
         regAll(MaterialUtil.STANDING_HEADS, new BlockSkull());
         regAll(MaterialUtil.WALL_HEADS, new BlockSkull());
         reg(Material.TORCH, new BlockTorch());
-        reg(Material.LIGHT_WEIGHTED_PRESSURE_PLATE, new BlockDirectDrops(Material.LIGHT_WEIGHTED_PRESSURE_PLATE, ToolType.PICKAXE));
-        reg(Material.HEAVY_WEIGHTED_PRESSURE_PLATE, new BlockDirectDrops(Material.HEAVY_WEIGHTED_PRESSURE_PLATE, ToolType.PICKAXE));
-        reg(Material.STONE_PRESSURE_PLATE, new BlockDirectDrops(Material.STONE_PRESSURE_PLATE, ToolType.PICKAXE));
+        reg(Material.LIGHT_WEIGHTED_PRESSURE_PLATE,
+            new BlockDirectDrops(Material.LIGHT_WEIGHTED_PRESSURE_PLATE, ToolType.PICKAXE));
+        reg(Material.HEAVY_WEIGHTED_PRESSURE_PLATE,
+            new BlockDirectDrops(Material.HEAVY_WEIGHTED_PRESSURE_PLATE, ToolType.PICKAXE));
+        reg(Material.STONE_PRESSURE_PLATE,
+            new BlockDirectDrops(Material.STONE_PRESSURE_PLATE, ToolType.PICKAXE));
         reg(Material.DAYLIGHT_DETECTOR, new BlockDaylightDetector());
         regAll(MaterialUtil.OVERWORLD_FLOWERS, new BlockNeedsAttached());
         reg(Material.BROWN_MUSHROOM, new BlockMushroom(Material.BROWN_MUSHROOM));
@@ -322,9 +326,9 @@ public final class ItemTable {
         reg(Material.REPEATER, new BlockRedstoneRepeater());
         reg(Material.MAGMA_BLOCK, new BlockMagma());
         reg(Material.NETHER_WART_BLOCK, new BlockDirectDrops(Material.NETHER_WART_BLOCK, ToolType
-                .AXE));
+            .AXE));
         reg(Material.RED_NETHER_BRICKS, new BlockDirectDrops(Material.RED_NETHER_BRICKS, ToolType
-                .PICKAXE));
+            .PICKAXE));
         reg(Material.BONE_BLOCK, new BlockDirectDrops(Material.BONE_BLOCK, ToolType.PICKAXE));
         reg(Material.OBSERVER, new BlockObserver());
         reg(Material.COMPARATOR, new BlockRedstoneComparator());
@@ -431,13 +435,13 @@ public final class ItemTable {
     private void reg(Material material, ItemType type) {
         if (material.isBlock() != type instanceof BlockType) {
             throw new IllegalArgumentException(
-                    "Cannot mismatch item and block: " + material + ", " + type);
+                "Cannot mismatch item and block: " + material + ", " + type);
         }
 
         if (materialToType.containsKey(material)) {
             throw new IllegalArgumentException(
-                    "Cannot use " + type + " for " + material + ", is already " + materialToType
-                            .get(material));
+                "Cannot use " + type + " for " + material + ", is already " + materialToType
+                    .get(material));
         }
 
         materialToType.put(material, type);
@@ -456,13 +460,13 @@ public final class ItemTable {
     private void reg(Material material, ItemType type, Sound sound) {
         if (material.isBlock() != type instanceof BlockType) {
             throw new IllegalArgumentException(
-                    "Cannot mismatch item and block: " + material + ", " + type);
+                "Cannot mismatch item and block: " + material + ", " + type);
         }
 
         if (materialToType.containsKey(material)) {
             throw new IllegalArgumentException(
-                    "Cannot use " + type + " for " + material + ", is already " + materialToType
-                            .get(material));
+                "Cannot use " + type + " for " + material + ", is already " + materialToType
+                    .get(material));
         }
 
         materialToType.put(material, type);
@@ -489,14 +493,15 @@ public final class ItemTable {
     }
 
     private void regAll(Iterable<Material> items,
-            Function<? super Material, ? extends ItemType> itemTypeFunction) {
+                        Function<? super Material, ? extends ItemType> itemTypeFunction) {
         for (Material item : items) {
             reg(item, itemTypeFunction.apply(item));
         }
     }
 
     private void regAll(Iterable<Material> items,
-            Function<? super Material, ? extends ItemType> itemTypeFunction, Sound sound) {
+                        Function<? super Material, ? extends ItemType> itemTypeFunction,
+                        Sound sound) {
         for (Material item : items) {
             reg(item, itemTypeFunction.apply(item), sound);
         }
@@ -505,7 +510,7 @@ public final class ItemTable {
     /**
      * Register a new, non-Vanilla ItemType. It will be assigned an ID automatically.
      *
-     * @param key the namespaced key of the ItemType
+     * @param key  the namespaced key of the ItemType
      * @param type the ItemType to register.
      * @return if the registration was successful
      */

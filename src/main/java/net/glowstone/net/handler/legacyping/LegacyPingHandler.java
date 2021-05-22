@@ -5,13 +5,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GameServer;
 import org.bukkit.event.server.ServerListPingEvent;
-
-import java.io.UnsupportedEncodingException;
-import java.net.InetSocketAddress;
 
 public class LegacyPingHandler extends ChannelInboundHandlerAdapter {
 

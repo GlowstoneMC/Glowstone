@@ -25,15 +25,15 @@ import org.jetbrains.annotations.Nullable;
 public class GlowAnimal extends GlowAgeable implements Animals {
 
     private static final Set<Material> DEFAULT_BREEDING_FOODS =
-            Sets.immutableEnumSet(EnumSet.noneOf(Material.class));
+        Sets.immutableEnumSet(EnumSet.noneOf(Material.class));
 
     private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
 
     /**
      * Creates a new ageable animal.
      *
-     * @param location The location of the animal.
-     * @param type The type of animal.
+     * @param location  The location of the animal.
+     * @param type      The type of animal.
      * @param maxHealth The max health of this animal.
      */
     public GlowAnimal(Location location, EntityType type, double maxHealth) {
@@ -57,7 +57,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
      * of eating it.
      *
      * @param player the player feeding the entity, for statistical purposes
-     * @param type an item that may be food
+     * @param type   an item that may be food
      * @return true if the item should be consumed; false otherwise
      */
     protected boolean tryFeed(Material type, GlowPlayer player) {
@@ -80,7 +80,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (!super.entityInteract(player, message)
-                && message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+            && message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
             GameMode gameMode = player.getGameMode();
             if (gameMode == GameMode.SPECTATOR) {
                 return false;
@@ -101,6 +101,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
 
     /**
      * Returns an immutable set containing the breeding foods for the current animal.
+     *
      * @return an immutable set containing Material
      */
     public Set<Material> getBreedingFoods() {

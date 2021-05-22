@@ -1,10 +1,8 @@
 package net.glowstone.entity.monster.complex;
 
 import com.flowpowered.network.Message;
-
 import java.util.Collections;
 import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowEntity;

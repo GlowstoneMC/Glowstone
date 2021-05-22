@@ -14,9 +14,9 @@ import org.bukkit.entity.Ocelot;
 public class GlowOcelot extends GlowTameable implements Ocelot {
 
     private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.COD,
-            Material.SALMON,
-            Material.PUFFERFISH,
-            Material.TROPICAL_FISH);
+        Material.SALMON,
+        Material.PUFFERFISH,
+        Material.TROPICAL_FISH);
 
     @Getter
     private Type catType;

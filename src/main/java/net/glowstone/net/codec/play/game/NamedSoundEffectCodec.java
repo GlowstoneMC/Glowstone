@@ -4,9 +4,8 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.net.message.play.game.NamedSoundEffectMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.game.NamedSoundEffectMessage;
 
 public final class NamedSoundEffectCodec implements Codec<NamedSoundEffectMessage> {
 

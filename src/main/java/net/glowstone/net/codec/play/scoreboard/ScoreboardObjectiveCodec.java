@@ -3,10 +3,9 @@ package net.glowstone.net.codec.play.scoreboard;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
-
-import java.io.IOException;
 
 public final class ScoreboardObjectiveCodec implements Codec<ScoreboardObjectiveMessage> {
 

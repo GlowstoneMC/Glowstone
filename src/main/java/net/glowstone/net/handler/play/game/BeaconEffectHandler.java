@@ -16,7 +16,8 @@ public final class BeaconEffectHandler implements MessageHandler<GlowSession, Be
             return;
         }
 
-        GlowBeaconInventory beacon = (GlowBeaconInventory) player.getOpenInventory().getTopInventory();
+        GlowBeaconInventory beacon =
+            (GlowBeaconInventory) player.getOpenInventory().getTopInventory();
         beacon.setActiveEffects(message.getPrimary(), message.getSecondary());
     }
 }

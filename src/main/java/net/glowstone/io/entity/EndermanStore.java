@@ -18,7 +18,7 @@ class EndermanStore extends MonsterStore<GlowEnderman> {
         super.load(entity, compound);
         // Load carried block
         compound.tryGetBlockData("carriedBlockState")
-                .ifPresent(entity::setCarriedBlock);
+            .ifPresent(entity::setCarriedBlock);
     }
 
     @Override

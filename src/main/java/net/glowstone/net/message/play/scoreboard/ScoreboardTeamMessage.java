@@ -1,12 +1,11 @@
 package net.glowstone.net.message.play.scoreboard;
 
 import com.flowpowered.network.Message;
+import java.util.List;
 import lombok.Data;
 import net.glowstone.util.TextMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Team;
-
-import java.util.List;
 
 @Data
 public final class ScoreboardTeamMessage implements Message {
@@ -51,18 +50,23 @@ public final class ScoreboardTeamMessage implements Message {
                                                Team.OptionStatus collisionRule,
                                                ChatColor color, List<String> players) {
         return new ScoreboardTeamMessage(teamName, Action.CREATE, displayName, prefix, suffix,
-                friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, players);
+            friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, players);
     }
 
-    public static ScoreboardTeamMessage create(String name, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, Team.OptionStatus nameTagVisibility,
-            Team.OptionStatus collisionRule, ChatColor color, List<String> playerNames) {
-        return create(name, new TextMessage(displayName), new TextMessage(prefix), new TextMessage(suffix),
-                friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color, playerNames);
+    public static ScoreboardTeamMessage create(String name, String displayName, String prefix,
+                                               String suffix, boolean friendlyFire,
+                                               boolean seeInvisible,
+                                               Team.OptionStatus nameTagVisibility,
+                                               Team.OptionStatus collisionRule, ChatColor color,
+                                               List<String> playerNames) {
+        return create(name, new TextMessage(displayName), new TextMessage(prefix),
+            new TextMessage(suffix),
+            friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color, playerNames);
     }
 
     public static ScoreboardTeamMessage remove(String teamName) {
         return new ScoreboardTeamMessage(teamName, Action.REMOVE, null, null, null, false, false,
-                null, null, ChatColor.RESET, null);
+            null, null, ChatColor.RESET, null);
     }
 
     public static ScoreboardTeamMessage update(String teamName, TextMessage displayName,
@@ -71,24 +75,27 @@ public final class ScoreboardTeamMessage implements Message {
                                                Team.OptionStatus nametagVisibility,
                                                Team.OptionStatus collisionRule, ChatColor color) {
         return new ScoreboardTeamMessage(teamName, Action.UPDATE, displayName, prefix, suffix,
-                friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, null);
+            friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, null);
     }
 
-    public static ScoreboardTeamMessage update(String name, String displayName, String prefix, String suffix,
-            boolean friendlyFire, boolean seeInvisible, Team.OptionStatus nameTagVisibility,
-            Team.OptionStatus collisionRule, ChatColor color) {
-        return update(name, new TextMessage(displayName), new TextMessage(prefix), new TextMessage(suffix),
-                friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color);
+    public static ScoreboardTeamMessage update(String name, String displayName, String prefix,
+                                               String suffix,
+                                               boolean friendlyFire, boolean seeInvisible,
+                                               Team.OptionStatus nameTagVisibility,
+                                               Team.OptionStatus collisionRule, ChatColor color) {
+        return update(name, new TextMessage(displayName), new TextMessage(prefix),
+            new TextMessage(suffix),
+            friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color);
     }
 
     public static ScoreboardTeamMessage addPlayers(String teamName, List<String> entries) {
         return new ScoreboardTeamMessage(teamName, Action.ADD_PLAYERS, null, null, null, false,
-                false, null, null, ChatColor.RESET, entries);
+            false, null, null, ChatColor.RESET, entries);
     }
 
     public static ScoreboardTeamMessage removePlayers(String teamName, List<String> entries) {
         return new ScoreboardTeamMessage(teamName, Action.REMOVE_PLAYERS, null, null, null, false,
-                false, null, null, ChatColor.RESET, entries);
+            false, null, null, ChatColor.RESET, entries);
     }
 
     public enum Action {

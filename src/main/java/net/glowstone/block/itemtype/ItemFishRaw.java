@@ -46,11 +46,11 @@ public class ItemFishRaw extends ItemFood {
 
         if (item.getData().getData() == 3) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.POISON,
-                    TickUtil.minutesToTicks(1), 3), true);
+                TickUtil.minutesToTicks(1), 3), true);
             player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER,
-                    TickUtil.secondsToTicks(15), 2), true);
+                TickUtil.secondsToTicks(15), 2), true);
             player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION,
-                    TickUtil.secondsToTicks(15), 1), true);
+                TickUtil.secondsToTicks(15), 1), true);
         }
         return true;
     }

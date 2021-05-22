@@ -1,5 +1,6 @@
 package net.glowstone.block.itemtype;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -8,8 +9,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ItemChorusFruit extends ItemFood {
 

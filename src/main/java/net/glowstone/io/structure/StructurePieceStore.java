@@ -16,7 +16,8 @@ import org.jetbrains.annotations.NonNls;
 public abstract class StructurePieceStore<T extends GlowStructurePiece> {
 
     private final Class<T> type;
-    @NonNls private final String id;
+    @NonNls
+    private final String id;
 
     /**
      * Create a structure piece of this store's type.
@@ -31,7 +32,7 @@ public abstract class StructurePieceStore<T extends GlowStructurePiece> {
      * Load structure piece data of the appropriate type from the given compound tag.
      *
      * @param structurePiece The target structure piece.
-     * @param compound The structure piece's tag.
+     * @param compound       The structure piece's tag.
      */
     public void load(T structurePiece, CompoundTag compound) {
         compound.readInt("GD", structurePiece::setUnknownGd);
@@ -49,7 +50,7 @@ public abstract class StructurePieceStore<T extends GlowStructurePiece> {
      * Save information about this structure piece to the given tag.
      *
      * @param structurePiece The structure piece to save.
-     * @param compound The target tag.
+     * @param compound       The target tag.
      */
     public void save(T structurePiece, CompoundTag compound) {
         compound.putInt("GD", structurePiece.getUnknownGd());

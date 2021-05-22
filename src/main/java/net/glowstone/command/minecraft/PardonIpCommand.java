@@ -18,7 +18,7 @@ public class PardonIpCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -29,12 +29,12 @@ public class PardonIpCommand extends GlowVanillaCommand {
         String ip = args[0];
         if (!InetAddresses.isInetAddress(ip)) {
             new LocalizedStringImpl("pardon-ip.invalid", commandMessages.getResourceBundle())
-                    .sendInColor(ChatColor.RED, sender, ip);
+                .sendInColor(ChatColor.RED, sender, ip);
             return false;
         }
         ServerProvider.getServer().unbanIP(ip);
         new LocalizedStringImpl("pardon-ip.done", commandMessages.getResourceBundle())
-                .send(sender, ip);
+            .send(sender, ip);
         return true;
     }
 }

@@ -10,7 +10,7 @@ public class BlockDaylightDetector extends BlockType {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         // TODO: use inverted block state
         if (block.getType() == Material.DAYLIGHT_DETECTOR) {
             //block.setType(Material.DAYLIGHT_DETECTOR_INVERTED);

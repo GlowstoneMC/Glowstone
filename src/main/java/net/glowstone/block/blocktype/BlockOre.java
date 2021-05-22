@@ -1,17 +1,16 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockOre extends BlockNeedsTool {
 
@@ -23,16 +22,17 @@ public class BlockOre extends BlockNeedsTool {
 
     /**
      * Creates an ore block type.
-     * @param dropType the item this drops when mined without a Silk Touch--enchanted tool
+     *
+     * @param dropType   the item this drops when mined without a Silk Touch--enchanted tool
      * @param neededTool the tool(s) that can mine this block
-     * @param data the block data or damage value for the dropped item
-     * @param minCount the minimum number of items to drop, when mined without a Fortune-enchanted
-     *     tool
-     * @param maxCount the maximum number of items to drop, when mined without a Fortune-enchanted
-     *     tool
+     * @param data       the block data or damage value for the dropped item
+     * @param minCount   the minimum number of items to drop, when mined without a Fortune-enchanted
+     *                   tool
+     * @param maxCount   the maximum number of items to drop, when mined without a Fortune-enchanted
+     *                   tool
      */
     public BlockOre(Material dropType, MaterialMatcher neededTool, int data, int minCount,
-        int maxCount) {
+                    int maxCount) {
         this.dropType = dropType;
         this.neededTool = neededTool;
         this.minCount = minCount;
@@ -43,10 +43,11 @@ public class BlockOre extends BlockNeedsTool {
     /**
      * Creates an ore block type that drops a fixed number of items when mined without a
      * Fortune-enchanted tool.
-     * @param dropType the item this drops when mined without a Silk Touch--enchanted tool
+     *
+     * @param dropType   the item this drops when mined without a Silk Touch--enchanted tool
      * @param neededTool the tool(s) that can mine this block
-     * @param data the block data or damage value for the dropped item
-     * @param count the number of items to drop, when mined without a Fortune-enchanted tool
+     * @param data       the block data or damage value for the dropped item
+     * @param count      the number of items to drop, when mined without a Fortune-enchanted tool
      */
     public BlockOre(Material dropType, MaterialMatcher neededTool, int data, int count) {
         this(dropType, neededTool, data, count, count);
@@ -54,9 +55,10 @@ public class BlockOre extends BlockNeedsTool {
 
     /**
      * Creates an ore block type that drops 1 item when mined without a Fortune-enchanted tool.
-     * @param dropType the item this drops when mined without a Silk Touch--enchanted tool
+     *
+     * @param dropType   the item this drops when mined without a Silk Touch--enchanted tool
      * @param neededTool the tool(s) that can mine this block
-     * @param data the block data or damage value for the dropped item
+     * @param data       the block data or damage value for the dropped item
      */
     public BlockOre(Material dropType, MaterialMatcher neededTool, int data) {
         this(dropType, neededTool, data, 1);
@@ -65,7 +67,8 @@ public class BlockOre extends BlockNeedsTool {
     /**
      * Creates an ore block type that drops 1 item with a block data or damage value of 0, when
      * mined without a Fortune-enchanted tool.
-     * @param dropType the item this drops when mined without a Silk Touch--enchanted tool
+     *
+     * @param dropType   the item this drops when mined without a Silk Touch--enchanted tool
      * @param neededTool the tool(s) that can mine this block
      */
     public BlockOre(Material dropType, MaterialMatcher neededTool) {

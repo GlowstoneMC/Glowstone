@@ -1,5 +1,6 @@
 package net.glowstone.entity.projectile;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.blocktype.BlockTnt;
@@ -24,14 +25,18 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class GlowArrow extends GlowProjectile implements Arrow {
 
-    /** How many ticks an arrow lasts when stuck in a block. */
+    /**
+     * How many ticks an arrow lasts when stuck in a block.
+     */
     private static final int TICKS_TO_LIVE_ON_GROUND = 20 * 60;
-    private volatile PickupStatus customPickupStatus = null;
+    /**
+     * How long an entity burns after being shot with a burning arrow.
+     */
+    private static final int TARGET_BURN_TICKS = 100;
     private final Arrow.Spigot spigot = new GlowArrow.Spigot();
+    private volatile PickupStatus customPickupStatus = null;
     @Getter
     @Setter
     private int knockbackStrength;
@@ -41,10 +46,6 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     @Getter
     @Setter
     private double damage;
-    /**
-     * How long an entity burns after being shot with a burning arrow.
-     */
-    private static final int TARGET_BURN_TICKS = 100;
 
     /**
      * Creates an arrow entity.
@@ -127,7 +128,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
             damage += 1.0;
         }
         entity.damage(damage, shooter instanceof Entity ? (Entity) shooter : null,
-                EntityDamageEvent.DamageCause.PROJECTILE);
+            EntityDamageEvent.DamageCause.PROJECTILE);
         // Burning arrow ignites target, but doesn't stack if target is already on fire.
         if (getFireTicks() > 0 && entity.getFireTicks() < TARGET_BURN_TICKS) {
             entity.setFireTicks(TARGET_BURN_TICKS);
@@ -166,7 +167,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     public PickupStatus getPickupStatus() {
         PickupStatus customPickupStatus = this.customPickupStatus;
         return customPickupStatus != null ? customPickupStatus :
-                getShooter() instanceof Monster ? PickupStatus.DISALLOWED :
+            getShooter() instanceof Monster ? PickupStatus.DISALLOWED :
                 PickupStatus.ALLOWED;
     }
 
@@ -211,13 +212,13 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     }
 
     @Override
-    public void setBasePotionData(@NotNull PotionData potionData) {
+    public @NotNull PotionData getBasePotionData() {
         // TODO: 1.16
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public @NotNull PotionData getBasePotionData() {
+    public void setBasePotionData(@NotNull PotionData potionData) {
         // TODO: 1.16
         throw new UnsupportedOperationException("Not implemented yet.");
     }

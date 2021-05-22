@@ -21,7 +21,7 @@ public class BlockAnvil extends BlockFalling {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         return player.openInventory(new GlowAnvilInventory(player)) != null;
     }
 

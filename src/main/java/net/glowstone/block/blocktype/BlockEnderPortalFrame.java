@@ -20,7 +20,7 @@ public class BlockEnderPortalFrame extends BlockDropless {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         state.setType(Material.END_PORTAL_FRAME);
         switch (getOppositeBlockFace(player.getLocation(), false).getOppositeFace()) {
             case NORTH:
@@ -43,7 +43,7 @@ public class BlockEnderPortalFrame extends BlockDropless {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         ItemStack item = player.getItemInHand();
         if (item != null && item.getType() == Material.ENDER_EYE) {
             if ((block.getData() & 0x4) != 0) {
@@ -108,8 +108,8 @@ public class BlockEnderPortalFrame extends BlockDropless {
             }
         }
         if (!EventFactory.getInstance()
-                .callEvent(new EntityCreatePortalEvent(player, blocks, PortalType.ENDER))
-                .isCancelled()) {
+            .callEvent(new EntityCreatePortalEvent(player, blocks, PortalType.ENDER))
+            .isCancelled()) {
             for (BlockState state : blocks) {
                 state.update(true);
             }

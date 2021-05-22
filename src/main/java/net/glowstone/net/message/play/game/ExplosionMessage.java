@@ -1,9 +1,8 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.network.Message;
-import lombok.Data;
-
 import java.util.Collection;
+import lombok.Data;
 
 @Data
 public class ExplosionMessage implements Message {

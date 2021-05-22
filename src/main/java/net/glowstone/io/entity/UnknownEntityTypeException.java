@@ -10,13 +10,13 @@ import net.glowstone.util.nbt.CompoundTag;
  * {@link IllegalArgumentException} instances.
  */
 public class UnknownEntityTypeException extends IllegalArgumentException {
+    @Getter
+    private final CompoundTag nbt;
+
     public UnknownEntityTypeException(CompoundTag nbt) {
         super(getMessage(nbt));
         this.nbt = nbt;
     }
-
-    @Getter
-    private final CompoundTag nbt;
 
     private static String getMessage(CompoundTag nbt) {
         if (nbt.isString("id")) {

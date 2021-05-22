@@ -43,16 +43,16 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     /**
      * Creates a snapshot of a chunk.
      *
-     * @param x the chunk x coordinate
-     * @param z the chunk z coordinate
-     * @param world the world the chunk is in
+     * @param x        the chunk x coordinate
+     * @param z        the chunk z coordinate
+     * @param world    the world the chunk is in
      * @param sections the chunk contents
-     * @param height the heightmap
-     * @param biomes the biome map
-     * @param svTemp if true, copy temperature and humidity from the world
+     * @param height   the heightmap
+     * @param biomes   the biome map
+     * @param svTemp   if true, copy temperature and humidity from the world
      */
     public GlowChunkSnapshot(int x, int z, World world, ChunkSection[] sections, byte[] height,
-            byte[] biomes, boolean svTemp, boolean isSlimeChunk) {
+                             byte[] biomes, boolean svTemp, boolean isSlimeChunk) {
         this.x = x;
         this.z = z;
         this.worldName = world.getName();

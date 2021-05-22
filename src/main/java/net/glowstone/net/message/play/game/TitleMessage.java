@@ -22,8 +22,8 @@ public final class TitleMessage implements Message {
      * Creates an instance with a message.
      *
      * @param action should be {@link Action#TITLE}, {@link Action#SUBTITLE} or {@link
-     *         Action#ACTION}
-     * @param text the new text
+     *               Action#ACTION}
+     * @param text   the new text
      */
     public TitleMessage(Action action, TextMessage text) {
         this.action = action;
@@ -36,9 +36,9 @@ public final class TitleMessage implements Message {
     /**
      * Creates an instance with times.
      *
-     * @param action should be {@link Action#TIMES}
-     * @param fadeIn the fade-in duration in ticks
-     * @param stay the delay between the end of fade-in and the start of fade-out, in ticks
+     * @param action  should be {@link Action#TIMES}
+     * @param fadeIn  the fade-in duration in ticks
+     * @param stay    the delay between the end of fade-in and the start of fade-out, in ticks
      * @param fadeOut the fade-out duration in ticks
      */
     public TitleMessage(Action action, int fadeIn, int stay, int fadeOut) {
@@ -67,18 +67,18 @@ public final class TitleMessage implements Message {
      *
      * @param title the title to convert
      * @return 3 messages: the first sets the title, the second sets the subtitle, and the third
-     *         sets the fade/stay/fade durations
+     *     sets the fade/stay/fade durations
      */
     public static TitleMessage[] fromTitle(Title title) {
         TextMessage titleMessage = asTextMessage(BaseComponent.toLegacyText(title.getTitle()));
         TextMessage subTitleMessage = title.getSubtitle() != null ? asTextMessage(
-                BaseComponent.toLegacyText(title.getSubtitle())) : asTextMessage(null);
+            BaseComponent.toLegacyText(title.getSubtitle())) : asTextMessage(null);
 
-        return new TitleMessage[]{
+        return new TitleMessage[] {
             new TitleMessage(Action.TITLE, titleMessage),
             new TitleMessage(Action.SUBTITLE, subTitleMessage),
             new TitleMessage(Action.TIMES, title.getFadeIn(), title.getStay(), title
-                    .getFadeOut())
+                .getFadeOut())
         };
     }
 

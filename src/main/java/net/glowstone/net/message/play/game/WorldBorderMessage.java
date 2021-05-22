@@ -5,7 +5,9 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-/** Documented at http://wiki.vg/Protocol#World_Border */
+/**
+ * Documented at http://wiki.vg/Protocol#World_Border
+ */
 @Data
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class WorldBorderMessage implements Message {
@@ -38,7 +40,8 @@ public final class WorldBorderMessage implements Message {
 
     // INITIALIZE
     public WorldBorderMessage(Action action, double x, double z, double oldRadius, double newRadius,
-        long speed, int portalTeleportBoundary, int warningTime, int warningBlocks) {
+                              long speed, int portalTeleportBoundary, int warningTime,
+                              int warningBlocks) {
         this(action, 0, oldRadius, newRadius, speed, x, z, portalTeleportBoundary, warningTime,
             warningBlocks);
     }
@@ -46,7 +49,7 @@ public final class WorldBorderMessage implements Message {
     /**
      * Creates an instance with a warning threshold.
      *
-     * @param action should be {@link Action#SET_WARNING_TIME} or {@link Action#SET_WARNING_BLOCKS}
+     * @param action  should be {@link Action#SET_WARNING_TIME} or {@link Action#SET_WARNING_BLOCKS}
      * @param warning the warning threshold, in blocks or seconds
      */
     public WorldBorderMessage(Action action, int warning) {

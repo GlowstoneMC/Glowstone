@@ -20,7 +20,7 @@ public class ItemDye extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         MaterialData data = holding.getData();
         if (data instanceof Dye) {
             Dye dye = (Dye) data;
@@ -45,7 +45,8 @@ public class ItemDye extends ItemType {
                         }
                     }
                 }
-            } else if (dye.getColor() == DyeColor.BROWN && target.getType() == Material.JUNGLE_LOG) {
+            } else if (dye.getColor() == DyeColor.BROWN &&
+                target.getType() == Material.JUNGLE_LOG) {
                 ItemTable.instance().getBlock(Material.COCOA)
                     .rightClickBlock(player, target, face, holding, clickedLoc, hand);
             }

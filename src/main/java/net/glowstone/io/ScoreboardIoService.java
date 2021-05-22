@@ -1,8 +1,7 @@
 package net.glowstone.io;
 
-import net.glowstone.scoreboard.GlowScoreboard;
-
 import java.io.IOException;
+import net.glowstone.scoreboard.GlowScoreboard;
 
 /**
  * Provider of scoreboard I/O services.

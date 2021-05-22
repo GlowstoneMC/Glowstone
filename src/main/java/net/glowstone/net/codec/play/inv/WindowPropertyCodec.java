@@ -3,9 +3,8 @@ package net.glowstone.net.codec.play.inv;
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.net.message.play.inv.WindowPropertyMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.inv.WindowPropertyMessage;
 
 public final class WindowPropertyCodec implements Codec<WindowPropertyMessage> {
 

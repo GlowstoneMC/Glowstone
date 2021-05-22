@@ -1,13 +1,12 @@
 package net.glowstone.net.message.play.entity;
 
 import com.flowpowered.network.Message;
+import java.util.UUID;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
-
-import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
@@ -27,12 +26,12 @@ public final class SpawnObjectMessage implements Message {
     private final int velZ;
 
     public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
-            int yaw) {
+                              int yaw) {
         this(id, uuid, type, x, y, z, pitch, yaw, 0, 0, 0, 0);
     }
 
     public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
-            int yaw, int data) {
+                              int yaw, int data) {
         this(id, uuid, type, x, y, z, pitch, yaw, data, 0, 0, 0);
     }
 
@@ -59,20 +58,20 @@ public final class SpawnObjectMessage implements Message {
      */
     public SpawnObjectMessage(int id, UUID uuid, int type, Location location, int data) {
         this(id, uuid, type, location.getX(), location.getY(), location.getZ(),
-                Position.getIntPitch(location), Position.getIntYaw(location), data);
+            Position.getIntPitch(location), Position.getIntYaw(location), data);
     }
 
     public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
-            int yaw, int data, Vector vector) {
+                              int yaw, int data, Vector vector) {
         this(id, uuid, type, x, y, z, pitch, yaw, data,
-                convert(vector.getX()), convert(vector.getY()), convert(vector.getZ()));
-    }
-
-    public boolean hasData() {
-        return data != 0;
+            convert(vector.getX()), convert(vector.getY()), convert(vector.getZ()));
     }
 
     private static int convert(double val) {
         return (int) (val * 8000);
+    }
+
+    public boolean hasData() {
+        return data != 0;
     }
 }

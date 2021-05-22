@@ -1,13 +1,12 @@
 package net.glowstone.io.entity;
 
+import java.util.Arrays;
+import java.util.Optional;
 import net.glowstone.entity.objects.GlowBoat;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.TreeSpecies;
 import org.bukkit.entity.EntityType;
-
-import java.util.Arrays;
-import java.util.Optional;
 
 public class BoatStore extends EntityStore<GlowBoat> {
 

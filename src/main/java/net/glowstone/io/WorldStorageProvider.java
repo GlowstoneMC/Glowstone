@@ -1,8 +1,7 @@
 package net.glowstone.io;
 
-import net.glowstone.GlowWorld;
-
 import java.io.File;
+import net.glowstone.GlowWorld;
 
 /**
  * Interface for providers of world data storage, including chunks and various metadata.

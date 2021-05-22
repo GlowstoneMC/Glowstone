@@ -34,7 +34,7 @@ public abstract class ItemProjectile extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-            ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         use(player, holding);
         InventoryUtil.consumeHeldItem(player, holding);
     }
@@ -42,7 +42,7 @@ public abstract class ItemProjectile extends ItemType {
     /**
      * Throws this projectile.
      *
-     * @param player the player throwing the projectile
+     * @param player  the player throwing the projectile
      * @param holding the projectile as an item
      * @return the projectile as an entity
      */

@@ -1,11 +1,10 @@
 package net.glowstone.io.entity;
 
+import java.util.function.Function;
 import net.glowstone.entity.monster.GlowZombie;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
-
-import java.util.function.Function;
 
 class ZombieStore<T extends GlowZombie> extends MonsterStore<GlowZombie> {
 

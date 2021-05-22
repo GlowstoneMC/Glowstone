@@ -1,5 +1,10 @@
 package net.glowstone.io.nbt;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import net.glowstone.GlowServer;
 import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.constants.ItemIds;
@@ -14,12 +19,6 @@ import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Utility methods for transforming various objects to and from NBT. All strings in this class are
@@ -43,8 +42,9 @@ public final class NbtSerialization {
         BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
         final Material[] material = {null};
         if ((!tag.readString("id", id -> material[0] = ItemIds.getItem(id))
-                        && !tag.readShort("id", id -> material[0] = blockDataManager.convertToBlockData(id).getMaterial()))
-                || material[0] == null || material[0] == Material.AIR) {
+            && !tag.readShort("id",
+            id -> material[0] = blockDataManager.convertToBlockData(id).getMaterial()))
+            || material[0] == null || material[0] == Material.AIR) {
             return null;
         }
         final byte[] count = {0};
@@ -68,7 +68,7 @@ public final class NbtSerialization {
      * <p>Null stacks produce an empty tag, and if slot is negative it is omitted from the result.
      *
      * @param stack The stack to write, or null.
-     * @param slot The slot, or negative to omit.
+     * @param slot  The slot, or negative to omit.
      * @return The resulting tag.
      */
     public static CompoundTag writeItem(ItemStack stack, int slot) {
@@ -105,8 +105,8 @@ public final class NbtSerialization {
      * Read a full inventory (players, chests, etc.) from a compound list.
      *
      * @param tagList The list of CompoundTags to read from.
-     * @param start The slot number to consider the inventory's start.
-     * @param size The desired size of the inventory.
+     * @param start   The slot number to consider the inventory's start.
+     * @param size    The desired size of the inventory.
      * @return An array with the contents of the inventory.
      */
     public static ItemStack[] readInventory(List<CompoundTag> tagList, int start, int size) {
@@ -142,25 +142,25 @@ public final class NbtSerialization {
     /**
      * Attempt to resolve a world based on the contents of a compound tag.
      *
-     * @param server The server to look up worlds in.
+     * @param server   The server to look up worlds in.
      * @param compound The tag to read the world from.
      * @return The world, or null if none could be found.
      */
     public static World readWorld(GlowServer server, CompoundTag compound) {
         World world = compound
-                .tryGetUuid("WorldUUIDMost", "WorldUUIDLeast")
-                .map(server::getWorld)
-                .orElseGet(() -> compound.tryGetString("World")
+            .tryGetUuid("WorldUUIDMost", "WorldUUIDLeast")
+            .map(server::getWorld)
+            .orElseGet(() -> compound.tryGetString("World")
                 .map(server::getWorld)
                 .orElse(null));
         if (world == null) {
             world = compound
-                    .tryGetInt("Dimension")
-                    .map(World.Environment::getEnvironment)
-                    .flatMap(env -> server.getWorlds().stream()
-                            .filter(serverWorld -> env == serverWorld.getEnvironment())
-                            .findFirst())
-                    .orElse(null);
+                .tryGetInt("Dimension")
+                .map(World.Environment::getEnvironment)
+                .flatMap(env -> server.getWorlds().stream()
+                    .filter(serverWorld -> env == serverWorld.getEnvironment())
+                    .findFirst())
+                .orElse(null);
         }
         return world;
     }
@@ -168,7 +168,7 @@ public final class NbtSerialization {
     /**
      * Save world identifiers (UUID and dimension) to a compound tag for later lookup.
      *
-     * @param world The world to identify.
+     * @param world    The world to identify.
      * @param compound The tag to write to.
      */
     public static void writeWorld(World world, CompoundTag compound) {
@@ -189,7 +189,7 @@ public final class NbtSerialization {
      * returned.
      *
      * @param world The world of the location (see readWorld).
-     * @param tag The tag to read from.
+     * @param tag   The tag to read from.
      * @return The location, or null.
      */
     public static Location listTagsToLocation(World world, CompoundTag tag) {
@@ -259,7 +259,7 @@ public final class NbtSerialization {
             key = NamespacedKey.minecraft(keyRaw);
         } else {
             key = new NamespacedKey(keyRaw.substring(0, colon),
-                    keyRaw.substring(colon + 1));
+                keyRaw.substring(colon + 1));
         }
         return key;
     }

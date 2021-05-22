@@ -18,13 +18,13 @@ import org.bukkit.potion.PotionEffectType;
 // TODO: stubs
 public class GlowTippedArrow extends GlowArrow implements TippedArrow {
 
+    private final Map<PotionEffectType, PotionEffect> customEffects = new ConcurrentHashMap<>();
     @Getter
     @Setter
     private Color color;
     @Getter
     @Setter
     private PotionData basePotionData;
-    private final Map<PotionEffectType, PotionEffect> customEffects = new ConcurrentHashMap<>();
 
     public GlowTippedArrow(Location location) {
         super(location);

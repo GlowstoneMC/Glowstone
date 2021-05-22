@@ -40,7 +40,8 @@ import org.jetbrains.annotations.Nullable;
 // TODO: Implement movement and collision detection.
 public abstract class GlowMinecart extends GlowVehicle implements Minecart {
     private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
-
+    @Getter
+    private final MinecartType minecartType;
     @Getter
     @Setter
     private volatile double damage;
@@ -66,13 +67,11 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
     @Getter
     @Setter
     private volatile int displayBlockOffset;
-    @Getter
-    private final MinecartType minecartType;
 
     /**
      * Creates a minecart.
      *
-     * @param location the location
+     * @param location     the location
      * @param minecartType the minecart type (i.e. the type of block carried, if any)
      */
     public GlowMinecart(Location location, MinecartType minecartType) {
@@ -86,7 +85,7 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
     /**
      * Factory method that creates a minecart.
      *
-     * @param location the location
+     * @param location     the location
      * @param minecartType the minecart type (i.e. the type of block carried, if any)
      * @return The resultant minecart
      */
@@ -97,12 +96,13 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
     @Override
     public List<Message> createSpawnMessage() {
         return Collections.singletonList(new SpawnObjectMessage(
-                entityId, getUniqueId(), 10, location, minecartType.ordinal()));
+            entityId, getUniqueId(), 10, location, minecartType.ordinal()));
     }
 
     @Override
     public @NotNull Material getMinecartMaterial() {
-        return Optional.ofNullable(minecartType).map(MinecartType::getMaterial).orElse(Material.MINECART);
+        return Optional.ofNullable(minecartType).map(MinecartType::getMaterial)
+            .orElse(Material.MINECART);
     }
 
     @Override
@@ -114,7 +114,7 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
                 if (inv.getInventory() != null) {
                     for (ItemStack drop : inv.getInventory().getContents()) {
                         if (drop == null || drop.getType() == Material.AIR
-                                || drop.getAmount() < 1) {
+                            || drop.getAmount() < 1) {
                             continue;
                         }
                         GlowItem item = world.dropItemNaturally(getLocation(), drop);
@@ -130,15 +130,20 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
 
     @RequiredArgsConstructor
     public enum MinecartType {
-        RIDEABLE(Rideable.class, EntityType.MINECART, RideableMinecart.class, Rideable::new, Material.MINECART),
-        CHEST(Storage.class, EntityType.MINECART_CHEST, StorageMinecart.class, Storage::new, Material.CHEST_MINECART),
+        RIDEABLE(Rideable.class, EntityType.MINECART, RideableMinecart.class, Rideable::new,
+            Material.MINECART),
+        CHEST(Storage.class, EntityType.MINECART_CHEST, StorageMinecart.class, Storage::new,
+            Material.CHEST_MINECART),
         FURNACE(Powered.class, EntityType.MINECART_FURNACE, PoweredMinecart.class, Powered
-                ::new, Material.FURNACE_MINECART),
-        TNT(Explosive.class, EntityType.MINECART_TNT, ExplosiveMinecart.class, Explosive::new, Material.TNT_MINECART),
+            ::new, Material.FURNACE_MINECART),
+        TNT(Explosive.class, EntityType.MINECART_TNT, ExplosiveMinecart.class, Explosive::new,
+            Material.TNT_MINECART),
         SPAWNER(Spawner.class, EntityType.MINECART_MOB_SPAWNER, SpawnerMinecart.class,
-                Spawner::new, Material.MINECART),
-        HOPPER(Hopper.class, EntityType.MINECART_HOPPER, HopperMinecart.class, Hopper::new, Material.HOPPER_MINECART),
-        COMMAND(Command.class, EntityType.MINECART_COMMAND, CommandMinecart.class, Command::new, Material.COMMAND_BLOCK_MINECART);
+            Spawner::new, Material.MINECART),
+        HOPPER(Hopper.class, EntityType.MINECART_HOPPER, HopperMinecart.class, Hopper::new,
+            Material.HOPPER_MINECART),
+        COMMAND(Command.class, EntityType.MINECART_COMMAND, CommandMinecart.class, Command::new,
+            Material.COMMAND_BLOCK_MINECART);
 
         @Getter
         private final Class<? extends GlowMinecart> minecartClass;
@@ -189,7 +194,7 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
         public Storage(Location location) {
             super(location, MinecartType.CHEST);
             inventory = new GlowInventory(this, InventoryType.CHEST,
-                    InventoryType.CHEST.getDefaultSize(), "Minecart with Chest");
+                InventoryType.CHEST.getDefaultSize(), "Minecart with Chest");
         }
 
         @Override
@@ -257,23 +262,23 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
         }
 
         @Override
-        public void setLootTable(@Nullable LootTable table) {
-
-        }
-
-        @Override
         public @Nullable LootTable getLootTable() {
             return null;
         }
 
         @Override
-        public void setSeed(long seed) {
+        public void setLootTable(@Nullable LootTable table) {
 
         }
 
         @Override
         public long getSeed() {
             return 0;
+        }
+
+        @Override
+        public void setSeed(long seed) {
+
         }
     }
 
@@ -311,7 +316,7 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
         public Hopper(Location location) {
             super(location, MinecartType.HOPPER);
             inventory = new GlowInventory(this, InventoryType.HOPPER,
-                    InventoryType.HOPPER.getDefaultSize(), "Minecart with Hopper");
+                InventoryType.HOPPER.getDefaultSize(), "Minecart with Hopper");
         }
 
         @Override
@@ -379,23 +384,23 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
         }
 
         @Override
-        public void setLootTable(@Nullable LootTable table) {
-
-        }
-
-        @Override
         public @Nullable LootTable getLootTable() {
             return null;
         }
 
         @Override
-        public void setSeed(long seed) {
+        public void setLootTable(@Nullable LootTable table) {
 
         }
 
         @Override
         public long getSeed() {
             return 0;
+        }
+
+        @Override
+        public void setSeed(long seed) {
+
         }
     }
 

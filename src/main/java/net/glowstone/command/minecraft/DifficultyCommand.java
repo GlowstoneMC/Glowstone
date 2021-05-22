@@ -12,8 +12,8 @@ import org.bukkit.command.CommandSender;
 public class DifficultyCommand extends GlowVanillaCommand {
 
     private static final LocalizedEnumNames<Difficulty> DIFFICULTIES
-            = new LocalizedEnumNames<>(Difficulty::getByValue, "glowstone.difficulty.unknown",
-            "glowstone.difficulty.names", "maps/difficulty", false);
+        = new LocalizedEnumNames<>(Difficulty::getByValue, "glowstone.difficulty.unknown",
+        "glowstone.difficulty.names", "maps/difficulty", false);
 
     /**
      * Creates the instance for this command.
@@ -25,7 +25,7 @@ public class DifficultyCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages messages) {
+                           CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
@@ -38,18 +38,18 @@ public class DifficultyCommand extends GlowVanillaCommand {
         Difficulty difficulty = DIFFICULTIES.nameToValue(messages.getLocale(), difficultyId);
         if (difficulty == null) {
             new LocalizedStringImpl("difficulty.unknown", messages.getResourceBundle())
-                    .sendInColor(ChatColor.RED, sender, difficultyId);
+                .sendInColor(ChatColor.RED, sender, difficultyId);
             return false;
         }
         world.setDifficulty(difficulty);
         new LocalizedStringImpl("difficulty.done", messages.getResourceBundle())
-                .send(sender, world, DIFFICULTIES.valueToName(messages.getLocale(), difficulty));
+            .send(sender, world, DIFFICULTIES.valueToName(messages.getLocale(), difficulty));
         return true;
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length == 1) {
             return DIFFICULTIES.getAutoCompleteSuggestions(getBundle(sender).getLocale(), args[0]);
         }

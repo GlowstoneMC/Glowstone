@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class GlowUndeadHorse extends GlowAbstractHorse implements AbstractHorse {
 
     private static final Set<Material> BREEDING_FOODS =
-            Sets.immutableEnumSet(EnumSet.noneOf(Material.class));
+        Sets.immutableEnumSet(EnumSet.noneOf(Material.class));
 
     public GlowUndeadHorse(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);

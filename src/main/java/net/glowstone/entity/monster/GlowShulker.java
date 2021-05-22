@@ -71,7 +71,7 @@ public class GlowShulker extends GlowMonster implements Shulker {
         this.attachment = attachment;
         if (attachment != null) {
             this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION,
-                    new BlockVector(attachment.toVector()));
+                new BlockVector(attachment.toVector()));
         } else {
             this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION, null);
         }

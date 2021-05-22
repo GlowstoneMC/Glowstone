@@ -33,6 +33,7 @@ public class BlockBanner extends BlockType {
 
     /**
      * Converts banner patterns to NBT tags.
+     *
      * @param banner a list of banner patterns
      * @return the patterns as NBT tags
      */
@@ -49,6 +50,7 @@ public class BlockBanner extends BlockType {
 
     /**
      * Converts NBT tags to banner patterns.
+     *
      * @param tag a list of banner patterns as NBT tags
      * @return the patterns as Pattern instances
      */
@@ -83,7 +85,7 @@ public class BlockBanner extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (!(data instanceof Banner)) {
@@ -100,7 +102,7 @@ public class BlockBanner extends BlockType {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         GlowBanner banner = (GlowBanner) block.getState();
         banner.setBaseColor(DyeColor.getByDyeData((byte) holding.getDurability()));
         BannerMeta meta = (BannerMeta) holding.getItemMeta();

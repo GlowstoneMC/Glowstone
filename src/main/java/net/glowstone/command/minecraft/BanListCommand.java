@@ -31,7 +31,7 @@ public class BanListCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args,
-            CommandMessages messages) {
+                           CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
@@ -60,7 +60,7 @@ public class BanListCommand extends GlowVanillaCommand {
         } else {
             final Stream<String> targets = banEntries.stream().map(BanEntry::getTarget);
             new LocalizedStringImpl("banlist.non-empty", resourceBundle).send(sender,
-                    banEntries.size());
+                banEntries.size());
             sender.sendMessage(messages.joinList(targets));
         }
 

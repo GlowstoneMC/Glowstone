@@ -53,7 +53,7 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
             int y = tag.getInt("SpawnY");
             int z = tag.getInt("SpawnZ");
             entity.setBedSpawnLocation(new Location(entity.getWorld(), x, y, z),
-                    tag.getBoolean("SpawnForced", false));
+                tag.getBoolean("SpawnForced", false));
         }
 
         // abilities

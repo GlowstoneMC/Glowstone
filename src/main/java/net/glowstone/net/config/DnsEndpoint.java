@@ -7,6 +7,12 @@ public class DnsEndpoint {
 
     private static final String HOST_KEY = "host";
     private static final String PORT_KEY = "port";
+    private final String host;
+    private final int port;
+    public DnsEndpoint(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
 
     /**
      * Extracts the needed information from a map of key-value pairs inside a config file to
@@ -25,14 +31,6 @@ public class DnsEndpoint {
         }
 
         return new DnsEndpoint(host, port);
-    }
-
-    private final String host;
-    private final int port;
-
-    public DnsEndpoint(String host, int port) {
-        this.host = host;
-        this.port = port;
     }
 
     public String getHost() {

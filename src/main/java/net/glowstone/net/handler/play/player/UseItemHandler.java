@@ -2,6 +2,8 @@ package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
 import com.google.common.collect.ImmutableSortedSet;
+import java.util.List;
+import java.util.SortedSet;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
@@ -20,22 +22,10 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.List;
-import java.util.SortedSet;
-
 public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessage> {
 
     private static final SortedSet<Material> IGNORE_MATS = ImmutableSortedSet.of(
-            Material.AIR, Material.WATER, Material.LAVA);
-
-    @Override
-    public void handle(GlowSession session, UseItemMessage message) {
-        GlowPlayer player = session.getPlayer();
-        ItemStack holding = InventoryUtil
-                .itemOrEmpty(player.getInventory().getItem(message.getEquipmentSlot()));
-
-        handleRightClick(player, holding, message.getEquipmentSlot());
-    }
+        Material.AIR, Material.WATER, Material.LAVA);
 
     static void handleRightClick(GlowPlayer player, ItemStack holding, EquipmentSlot slot) {
         Action action = Action.RIGHT_CLICK_AIR;
@@ -73,13 +63,13 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
             handleRightClickAir(player, holding, slot);
         } else {
             BlockPlacementHandler.handleRightClickBlock(
-                    player, holding, slot, block, face, clickedAt);
+                player, holding, slot, block, face, clickedAt);
         }
     }
 
     static void handleRightClickAir(GlowPlayer player, ItemStack holding, EquipmentSlot slot) {
         PlayerInteractEvent event = EventFactory.getInstance().onPlayerInteract(
-                player, Action.RIGHT_CLICK_AIR, slot);
+            player, Action.RIGHT_CLICK_AIR, slot);
 
         event.useItemInHand();
         if (event.useItemInHand() == Event.Result.DENY) {
@@ -99,5 +89,14 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
                 player.getInventory().setItem(slot, InventoryUtil.createEmptyStack());
             }
         }
+    }
+
+    @Override
+    public void handle(GlowSession session, UseItemMessage message) {
+        GlowPlayer player = session.getPlayer();
+        ItemStack holding = InventoryUtil
+            .itemOrEmpty(player.getInventory().getItem(message.getEquipmentSlot()));
+
+        handleRightClick(player, holding, message.getEquipmentSlot());
     }
 }

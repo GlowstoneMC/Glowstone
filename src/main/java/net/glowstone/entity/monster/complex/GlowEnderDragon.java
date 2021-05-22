@@ -24,8 +24,8 @@ public class GlowEnderDragon extends GlowBoss implements EnderDragon {
     /**
      * Creates an ender dragon.
      *
-     * @param loc the location
-     * @param type the entity type
+     * @param loc       the location
+     * @param type      the entity type
      * @param maxHealth the maximum health
      */
     public GlowEnderDragon(Location loc, EntityType type, double maxHealth) {

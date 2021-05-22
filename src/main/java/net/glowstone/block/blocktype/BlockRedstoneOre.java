@@ -21,9 +21,9 @@ public class BlockRedstoneOre extends BlockRandomDrops {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         BlockData blockData = Bukkit.getServer().createBlockData(Material.REDSTONE_ORE);
-        ((Lightable)blockData).setLit(true);
+        ((Lightable) blockData).setLit(true);
         EntityChangeBlockEvent changeBlockEvent = new EntityChangeBlockEvent(player, block,
             blockData);
         EventFactory.getInstance().callEvent(changeBlockEvent);

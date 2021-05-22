@@ -2,9 +2,8 @@ package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.player.PlayerPositionMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.player.PlayerPositionMessage;
 
 public final class PlayerPositionCodec implements Codec<PlayerPositionMessage> {
 

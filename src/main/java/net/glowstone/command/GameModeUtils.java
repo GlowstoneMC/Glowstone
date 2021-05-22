@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 public class GameModeUtils {
 
     private static final LocalizedEnumNames<GameMode> MAP = new LocalizedEnumNames<>(
-            GameMode::getByValue, "glowstone.gamemode.unknown", "glowstone.gamemode.names",
-            "maps/gamemode", false);
+        GameMode::getByValue, "glowstone.gamemode.unknown", "glowstone.gamemode.names",
+        "maps/gamemode", false);
 
     private GameModeUtils() {
     }
@@ -26,7 +26,7 @@ public class GameModeUtils {
     /**
      * Create a GameMode from a string.
      *
-     * @param mode The mode to convert
+     * @param mode   The mode to convert
      * @param locale The input locale
      * @return The matching mode if any, null otherwise.
      */
@@ -39,7 +39,7 @@ public class GameModeUtils {
      * Pretty print the given GameMode.
      *
      * @param gameMode The mode to print
-     * @param locale The output locale
+     * @param locale   The output locale
      * @return the pretty name of the mode or 'Unknown' if the mode is not known
      */
     public static String prettyPrint(GameMode gameMode, @Nullable Locale locale) {
@@ -50,7 +50,7 @@ public class GameModeUtils {
     /**
      * Returns autocomplete suggestions that are game-mode names.
      *
-     * @param arg The partial input
+     * @param arg    The partial input
      * @param locale The input locale
      * @return A list of autocomplete suggestions
      */

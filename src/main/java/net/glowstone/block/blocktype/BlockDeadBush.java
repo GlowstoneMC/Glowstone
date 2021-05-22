@@ -15,10 +15,11 @@ public class BlockDeadBush extends BlockNeedsAttached {
 
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
-        Material typeBelow = block.getWorld().getBlockTypeAt(block.getX(), block.getY() - 1, block.getZ());
+        Material typeBelow =
+            block.getWorld().getBlockTypeAt(block.getX(), block.getY() - 1, block.getZ());
         switch (typeBelow) {
             case SAND:
-            // TODO: colored terracotta
+                // TODO: colored terracotta
             case LEGACY_STAINED_CLAY:
             case TERRACOTTA:
             case DIRT:
@@ -45,6 +46,6 @@ public class BlockDeadBush extends BlockNeedsAttached {
         // Dead bush drops 0-2 sticks when broken without shears
         ThreadLocalRandom random = ThreadLocalRandom.current();
         return Collections.unmodifiableList(Arrays.asList(
-            new ItemStack(Material.STICK,random.nextInt(3))));
+            new ItemStack(Material.STICK, random.nextInt(3))));
     }
 }

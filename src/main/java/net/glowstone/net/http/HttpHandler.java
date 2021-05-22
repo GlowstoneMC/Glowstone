@@ -6,9 +6,8 @@ import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.LastHttpContent;
+import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
-
-import java.nio.charset.Charset;
 
 @RequiredArgsConstructor
 public class HttpHandler extends SimpleChannelInboundHandler<Object> {
@@ -46,7 +45,7 @@ public class HttpHandler extends SimpleChannelInboundHandler<Object> {
 
         if (msg instanceof HttpContent) {
             HttpContent httpContent = (HttpContent) msg;
-            content.append(httpContent.content().toString(Charset.forName("UTF-8")));
+            content.append(httpContent.content().toString(StandardCharsets.UTF_8));
 
             if (msg instanceof LastHttpContent) {
                 done(ctx);

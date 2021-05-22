@@ -99,7 +99,7 @@ public class TitleCommand extends GlowVanillaCommand {
     // they're subcommand-specific.
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -119,16 +119,16 @@ public class TitleCommand extends GlowVanillaCommand {
         if (action.equalsIgnoreCase("clear")) {
             ((GlowPlayer) player).clearTitle();
             new LocalizedStringImpl("title.done.clear", commandMessages.getResourceBundle())
-                    .send(sender, player.getName());
+                .send(sender, player.getName());
         } else if (action.equalsIgnoreCase("reset")) {
             player.resetTitle();
             new LocalizedStringImpl("title.done.reset", commandMessages.getResourceBundle())
-                    .send(sender, player.getName());
+                .send(sender, player.getName());
         } else if (action.equalsIgnoreCase("title")) {
             if (args.length < 3) {
                 sendUsageMessage(sender, commandMessages);
                 sender.sendMessage(
-                        ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
+                    ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
                 return false;
             }
 
@@ -141,8 +141,8 @@ public class TitleCommand extends GlowVanillaCommand {
             String raw = message.toString().trim();
             if (!validJson(raw)) {
                 sender
-                        .sendMessage(
-                                ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
+                    .sendMessage(
+                        ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
                 return false;
             }
 
@@ -159,7 +159,7 @@ public class TitleCommand extends GlowVanillaCommand {
         } else if (action.equalsIgnoreCase("subtitle")) {
             if (args.length < 3) {
                 sender.sendMessage(
-                        ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
+                    ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
                 return false;
             }
 
@@ -172,8 +172,8 @@ public class TitleCommand extends GlowVanillaCommand {
             String raw = message.toString().trim();
             if (!validJson(raw)) {
                 sender
-                        .sendMessage(
-                                ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
+                    .sendMessage(
+                        ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
                 return false;
             }
 
@@ -189,7 +189,7 @@ public class TitleCommand extends GlowVanillaCommand {
         } else if (action.equalsIgnoreCase("times")) {
             if (args.length != 5) {
                 sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action
-                        + " <fade in> <stay time> <fade out>");
+                    + " <fade in> <stay time> <fade out>");
                 return false;
             }
 
@@ -207,8 +207,8 @@ public class TitleCommand extends GlowVanillaCommand {
             }
 
             ((GlowPlayer) player)
-                    .updateTitle(TitleMessage.Action.TIMES, toInt(args[2]), toInt(args[3]),
-                            toInt(args[4]));
+                .updateTitle(TitleMessage.Action.TIMES, toInt(args[2]), toInt(args[3]),
+                    toInt(args[4]));
 
             sender.sendMessage("Updated " + player.getName() + "'s times");
         } else {

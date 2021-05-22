@@ -1,6 +1,11 @@
 package net.glowstone.block.entity.state;
 
 import com.destroystokyo.paper.loottable.LootableBlockInventory;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
@@ -15,14 +20,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
-
 public abstract class GlowContainer extends GlowBlockState implements LootableBlockInventory,
-        Lockable, Nameable, Container {
+    Lockable, Nameable, Container {
     private final AtomicLong lastFilled = new AtomicLong(-1);
     private final AtomicLong nextRefill = new AtomicLong(-1);
     private final AtomicLong lootTableSeed = new AtomicLong(0);
@@ -40,11 +39,6 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
     }
 
     @Override
-    public void setLootTable(@Nullable LootTable table) {
-        lootTable.set(table);
-    }
-
-    @Override
     public void setLootTable(@Nullable LootTable table, long seed) {
         setSeed(seed);
         setLootTable(table);
@@ -53,6 +47,11 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
     @Override
     public @Nullable LootTable getLootTable() {
         return lootTable.get();
+    }
+
+    @Override
+    public void setLootTable(@Nullable LootTable table) {
+        lootTable.set(table);
     }
 
     @Override
@@ -70,13 +69,13 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
     }
 
     @Override
-    public void setSeed(long seed) {
-        lootTableSeed.set(seed);
+    public long getSeed() {
+        return lootTableSeed.get();
     }
 
     @Override
-    public long getSeed() {
-        return lootTableSeed.get();
+    public void setSeed(long seed) {
+        lootTableSeed.set(seed);
     }
 
     @Override
@@ -103,8 +102,8 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
     @Override
     public boolean setHasPlayerLooted(UUID uuid, boolean b) {
         return b
-                ? playersWhoHaveLooted.put(uuid, getWorld().getFullTime()) != null
-                : playersWhoHaveLooted.remove(uuid) != null;
+            ? playersWhoHaveLooted.put(uuid, getWorld().getFullTime()) != null
+            : playersWhoHaveLooted.remove(uuid) != null;
     }
 
     @Override

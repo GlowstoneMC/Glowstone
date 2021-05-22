@@ -1,6 +1,5 @@
 package net.glowstone.entity.passive;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.destroystokyo.paper.entity.villager.Reputation;
@@ -43,7 +42,12 @@ public class GlowVillager extends GlowAgeable implements Villager {
 
     private static final Profession[] PROFESSIONS = Profession.values();
     private static final MerchantRecipe DEFAULT_RECIPE
-            = new MerchantRecipe(new ItemStack(Material.DIRT), 10);
+        = new MerchantRecipe(new ItemStack(Material.DIRT), 10);
+
+    static {
+        DEFAULT_RECIPE.addIngredient(new ItemStack(Material.COBBLESTONE));
+    }
+
     @Getter
     @Setter
     private int riches;
@@ -65,7 +69,6 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Getter
     @Setter
     private boolean willing;
-
     /**
      * Get the current level of this villager's trading options.
      *
@@ -87,6 +90,41 @@ public class GlowVillager extends GlowAgeable implements Villager {
         // add dummy recipe
         // todo: recipe loading and randomization
         this.recipes.add(DEFAULT_RECIPE);
+    }
+
+    /**
+     * Gets a random {@link Villager.Profession}.
+     *
+     * @param random the random instance
+     * @return a random {@link Villager.Profession}
+     */
+    public static Profession getRandomProfession(Random random) {
+        checkNotNull(random);
+        // Ignore HUSK profession (deprecated)
+        return PROFESSIONS[random.nextInt(PROFESSIONS.length - 2)];
+    }
+
+    /**
+     * Checks whether or not the given {@link Villager.Profession} ID is valid.
+     *
+     * @param professionId the ID of the {@link Villager.Profession}
+     * @return true if the ID is valid, false otherwise
+     */
+    public static boolean isValidProfession(int professionId) {
+        return professionId >= 0 && professionId < PROFESSIONS.length - 1;
+    }
+
+    /**
+     * Gets the {@link Villager.Profession} corresponding to the given ID.
+     *
+     * @param professionId the ID of the {@link Villager.Profession}
+     * @return the corresponding {@link Villager.Profession}, or null if none exists
+     */
+    public static Profession getProfessionById(int professionId) {
+        if (!isValidProfession(professionId)) {
+            return null;
+        }
+        return PROFESSIONS[professionId];
     }
 
     @Override
@@ -162,12 +200,12 @@ public class GlowVillager extends GlowAgeable implements Villager {
     }
 
     @Override
-    public void setReputation(@NotNull UUID uuid, @NotNull Reputation reputation) {
+    public void setReputations(@NotNull Map<UUID, Reputation> map) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setReputations(@NotNull Map<UUID, Reputation> map) {
+    public void setReputation(@NotNull UUID uuid, @NotNull Reputation reputation) {
         throw new UnsupportedOperationException();
     }
 
@@ -240,7 +278,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
         if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
             if (this.recipes.isEmpty()) {
                 GlowServer.logger.info(
-                        player.getName() + " tried trading with a villager with no recipes.");
+                    player.getName() + " tried trading with a villager with no recipes.");
                 return false;
             }
             // open merchant view
@@ -313,44 +351,5 @@ public class GlowVillager extends GlowAgeable implements Villager {
         witch.damage(amount, source, cause);
         witch.setFireTicks(this.getFireTicks());
         remove();
-    }
-
-    /**
-     * Gets a random {@link Villager.Profession}.
-     *
-     * @param random the random instance
-     * @return a random {@link Villager.Profession}
-     */
-    public static Profession getRandomProfession(Random random) {
-        checkNotNull(random);
-        // Ignore HUSK profession (deprecated)
-        return PROFESSIONS[random.nextInt(PROFESSIONS.length - 2)];
-    }
-
-    /**
-     * Checks whether or not the given {@link Villager.Profession} ID is valid.
-     *
-     * @param professionId the ID of the {@link Villager.Profession}
-     * @return true if the ID is valid, false otherwise
-     */
-    public static boolean isValidProfession(int professionId) {
-        return professionId >= 0 && professionId < PROFESSIONS.length - 1;
-    }
-
-    /**
-     * Gets the {@link Villager.Profession} corresponding to the given ID.
-     *
-     * @param professionId the ID of the {@link Villager.Profession}
-     * @return the corresponding {@link Villager.Profession}, or null if none exists
-     */
-    public static Profession getProfessionById(int professionId) {
-        if (!isValidProfession(professionId)) {
-            return null;
-        }
-        return PROFESSIONS[professionId];
-    }
-
-    static {
-        DEFAULT_RECIPE.addIngredient(new ItemStack(Material.COBBLESTONE));
     }
 }

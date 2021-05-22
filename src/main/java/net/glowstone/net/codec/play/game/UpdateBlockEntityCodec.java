@@ -2,12 +2,11 @@ package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UpdateBlockEntityMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.util.BlockVector;
-
-import java.io.IOException;
 
 public final class UpdateBlockEntityCodec implements Codec<UpdateBlockEntityMessage> {
 

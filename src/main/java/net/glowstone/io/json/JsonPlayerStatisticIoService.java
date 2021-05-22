@@ -1,5 +1,11 @@
 package net.glowstone.io.json;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Map;
+import java.util.UUID;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.ConsoleMessages;
@@ -10,17 +16,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Map;
-import java.util.UUID;
-
 public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
 
-    private GlowServer server;
-    private File statsDir;
+    private final GlowServer server;
+    private final File statsDir;
 
     public JsonPlayerStatisticIoService(GlowServer server, File statsDir) {
         this.server = server;
@@ -66,12 +65,12 @@ public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
                         }
                     } else {
                         ConsoleMessages.Warn.Io.JSON_STAT_UNKNOWN.log(
-                                entry.getKey(), entry.getValue(),
-                                entry.getValue().getClass().getSimpleName());
+                            entry.getKey(), entry.getValue(),
+                            entry.getValue().getClass().getSimpleName());
                     }
                     if (longValue != null) {
                         player.getStatisticMap().getValues()
-                                .put(entry.getKey(), longValue.intValue());
+                            .put(entry.getKey(), longValue.intValue());
                     }
                 }
             } catch (ParseException | IOException e) {

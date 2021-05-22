@@ -24,10 +24,10 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
     private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.HAY_BLOCK);
 
     private static final Map<Material, Integer> GROWING_FOODS = ImmutableMap
-            .<Material, Integer>builder()
-            .put(Material.WHEAT, TickUtil.secondsToTicks(10))
-            .put(Material.HAY_BLOCK, TickUtil.minutesToTicks(1.5))
-            .build();
+        .<Material, Integer>builder()
+        .put(Material.WHEAT, TickUtil.secondsToTicks(10))
+        .put(Material.HAY_BLOCK, TickUtil.minutesToTicks(1.5))
+        .build();
 
     /**
      * Creates a llama entity.
@@ -82,7 +82,7 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
     protected GlowLlamaInventory createNewInventory() {
         GlowLlamaInventory oldInventory = inventory;
         GlowLlamaInventory newInventory
-                = new GlowLlamaInventory(this, isCarryingChest() ? 3 * getStrength() : 0);
+            = new GlowLlamaInventory(this, isCarryingChest() ? 3 * getStrength() : 0);
         if (oldInventory != null) {
             newInventory.setSaddle(oldInventory.getSaddle());
             newInventory.setDecor(oldInventory.getDecor());

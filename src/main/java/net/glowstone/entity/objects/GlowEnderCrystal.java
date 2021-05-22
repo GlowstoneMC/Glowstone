@@ -49,8 +49,8 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
             new SpawnObjectMessage(entityId,
-                    getUniqueId(), EntityNetworkUtil.getObjectId(EntityType.ENDER_CRYSTAL),
-                    location),
+                getUniqueId(), EntityNetworkUtil.getObjectId(EntityType.ENDER_CRYSTAL),
+                location),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }

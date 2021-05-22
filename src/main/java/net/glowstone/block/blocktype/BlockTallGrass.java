@@ -20,9 +20,9 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
 
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         Material typeBelow = block.getWorld()
-                .getBlockTypeAt(block.getX(), block.getY() - 1, block.getZ());
+            .getBlockTypeAt(block.getX(), block.getY() - 1, block.getZ());
         return typeBelow == Material.GRASS_BLOCK || typeBelow == Material.DIRT
-                || typeBelow == Material.FARMLAND;
+            || typeBelow == Material.FARMLAND;
     }
 
     @NotNull
@@ -72,7 +72,7 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
                 GlowBlockState headBlockState = block.getRelative(BlockFace.UP).getState();
                 if (headBlockState.getType() == Material.AIR) {
                     headBlockState.setType(species == GrassSpecies.NORMAL ? Material.TALL_GRASS
-                            : Material.LARGE_FERN);
+                        : Material.LARGE_FERN);
                     BlockGrowEvent growEvent = new BlockGrowEvent(block, blockState);
                     EventFactory.getInstance().callEvent(growEvent);
                     if (!growEvent.isCancelled()) {

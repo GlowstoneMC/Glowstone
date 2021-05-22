@@ -24,17 +24,17 @@ public class BlockFence extends BlockDirectDrops {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-            Vector clickedLoc) {
+                                 Vector clickedLoc) {
         super.blockInteract(player, block, face, clickedLoc);
 
         if (!player.getLeashedEntities().isEmpty()) {
             LeashHitch leashHitch = GlowLeashHitch.getLeashHitchAt(block);
 
             ImmutableList.copyOf(player.getLeashedEntities()).stream()
-                    .filter(e -> !(EventFactory.getInstance()
-                            .callEvent(new PlayerLeashEntityEvent(e, leashHitch, player))
-                            .isCancelled()))
-                    .forEach(e -> e.setLeashHolder(leashHitch));
+                .filter(e -> !(EventFactory.getInstance()
+                    .callEvent(new PlayerLeashEntityEvent(e, leashHitch, player))
+                    .isCancelled()))
+                .forEach(e -> e.setLeashHolder(leashHitch));
             return true;
         }
         return false;

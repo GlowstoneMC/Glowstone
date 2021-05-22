@@ -9,10 +9,9 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToMessageCodec;
+import java.util.List;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.net.protocol.GlowProtocol;
-
-import java.util.List;
 
 /**
  * Experimental pipeline component.

@@ -1,5 +1,7 @@
 package net.glowstone.block.entity.state;
 
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.MaterialUtil;
@@ -35,14 +37,11 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.util.Vector;
 
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class GlowDispenser extends GlowContainer implements Dispenser, BlockProjectileSource {
 
     @Getter
     private static final DispenseBehaviorRegistry dispenseBehaviorRegistry =
-            new DispenseBehaviorRegistry();
+        new DispenseBehaviorRegistry();
 
     public GlowDispenser(GlowBlock block) {
         super(block);
@@ -90,15 +89,15 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         registry.putBehavior(Material.SNOWBALL, new ProjectileDispenseBehavior(GlowSnowball::new));
         registry.putBehavior(Material.ARROW, new ProjectileDispenseBehavior(GlowArrow::new));
         registry.putBehavior(Material.EXPERIENCE_BOTTLE,
-                new ProjectileDispenseBehavior(GlowThrownExpBottle::new));
+            new ProjectileDispenseBehavior(GlowThrownExpBottle::new));
         registry.putBehavior(Material.SPECTRAL_ARROW,
-                new ProjectileDispenseBehavior(GlowSpectralArrow::new));
+            new ProjectileDispenseBehavior(GlowSpectralArrow::new));
         registry.putBehavior(Material.TIPPED_ARROW,
-                new ProjectileDispenseBehavior(((location, itemStack) -> {
-                    GlowTippedArrow tippedArrow = new GlowTippedArrow(location);
-                    tippedArrow.copyFrom((PotionMeta) itemStack.getItemMeta());
-                    return tippedArrow;
-                })));
+            new ProjectileDispenseBehavior(((location, itemStack) -> {
+                GlowTippedArrow tippedArrow = new GlowTippedArrow(location);
+                tippedArrow.copyFrom((PotionMeta) itemStack.getItemMeta());
+                return tippedArrow;
+            })));
         registry.putBehavior(Material.FIRE_CHARGE, new ProjectileDispenseBehavior(location -> {
             Fireball fireball = new GlowFireball(location);
             fireball.setYield(0);
@@ -106,17 +105,17 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
             return fireball;
         }));
         registry.putBehavior(Material.SPLASH_POTION,
-                new ProjectileDispenseBehavior((location, itemStack) -> {
-                    SplashPotion potion = new GlowSplashPotion(location);
-                    potion.setItem(itemStack);
-                    return potion;
-                }));
+            new ProjectileDispenseBehavior((location, itemStack) -> {
+                SplashPotion potion = new GlowSplashPotion(location);
+                potion.setItem(itemStack);
+                return potion;
+            }));
         registry.putBehavior(Material.LINGERING_POTION,
-                new ProjectileDispenseBehavior((location, itemStack) -> {
-                    SplashPotion potion = new GlowLingeringPotion(location);
-                    potion.setItem(itemStack);
-                    return potion;
-                }));
+            new ProjectileDispenseBehavior((location, itemStack) -> {
+                SplashPotion potion = new GlowLingeringPotion(location);
+                potion.setItem(itemStack);
+                return potion;
+            }));
         // TODO: Firework rockets
     }
 
@@ -166,7 +165,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
      *
      * @param toPlace the item stack
      * @return the portion of the item stack that didn't fit in the dispenser, or null if it all
-     *         fit
+     * fit
      */
     public ItemStack placeInDispenser(ItemStack toPlace) {
         Inventory inv = getInventory();
@@ -200,7 +199,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
 
     @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile,
-            Vector velocity) {
+                                                     Vector velocity) {
         // todo: projectile launching
         return null;
     }

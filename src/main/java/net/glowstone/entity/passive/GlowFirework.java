@@ -60,13 +60,13 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
     /**
      * Creates an instance.
      *
-     * @param location the location
+     * @param location       the location
      * @param spawningEntity TODO: document this parameter
-     * @param boostedEntity TODO: document this parameter
-     * @param item the firework rocket as an item
+     * @param boostedEntity  TODO: document this parameter
+     * @param item           the firework rocket as an item
      */
     public GlowFirework(Location location, UUID spawningEntity, LivingEntity boostedEntity,
-        ItemStack item) {
+                        ItemStack item) {
         super(location);
         this.spawningEntity = spawningEntity;
         setBoostedEntity(boostedEntity);
@@ -93,8 +93,8 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
         return Arrays.asList(
             new SpawnObjectMessage(
-                    entityId, UUID.randomUUID(),
-                    EntityNetworkUtil.getObjectId(EntityType.FIREWORK), x, y, z, 0, 0),
+                entityId, UUID.randomUUID(),
+                EntityNetworkUtil.getObjectId(EntityType.FIREWORK), x, y, z, 0, 0),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
@@ -160,7 +160,8 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
         super.pulse();
 
         if (ticksLived == 1) {
-            world.playSound(this.location, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, SoundCategory.AMBIENT, 3,
+            world.playSound(this.location, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH,
+                SoundCategory.AMBIENT, 3,
                 1);
         }
 

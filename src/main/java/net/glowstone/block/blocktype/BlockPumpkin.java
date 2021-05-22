@@ -36,7 +36,7 @@ public class BlockPumpkin extends BlockPumpkinBase {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         super.afterPlace(player, block, holding, oldState);
         // Golems
         Location location = block.getLocation();

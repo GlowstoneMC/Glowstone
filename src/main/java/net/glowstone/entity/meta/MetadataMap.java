@@ -113,8 +113,8 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
     /**
      * Sets or clears bits in an integer field.
      *
-     * @param index the field to update
-     * @param bit a mask of the bits to set or clear
+     * @param index  the field to update
+     * @param bit    a mask of the bits to set or clear
      * @param status true to set; false to clear
      */
     public void setBit(MetadataIndex index, int bit, boolean status) {

@@ -2,9 +2,8 @@ package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.game.TimeMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.game.TimeMessage;
 
 public final class TimeCodec implements Codec<TimeMessage> {
 

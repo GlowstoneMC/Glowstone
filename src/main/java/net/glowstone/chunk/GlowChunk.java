@@ -3,6 +3,19 @@ package net.glowstone.chunk;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,20 +44,6 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 /**
  * Represents a chunk of the map.
@@ -173,14 +172,17 @@ public class GlowChunk implements Chunk {
         if (!useSnapshot) {
             return getBlockEntities();
         }
-        throw new UnsupportedOperationException("getTileEntities(true) not yet implemented"); // TODO
+        throw new UnsupportedOperationException(
+            "getTileEntities(true) not yet implemented"); // TODO
     }
 
     @NotNull
     @Override
-    public Collection<BlockState> getTileEntities(@NotNull Predicate<Block> blockPredicate, boolean useSnapshot) {
+    public Collection<BlockState> getTileEntities(@NotNull Predicate<Block> blockPredicate,
+                                                  boolean useSnapshot) {
         BlockState[] allBlockEntities = getTileEntities(useSnapshot);
-        return Arrays.stream(allBlockEntities).filter(state -> blockPredicate.test(state.getBlock())).collect(Collectors.toList());
+        return Arrays.stream(allBlockEntities)
+            .filter(state -> blockPredicate.test(state.getBlock())).collect(Collectors.toList());
     }
 
     /**
@@ -374,7 +376,9 @@ public class GlowChunk implements Chunk {
      */
     @Deprecated
     public BlockEntity createEntity(int cx, int cy, int cz, int type) {
-        Material material = ((GlowServer) Bukkit.getServer()).getBlockDataManager().convertToBlockData(type).getMaterial();
+        Material material =
+            ((GlowServer) Bukkit.getServer()).getBlockDataManager().convertToBlockData(type)
+                .getMaterial();
         return createEntity(cx, cy, cz, material);
     }
 
@@ -528,7 +532,8 @@ public class GlowChunk implements Chunk {
 
     public BlockData getBlockData(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? Bukkit.getServer().createBlockData(Material.AIR) : section.getBlockData(x, y, z);
+        return section == null ? Bukkit.getServer().createBlockData(Material.AIR) :
+            section.getBlockData(x, y, z);
     }
 
     /**
@@ -798,7 +803,7 @@ public class GlowChunk implements Chunk {
         } else if (worldTime < TickUtil.TICKS_PER_HOUR) {
             totalTimeFactor = 0;
         } else {
-            totalTimeFactor =  (worldTime - TickUtil.TICKS_PER_HOUR) / 5760000d;
+            totalTimeFactor = (worldTime - TickUtil.TICKS_PER_HOUR) / 5760000d;
         }
 
         double chunkFactor;

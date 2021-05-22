@@ -1,21 +1,19 @@
 package net.glowstone.io.data;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.data.CommandFunction;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.FunctionIoService;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 public class WorldFunctionIoService implements FunctionIoService {
 
-    private static final String FUNCTIONS_DIR_NAME = "functions";
     public static final String FUNCTION_EXT = ".mcfunction";
     public static final int FUNCTION_EXT_LENGTH = FUNCTION_EXT.length();
-
+    private static final String FUNCTIONS_DIR_NAME = "functions";
     private final File dataDir;
     private final GlowWorld world;
 

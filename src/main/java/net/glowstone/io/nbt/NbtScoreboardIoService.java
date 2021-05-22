@@ -1,13 +1,12 @@
 package net.glowstone.io.nbt;
 
+import java.io.File;
+import java.io.IOException;
 import net.glowstone.GlowServer;
 import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.NbtScoreboardIoReader;
 import net.glowstone.scoreboard.NbtScoreboardIoWriter;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * An implementation of the {@link ScoreboardIoService} which reads and writes scoreboards in NBT

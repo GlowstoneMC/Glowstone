@@ -48,8 +48,14 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     @Override
     public Villager.Profession getVillagerProfession() {
         int profession = metadata.containsKey(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION)
-                ? metadata.getInt(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) : 0;
+            ? metadata.getInt(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) : 0;
         return Villager.Profession.values()[profession];
+    }
+
+    @Override
+    public void setVillagerProfession(Villager.Profession profession) {
+        checkNotNull(profession);
+        metadata.set(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION, profession.ordinal());
     }
 
     @Override
@@ -61,12 +67,6 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     public void setVillagerType(@NotNull Villager.Type type) {
         // TODO: 1.16
         throw new UnsupportedOperationException("Not implemented yet.");
-    }
-
-    @Override
-    public void setVillagerProfession(Villager.Profession profession) {
-        checkNotNull(profession);
-        metadata.set(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION, profession.ordinal());
     }
 
     @Override
@@ -101,6 +101,7 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
 
     @Override
     public void setConversionPlayer(@Nullable OfflinePlayer offlinePlayer) {
-        conversionPlayerId = Optional.ofNullable(offlinePlayer).map(OfflinePlayer::getUniqueId).get();
+        conversionPlayerId =
+            Optional.ofNullable(offlinePlayer).map(OfflinePlayer::getUniqueId).get();
     }
 }

@@ -14,8 +14,8 @@ public final class PlayerLookMessage extends PlayerUpdateMessage {
     /**
      * Creates a message to update the direction a player is facing.
      *
-     * @param yaw the yaw angle
-     * @param pitch the pitch angle
+     * @param yaw      the yaw angle
+     * @param pitch    the pitch angle
      * @param onGround whether the player is on the ground
      */
     public PlayerLookMessage(float yaw, float pitch, boolean onGround) {

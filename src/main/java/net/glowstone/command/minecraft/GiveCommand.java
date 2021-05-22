@@ -33,7 +33,7 @@ public class GiveCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -45,7 +45,7 @@ public class GiveCommand extends GlowVanillaCommand {
         Material type = ItemIds.getItem(itemName);
         if (type == null) {
             new LocalizedStringImpl("give.unknown", commandMessages.getResourceBundle())
-                    .sendInColor(ChatColor.RED, sender, itemName);
+                .sendInColor(ChatColor.RED, sender, itemName);
             return false;
         }
         ItemStack stack = new ItemStack(type);
@@ -55,19 +55,19 @@ public class GiveCommand extends GlowVanillaCommand {
                 int amount = Integer.valueOf(amountString);
                 if (amount > 64) {
                     new LocalizedStringImpl("give.too-many",
-                            commandMessages.getResourceBundle())
-                            .sendInColor(ChatColor.RED, sender, amount);
+                        commandMessages.getResourceBundle())
+                        .sendInColor(ChatColor.RED, sender, amount);
                     return false;
                 } else if (amount < 1) {
                     new LocalizedStringImpl("give.too-few",
-                            commandMessages.getResourceBundle())
-                            .sendInColor(ChatColor.RED, sender, amount);
+                        commandMessages.getResourceBundle())
+                        .sendInColor(ChatColor.RED, sender, amount);
                     return false;
                 }
                 stack.setAmount(amount);
             } catch (NumberFormatException ex) {
                 commandMessages.getGeneric(GenericMessage.NAN)
-                        .sendInColor(ChatColor.RED, sender, amountString);
+                    .sendInColor(ChatColor.RED, sender, amountString);
                 return false;
             }
         }
@@ -87,7 +87,7 @@ public class GiveCommand extends GlowVanillaCommand {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
                 commandMessages.getGeneric(GenericMessage.OFFLINE)
-                        .sendInColor(ChatColor.RED, sender, name);
+                    .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 giveItem(sender, player, stack, commandMessages.getResourceBundle());
@@ -97,11 +97,11 @@ public class GiveCommand extends GlowVanillaCommand {
     }
 
     private void giveItem(CommandSender sender, Player player, ItemStack stack,
-            ResourceBundle resourceBundle) {
+                          ResourceBundle resourceBundle) {
         player.getInventory().addItem(stack);
         new LocalizedStringImpl("give.done", resourceBundle)
-                .send(sender, ItemIds.getName(stack.getType()), stack.getAmount(),
-                        player.getName());
+            .send(sender, ItemIds.getName(stack.getType()), stack.getAmount(),
+                player.getName());
     }
 
     @Override

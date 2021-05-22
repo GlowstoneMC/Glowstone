@@ -22,7 +22,7 @@ public class BlockContainer extends BlockType {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         BlockEntity te = block.getBlockEntity();
         if (te instanceof ContainerEntity) {
             switch (((ContainerEntity) te).getInventory().getType()) {
@@ -64,8 +64,8 @@ public class BlockContainer extends BlockType {
 
         MaterialMatcher neededTool = getNeededMiningTool(block);
         if (neededTool == null
-                || !InventoryUtil.isEmpty(tool) && neededTool
-                .matches(InventoryUtil.itemOrEmpty(tool).getType())) {
+            || !InventoryUtil.isEmpty(tool) && neededTool
+            .matches(InventoryUtil.itemOrEmpty(tool).getType())) {
             drops.addAll(getBlockDrops(block));
         }
 
@@ -82,6 +82,7 @@ public class BlockContainer extends BlockType {
 
     /**
      * Returns the contents of a container.
+     *
      * @param block a container block
      * @return the container's contents as ItemStack instances
      */

@@ -31,7 +31,8 @@ public class BlockHopper extends BlockContainer {
 
     /**
      * Sets a hopper to face a given direction.
-     * @param bs the hopper's BlockState
+     *
+     * @param bs   the hopper's BlockState
      * @param face the direction to face
      */
     public void setFacingDirection(BlockState bs, BlockFace face) {
@@ -67,7 +68,7 @@ public class BlockHopper extends BlockContainer {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         setFacingDirection(state, face.getOppositeFace());
         state.getBlock().getWorld().requestPulse(state.getBlock());
@@ -99,10 +100,10 @@ public class BlockHopper extends BlockContainer {
         GlowBlock source = block.getRelative(BlockFace.UP);
         MaterialData data = source.getState().getData();
         if (!source.getType().isSolid()
-                || (data instanceof Step && !((Step) data).isInverted())
-                || (data instanceof WoodenStep && !((WoodenStep) data).isInverted())
-                || (data instanceof Sign)
-                || (data instanceof Rails)) {
+            || (data instanceof Step && !((Step) data).isInverted())
+            || (data instanceof WoodenStep && !((WoodenStep) data).isInverted())
+            || (data instanceof Sign)
+            || (data instanceof Rails)) {
             GlowItem item = getFirstDroppedItem(source.getLocation());
             if (item == null) {
                 return;

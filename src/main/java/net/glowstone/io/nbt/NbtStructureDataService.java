@@ -1,5 +1,11 @@
 package net.glowstone.io.nbt;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
 import net.glowstone.chunk.GlowChunk;
@@ -13,13 +19,6 @@ import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
 import org.bukkit.Server;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 public class NbtStructureDataService implements StructureDataService {
 
     private final GlowWorld world;
@@ -29,7 +28,7 @@ public class NbtStructureDataService implements StructureDataService {
     /**
      * Creates the instance for the given world's structures.
      *
-     * @param world the world
+     * @param world        the world
      * @param structureDir the world's structure-data folder, which is created if it doesn't exist
      */
     public NbtStructureDataService(GlowWorld world, File structureDir) {
@@ -51,15 +50,15 @@ public class NbtStructureDataService implements StructureDataService {
                 try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
                     CompoundTag data = in.readCompound();
                     if (!data.readCompound("data", innerData -> innerData.readCompound(// NON-NLS
-                            "Features", features -> features.getValue().keySet().stream() // NON-NLS
-                                .filter(features::isCompound)
-                                .forEach(key -> {
-                                    GlowStructure structure = StructureStorage
-                                        .loadStructure(world, features.getCompound(key));
-                                    structures.put(GlowChunk.Key
-                                        .of(structure.getChunkX(), structure.getChunkZ())
-                                        .hashCode(), structure);
-                                })))) {
+                        "Features", features -> features.getValue().keySet().stream() // NON-NLS
+                            .filter(features::isCompound)
+                            .forEach(key -> {
+                                GlowStructure structure = StructureStorage
+                                    .loadStructure(world, features.getCompound(key));
+                                structures.put(GlowChunk.Key
+                                    .of(structure.getChunkX(), structure.getChunkZ())
+                                    .hashCode(), structure);
+                            })))) {
                         ConsoleMessages.Error.Structure.NO_DATA.log(structureFile);
                     }
                 } catch (IOException e) {
@@ -83,16 +82,16 @@ public class NbtStructureDataService implements StructureDataService {
                 File structureFile = new File(structureDir, store.getId() + ".dat");
                 if (structureFile.exists()) {
                     try (NbtInputStream in = new NbtInputStream(
-                            new FileInputStream(structureFile))) {
+                        new FileInputStream(structureFile))) {
                         inputRoot = in.readCompound();
                         data = inputRoot.tryGetCompound("data") // NON-NLS
-                                .orElseGet(CompoundTag::new);
+                            .orElseGet(CompoundTag::new);
                     } catch (IOException e) {
                         ConsoleMessages.Error.Structure.LOAD_FAILED.log(e, structureFile);
                         data = new CompoundTag();
                     }
                     features = data.tryGetCompound("Features") // NON-NLS
-                            .orElseGet(CompoundTag::new);
+                        .orElseGet(CompoundTag::new);
                 } else {
                     data = new CompoundTag();
                     features = new CompoundTag();

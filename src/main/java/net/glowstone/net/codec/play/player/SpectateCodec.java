@@ -2,11 +2,10 @@ package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.player.SpectateMessage;
-
 import java.io.IOException;
 import java.util.UUID;
+import net.glowstone.net.GlowBufUtils;
+import net.glowstone.net.message.play.player.SpectateMessage;
 
 public final class SpectateCodec implements Codec<SpectateMessage> {
 

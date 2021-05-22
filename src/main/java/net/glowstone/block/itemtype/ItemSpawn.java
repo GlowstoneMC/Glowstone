@@ -20,7 +20,7 @@ public class ItemSpawn extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         Location location = against.getLocation()
             .add(face.getModX(), face.getModY(), face.getModZ());
         // TODO: change mob spawner when clicked by monster egg

@@ -37,14 +37,14 @@ public class EntityManager implements Iterable<GlowEntity> {
      * A map of entity types to a set containing all entities of that type.
      */
     private final Multimap<Class<? extends GlowEntity>, GlowEntity> groupedEntities
-            = newSetMultimap(new ConcurrentHashMap<>(),
-                    Sets::newConcurrentHashSet);
+        = newSetMultimap(new ConcurrentHashMap<>(),
+        Sets::newConcurrentHashSet);
 
     /**
      * Returns all entities with the specified type.
      *
      * @param type The {@link Class} for the type.
-     * @param <T> The type of entity.
+     * @param <T>  The type of entity.
      * @return A collection of entities with the specified type.
      */
     @SuppressWarnings("unchecked")
@@ -89,7 +89,7 @@ public class EntityManager implements Iterable<GlowEntity> {
         groupedEntities.put(entity.getClass(), entity);
         ((GlowChunk) entity.location.getChunk()).getRawEntities().add(entity);
         EventFactory.getInstance().callEvent(
-                new EntityAddToWorldEvent(entity)
+            new EntityAddToWorldEvent(entity)
         );
     }
 
@@ -108,7 +108,7 @@ public class EntityManager implements Iterable<GlowEntity> {
     /**
      * Notes that an entity has moved from one location to another for physics and storage purposes.
      *
-     * @param entity The entity.
+     * @param entity      The entity.
      * @param newLocation The new location.
      */
     void move(GlowEntity entity, Location newLocation) {
@@ -128,8 +128,9 @@ public class EntityManager implements Iterable<GlowEntity> {
     /**
      * Returns all entities that are inside or partly inside the given bounding box, with optionally
      * one exception.
+     *
      * @param searchBox the bounding box to search inside
-     * @param except the entity to exclude, or null to include all
+     * @param except    the entity to exclude, or null to include all
      * @return the entities contained in or touching {@code searchBox}, other than {@code except}
      */
     public List<Entity> getEntitiesInside(BoundingBox searchBox, GlowEntity except) {

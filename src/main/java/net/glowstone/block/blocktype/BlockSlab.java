@@ -19,7 +19,7 @@ public class BlockSlab extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         Material blockType = state.getBlock().getType();
         // TODO: 1.13 block type double
@@ -40,7 +40,7 @@ public class BlockSlab extends BlockType {
     }
 
     private boolean matchingType(GlowBlock block, BlockFace face, ItemStack holding,
-        boolean ignoreFace) {
+                                 boolean ignoreFace) {
         if (holding == null) {
             return false;
         }
@@ -49,10 +49,10 @@ public class BlockSlab extends BlockType {
         byte holdingData = holding.getData().getData();
         // TODO: 1.13 new slab types
         return (blockType.name().contains("SLAB"))
-                && blockType == holding.getType()
-                && (face == BlockFace.UP && blockData == holdingData
-                        || face == BlockFace.DOWN && blockData - 8 == holdingData
-                        || ignoreFace && blockData % 8 == holdingData);
+            && blockType == holding.getType()
+            && (face == BlockFace.UP && blockData == holdingData
+            || face == BlockFace.DOWN && blockData - 8 == holdingData
+            || ignoreFace && blockData % 8 == holdingData);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class BlockSlab extends BlockType {
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         // todo: 1.13 new slab types
         if (block.getType() == Material.LEGACY_WOOD_STEP
-                || tool != null && ToolType.PICKAXE.matches(tool.getType())) {
+            || tool != null && ToolType.PICKAXE.matches(tool.getType())) {
             return getMinedDrops(block);
         }
         return Collections.emptyList();

@@ -112,7 +112,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      */
     protected boolean fireEntityTameEvent(AnimalTamer owner) {
         return !EventFactory.getInstance().callEvent(
-                new EntityTameEvent(this, owner)
+            new EntityTameEvent(this, owner)
         ).isCancelled();
     }
 }

@@ -3,11 +3,10 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.net.message.play.game.ExplosionMessage;
-import net.glowstone.net.message.play.game.ExplosionMessage.Record;
-
 import java.io.IOException;
 import java.util.Collection;
+import net.glowstone.net.message.play.game.ExplosionMessage;
+import net.glowstone.net.message.play.game.ExplosionMessage.Record;
 
 public class ExplosionCodec implements Codec<ExplosionMessage> {
 

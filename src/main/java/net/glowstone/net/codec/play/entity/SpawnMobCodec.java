@@ -3,13 +3,12 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.entity.meta.MetadataMap.Entry;
-import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.entity.SpawnMobMessage;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+import net.glowstone.entity.meta.MetadataMap.Entry;
+import net.glowstone.net.GlowBufUtils;
+import net.glowstone.net.message.play.entity.SpawnMobMessage;
 
 public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
 
@@ -18,7 +17,6 @@ public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
         int id = ByteBufUtils.readVarInt(buf);
         UUID uuid = GlowBufUtils.readUuid(buf);
         int type = ByteBufUtils.readVarInt(buf);
-        ;
         double x = buf.readDouble();
         double y = buf.readDouble();
         double z = buf.readDouble();

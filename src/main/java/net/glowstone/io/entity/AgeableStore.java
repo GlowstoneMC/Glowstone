@@ -1,15 +1,14 @@
 package net.glowstone.io.entity;
 
+import java.util.function.Function;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
-import java.util.function.Function;
-
 public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
 
-    private Function<Location, ? extends T> creator;
+    private final Function<Location, ? extends T> creator;
 
     public AgeableStore(Class<T> clazz, EntityType type, Function<Location, ? extends T> creator) {
         super(clazz, type);

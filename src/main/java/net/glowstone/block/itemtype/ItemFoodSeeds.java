@@ -22,9 +22,9 @@ public class ItemFoodSeeds extends ItemFood {
     /**
      * Creates an instance.
      *
-     * @param cropsType this item's block form
-     * @param soilType the type of block this can be planted on
-     * @param food the amount of hunger this food fills, in half icons
+     * @param cropsType  this item's block form
+     * @param soilType   the type of block this can be planted on
+     * @param food       the amount of hunger this food fills, in half icons
      * @param saturation the amount of saturation this food grants, in half icons saved
      */
     public ItemFoodSeeds(Material cropsType, Material soilType, int food, float saturation) {
@@ -35,7 +35,7 @@ public class ItemFoodSeeds extends ItemFood {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (target.getType() == soilType
             && target.getRelative(BlockFace.UP).getType() == Material.AIR && face == BlockFace.UP) {
             GlowBlockState state = target.getRelative(BlockFace.UP).getState();

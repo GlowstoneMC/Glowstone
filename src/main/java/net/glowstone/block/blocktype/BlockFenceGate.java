@@ -43,7 +43,7 @@ public class BlockFenceGate extends BlockOpenable {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData materialData = state.getData();
@@ -59,7 +59,7 @@ public class BlockFenceGate extends BlockOpenable {
 
     @Override
     protected void onOpened(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc,
-        GlowBlockState state, MaterialData materialData) {
+                            GlowBlockState state, MaterialData materialData) {
         if (materialData instanceof Gate) {
             Gate gate = (Gate) materialData;
             gate.setFacingDirection(

@@ -25,7 +25,7 @@ public class XpCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -37,7 +37,7 @@ public class XpCommand extends GlowVanillaCommand {
         String stringAmount = args[0];
         final String playerPattern = (args.length > 1) ? args[1] : null;
         final boolean addLevels = stringAmount.endsWith("l") // NON-NLS
-                || stringAmount.endsWith("L"); // NON-NLS
+            || stringAmount.endsWith("L"); // NON-NLS
         int amount;
         List<Player> targets;
 
@@ -64,7 +64,7 @@ public class XpCommand extends GlowVanillaCommand {
 
         // Handle the player(s)
         if (playerPattern != null && playerPattern.startsWith("@") && playerPattern.length() > 1
-                && CommandUtils.isPhysical(sender)) {
+            && CommandUtils.isPhysical(sender)) {
             final Location location = sender instanceof Entity ? ((Entity) sender).getLocation()
                 : ((BlockCommandSender) sender).getBlock().getLocation();
             final Entity[] entities = new CommandTarget(sender, args[1]).getMatched(location);
@@ -86,7 +86,7 @@ public class XpCommand extends GlowVanillaCommand {
 
             if (player == null) {
                 commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                        .sendInColor(ChatColor.RED, sender, playerPattern);
+                    .sendInColor(ChatColor.RED, sender, playerPattern);
                 return false;
             } else {
                 targets = Collections.singletonList(player);
@@ -95,7 +95,7 @@ public class XpCommand extends GlowVanillaCommand {
 
         if (targets.isEmpty()) {
             commandMessages.getGeneric(GenericMessage.NO_MATCHES)
-                    .sendInColor(ChatColor.RED, sender, playerPattern);
+                .sendInColor(ChatColor.RED, sender, playerPattern);
             return false;
         }
 

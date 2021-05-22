@@ -1,9 +1,8 @@
 package net.glowstone.block.state;
 
 import com.google.common.collect.Maps;
-import lombok.Getter;
-
 import java.util.Map;
+import lombok.Getter;
 
 public class BlockStateData {
 

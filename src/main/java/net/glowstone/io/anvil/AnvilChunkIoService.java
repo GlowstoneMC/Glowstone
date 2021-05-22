@@ -1,5 +1,10 @@
 package net.glowstone.io.anvil;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -19,12 +24,6 @@ import net.glowstone.util.nbt.NbtOutputStream;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An implementation of the {@link ChunkIoService} which reads and writes Anvil maps, an improvement
@@ -125,13 +124,13 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 } catch (Exception ex) {
                     String id = blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
                     ConsoleMessages.Error.BlockEntity.LOAD_FAILED.log(
-                            ex, blockEntity.getBlock(), id);
+                        ex, blockEntity.getBlock(), id);
                 }
             } else {
                 String id =
-                        blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
+                    blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
                 ConsoleMessages.Warn.BlockEntity.UNKNOWN.log(
-                        chunk.getWorld().getName(), tx, ty, tz, id);
+                    chunk.getWorld().getName(), tx, ty, tz, id);
             }
         }
 

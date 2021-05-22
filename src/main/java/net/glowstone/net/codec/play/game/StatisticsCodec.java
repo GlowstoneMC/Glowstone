@@ -4,13 +4,12 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.constants.GlowStatistic;
-import net.glowstone.net.message.play.game.StatisticsMessage;
-import org.bukkit.Statistic;
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.glowstone.constants.GlowStatistic;
+import net.glowstone.net.message.play.game.StatisticsMessage;
+import org.bukkit.Statistic;
 
 public final class StatisticsCodec implements Codec<StatisticsMessage> {
 

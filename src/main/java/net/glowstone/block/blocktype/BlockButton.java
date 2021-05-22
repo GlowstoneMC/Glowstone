@@ -21,7 +21,7 @@ public class BlockButton extends BlockAttachable {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();
 
@@ -51,7 +51,8 @@ public class BlockButton extends BlockAttachable {
                     || block.getType() == Material.STONE_BUTTON) {
                     extraUpdate(block);
                     block.getWorld().playSound(block.getLocation(),
-                        block.getType() == Material.LEGACY_WOOD_BUTTON ? Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF
+                        block.getType() == Material.LEGACY_WOOD_BUTTON ?
+                            Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF
                             : Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 0.3f, 0.5f);
                 }
             }
@@ -82,7 +83,7 @@ public class BlockButton extends BlockAttachable {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData data = state.getData();

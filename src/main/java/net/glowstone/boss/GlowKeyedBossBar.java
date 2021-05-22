@@ -11,8 +11,9 @@ public class GlowKeyedBossBar extends GlowBossBar implements KeyedBossBar {
     @Getter
     private final NamespacedKey key;
 
-    public GlowKeyedBossBar(NamespacedKey key, String title, BarColor color, BarStyle style, double progress,
-            BarFlag... flags) {
+    public GlowKeyedBossBar(NamespacedKey key, String title, BarColor color, BarStyle style,
+                            double progress,
+                            BarFlag... flags) {
         super(title, color, style, progress, flags);
         this.key = key;
     }

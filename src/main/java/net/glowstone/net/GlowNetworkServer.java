@@ -1,12 +1,11 @@
 package net.glowstone.net;
 
 import io.netty.channel.ChannelFuture;
+import java.net.InetSocketAddress;
+import java.util.concurrent.CountDownLatch;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.net.protocol.ProtocolProvider;
-
-import java.net.InetSocketAddress;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Represents a network server.
@@ -25,8 +24,8 @@ public abstract class GlowNetworkServer {
      * Creates an instance for the specified server.
      *
      * @param server the associated GlowServer
-     * @param latch The countdown latch used during server startup to wait for network server
-     *         binding.
+     * @param latch  The countdown latch used during server startup to wait for network server
+     *               binding.
      */
     public GlowNetworkServer(GlowServer server, ProtocolProvider protocolProvider,
                              CountDownLatch latch) {

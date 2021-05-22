@@ -49,8 +49,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     /**
      * Creates a new ageable creature.
      *
-     * @param location The location of the creature.
-     * @param type The type of monster.
+     * @param location  The location of the creature.
+     * @param type      The type of monster.
      * @param maxHealth The max health of the creature.
      */
     public GlowAgeable(Location location, EntityType type, double maxHealth) {
@@ -76,7 +76,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
         if (love > 0) {
             setLoveModeTicks(love - 1);
             if (love % 20 == 0) {
-                world.spawnParticle(Particle.HEART, location, 1, 0, (float) (getHeight() + 0.5), 0, 1);
+                world.spawnParticle(Particle.HEART, location, 1, 0, (float) (getHeight() + 0.5), 0,
+                    1);
             }
             // TODO: Search for a mate if in MobState.IDLE
         }
@@ -157,7 +158,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (!super.entityInteract(player, message)
-                && message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+            && message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
             ItemStack item = InventoryUtil
                 .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
             int growthAmount = computeGrowthAmount(item.getType());
@@ -179,7 +180,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
                 grow(growthAmount);
                 world.spawnParticle(Particle.VILLAGER_HAPPY, location, 5);
                 if (player.getGameMode() == GameMode.SURVIVAL
-                        || player.getGameMode() == GameMode.ADVENTURE) {
+                    || player.getGameMode() == GameMode.ADVENTURE) {
                     player.getInventory().consumeItemInHand(message.getHandSlot());
                 }
                 return true;

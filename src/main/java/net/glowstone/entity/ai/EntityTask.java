@@ -66,7 +66,7 @@ public abstract class EntityTask implements Comparable<EntityTask> {
         if (!executing && shouldStart(entity)) {
             duration = getDurationMin() == getDurationMax() ? getDurationMin()
                 : ThreadLocalRandom.current().nextInt(getDurationMax() - getDurationMin())
-                    + getDurationMin();
+                + getDurationMin();
             executing = true;
             start(entity);
         }

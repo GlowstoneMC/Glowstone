@@ -274,7 +274,7 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x06, TabCompleteMessage.class, TabCompleteCodec.class, TabCompleteHandler.class);
         inbound(0x07, TransactionMessage.class, TransactionCodec.class, TransactionHandler.class);
         inbound(0x08, ClickWindowButtonMessage.class, ClickWindowButtonCodec.class,
-                ClickWindowButtonHandler.class);
+            ClickWindowButtonHandler.class);
         inbound(0x09, WindowClickMessage.class, WindowClickCodec.class, WindowClickHandler.class);
         inbound(0x0A, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);
         inbound(0x0B, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
@@ -291,7 +291,7 @@ public class PlayProtocol extends GlowProtocol {
             PlayerUpdateHandler.class);
         inbound(0x14, PlayerLookMessage.class, PlayerLookCodec.class, PlayerUpdateHandler.class);
         inbound(0x15, PlayerUpdateMessage.class, PlayerUpdateCodec.class,
-                PlayerUpdateHandler.class);
+            PlayerUpdateHandler.class);
         inbound(0x16, VehicleMoveMessage.class, VehicleMoveCodec.class, VehicleMoveHandler.class);
         inbound(0x17, SteerBoatMessage.class, SteerBoatCodec.class, SteerBoatHandler.class);
         // TODO 0x18 : Pick Item (see https://wiki.vg/Protocol#Pick_Item)
@@ -304,15 +304,18 @@ public class PlayProtocol extends GlowProtocol {
             PlayerActionHandler.class);
         inbound(0x1D, SteerVehicleMessage.class, SteerVehicleCodec.class,
             SteerVehicleHandler.class);
-        inbound(0x1E, DisplayedRecipeMessage.class, DisplayedRecipeCodec.class, DisplayedRecipeHandler.class);
-        inbound(0x1F, RecipeBookStateMessage.class, RecipeBookStateCodec.class, RecipeBookStateHandler.class);
+        inbound(0x1E, DisplayedRecipeMessage.class, DisplayedRecipeCodec.class,
+            DisplayedRecipeHandler.class);
+        inbound(0x1F, RecipeBookStateMessage.class, RecipeBookStateCodec.class,
+            RecipeBookStateHandler.class);
         inbound(0x20, NameItemMessage.class, NameItemCodec.class, NameItemHandler.class);
         inbound(0x21, ResourcePackStatusMessage.class, ResourcePackStatusCodec.class,
             ResourcePackStatusHandler.class);
         inbound(0x22, AdvancementTabMessage.class, AdvancementTabCodec.class,
             AdvancementTabHandler.class);
         // TODO 0x23 : Select Trade (when a player selects a specific trade in a villager GUI)
-        inbound(0x24, BeaconEffectMessage.class, BeaconEffectCodec.class, BeaconEffectHandler.class);
+        inbound(0x24, BeaconEffectMessage.class, BeaconEffectCodec.class,
+            BeaconEffectHandler.class);
         inbound(0x25, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
         // TODO 0x26 : Update Command Block
         // TODO 0x27 : Update Command Block Minecart

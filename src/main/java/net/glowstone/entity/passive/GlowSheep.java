@@ -96,7 +96,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                         return false;
                     }
                     PlayerShearEntityEvent shearEvent = EventFactory.getInstance().callEvent(
-                            new PlayerShearEntityEvent(player, this)
+                        new PlayerShearEntityEvent(player, this)
                     );
                     if (shearEvent.isCancelled()) {
                         return false;
@@ -115,7 +115,8 @@ public class GlowSheep extends GlowAnimal implements Sheep {
 
                     getWorld().dropItemNaturally(getLocation(),
                         // TODO: 1.13 wool colors
-                        new ItemStack(Material.LEGACY_WOOL, ThreadLocalRandom.current().nextInt(3) + 1,
+                        new ItemStack(Material.LEGACY_WOOL,
+                            ThreadLocalRandom.current().nextInt(3) + 1,
                             getColor().getWoolData()));
 
                     setSheared(true);
@@ -125,7 +126,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     DyeColor color = dye.getColor();
 
                     SheepDyeWoolEvent dyeEvent = EventFactory.getInstance().callEvent(
-                            new SheepDyeWoolEvent(this, color));
+                        new SheepDyeWoolEvent(this, color));
                     if (dyeEvent.isCancelled()) {
                         metadata.set(MetadataIndex.SHEEP_DATA, getColorByte(), true);
                         player.updateInventory();

@@ -2,6 +2,20 @@ package net.glowstone.net.handler.login;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.flowpowered.network.MessageHandler;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import lombok.AllArgsConstructor;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
@@ -19,26 +33,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.net.URLEncoder;
-import java.security.GeneralSecurityException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-
 public final class EncryptionKeyResponseHandler implements
     MessageHandler<GlowSession, EncryptionKeyResponseMessage> {
 
     private static final String BASE_URL =
-            "https://sessionserver.mojang.com/session/minecraft/hasJoined";
+        "https://sessionserver.mojang.com/session/minecraft/hasJoined";
     private static final JSONParser PARSER = new JSONParser();
 
     private final HttpClient httpClient;
@@ -66,7 +65,7 @@ public final class EncryptionKeyResponseHandler implements
         try {
             rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
             sharedSecret = new SecretKeySpec(rsaCipher.doFinal(message.getSharedSecret()),
-                    "AES"); // NON-NLS
+                "AES"); // NON-NLS
         } catch (Exception ex) {
             ConsoleMessages.Warn.Crypt.BAD_SHARED_SECRET.log(ex);
             session.disconnect(GlowstoneMessages.Kick.Crypt.SHARED_SECRET.get());
@@ -110,7 +109,7 @@ public final class EncryptionKeyResponseHandler implements
         }
 
         String url = BASE_URL + "?username=" + session.getVerifyUsername() // NON-NLS
-                + "&serverId=" + hash; // NON-NLS
+            + "&serverId=" + hash; // NON-NLS
         if (session.getServer().shouldPreventProxy()) {
             try {
                 // in case we are dealing with an IPv6 address rather than an IPv4 we have to encode
@@ -178,7 +177,7 @@ public final class EncryptionKeyResponseHandler implements
 
             // spawn player
             session.getServer().getScheduler().runTask(null, () -> session.setPlayer(
-                    new GlowPlayerProfile(name, uuid, properties, true)));
+                new GlowPlayerProfile(name, uuid, properties, true)));
         }
 
         @Override

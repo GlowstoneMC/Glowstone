@@ -55,7 +55,7 @@ public class ItemFood extends ItemTimedUsage {
      * Player attempts to eat this food.
      *
      * @param player the eating player
-     * @param item the item stack eaten from
+     * @param item   the item stack eaten from
      * @return whether food was eaten successfully
      */
     public boolean eat(GlowPlayer player, ItemStack item) {

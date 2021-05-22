@@ -27,7 +27,7 @@ public class ItemFilledBucket extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         GlowBlock target = against.getRelative(face);
         BlockType againstBlockType = ItemTable.instance().getBlock(against.getType());
 

@@ -3,11 +3,10 @@ package net.glowstone.net.codec.play.inv;
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
+import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.inv.SetWindowContentsMessage;
 import org.bukkit.inventory.ItemStack;
-
-import java.io.IOException;
 
 public final class SetWindowContentsCodec implements Codec<SetWindowContentsMessage> {
 

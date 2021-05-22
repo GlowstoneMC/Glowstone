@@ -25,7 +25,7 @@ import org.bukkit.util.StringUtil;
 public class PlaySoundCommand extends GlowVanillaCommand {
 
     private static final List<String> SOURCES = Arrays.stream(SoundCategory.values())
-            .map(SoundCategory::name).map(String::toLowerCase).collect(Collectors.toList());
+        .map(SoundCategory::name).map(String::toLowerCase).collect(Collectors.toList());
 
     private static final Set<String> SOUNDS = GlowSound.getSounds().keySet();
 
@@ -39,7 +39,7 @@ public class PlaySoundCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -64,30 +64,30 @@ public class PlaySoundCommand extends GlowVanillaCommand {
 
         if (sound == null) {
             new LocalizedStringImpl("playsound.invalid", commandMessages.getResourceBundle())
-                    .sendInColor(ChatColor.RED, sender, stringSound);
+                .sendInColor(ChatColor.RED, sender, stringSound);
             return false;
         }
 
         if (soundCategory == null) {
             new LocalizedStringImpl("playsound.invalid.category",
-                    commandMessages.getResourceBundle())
-                    .sendInColor(ChatColor.RED, sender, stringCategory);
+                commandMessages.getResourceBundle())
+                .sendInColor(ChatColor.RED, sender, stringCategory);
             return false;
         }
 
         // Manage player(s)
         if (playerPattern.startsWith("@") && playerPattern.length() > 1 && CommandUtils
-                .isPhysical(sender)) { // Manage selectors
+            .isPhysical(sender)) { // Manage selectors
             final Location senderLocation = CommandUtils.getLocation(sender);
             final Entity[] entities = new CommandTarget(sender, args[0]).getMatched(senderLocation);
             targets = Arrays.stream(entities).filter(GlowPlayer.class::isInstance)
-                    .map(GlowPlayer.class::cast).collect(Collectors.toList());
+                .map(GlowPlayer.class::cast).collect(Collectors.toList());
         } else {
             final GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(playerPattern);
 
             if (player == null) {
                 commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                        .sendInColor(ChatColor.RED, sender, playerPattern);
+                    .sendInColor(ChatColor.RED, sender, playerPattern);
                 return false;
             } else {
                 targets = Collections.singletonList(player);
@@ -100,13 +100,13 @@ public class PlaySoundCommand extends GlowVanillaCommand {
 
                 if (minimumVolume < 0 || minimumVolume > 1) {
                     new LocalizedStringImpl("playsound.invalid.volume",
-                            commandMessages.getResourceBundle())
-                            .sendInColor(ChatColor.RED, sender, args[8]);
+                        commandMessages.getResourceBundle())
+                        .sendInColor(ChatColor.RED, sender, args[8]);
                     return false;
                 }
             } catch (final NumberFormatException n) {
                 commandMessages.getGeneric(GenericMessage.NAN)
-                        .sendInColor(ChatColor.RED, sender, args[8]);
+                    .sendInColor(ChatColor.RED, sender, args[8]);
                 return false;
             }
         }
@@ -117,8 +117,8 @@ public class PlaySoundCommand extends GlowVanillaCommand {
 
                 if (pitch < 0 || pitch > 2) {
                     new LocalizedStringImpl("playsound.invalid.pitch",
-                            commandMessages.getResourceBundle())
-                            .sendInColor(ChatColor.RED, sender, args[7]);
+                        commandMessages.getResourceBundle())
+                        .sendInColor(ChatColor.RED, sender, args[7]);
                     return false;
                 } else if (pitch < 0.5) {
                     pitch = 0.5;
@@ -126,7 +126,7 @@ public class PlaySoundCommand extends GlowVanillaCommand {
 
             } catch (final NumberFormatException n) {
                 commandMessages.getGeneric(GenericMessage.NAN)
-                        .sendInColor(ChatColor.RED, sender, args[7]);
+                    .sendInColor(ChatColor.RED, sender, args[7]);
                 return false;
             }
         }
@@ -136,14 +136,14 @@ public class PlaySoundCommand extends GlowVanillaCommand {
                 volume = Double.valueOf(args[6]);
             } catch (final NumberFormatException n) {
                 commandMessages.getGeneric(GenericMessage.NAN)
-                        .sendInColor(ChatColor.RED, sender, args[6]);
+                    .sendInColor(ChatColor.RED, sender, args[6]);
                 return false;
             }
         }
 
         if (args.length >= 6) {
             relativeLocation =
-                    args[3].startsWith("~") || args[4].startsWith("~") || args[5].startsWith("~");
+                args[3].startsWith("~") || args[4].startsWith("~") || args[5].startsWith("~");
         }
 
         for (final GlowPlayer target : targets) {
@@ -154,17 +154,17 @@ public class PlaySoundCommand extends GlowVanillaCommand {
             try {
                 if (relativeLocation) {
                     soundLocation = CommandUtils
-                            .getLocation(targetLocation, args[3], args[4], args[5]);
+                        .getLocation(targetLocation, args[3], args[4], args[5]);
                 } else if (args.length >= 6) {
                     soundLocation = CommandUtils
-                            .getLocation(new Location(world, 0, 0, 0), args[3], args[4], args[5]);
+                        .getLocation(new Location(world, 0, 0, 0), args[3], args[4], args[5]);
                 } else {
                     soundLocation = targetLocation;
                 }
             } catch (final NumberFormatException n) {
                 new LocalizedStringImpl("playsound.invalid.position",
-                        commandMessages.getResourceBundle())
-                        .sendInColor(ChatColor.RED, sender, args[3], args[4], args[5]);
+                    commandMessages.getResourceBundle())
+                    .sendInColor(ChatColor.RED, sender, args[3], args[4], args[5]);
                 return false;
             }
 
@@ -172,15 +172,15 @@ public class PlaySoundCommand extends GlowVanillaCommand {
             if (targetLocation.distanceSquared(soundLocation) > Math.pow(volume, 2)) {
                 if (minimumVolume <= 0) {
                     new LocalizedStringImpl("playsound.too-far",
-                            commandMessages.getResourceBundle())
-                            .sendInColor(ChatColor.RED, sender, target.getName());
+                        commandMessages.getResourceBundle())
+                        .sendInColor(ChatColor.RED, sender, target.getName());
                     return false;
                 } else {
                     final double deltaX = soundLocation.getX() - targetLocation.getX();
                     final double deltaY = soundLocation.getX() - targetLocation.getY();
                     final double deltaZ = soundLocation.getX() - targetLocation.getZ();
                     final double delta = Math
-                            .sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2) + Math.pow(deltaZ, 2));
+                        .sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2) + Math.pow(deltaZ, 2));
 
                     soundLocation = targetLocation;
                     soundLocation.add(deltaX / delta, deltaY / delta, deltaZ / delta);
@@ -189,7 +189,7 @@ public class PlaySoundCommand extends GlowVanillaCommand {
             }
 
             target.playSound(soundLocation, sound, soundCategory, (float) targetVolume,
-                    (float) pitch);
+                (float) pitch);
         }
 
         return true;
@@ -197,7 +197,7 @@ public class PlaySoundCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args == null) {
             return Collections.emptyList();
         } else if (args.length == 1) {

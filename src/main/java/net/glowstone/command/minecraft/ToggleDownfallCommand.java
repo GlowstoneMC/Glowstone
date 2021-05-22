@@ -20,7 +20,7 @@ public class ToggleDownfallCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -30,14 +30,14 @@ public class ToggleDownfallCommand extends GlowVanillaCommand {
         world.setThundering(!world.hasStorm());
         world.setStorm(!world.hasStorm());
         new LocalizedStringImpl("toggledownfall.done", commandMessages.getResourceBundle())
-                .send(sender);
+            .send(sender);
 
         return true;
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         return Collections.emptyList();
     }
 }

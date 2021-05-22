@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -13,14 +15,11 @@ import org.bukkit.material.Tree;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 public class BlockLog extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData data = state.getData();
@@ -37,7 +36,8 @@ public class BlockLog extends BlockType {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         // TODO: 1.13 log types
-        return Arrays.asList(new ItemStack(Material.LEGACY_LOG, 1, (short) (block.getData() & 0x03)));
+        return Arrays
+            .asList(new ItemStack(Material.LEGACY_LOG, 1, (short) (block.getData() & 0x03)));
     }
 
     @Override
@@ -49,7 +49,8 @@ public class BlockLog extends BlockType {
                 for (int y = 0; y < 9; y++) {
                     GlowBlock b = world.getBlockAt(block.getLocation().add(x - 4, y - 4, z - 4));
                     // TODO: 1.13 leaves types
-                    if (b.getType() == Material.LEGACY_LEAVES || b.getType() == Material.LEGACY_LEAVES_2) {
+                    if (b.getType() == Material.LEGACY_LEAVES ||
+                        b.getType() == Material.LEGACY_LEAVES_2) {
                         GlowBlockState state = b.getState();
                         if ((state.getRawData() & 0x08) == 0 && (state.getRawData() & 0x04)
                             == 0) { // check decay is off and decay is on

@@ -1,8 +1,7 @@
 package net.glowstone.io;
 
-import net.glowstone.chunk.GlowChunk;
-
 import java.io.IOException;
+import net.glowstone.chunk.GlowChunk;
 
 /**
  * Provider of chunk I/O services.

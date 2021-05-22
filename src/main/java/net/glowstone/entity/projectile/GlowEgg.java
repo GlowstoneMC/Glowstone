@@ -95,8 +95,8 @@ public class GlowEgg extends GlowProjectile implements Egg {
         final ProjectileSource shooter = getShooter();
         if (shooter instanceof GlowPlayer) {
             PlayerEggThrowEvent event = EventFactory.getInstance().callEvent(
-                    new PlayerEggThrowEvent((GlowPlayer) shooter, this,
-                            hatching, amount, hatchingType));
+                new PlayerEggThrowEvent((GlowPlayer) shooter, this,
+                    hatching, amount, hatchingType));
 
             amount = event.getNumHatches();
             hatching = event.isHatching();
@@ -106,8 +106,8 @@ public class GlowEgg extends GlowProjectile implements Egg {
         if (hatching) {
             for (int i = 0; i < amount; i++) {
                 GlowEntity entity =
-                        (GlowEntity) location.getWorld().spawnEntity(
-                                location.clone().add(0, 0.3, 0), hatchingType);
+                    (GlowEntity) location.getWorld().spawnEntity(
+                        location.clone().add(0, 0.3, 0), hatchingType);
                 if (entity instanceof GlowAgeable) {
                     ((GlowAgeable) entity).setBaby();
                 }

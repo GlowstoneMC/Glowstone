@@ -24,7 +24,7 @@ public class TimeCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -95,14 +95,14 @@ public class TimeCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length == 1) {
             return StringUtil
-                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
+                .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
         }
         if (args.length == 2 && args[0].equals("set")) {
             return StringUtil
-                    .copyPartialMatches(args[1], TIMES, new ArrayList<>(TIMES.size()));
+                .copyPartialMatches(args[1], TIMES, new ArrayList<>(TIMES.size()));
         }
         return Collections.emptyList();
     }

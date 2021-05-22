@@ -1,18 +1,16 @@
 package net.glowstone.io.entity;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static net.glowstone.entity.passive.GlowVillager.getRandomProfession;
+
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.monster.GlowZombie;
 import net.glowstone.entity.monster.GlowZombieVillager;
 import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
-
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static net.glowstone.entity.passive.GlowVillager.getRandomProfession;
 
 public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
 
@@ -28,12 +26,12 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
         GlowZombieVillager entity = (GlowZombieVillager) zombie;
         super.load(entity, compound);
         entity.setVillagerProfession(compound.tryGetInt("Profession")
-                .filter(GlowVillager::isValidProfession)
-                .map(GlowVillager::getProfessionById)
-                .orElseGet(() -> getRandomProfession(ThreadLocalRandom.current())));
+            .filter(GlowVillager::isValidProfession)
+            .map(GlowVillager::getProfessionById)
+            .orElseGet(() -> getRandomProfession(ThreadLocalRandom.current())));
         entity.setConversionTime(compound.tryGetInt("ConversionTime").orElse(-1));
         compound.readUuid("ConversionPlayerMost", "ConversionPlayerLeast",
-                entity::setConversionPlayerId);
+            entity::setConversionPlayerId);
     }
 
     @Override

@@ -22,7 +22,7 @@ public class DefaultGameModeCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages messages) {
+                           CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
@@ -38,20 +38,20 @@ public class DefaultGameModeCommand extends GlowVanillaCommand {
 
         if (gamemode == null) {
             new LocalizedStringImpl("defaultgamemode.unknown", bundle)
-                    .sendInColor(ChatColor.RED, sender, inputMode);
+                .sendInColor(ChatColor.RED, sender, inputMode);
             return false;
         }
 
         ServerProvider.getServer().setDefaultGameMode(gamemode);
         new LocalizedStringImpl("defaultgamemode.done", bundle).send(sender,
-                ChatColor.GRAY + "" + ChatColor.ITALIC
-                        + GameModeUtils.prettyPrint(gamemode, messages.getLocale()));
+            ChatColor.GRAY + "" + ChatColor.ITALIC
+                + GameModeUtils.prettyPrint(gamemode, messages.getLocale()));
         return true;
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length == 1) {
             return GameModeUtils.partialMatchingGameModes(args[0], getBundle(sender).getLocale());
         } else {

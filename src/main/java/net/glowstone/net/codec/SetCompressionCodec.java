@@ -3,9 +3,8 @@ package net.glowstone.net.codec;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.SetCompressionMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.SetCompressionMessage;
 
 public final class SetCompressionCodec implements Codec<SetCompressionMessage> {
 

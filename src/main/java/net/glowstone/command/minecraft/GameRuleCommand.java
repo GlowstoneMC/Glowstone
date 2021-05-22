@@ -24,7 +24,7 @@ public class GameRuleCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -44,7 +44,7 @@ public class GameRuleCommand extends GlowVanillaCommand {
                 return true;
             } else {
                 new LocalizedStringImpl("gamerule.unknown", commandMessages.getResourceBundle())
-                        .sendInColor(ChatColor.RED, sender, gamerule);
+                    .sendInColor(ChatColor.RED, sender, gamerule);
                 return false;
             }
         }
@@ -52,7 +52,7 @@ public class GameRuleCommand extends GlowVanillaCommand {
         world.setGameRuleValue(args[0], value);
         // TODO: Should we use the actual value, in case the type conversion was messy?
         new LocalizedStringImpl("gamerule.done", commandMessages.getResourceBundle())
-                .send(sender, args[0], value);
+            .send(sender, args[0], value);
         return true;
     }
 

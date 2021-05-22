@@ -17,9 +17,9 @@ import org.bukkit.inventory.ItemStack;
 public class GlowChicken extends GlowAnimal implements Chicken {
 
     private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.WHEAT_SEEDS,
-            Material.BEETROOT_SEEDS,
-            Material.MELON_SEEDS,
-            Material.PUMPKIN_SEEDS);
+        Material.BEETROOT_SEEDS,
+        Material.MELON_SEEDS,
+        Material.PUMPKIN_SEEDS);
 
     @Getter
     @Setter

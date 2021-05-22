@@ -3,12 +3,11 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
+import java.util.UUID;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
 import org.bukkit.util.BlockVector;
-
-import java.io.IOException;
-import java.util.UUID;
 
 public final class SpawnPaintingCodec implements Codec<SpawnPaintingMessage> {
 

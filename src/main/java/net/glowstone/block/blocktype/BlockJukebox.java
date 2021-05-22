@@ -24,7 +24,7 @@ public class BlockJukebox extends BlockType {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         Jukebox jukebox = (Jukebox) block.getState();
         if (jukebox.isPlaying()) {
             jukebox.eject();

@@ -88,7 +88,7 @@ public class AttributeManager {
     /**
      * Updates a property and removes all modifiers.
      *
-     * @param key the property to update
+     * @param key   the property to update
      * @param value the new value
      */
     public void setProperty(Key key, double value) {
@@ -98,8 +98,8 @@ public class AttributeManager {
     /**
      * Updates a property and its modifiers.
      *
-     * @param key the property to update
-     * @param value the new base value
+     * @param key       the property to update
+     * @param value     the new base value
      * @param modifiers the new and retained modifiers, or {@code null} to remove all modifiers
      */
     public void setProperty(Key key, double value, Collection<AttributeModifier> modifiers) {
@@ -124,6 +124,7 @@ public class AttributeManager {
 
     /**
      * Returns all the properties stored in the manager.
+     *
      * @return a unmodifiable map of all the properties
      */
     public Map<String, Property> getAllProperties() {
@@ -135,9 +136,9 @@ public class AttributeManager {
         KEY_MAX_HEALTH("generic.maxHealth", Attribute.GENERIC_MAX_HEALTH, 20, 1024.0),
         KEY_FOLLOW_RANGE("generic.followRange", Attribute.GENERIC_FOLLOW_RANGE, 32, 2048),
         KEY_KNOCKBACK_RESISTANCE("generic.knockbackResistance",
-                Attribute.GENERIC_KNOCKBACK_RESISTANCE, 0, 1),
+            Attribute.GENERIC_KNOCKBACK_RESISTANCE, 0, 1),
         KEY_MOVEMENT_SPEED("generic.movementSpeed",
-                Attribute.GENERIC_MOVEMENT_SPEED, 0.699999988079071, 1024.0),
+            Attribute.GENERIC_MOVEMENT_SPEED, 0.699999988079071, 1024.0),
         KEY_ATTACK_DAMAGE("generic.attackDamage", Attribute.GENERIC_ATTACK_DAMAGE, 2, 2048.0),
         KEY_ATTACK_SPEED("generic.attackSpeed", Attribute.GENERIC_ATTACK_SPEED, 4.0, 1024.0),
         KEY_ARMOR("generic.armor", Attribute.GENERIC_ARMOR, 0.0, 30.0),
@@ -146,7 +147,42 @@ public class AttributeManager {
         KEY_FLYING_SPEED("generic.flyingSpeed", Attribute.GENERIC_FLYING_SPEED, 0.4, 1024),
         KEY_HORSE_JUMP_STRENGTH("horse.jumpStrength", Attribute.HORSE_JUMP_STRENGTH, 0.7, 2),
         KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements",
-                Attribute.ZOMBIE_SPAWN_REINFORCEMENTS, 0, 1);
+            Attribute.ZOMBIE_SPAWN_REINFORCEMENTS, 0, 1);
+
+        /**
+         * Attribute name from https://minecraft.gamepedia.com/Attribute
+         */
+        private final String name;
+        /**
+         * Bukkit {@link Attribute} corresponding to this key.
+         */
+        @Getter
+        private final Attribute attribute;
+        /**
+         * Default attribute value.
+         */
+        @Getter
+        private final double def;
+        /**
+         * Minimum attribute value.
+         */
+        @Getter
+        private final double min;
+        /**
+         * Maximum attribute value.
+         */
+        @Getter
+        private final double max;
+        /**
+         * Creates an instance with a minimum value of 0.
+         *
+         * @param name attribute name
+         * @param def  default value
+         * @param max  maximum value
+         */
+        Key(String name, Attribute attribute, double def, double max) {
+            this(name, attribute, def, 0, max);
+        }
 
         /**
          * Get a {@link Key} by its {@link Key#name attribute name}.
@@ -180,44 +216,6 @@ public class AttributeManager {
             return null;
         }
 
-        /**
-         * Attribute name from https://minecraft.gamepedia.com/Attribute
-         */
-        private final String name;
-
-        /**
-         * Bukkit {@link Attribute} corresponding to this key.
-         */
-        @Getter
-        private final Attribute attribute;
-
-        /**
-         * Default attribute value.
-         */
-        @Getter
-        private final double def;
-        /**
-         * Minimum attribute value.
-         */
-        @Getter
-        private final double min;
-        /**
-         * Maximum attribute value.
-         */
-        @Getter
-        private final double max;
-
-        /**
-         * Creates an instance with a minimum value of 0.
-         *
-         * @param name attribute name
-         * @param def default value
-         * @param max maximum value
-         */
-        Key(String name, Attribute attribute, double def, double max) {
-            this(name, attribute, def, 0, max);
-        }
-
         @Override
         public String toString() {
             return name;
@@ -237,15 +235,15 @@ public class AttributeManager {
         /**
          * Create a new property instance.
          *
-         * @param key of the property
-         * @param value of the property
+         * @param key       of the property
+         * @param value     of the property
          * @param modifiers of the property
          */
         public Property(Key key, double value, Collection<AttributeModifier> modifiers) {
             this.key = key;
             this.value = value;
             this.modifiers = modifiers.stream()
-                    .collect(Collectors.toMap(AttributeModifier::getUniqueId, Function.identity()));
+                .collect(Collectors.toMap(AttributeModifier::getUniqueId, Function.identity()));
         }
 
         @Override

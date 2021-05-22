@@ -1,11 +1,10 @@
 package net.glowstone.io.structure;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.util.nbt.CompoundTag;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The class responsible for mapping structure piece types to their storage methods and reading and
@@ -25,7 +24,7 @@ public final class StructurePieceStorage {
      * <p>This is generally used to map structure pieces being stored.
      */
     private static final Map<Class<? extends GlowStructurePiece>, StructurePieceStore<?>> classTable
-            = new HashMap<>();
+        = new HashMap<>();
 
     /*
      * Populates the maps with stores.
@@ -43,7 +42,7 @@ public final class StructurePieceStorage {
      * Binds a store by adding entries for it to the tables.
      *
      * @param store The store object.
-     * @param <T> The type of structure piece.
+     * @param <T>   The type of structure piece.
      */
     private static <T extends GlowStructurePiece> void bind(StructurePieceStore<T> store) {
         idTable.put(store.getId(), store);
@@ -76,14 +75,14 @@ public final class StructurePieceStorage {
      * Save a structure piece data to the given compound tag.
      *
      * @param structurePiece The structure piece to save.
-     * @param compound The target tag.
+     * @param compound       The target tag.
      */
     public static void saveStructurePiece(GlowStructurePiece structurePiece, CompoundTag compound) {
         // look up the store for the structure piece
         StructurePieceStore<?> store = classTable.get(structurePiece.getClass());
         if (store == null) {
             throw new IllegalArgumentException(
-                    "Unknown structure piece type to save: \"" + structurePiece.getClass() + "\"");
+                "Unknown structure piece type to save: \"" + structurePiece.getClass() + "\"");
         }
 
         compound.putString("id", store.getId());
@@ -95,7 +94,7 @@ public final class StructurePieceStorage {
      * Helper method to call StructurePieceStore methods for type safety.
      */
     private static <T extends GlowStructurePiece> T createStructurePiece(
-            StructurePieceStore<T> store, CompoundTag compound) {
+        StructurePieceStore<T> store, CompoundTag compound) {
         T structurePiece = store.createStructurePiece();
         store.load(structurePiece, compound);
         return structurePiece;
@@ -106,7 +105,7 @@ public final class StructurePieceStorage {
      */
     @SuppressWarnings("unchecked")
     private static StructurePieceStore<GlowStructurePiece> getBaseStore(
-            StructurePieceStore<?> store) {
+        StructurePieceStore<?> store) {
         return (StructurePieceStore<GlowStructurePiece>) store;
     }
 }

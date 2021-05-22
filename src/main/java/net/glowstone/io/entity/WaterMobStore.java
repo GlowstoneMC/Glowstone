@@ -1,11 +1,10 @@
 package net.glowstone.io.entity;
 
+import java.util.function.Function;
 import net.glowstone.entity.GlowWaterMob;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
-
-import java.util.function.Function;
 
 public class WaterMobStore<T extends GlowWaterMob> extends EntityStore<T> {
 
@@ -14,8 +13,8 @@ public class WaterMobStore<T extends GlowWaterMob> extends EntityStore<T> {
     /**
      * Creates the instance for a mob type.
      *
-     * @param clazz the mob type as a class
-     * @param type the mob type as an {@link EntityType}
+     * @param clazz   the mob type as a class
+     * @param type    the mob type as an {@link EntityType}
      * @param creator the mob type's constructor taking a Location
      */
     public WaterMobStore(Class<T> clazz, EntityType type, Function<Location, T> creator) {

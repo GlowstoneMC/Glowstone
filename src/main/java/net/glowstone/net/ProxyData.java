@@ -1,6 +1,10 @@
 package net.glowstone.net;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
@@ -9,11 +13,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Container for proxy (e.g. BungeeCord) player data spoofing.
@@ -27,7 +26,9 @@ public final class ProxyData {
     @Getter
     private String securityKey;
 
-    /** The spoofed hostname to use instead of the actual one. */
+    /**
+     * The spoofed hostname to use instead of the actual one.
+     */
     @Getter
     private String hostname;
 
@@ -39,19 +40,25 @@ public final class ProxyData {
     @Getter
     private InetSocketAddress address;
 
-    /** The player name for the spoofed profile, or null if not specified. */
+    /**
+     * The player name for the spoofed profile, or null if not specified.
+     */
     private String name;
 
-    /** The player UUID for the spoofed profile. */
+    /**
+     * The player UUID for the spoofed profile.
+     */
     private UUID uuid;
 
-    /** The player properties for the spoofed profile. */
+    /**
+     * The player properties for the spoofed profile.
+     */
     private List<ProfileProperty> properties;
 
     /**
      * Create a proxy data structure for a session from the given source text.
      *
-     * @param session The session to create the data for.
+     * @param session    The session to create the data for.
      * @param sourceText Contents of the hostname field of the handshake.
      * @throws Exception if an error occurs parsing the source text.
      */
@@ -70,7 +77,7 @@ public final class ProxyData {
             hostname = (String) payload.get("h");
             uuid = UuidUtils.fromFlatString((String) payload.get("u"));
             address = new InetSocketAddress(
-                    (String) payload.get("rIp"), ((Long) payload.get("rP")).intValue());
+                (String) payload.get("rIp"), ((Long) payload.get("rP")).intValue());
 
             // Extract properties, if available
             if (payload.containsKey("p")) {
@@ -98,7 +105,7 @@ public final class ProxyData {
         String[] parts = sourceText.split("\0");
         if (parts.length != 3 && parts.length != 4) {
             throw new IllegalArgumentException(
-                    "parts length was " + parts.length + ", should be 3 or 4");
+                "parts length was " + parts.length + ", should be 3 or 4");
         }
 
         // Set values that aren't supported or present to null

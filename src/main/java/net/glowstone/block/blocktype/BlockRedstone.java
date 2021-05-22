@@ -99,6 +99,45 @@ public class BlockRedstone extends BlockNeedsAttached {
         return value;
     }
 
+    /**
+     * Sets a redstone dust block to the fully-powered state and, if it wasn't already in that
+     * state, updates connected blocks so that power propagates.
+     *
+     * @param block the block to update
+     */
+    protected static void setFullyPowered(GlowBlock block) {
+        int newPower = 15;
+        if (block.getData() != newPower) {
+            BlockRedstoneEvent event = EventFactory.getInstance()
+                .callEvent(new BlockRedstoneEvent(block, block.getData(), newPower));
+            newPower = event.getNewCurrent();
+
+            block.setData((byte) newPower);
+            updateConnected(block);
+        }
+    }
+
+    private static void updateConnected(GlowBlock block) {
+        ItemTable itemTable = ItemTable.instance();
+        for (BlockFace face : calculateConnections(block)) {
+            GlowBlock target = block.getRelative(face);
+            if (target.getType().isSolid()) {
+                for (BlockFace face2 : ADJACENT) {
+                    GlowBlock target2 = target.getRelative(face2);
+                    BlockType notifyType = itemTable.getBlock(target2.getType());
+                    if (notifyType != null) {
+                        if (target2.getFace(block) == null) {
+                            notifyType
+                                .onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(),
+                                    block.getData(), block.getType(), block.getData());
+                        }
+                        notifyType.onRedstoneUpdate(target2);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         if (block.getRelative(BlockFace.DOWN).getType().isSolid()) {
@@ -108,7 +147,7 @@ public class BlockRedstone extends BlockNeedsAttached {
         GlowBlock target = block.getRelative(BlockFace.DOWN);
         BlockData data = target.getState().getBlockData();
         return data instanceof Stairs && ((Stairs) data).getHalf() == Bisected.Half.TOP
-                || data instanceof Slab && ((Slab) data).getType() == Slab.Type.TOP;
+            || data instanceof Slab && ((Slab) data).getType() == Slab.Type.TOP;
     }
 
     @Override
@@ -171,7 +210,8 @@ public class BlockRedstone extends BlockNeedsAttached {
                         continue;
                     }
                     GlowBlock underTarget = target.getRelative(BlockFace.DOWN);
-                    if (underTarget.getType() == Material.REDSTONE_TORCH && ((Redstone) (underTarget.getState().getData())).isPowered()) {
+                    if (underTarget.getType() == Material.REDSTONE_TORCH &&
+                        ((Redstone) (underTarget.getState().getData())).isPowered()) {
                         setFullyPowered(me);
                         return;
                     }
@@ -185,14 +225,14 @@ public class BlockRedstone extends BlockNeedsAttached {
                             } else if (MaterialUtil.BUTTONS.contains(target2.getType())) {
                                 Button button2 = (Button) target2.getState().getData();
                                 if (button2.isPowered() && button2.getAttachedFace() == target2
-                                        .getFace(target)) {
+                                    .getFace(target)) {
                                     setFullyPowered(me);
                                     return;
                                 }
                             } else if (target2.getType() == Material.LEVER) {
                                 Lever lever2 = (Lever) target2.getState().getData();
                                 if (lever2.isPowered() && lever2.getAttachedFace() == target2
-                                        .getFace(target)) {
+                                    .getFace(target)) {
                                     setFullyPowered(me);
                                     return;
                                 }
@@ -200,14 +240,14 @@ public class BlockRedstone extends BlockNeedsAttached {
                         } else if (MaterialUtil.BUTTONS.contains(target2.getType())) {
                             Button button2 = (Button) target2.getState().getData();
                             if (button2.isPowered() && button2.getAttachedFace() == target2
-                                    .getFace(target)) {
+                                .getFace(target)) {
                                 setFullyPowered(me);
                                 return;
                             }
                         } else if (target2.getType() == Material.LEVER) {
                             Lever lever2 = (Lever) target2.getState().getData();
                             if (lever2.isPowered() && lever2.getAttachedFace() == target2
-                                    .getFace(target)) {
+                                .getFace(target)) {
                                 setFullyPowered(me);
                                 return;
                             }
@@ -254,51 +294,13 @@ public class BlockRedstone extends BlockNeedsAttached {
         }
     }
 
-    /**
-     * Sets a redstone dust block to the fully-powered state and, if it wasn't already in that
-     * state, updates connected blocks so that power propagates.
-     *
-     * @param block the block to update
-     */
-    protected static void setFullyPowered(GlowBlock block) {
-        int newPower = 15;
-        if (block.getData() != newPower) {
-            BlockRedstoneEvent event = EventFactory.getInstance()
-                .callEvent(new BlockRedstoneEvent(block, block.getData(), newPower));
-            newPower = event.getNewCurrent();
-
-            block.setData((byte) newPower);
-            updateConnected(block);
-        }
-    }
-
-    private static void updateConnected(GlowBlock block) {
-        ItemTable itemTable = ItemTable.instance();
-        for (BlockFace face : calculateConnections(block)) {
-            GlowBlock target = block.getRelative(face);
-            if (target.getType().isSolid()) {
-                for (BlockFace face2 : ADJACENT) {
-                    GlowBlock target2 = target.getRelative(face2);
-                    BlockType notifyType = itemTable.getBlock(target2.getType());
-                    if (notifyType != null) {
-                        if (target2.getFace(block) == null) {
-                            notifyType
-                                .onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(),
-                                    block.getData(), block.getType(), block.getData());
-                        }
-                        notifyType.onRedstoneUpdate(target2);
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public void receivePulse(GlowBlock me) {
         GlowChunk.Key key = GlowChunk.Key.of(me.getX() >> 4, me.getZ() >> 4);
         BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
         BlockChangeMessage bcmsg = new BlockChangeMessage(me.getX(), me.getY(), me.getZ(),
-                blockDataManager.convertToBlockId(blockDataManager.createBlockData(me.getType())), me.getData());
+            blockDataManager.convertToBlockId(blockDataManager.createBlockData(me.getType())),
+            me.getData());
         me.getWorld().broadcastBlockChangeInRange(key, bcmsg);
     }
 }

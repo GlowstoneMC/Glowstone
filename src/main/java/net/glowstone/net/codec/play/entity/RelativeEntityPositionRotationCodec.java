@@ -3,9 +3,8 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
 
 public final class RelativeEntityPositionRotationCodec implements
     Codec<RelativeEntityPositionRotationMessage> {

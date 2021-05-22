@@ -13,7 +13,7 @@ public class ItemHoe extends ItemTool {
 
     @Override
     public boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                    ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (target.getRelative(BlockFace.UP).getType() == Material.AIR) {
             if (target.getType() == Material.GRASS_BLOCK
                 || target.getType() == Material.DIRT && target.getData() == 0) {

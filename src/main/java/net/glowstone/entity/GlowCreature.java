@@ -38,8 +38,8 @@ public class GlowCreature extends GlowMob implements Creature {
     /**
      * Creates a new monster.
      *
-     * @param location The location of the monster.
-     * @param type The type of monster.
+     * @param location  The location of the monster.
+     * @param type      The type of monster.
      * @param maxHealth The max health of the monster.
      */
     public GlowCreature(Location location, EntityType type, double maxHealth) {
@@ -53,8 +53,8 @@ public class GlowCreature extends GlowMob implements Creature {
 
         // spawn mob
         result.add(new SpawnMobMessage(
-                entityId, getUniqueId(), EntityNetworkUtil.getMobId(type),
-                location, metadata.getEntryList()));
+            entityId, getUniqueId(), EntityNetworkUtil.getMobId(type),
+            location, metadata.getEntryList()));
 
         // head facing
         result.add(new EntityHeadRotationMessage(entityId, Position.getIntYaw(location)));
@@ -76,22 +76,22 @@ public class GlowCreature extends GlowMob implements Creature {
     }
 
     @Override
-    public void setLootTable(@Nullable LootTable table) {
-
-    }
-
-    @Override
     public @Nullable LootTable getLootTable() {
         return null;
     }
 
     @Override
-    public void setSeed(long seed) {
+    public void setLootTable(@Nullable LootTable table) {
 
     }
 
     @Override
     public long getSeed() {
         return 0;
+    }
+
+    @Override
+    public void setSeed(long seed) {
+
     }
 }

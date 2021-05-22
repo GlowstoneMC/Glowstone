@@ -23,26 +23,26 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         values = new EnumMap<>(Material.class);
 
         YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(new InputStreamReader(
-                getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
+            getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
 
         defaultValue = new BuiltinValueCollection(
-                builtinValues.getConfigurationSection("default")); // NON-NLS
+            builtinValues.getConfigurationSection("default")); // NON-NLS
         registerBuiltins(builtinValues);
     }
 
     private void registerBuiltins(ConfigurationSection mainSection) {
         ConfigurationSection valuesSection
-                = mainSection.getConfigurationSection("values"); // NON-NLS
+            = mainSection.getConfigurationSection("values"); // NON-NLS
         Set<String> materials = valuesSection.getKeys(false);
         for (String strMaterial : materials) {
             Material material = Material.matchMaterial(strMaterial);
             if (material == null) {
                 throw new RuntimeException(
-                        "Invalid builtin/materialValues.yml: Couldn't find material: "
+                    "Invalid builtin/materialValues.yml: Couldn't find material: "
                         + strMaterial);
             }
             ConfigurationSection materialSection
-                    = valuesSection.getConfigurationSection(strMaterial);
+                = valuesSection.getConfigurationSection(strMaterial);
             values.put(material, new BuiltinValueCollection(material, materialSection));
         }
     }
@@ -57,8 +57,8 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
 
     private final class BuiltinValueCollection implements ValueCollection {
 
-        private Material material;
         private final ConfigurationSection section;
+        private Material material;
 
         BuiltinValueCollection(ConfigurationSection section) {
             this.section = section;

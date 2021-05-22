@@ -22,13 +22,13 @@ public class BlockFalling extends BlockType {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
     public void onNearBlockChanged(GlowBlock me, BlockFace face, GlowBlock other, Material oldType,
-        byte oldData, Material newType, byte newData) {
+                                   byte oldData, Material newType, byte newData) {
         if (face == BlockFace.DOWN) {
             updatePhysics(me);
         }

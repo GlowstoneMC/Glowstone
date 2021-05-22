@@ -45,7 +45,8 @@ public class FurnaceEntity extends ContainerEntity {
         super.update(player);
         // TODO: 1.13 furnace burning block data
         player.sendBlockChange(getBlock().getLocation(),
-            getBurnTime() > 0 ? Material.LEGACY_BURNING_FURNACE : Material.FURNACE, getBlock().getData());
+            getBurnTime() > 0 ? Material.LEGACY_BURNING_FURNACE : Material.FURNACE,
+            getBlock().getData());
     }
 
     @Override

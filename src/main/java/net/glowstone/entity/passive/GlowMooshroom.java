@@ -2,7 +2,6 @@ package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
 import java.util.Set;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowAnimal;

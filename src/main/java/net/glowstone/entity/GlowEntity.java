@@ -1,10 +1,22 @@
 package net.glowstone.entity;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.destroystokyo.paper.event.player.PlayerInitialSpawnEvent;
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -80,19 +92,6 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Represents some entity in the world such as an item on the floor or a player.
  *
@@ -132,6 +131,10 @@ public abstract class GlowEntity implements Entity {
      */
     protected final Vector velocity = new Vector();
     /**
+     * Lock to prevent concurrent modifications affected by switching worlds.
+     */
+    protected final ReadWriteLock worldLock = new ReentrantReadWriteLock();
+    /**
      * A list of entities currently riding this entity.
      */
     private final List<Entity> passengers = new ArrayList<>();
@@ -155,10 +158,6 @@ public abstract class GlowEntity implements Entity {
      */
     @Getter
     protected GlowWorld world;
-    /**
-     * Lock to prevent concurrent modifications affected by switching worlds.
-     */
-    protected final ReadWriteLock worldLock = new ReentrantReadWriteLock();
     /**
      * A flag indicating if this entity is currently active.
      */
@@ -750,17 +749,17 @@ public abstract class GlowEntity implements Entity {
 
         if (hasMoved()) {
             if (!fall || type == Material.LADDER // todo: horses are not affected
-                    || type == Material.VINE // todo: horses are not affected
-                    || type == Material.WATER // todo: flowing_water?
-                    || type == Material.COBWEB
-                    || type == Material.ACACIA_TRAPDOOR // todo: replace with tag for all trapdoors
-                    || type == Material.BIRCH_TRAPDOOR
-                    || type == Material.DARK_OAK_TRAPDOOR
-                    || type == Material.IRON_TRAPDOOR
-                    || type == Material.JUNGLE_TRAPDOOR
-                    || type == Material.OAK_TRAPDOOR
-                    || type == Material.SPRUCE_TRAPDOOR
-                    || onGround) {
+                || type == Material.VINE // todo: horses are not affected
+                || type == Material.WATER // todo: flowing_water?
+                || type == Material.COBWEB
+                || type == Material.ACACIA_TRAPDOOR // todo: replace with tag for all trapdoors
+                || type == Material.BIRCH_TRAPDOOR
+                || type == Material.DARK_OAK_TRAPDOOR
+                || type == Material.IRON_TRAPDOOR
+                || type == Material.JUNGLE_TRAPDOOR
+                || type == Material.OAK_TRAPDOOR
+                || type == Material.SPRUCE_TRAPDOOR
+                || onGround) {
                 setFallDistance(0);
             } else if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
                 setFallDistance((float) (fallDistance + previousLocation.getY() - location.getY()));
@@ -1051,7 +1050,7 @@ public abstract class GlowEntity implements Entity {
     @Override
     public org.bukkit.util.@NotNull BoundingBox getBoundingBox() {
         return org.bukkit.util.BoundingBox.of(location, boundingBox.getSize().getX(),
-                boundingBox.getSize().getY(), boundingBox.getSize().getZ());
+            boundingBox.getSize().getY(), boundingBox.getSize().getZ());
     }
 
     @Override
@@ -1227,7 +1226,7 @@ public abstract class GlowEntity implements Entity {
         if (type.getApplicable().isInstance(this)) {
             EntityStatusMessage message = new EntityStatusMessage(entityId, type);
             world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this))
-                    .forEach(player -> player.getSession().send(message));
+                .forEach(player -> player.getSession().send(message));
         }
     }
 
@@ -1238,7 +1237,7 @@ public abstract class GlowEntity implements Entity {
                 ((GlowPlayer) this).getSession().send(message);
             }
             world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this))
-                    .forEach(player -> player.getSession().send(message));
+                .forEach(player -> player.getSession().send(message));
         }
     }
 
@@ -1697,18 +1696,6 @@ public abstract class GlowEntity implements Entity {
         this.leashHolderUniqueId = uniqueId;
     }
 
-    /**
-     * The metadata store class for entities.
-     */
-    private static class EntityMetadataStore extends MetadataStoreBase<Entity>
-        implements MetadataStore<Entity> {
-
-        @Override
-        protected String disambiguate(Entity subject, String metadataKey) {
-            return UuidUtils.toString(subject.getUniqueId()) + ":" + metadataKey;
-        }
-    }
-
     public boolean isInMaterial(Material type) {
         return location.getBlock().getType() == type;
     }
@@ -1752,5 +1739,17 @@ public abstract class GlowEntity implements Entity {
     @Override
     public PersistentDataContainer getPersistentDataContainer() {
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    /**
+     * The metadata store class for entities.
+     */
+    private static class EntityMetadataStore extends MetadataStoreBase<Entity>
+        implements MetadataStore<Entity> {
+
+        @Override
+        protected String disambiguate(Entity subject, String metadataKey) {
+            return UuidUtils.toString(subject.getUniqueId()) + ":" + metadataKey;
+        }
     }
 }

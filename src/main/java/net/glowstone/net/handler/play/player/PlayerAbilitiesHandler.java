@@ -26,7 +26,7 @@ public final class PlayerAbilitiesHandler implements
             // or enabled it and is allowed to fly
             if (!flyingFlag || canFly) {
                 PlayerToggleFlightEvent event = EventFactory.getInstance()
-                        .callEvent(new PlayerToggleFlightEvent(player, flyingFlag));
+                    .callEvent(new PlayerToggleFlightEvent(player, flyingFlag));
                 if (event.isCancelled()) {
                     session.getServer().sendPlayerAbilities(player);
                 } else {

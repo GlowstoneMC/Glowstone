@@ -17,15 +17,15 @@ public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
     /**
      * Creates a message to update a player's location and facing direction.
      *
-     * @param x the player's X coordinate
-     * @param y the player's Y coordinate
-     * @param z the player's Z coordinate
-     * @param yaw the yaw angle
-     * @param pitch the pitch angle
+     * @param x        the player's X coordinate
+     * @param y        the player's Y coordinate
+     * @param z        the player's Z coordinate
+     * @param yaw      the yaw angle
+     * @param pitch    the pitch angle
      * @param onGround whether the player is on the ground
      */
     public PlayerPositionLookMessage(boolean onGround, double x, double y, double z, float yaw,
-        float pitch) {
+                                     float pitch) {
         super(onGround);
         this.x = x;
         this.y = y;

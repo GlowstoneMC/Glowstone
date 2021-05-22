@@ -63,7 +63,7 @@ public class BlockDirectional extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         BlockFace faceHead = calculateFace(player, state); // the direction of the block

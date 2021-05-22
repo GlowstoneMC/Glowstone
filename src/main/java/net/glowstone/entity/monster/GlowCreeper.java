@@ -79,10 +79,10 @@ public class GlowCreeper extends GlowMonster implements Creeper {
         super.damage(amount, source, cause);
         if (DamageCause.LIGHTNING.equals(cause) && !isPowered()) {
             CreeperPowerEvent event = EventFactory.getInstance()
-                    .callEvent(new CreeperPowerEvent(
-                            this,
-                            (LightningStrike) source,
-                            CreeperPowerEvent.PowerCause.LIGHTNING));
+                .callEvent(new CreeperPowerEvent(
+                    this,
+                    (LightningStrike) source,
+                    CreeperPowerEvent.PowerCause.LIGHTNING));
 
             if (!event.isCancelled()) {
                 setPowered(true);

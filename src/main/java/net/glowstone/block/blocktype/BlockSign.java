@@ -28,7 +28,7 @@ public class BlockSign extends BlockNeedsAttached {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         state.setType(getMaterial());
         if (!(state.getData() instanceof Sign)) {
             warnMaterialData(Sign.class, state.getData());
@@ -40,7 +40,7 @@ public class BlockSign extends BlockNeedsAttached {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         player.openSignEditor(block.getLocation());
     }
 
@@ -48,6 +48,7 @@ public class BlockSign extends BlockNeedsAttached {
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         Material targetMat = ItemTable.instance().getBlock(
             block.getRelative(against.getOppositeFace()).getType()).getMaterial();
-        return canAttachTo(block, against) || MaterialUtil.SIGNS.contains(targetMat) || MaterialUtil.WALL_SIGNS.contains(targetMat);
+        return canAttachTo(block, against) || MaterialUtil.SIGNS.contains(targetMat) ||
+            MaterialUtil.WALL_SIGNS.contains(targetMat);
     }
 }

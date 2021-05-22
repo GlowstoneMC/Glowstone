@@ -1,6 +1,11 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -23,17 +28,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
-import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Represents an item that is also an {@link GlowEntity} within the world.
@@ -81,7 +79,7 @@ public class GlowItem extends GlowEntity implements Item {
      * Creates a new item entity.
      *
      * @param location The location of the entity.
-     * @param item The item stack the entity is carrying.
+     * @param item     The item stack the entity is carrying.
      */
     public GlowItem(Location location, ItemStack item) {
         super(location);
@@ -97,7 +95,8 @@ public class GlowItem extends GlowEntity implements Item {
         int starting = getItemStack().getAmount();
         int remaining = 0;
         if (entity instanceof InventoryHolder) {
-            HashMap<Integer, ItemStack> map = ((InventoryHolder) entity).getInventory().addItem(getItemStack());
+            HashMap<Integer, ItemStack> map =
+                ((InventoryHolder) entity).getInventory().addItem(getItemStack());
             if (entity instanceof GlowPlayer) {
                 // TODO: PlayerAttemptPickupItemEvent
                 GlowPlayer player = ((GlowPlayer) entity);
@@ -109,7 +108,8 @@ public class GlowItem extends GlowEntity implements Item {
                 setItemStack(remainingItem);
                 remaining = remainingItem.getAmount();
             }
-            EntityPickupItemEvent entityPickupEvent = new EntityPickupItemEvent(entity, this, remaining);
+            EntityPickupItemEvent entityPickupEvent =
+                new EntityPickupItemEvent(entity, this, remaining);
             EventFactory.getInstance().callEvent(entityPickupEvent);
             if (remaining > 0) {
                 return false;
@@ -161,16 +161,16 @@ public class GlowItem extends GlowEntity implements Item {
                 }
                 if (entity instanceof GlowItem) {
                     if (entity != this && ((GlowItem) entity).getItemStack()
-                            .isSimilar(getItemStack())) {
+                        .isSimilar(getItemStack())) {
                         ItemStack clone = getItemStack().clone();
 
                         ItemMergeEvent event = EventFactory.getInstance()
-                                .callEvent(new ItemMergeEvent((GlowItem) entity, this));
+                            .callEvent(new ItemMergeEvent((GlowItem) entity, this));
 
                         if (!event.isCancelled()) {
                             clone.setAmount(
-                                    ((GlowItem) entity).getItemStack().getAmount()
-                                            + clone.getAmount());
+                                ((GlowItem) entity).getItemStack().getAmount()
+                                    + clone.getAmount());
                             entity.remove();
                             setItemStack(clone);
                         }
@@ -182,7 +182,7 @@ public class GlowItem extends GlowEntity implements Item {
         // disappear if we've lived too long
         if (getTicksLived() >= LIFETIME) {
             ItemDespawnEvent event = EventFactory.getInstance()
-                    .callEvent(new ItemDespawnEvent(this, getLocation()));
+                .callEvent(new ItemDespawnEvent(this, getLocation()));
             if (event.isCancelled()) {
                 // Allow it to live for 5 more minutes, according to docs
                 ticksLived -= LIFETIME;
@@ -204,12 +204,12 @@ public class GlowItem extends GlowEntity implements Item {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-                new SpawnObjectMessage(entityId, getUniqueId(),
-                        EntityNetworkUtil.getObjectId(EntityType.DROPPED_ITEM), location),
-                new EntityMetadataMessage(entityId, metadata.getEntryList()),
-                // these keep the client from assigning a random velocity
-                new EntityTeleportMessage(entityId, location),
-                new EntityVelocityMessage(entityId, getVelocity())
+            new SpawnObjectMessage(entityId, getUniqueId(),
+                EntityNetworkUtil.getObjectId(EntityType.DROPPED_ITEM), location),
+            new EntityMetadataMessage(entityId, metadata.getEntryList()),
+            // these keep the client from assigning a random velocity
+            new EntityTeleportMessage(entityId, location),
+            new EntityVelocityMessage(entityId, getVelocity())
         );
     }
 

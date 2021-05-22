@@ -4,18 +4,22 @@ import com.flowpowered.network.ConnectionManager;
 import com.flowpowered.network.session.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.concurrent.CountDownLatch;
 import net.glowstone.GlowServer;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.net.pipeline.GlowChannelInitializer;
 import net.glowstone.net.protocol.ProtocolProvider;
 
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.concurrent.CountDownLatch;
-
 
 public final class GameServer extends GlowSocketServer implements ConnectionManager {
+
+    public GameServer(GlowServer server, ProtocolProvider protocolProvider, CountDownLatch latch) {
+        super(server, protocolProvider, latch);
+        bootstrap.childHandler(new GlowChannelInitializer(this));
+    }
 
     private static String formatAddress(InetSocketAddress socketAddress) {
         StringBuilder out = new StringBuilder();
@@ -32,9 +36,16 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
         return out.toString();
     }
 
-    public GameServer(GlowServer server, ProtocolProvider protocolProvider, CountDownLatch latch) {
-        super(server, protocolProvider, latch);
-        bootstrap.childHandler(new GlowChannelInitializer(this));
+    // Package-visible for testing.
+    static void logBindFailure(InetSocketAddress address, Throwable t) {
+        ConsoleMessages.Error.Net.BIND_FAILED.log(formatAddress(address));
+        if (t.getMessage().contains("Cannot assign requested address")) { // NON-NLS
+            ConsoleMessages.Error.Net.CANNOT_ASSIGN.log(t);
+        } else if (t.getMessage().contains("Address already in use")) { // NON-NLS
+            ConsoleMessages.Error.Net.IN_USE.log(t);
+        } else {
+            ConsoleMessages.Error.Net.BIND_FAILED_UNKNOWN.log(t);
+        }
     }
 
     @Override
@@ -55,18 +66,6 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
     public void onBindFailure(InetSocketAddress address, Throwable t) {
         logBindFailure(address, t);
         System.exit(1);
-    }
-
-    // Package-visible for testing.
-    static void logBindFailure(InetSocketAddress address, Throwable t) {
-        ConsoleMessages.Error.Net.BIND_FAILED.log(formatAddress(address));
-        if (t.getMessage().contains("Cannot assign requested address")) { // NON-NLS
-            ConsoleMessages.Error.Net.CANNOT_ASSIGN.log(t);
-        } else if (t.getMessage().contains("Address already in use")) { // NON-NLS
-            ConsoleMessages.Error.Net.IN_USE.log(t);
-        } else {
-            ConsoleMessages.Error.Net.BIND_FAILED_UNKNOWN.log(t);
-        }
     }
 
     @Override

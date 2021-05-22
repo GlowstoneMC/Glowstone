@@ -1,5 +1,6 @@
 package net.glowstone.block.itemtype;
 
+import java.util.Set;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
@@ -12,8 +13,6 @@ import org.bukkit.entity.Boat;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.Set;
 
 public class ItemBoat extends ItemType {
 
@@ -31,8 +30,8 @@ public class ItemBoat extends ItemType {
 
     @Override
     public void rightClickBlock(
-            GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding,
-            Vector clickedLoc, EquipmentSlot hand) {
+        GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding,
+        Vector clickedLoc, EquipmentSlot hand) {
         // Two cases are handled here: Either the player clicked on a block on the land or beneath
         // water
         placeBoat(player, holding);
@@ -42,7 +41,7 @@ public class ItemBoat extends ItemType {
         Block targetBlock = player.getTargetBlock((Set<Material>) null, 5);
 
         if (targetBlock != null && !targetBlock.isEmpty()
-                && targetBlock.getRelative(BlockFace.UP).isEmpty()) {
+            && targetBlock.getRelative(BlockFace.UP).isEmpty()) {
             Location location = targetBlock.getRelative(BlockFace.UP).getLocation();
             // center boat on cursor location
             location.add(0.6875f, 0, 0.6875f);

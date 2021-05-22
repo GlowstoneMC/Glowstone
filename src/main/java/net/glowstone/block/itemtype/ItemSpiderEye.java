@@ -19,7 +19,7 @@ public class ItemSpiderEye extends ItemFood {
         }
 
         player.addPotionEffect(new PotionEffect(PotionEffectType.POISON,
-                TickUtil.secondsToTicks(5), 0), true);
+            TickUtil.secondsToTicks(5), 0), true);
         return true;
     }
 }

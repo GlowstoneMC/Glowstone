@@ -28,7 +28,7 @@ public class BlockLeaves extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         state.setRawData((byte) (state.getRawData() | 0x04));
     }
@@ -77,7 +77,8 @@ public class BlockLeaves extends BlockType {
                 for (int y = 0; y < 3; y++) {
                     GlowBlock b = world.getBlockAt(block.getLocation().add(x - 1, y - 1, z - 1));
                     // TODO: 1.13 leaves
-                    if (b.getType() == Material.LEGACY_LEAVES || b.getType() == Material.LEGACY_LEAVES_2) {
+                    if (b.getType() == Material.LEGACY_LEAVES ||
+                        b.getType() == Material.LEGACY_LEAVES_2) {
                         GlowBlockState state = b.getState();
                         if ((state.getRawData() & 0x08) == 0 && (state.getRawData() & 0x04)
                             == 0) { // check decay is off and decay is on
@@ -96,7 +97,7 @@ public class BlockLeaves extends BlockType {
         GlowBlockState state = block.getState();
         // check decay flags
         if ((state.getRawData() & 0x08) == 0
-                || (state.getRawData() & 0x04) != 0) {
+            || (state.getRawData() & 0x04) != 0) {
             return;
         }
         GlowWorld world = block.getWorld();
@@ -106,10 +107,13 @@ public class BlockLeaves extends BlockType {
             for (int z = 0; z < LEAVE_BLOCK_MAP_RANGE; z++) {
                 for (int y = 0; y < LEAVE_BLOCK_MAP_RANGE; y++) {
                     GlowBlock b = world
-                        .getBlockAt(block.getLocation().add(x - LEAVE_BLOCK_DECAY_RANGE, y - LEAVE_BLOCK_DECAY_RANGE, z - LEAVE_BLOCK_DECAY_RANGE));
+                        .getBlockAt(block.getLocation()
+                            .add(x - LEAVE_BLOCK_DECAY_RANGE, y - LEAVE_BLOCK_DECAY_RANGE,
+                                z - LEAVE_BLOCK_DECAY_RANGE));
                     byte val = 127;
                     // TODO: 1.13 leaves and log types
-                    if (b.getType() == Material.LEGACY_LOG || b.getType() == Material.LEGACY_LOG_2) {
+                    if (b.getType() == Material.LEGACY_LOG ||
+                        b.getType() == Material.LEGACY_LOG_2) {
                         val = 0;
                     } else if (b.getType() == Material.LEGACY_LEAVES
                         || b.getType() == Material.LEGACY_LEAVES_2) {
@@ -153,7 +157,8 @@ public class BlockLeaves extends BlockType {
             }
         }
 
-        if (getBlockInMap(LEAVE_BLOCK_DECAY_RANGE, LEAVE_BLOCK_DECAY_RANGE, LEAVE_BLOCK_DECAY_RANGE) < 0) { // leaf decay
+        if (getBlockInMap(LEAVE_BLOCK_DECAY_RANGE, LEAVE_BLOCK_DECAY_RANGE,
+            LEAVE_BLOCK_DECAY_RANGE) < 0) { // leaf decay
             LeavesDecayEvent decayEvent = new LeavesDecayEvent(block);
             EventFactory.getInstance().callEvent(decayEvent);
             if (!decayEvent.isCancelled()) {
@@ -167,11 +172,11 @@ public class BlockLeaves extends BlockType {
 
     private byte getBlockInMap(int x, int y, int z) {
         return blockMap[((x + 1) * (LEAVE_BLOCK_MAP_RANGE + 2) + z + 1)
-                * (LEAVE_BLOCK_MAP_RANGE + 2) + y + 1];
+            * (LEAVE_BLOCK_MAP_RANGE + 2) + y + 1];
     }
 
     private void setBlockInMap(byte val, int x, int y, int z) {
         blockMap[((x + 1) * (LEAVE_BLOCK_MAP_RANGE + 2) + z + 1)
-                * (LEAVE_BLOCK_MAP_RANGE + 2) + y + 1] = val;
+            * (LEAVE_BLOCK_MAP_RANGE + 2) + y + 1] = val;
     }
 }

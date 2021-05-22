@@ -2,7 +2,6 @@ package net.glowstone.entity.monster;
 
 import com.flowpowered.network.Message;
 import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.ai.EntityDirector;
@@ -40,7 +39,7 @@ public class GlowZombie extends GlowMonster implements Zombie {
     /**
      * Creates a zombie.
      *
-     * @param loc the location
+     * @param loc  the location
      * @param type the zombie type
      */
     public GlowZombie(Location loc, EntityType type) {
@@ -87,6 +86,11 @@ public class GlowZombie extends GlowMonster implements Zombie {
     }
 
     @Override
+    public void setVillagerProfession(Profession profession) {
+        //Field has been removed as of 1.11
+    }
+
+    @Override
     public boolean isConverting() {
         // TODO: 1.13 zombie API
         return false;
@@ -118,13 +122,13 @@ public class GlowZombie extends GlowMonster implements Zombie {
     }
 
     @Override
-    public void setArmsRaised(boolean raised) {
-
+    public boolean isArmsRaised() {
+        return false;
     }
 
     @Override
-    public boolean isArmsRaised() {
-        return false;
+    public void setArmsRaised(boolean raised) {
+
     }
 
     @Override
@@ -140,11 +144,6 @@ public class GlowZombie extends GlowMonster implements Zombie {
     @Override
     public boolean canBreakDoors() {
         return canBreakDoors;
-    }
-
-    @Override
-    public void setVillagerProfession(Profession profession) {
-        //Field has been removed as of 1.11
     }
 
     @Override

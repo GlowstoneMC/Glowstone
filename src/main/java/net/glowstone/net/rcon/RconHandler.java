@@ -3,14 +3,13 @@ package net.glowstone.net.rcon;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.event.server.RemoteServerCommandEvent;
-
-import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Handler for Rcon messages.
@@ -24,24 +23,21 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     // FIXME: This is a password stored in plain text!
     private final String password;
-
-    private boolean loggedIn;
-
     /**
      * The {@link RconServer} this handler belongs to.
      */
-    private RconServer rconServer;
-
+    private final RconServer rconServer;
     /**
      * The {@link RconCommandSender} for this connection.
      */
-    private RconCommandSender commandSender;
+    private final RconCommandSender commandSender;
+    private boolean loggedIn;
 
     /**
      * Creates a remote console handler.
      *
      * @param rconServer the associated server
-     * @param password the remote operator's password
+     * @param password   the remote operator's password
      */
     public RconHandler(RconServer rconServer, String password) {
         this.rconServer = rconServer;

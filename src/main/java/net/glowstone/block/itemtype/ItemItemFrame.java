@@ -1,6 +1,7 @@
 package net.glowstone.block.itemtype;
 
 import com.flowpowered.network.Message;
+import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
@@ -11,18 +12,16 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.List;
-
 public class ItemItemFrame extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         GlowItemFrame entity = new GlowItemFrame(player, target.getRelative(face).getLocation(),
             face);
 
         if (EventFactory.getInstance()
-                .callEvent(new HangingPlaceEvent(entity, player, target, face))
+            .callEvent(new HangingPlaceEvent(entity, player, target, face))
             .isCancelled()) {
             return;
         }

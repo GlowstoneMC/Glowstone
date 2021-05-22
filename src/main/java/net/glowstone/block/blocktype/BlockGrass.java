@@ -60,7 +60,7 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                         Material flower = flowers[ThreadLocalRandom.current()
                             .nextInt(flowers.length)].getType();
                         if (ItemTable.instance().getBlock(flower)
-                                .canPlaceAt(null, b, BlockFace.DOWN)) {
+                            .canPlaceAt(null, b, BlockFace.DOWN)) {
                             blockState.setType(flower);
                         }
                     } else {
@@ -124,10 +124,10 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                 GlowBlock targetBlock = world.getBlockAt(x, y, z);
                 GlowBlock targetAbove = targetBlock.getRelative(BlockFace.UP);
                 if (targetBlock.getChunk().isLoaded() && targetAbove.getChunk().isLoaded()
-                        && targetBlock.getType() == Material.DIRT
-                        && targetBlock.getData() == 0 // only spread on normal dirt
-                        && targetAbove.getMaterialValues().getLightOpacity() <= 2
-                        && targetAbove.getLightLevel() >= 4) {
+                    && targetBlock.getType() == Material.DIRT
+                    && targetBlock.getData() == 0 // only spread on normal dirt
+                    && targetAbove.getMaterialValues().getLightOpacity() <= 2
+                    && targetAbove.getLightLevel() >= 4) {
                     GlowBlockState state = targetBlock.getState();
                     state.setType(Material.GRASS_BLOCK);
                     state.setRawData((byte) 0);

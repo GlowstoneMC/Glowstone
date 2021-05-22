@@ -1,15 +1,13 @@
 package net.glowstone.io.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
-
-import java.util.ArrayList;
-import java.util.List;
 
 class VillagerStore extends AgeableStore<GlowVillager> {
 
@@ -21,15 +19,15 @@ class VillagerStore extends AgeableStore<GlowVillager> {
     public void load(GlowVillager entity, CompoundTag compound) {
         super.load(entity, compound);
         compound.tryGetInt("Profession")
-                .filter(GlowVillager::isValidProfession)
-                .map(GlowVillager::getProfessionById)
-                .ifPresent(entity::setProfession);
+            .filter(GlowVillager::isValidProfession)
+            .map(GlowVillager::getProfessionById)
+            .ifPresent(entity::setProfession);
         compound.tryGetInt("Career")
-                .map(GlowVillager::getProfessionById)
-                .ifPresent(career -> {
-                    entity.setProfession(career);
-                    entity.setCareerLevel(compound.tryGetInt("CareerLevel").orElse(1));
-                });
+            .map(GlowVillager::getProfessionById)
+            .ifPresent(career -> {
+                entity.setProfession(career);
+                entity.setCareerLevel(compound.tryGetInt("CareerLevel").orElse(1));
+            });
         compound.readInt("Riches", entity::setRiches);
         compound.readBoolean("Willing", entity::setWilling);
         // Recipes
@@ -46,7 +44,7 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                         int uses = recipeTag.getInt("uses");
                         int maxUses = recipeTag.getInt("maxUses");
                         MerchantRecipe recipe = new MerchantRecipe(sell, uses, maxUses,
-                                experienceReward);
+                            experienceReward);
                         recipe.setIngredients(ingredients);
                         recipes.add(recipe);
                     });

@@ -4,24 +4,24 @@ import com.flowpowered.network.Message;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import java.io.IOException;
+import java.util.logging.Level;
 import lombok.Data;
 import net.glowstone.GlowServer;
 import org.jetbrains.annotations.NonNls;
 
-import java.io.IOException;
-import java.util.logging.Level;
-
 @Data
 public final class PluginMessage implements Message {
 
-    @NonNls private final String channel;
+    @NonNls
+    private final String channel;
     private final byte[] data;
 
     /**
      * Creates a message whose contents are a string in UTF8.
      *
      * @param channel the plugin message channel
-     * @param text the contents as a string
+     * @param text    the contents as a string
      * @return a message for {@code channel} containing a UTF8-encoded copy of {@code text}
      */
     public static PluginMessage fromString(@NonNls String channel, String text) {

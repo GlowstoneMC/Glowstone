@@ -3,9 +3,8 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.game.UnlockRecipesMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.game.UnlockRecipesMessage;
 
 public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
 
@@ -24,7 +23,7 @@ public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
         }
         if (action != UnlockRecipesMessage.ACTION_INIT) {
             return new UnlockRecipesMessage(action, bookOpen, filterOpen,
-                    smeltingBookOpen, smeltingFilterOpen, recipes);
+                smeltingBookOpen, smeltingFilterOpen, recipes);
         }
         // action = INIT (0)
         sizeOfRecipes = ByteBufUtils.readVarInt(buf);
@@ -33,7 +32,7 @@ public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
             allRecipes[i] = ByteBufUtils.readVarInt(buf);
         }
         return new UnlockRecipesMessage(action, bookOpen, filterOpen,
-                smeltingBookOpen, smeltingFilterOpen, recipes, allRecipes);
+            smeltingBookOpen, smeltingFilterOpen, recipes, allRecipes);
     }
 
     @Override

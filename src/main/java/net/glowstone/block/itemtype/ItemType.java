@@ -2,6 +2,8 @@ package net.glowstone.block.itemtype;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,9 +17,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Base class for specific types of items.
@@ -56,15 +55,6 @@ public class ItemType {
     }
 
     /**
-     * Get the Materials assigned to this ItemType.
-     *
-     * @return The Materials.
-     */
-    public final ImmutableList<Material> getMaterials() {
-        return ImmutableList.copyOf(materials);
-    }
-
-    /**
      * Assign a Material to this ItemType (for internal use only).
      *
      * @param material The internal material for this item.
@@ -79,6 +69,15 @@ public class ItemType {
         }
         materials.add(material);
         maxStackSize = material.getMaxStackSize();
+    }
+
+    /**
+     * Get the Materials assigned to this ItemType.
+     *
+     * @return The Materials.
+     */
+    public final ImmutableList<Material> getMaterials() {
+        return ImmutableList.copyOf(materials);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -117,7 +116,7 @@ public class ItemType {
      * Called when a player right-clicks in midair while holding this item. Also called by default
      * if rightClickBlock is not overridden.
      *
-     * @param player The player
+     * @param player  The player
      * @param holding The ItemStack the player was holding
      */
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
@@ -136,15 +135,15 @@ public class ItemType {
     /**
      * Called when a player right-clicks on a block while holding this item.
      *
-     * @param player The player
-     * @param target The block the player right-clicked
-     * @param face The face on which the click occurred
-     * @param holding The ItemStack the player was holding
+     * @param player     The player
+     * @param target     The block the player right-clicked
+     * @param face       The face on which the click occurred
+     * @param holding    The ItemStack the player was holding
      * @param clickedLoc The coordinates at which the click occurred
-     * @param hand The hand slot of this item
+     * @param hand       The hand slot of this item
      */
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (placeAs != null) {
             if (placeAs.getContext().isBlockApplicable()) {
                 placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
@@ -158,7 +157,7 @@ public class ItemType {
     @Override
     public final String toString() {
         return getClass().getSimpleName()
-                + "{" + getMaterial()  + "}";
+            + "{" + getMaterial() + "}";
     }
 
     /**

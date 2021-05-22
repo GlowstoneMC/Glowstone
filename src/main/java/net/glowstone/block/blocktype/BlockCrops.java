@@ -27,10 +27,12 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getData() >= CropState.RIPE.ordinal()) {
             return Collections.unmodifiableList(
-                Arrays.asList(new ItemStack(Material.WHEAT_SEEDS, ThreadLocalRandom.current().nextInt(4)),
+                Arrays.asList(
+                    new ItemStack(Material.WHEAT_SEEDS, ThreadLocalRandom.current().nextInt(4)),
                     new ItemStack(Material.WHEAT, 1)));
         } else {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.WHEAT_SEEDS, 1)));
+            return Collections
+                .unmodifiableList(Arrays.asList(new ItemStack(Material.WHEAT_SEEDS, 1)));
         }
     }
 
@@ -73,9 +75,9 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
         // we check light level on the above block, meaning the crops need at least one free block
         // above them in order to grow naturally (vanilla behavior)
         if (cropState < CropState.RIPE.ordinal()
-                && block.getRelative(BlockFace.UP).getLightLevel() >= 9
-                && ThreadLocalRandom.current()
-                        .nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
+            && block.getRelative(BlockFace.UP).getLightLevel() >= 9
+            && ThreadLocalRandom.current()
+            .nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
             cropState++;
             if (cropState > CropState.RIPE.ordinal()) {
                 cropState = CropState.RIPE.ordinal();

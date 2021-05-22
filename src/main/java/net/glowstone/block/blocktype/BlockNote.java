@@ -1,5 +1,19 @@
 package net.glowstone.block.blocktype;
 
+import static org.bukkit.Instrument.BANJO;
+import static org.bukkit.Instrument.BELL;
+import static org.bukkit.Instrument.BIT;
+import static org.bukkit.Instrument.CHIME;
+import static org.bukkit.Instrument.COW_BELL;
+import static org.bukkit.Instrument.DIDGERIDOO;
+import static org.bukkit.Instrument.FLUTE;
+import static org.bukkit.Instrument.GUITAR;
+import static org.bukkit.Instrument.IRON_XYLOPHONE;
+import static org.bukkit.Instrument.PIANO;
+import static org.bukkit.Instrument.PLING;
+import static org.bukkit.Instrument.SNARE_DRUM;
+import static org.bukkit.Instrument.XYLOPHONE;
+
 import com.destroystokyo.paper.MaterialTags;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
@@ -17,34 +31,10 @@ import org.bukkit.event.block.NotePlayEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import static org.bukkit.Instrument.BANJO;
-import static org.bukkit.Instrument.BELL;
-import static org.bukkit.Instrument.BIT;
-import static org.bukkit.Instrument.CHIME;
-import static org.bukkit.Instrument.COW_BELL;
-import static org.bukkit.Instrument.DIDGERIDOO;
-import static org.bukkit.Instrument.FLUTE;
-import static org.bukkit.Instrument.GUITAR;
-import static org.bukkit.Instrument.IRON_XYLOPHONE;
-import static org.bukkit.Instrument.PIANO;
-import static org.bukkit.Instrument.PLING;
-import static org.bukkit.Instrument.SNARE_DRUM;
-import static org.bukkit.Instrument.XYLOPHONE;
-
 public class BlockNote extends BlockType {
 
     public static final int OCTAVES_COUNT = 2;
     public static final int NOTES_COUNT = OCTAVES_COUNT * Note.Tone.TONES_COUNT;
-
-    @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
-        NoteBlock noteBlockData = getNoteBlockData(block);
-        Note note = noteBlockData.getNote();
-        noteBlockData.setNote(note.getId() == NOTES_COUNT ? new Note(0) : note.sharped());
-        block.setBlockData(noteBlockData);
-        return false;
-    }
 
     private static Instrument instrumentOf(Material type) {
         switch (type) {
@@ -70,7 +60,8 @@ public class BlockNote extends BlockType {
                 return PLING;
             default:
                 // TODO: use SAND_LIKES tag with HashObservableSets
-                if (Tag.SAND.isTagged(type) || MaterialTags.CONCRETE_POWDER.isTagged(type) || type == Material.GRAVEL) {
+                if (Tag.SAND.isTagged(type) || MaterialTags.CONCRETE_POWDER.isTagged(type) ||
+                    type == Material.GRAVEL) {
                     return SNARE_DRUM;
                 }
                 if (Tag.WOOL.isTagged(type)) {
@@ -79,6 +70,16 @@ public class BlockNote extends BlockType {
                 // TODO: wait for stone, glass, and wood tags
                 return PIANO;
         }
+    }
+
+    @Override
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+                                 Vector clickedLoc) {
+        NoteBlock noteBlockData = getNoteBlockData(block);
+        Note note = noteBlockData.getNote();
+        noteBlockData.setNote(note.getId() == NOTES_COUNT ? new Note(0) : note.sharped());
+        block.setBlockData(noteBlockData);
+        return false;
     }
 
     public NoteBlock getNoteBlockData(GlowBlock block) {
@@ -101,13 +102,15 @@ public class BlockNote extends BlockType {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+                           GlowBlockState oldState) {
         super.afterPlace(player, block, holding, oldState);
         updateInstrument(block);
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType,
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+                                   Material oldType,
                                    byte oldData, Material newType, byte newData) {
         updateInstrument(block);
     }
@@ -125,7 +128,8 @@ public class BlockNote extends BlockType {
             return false;
         }
 
-        NotePlayEvent event = EventFactory.getInstance().callEvent(new NotePlayEvent(block, instrument, note));
+        NotePlayEvent event =
+            EventFactory.getInstance().callEvent(new NotePlayEvent(block, instrument, note));
         if (event.isCancelled()) {
             return false;
         }
@@ -133,7 +137,8 @@ public class BlockNote extends BlockType {
         Location location = block.getLocation();
 
         GlowChunk.Key key = GlowChunk.Key.of(block.getX() >> 4, block.getZ() >> 4);
-        block.getWorld().getRawPlayers().parallelStream().filter(player -> player.canSeeChunk(key)).forEach(player -> player.playNote(location, instrument, note));
+        block.getWorld().getRawPlayers().parallelStream().filter(player -> player.canSeeChunk(key))
+            .forEach(player -> player.playNote(location, instrument, note));
 
         return true;
     }

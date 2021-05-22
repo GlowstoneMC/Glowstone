@@ -1,5 +1,10 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
@@ -32,12 +37,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Base class for specific types of blocks.
@@ -202,8 +201,10 @@ public class BlockType extends ItemType {
      * @param holding  the the ItemStack that was being held
      * @param oldState The old block state before the block was placed.
      */
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
-        block.applyPhysics(oldState.getType(), block.getType(), oldState.getRawData(), block.getData());
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+                           GlowBlockState oldState) {
+        block.applyPhysics(oldState.getType(), block.getType(), oldState.getRawData(),
+            block.getData());
     }
 
     /**
@@ -240,8 +241,10 @@ public class BlockType extends ItemType {
      * @param face     The block face
      * @param oldState The block state of the block the player destroyed.
      */
-    public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face, GlowBlockState oldState) {
-        block.applyPhysics(oldState.getType(), block.getType(), oldState.getRawData(), block.getData());
+    public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face,
+                             GlowBlockState oldState) {
+        block.applyPhysics(oldState.getType(), block.getType(), oldState.getRawData(),
+            block.getData());
     }
 
     /**
@@ -465,7 +468,7 @@ public class BlockType extends ItemType {
      * Display the warning for finding the wrong MaterialData subclass.
      *
      * @param clazz The expected subclass of MaterialData.
-     * @param data The actual MaterialData found.
+     * @param data  The actual MaterialData found.
      * @deprecated MaterialData is no longer used (1.13). Use getCastedBlockData.
      */
     @Deprecated
@@ -478,7 +481,7 @@ public class BlockType extends ItemType {
      * Assert that block data matches the expected BlockData class
      *
      * @param clazz The expected subclass of BlockData.
-     * @param data The actual MaterialData found.
+     * @param data  The actual MaterialData found.
      * @return The casted block data.
      */
     protected <T extends BlockData> T getCastedBlockData(Class<T> clazz, BlockData data) {

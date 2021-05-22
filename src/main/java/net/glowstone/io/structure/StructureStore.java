@@ -1,5 +1,8 @@
 package net.glowstone.io.structure;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import lombok.Data;
 import net.glowstone.GlowWorld;
 import net.glowstone.generator.structures.GlowStructure;
@@ -8,10 +11,6 @@ import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NonNls;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * The base for structure store classes.
@@ -22,13 +21,14 @@ import java.util.Random;
 public abstract class StructureStore<T extends GlowStructure> {
 
     private final Class<T> type;
-    @NonNls private final String id;
+    @NonNls
+    private final String id;
 
     /**
      * Create a structure of this store's type in the given world. The load method will be called
      * separately.
      *
-     * @param world The target world.
+     * @param world  The target world.
      * @param chunkX The structure chunk X.
      * @param chunkZ The structure chunk Z.
      * @return The structure.
@@ -39,7 +39,7 @@ public abstract class StructureStore<T extends GlowStructure> {
      * Create a new structure of this store's type in the given world. The load method will be
      * called separately.
      *
-     * @param world The target world.
+     * @param world  The target world.
      * @param random The seeded random.
      * @param chunkX The structure chunk X.
      * @param chunkZ The structure chunk Z.
@@ -51,13 +51,13 @@ public abstract class StructureStore<T extends GlowStructure> {
      * Load structure data of the appropriate type from the given compound tag.
      *
      * @param structure The target structure.
-     * @param compound The structure's tag.
+     * @param compound  The structure's tag.
      */
     public void load(T structure, CompoundTag compound) {
         compound.readIntArray("BB", bb -> {
             if (bb.length == 6) {
                 StructureBoundingBox boundingBox = new StructureBoundingBox(
-                        new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
+                    new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
                 structure.setBoundingBox(boundingBox);
             }
         });
@@ -69,7 +69,7 @@ public abstract class StructureStore<T extends GlowStructure> {
      * Save information about this structure to the given tag.
      *
      * @param structure The structure to save.
-     * @param compound The target tag.
+     * @param compound  The target tag.
      */
     public void save(T structure, CompoundTag compound) {
         StructureBoundingBox boundingBox = structure.getBoundingBox();

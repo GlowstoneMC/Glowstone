@@ -13,6 +13,9 @@ import org.bukkit.inventory.ItemStack;
 
 @Data
 public class GlowAdvancementDisplay {
+    private static final int HAS_BACKGROUND_TEXTURE = 0x1;
+    private static final int SHOW_TOAST = 0x2;
+    private static final int HIDDEN = 0x4;
     /**
      * The title for this advancement
      */
@@ -42,21 +45,18 @@ public class GlowAdvancementDisplay {
      */
     private final float y;
 
-    private static final int HAS_BACKGROUND_TEXTURE = 0x1;
-    private static final int SHOW_TOAST = 0x2;
-    private static final int HIDDEN = 0x4;
-
     /**
      * Writes this notification to the given {@link ByteBuf}.
      *
-     * @param buf the buffer to write to
+     * @param buf                  the buffer to write to
      * @param hasBackgroundTexture Whether the advancement notification has a background texture
-     * @param showToast Whether or not to show the toast pop up after completing this advancement
-     * @param hidden Whether or not to hide this advancement and all its children from the advancement screen until this advancement have been completed
+     * @param showToast            Whether or not to show the toast pop up after completing this advancement
+     * @param hidden               Whether or not to hide this advancement and all its children from the advancement screen until this advancement have been completed
      * @return {@code buf}, with this notification written to it
      * @throws IOException if a string is too long
      */
-    public ByteBuf encode(ByteBuf buf, boolean hasBackgroundTexture, boolean showToast, boolean hidden) throws IOException {
+    public ByteBuf encode(ByteBuf buf, boolean hasBackgroundTexture, boolean showToast,
+                          boolean hidden) throws IOException {
         int flags = (hasBackgroundTexture ? HAS_BACKGROUND_TEXTURE : 0)
             | (showToast ? SHOW_TOAST : 0)
             | (hidden ? HIDDEN : 0);

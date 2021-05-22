@@ -1,5 +1,8 @@
 package net.glowstone.io.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.entity.GlowEntity;
@@ -11,10 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NonNls;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * The base for entity store classes.
@@ -67,7 +66,7 @@ public abstract class EntityStore<T extends GlowEntity> {
      * Load data into an existing entity of the appropriate type from the given compound tag.
      *
      * @param entity The target entity.
-     * @param tag The entity's tag.
+     * @param tag    The entity's tag.
      */
     public void load(T entity, CompoundTag tag) {
         // id, world, and location are handled by EntityStore
@@ -88,9 +87,9 @@ public abstract class EntityStore<T extends GlowEntity> {
         tag.readInt("PortalCooldown", entity::setPortalCooldown);
         // TODO: Refactor using JDK9's Optional.or() once JDK8 support ends
         Optional.ofNullable(
-                tag.tryGetUuid("UUIDMost", "UUIDLeast")
+            tag.tryGetUuid("UUIDMost", "UUIDLeast")
                 .orElseGet(() -> tag.tryGetString("UUID").map(UuidUtils::fromString).orElse(null)))
-                .ifPresent(entity::setUniqueId);
+            .ifPresent(entity::setUniqueId);
         tag.iterateCompoundList("Passengers", entityTag -> {
             Entity passenger = loadPassenger(entity, entityTag);
             if (passenger != null) {
@@ -126,7 +125,7 @@ public abstract class EntityStore<T extends GlowEntity> {
      * Save information about this entity to the given tag.
      *
      * @param entity The entity to save.
-     * @param tag The target tag.
+     * @param tag    The target tag.
      */
     public void save(T entity, CompoundTag tag) {
         tag.putString("id", "minecraft:" + entityType);

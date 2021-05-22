@@ -31,14 +31,13 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
-import net.glowstone.GlowServer;
-import net.glowstone.ServerProvider;
-import net.glowstone.util.config.ServerConfig.Key;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
+import net.glowstone.util.config.ServerConfig.Key;
 
 /**
  * A simple cache and wrapper for efficiently accessing multiple RegionFiles simultaneously.
@@ -46,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 public class RegionFileCache {
 
     private static final int MAX_CACHE_SIZE =
-            ((GlowServer) ServerProvider.getServer()).getConfig().getInt(Key.REGION_CACHE_SIZE);
+        ((GlowServer) ServerProvider.getServer()).getConfig().getInt(Key.REGION_CACHE_SIZE);
 
     private static final RemovalListener<File, RegionFile> removalListener = removal -> {
         try {
@@ -55,20 +54,18 @@ public class RegionFileCache {
             e.printStackTrace();
         }
     };
-
-    private LoadingCache<File, RegionFile> regions = CacheBuilder.newBuilder()
-            .expireAfterAccess(5, TimeUnit.MINUTES)
-            .maximumSize(MAX_CACHE_SIZE)
-            .removalListener(removalListener)
-            .build(new CacheLoader<File, RegionFile>() {
-                @Override
-                public RegionFile load(File file) throws Exception {
-                    return new RegionFile(file);
-                }
-            });
-
     private final String extension;
     private final File regionDir;
+    private final LoadingCache<File, RegionFile> regions = CacheBuilder.newBuilder()
+        .expireAfterAccess(5, TimeUnit.MINUTES)
+        .maximumSize(MAX_CACHE_SIZE)
+        .removalListener(removalListener)
+        .build(new CacheLoader<File, RegionFile>() {
+            @Override
+            public RegionFile load(File file) throws Exception {
+                return new RegionFile(file);
+            }
+        });
 
     public RegionFileCache(File basePath, String extension) {
         this.extension = extension;
@@ -88,7 +85,7 @@ public class RegionFileCache {
             GlowServer.logger.warning("Failed to create directory: " + regionDir);
         }
         return regions.getUnchecked(
-                new File(regionDir, "r." + (chunkX >> 5) + "." + (chunkZ >> 5) + extension));
+            new File(regionDir, "r." + (chunkX >> 5) + "." + (chunkZ >> 5) + extension));
     }
 
     public void clear() throws RejectedExecutionException {

@@ -56,7 +56,7 @@ public class GlowBoat extends GlowVehicle implements Boat {
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
             new SpawnObjectMessage(entityId, getUniqueId(),
-                    EntityNetworkUtil.getObjectId(EntityType.BOAT), location),
+                EntityNetworkUtil.getObjectId(EntityType.BOAT), location),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
@@ -106,7 +106,7 @@ public class GlowBoat extends GlowVehicle implements Boat {
         boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
         if (getDamage() > 40.0 || isCreative) {
             if (EventFactory.getInstance()
-                    .callEvent(new VehicleDestroyEvent(this, player)).isCancelled()) {
+                .callEvent(new VehicleDestroyEvent(this, player)).isCancelled()) {
                 return;
             }
             remove();

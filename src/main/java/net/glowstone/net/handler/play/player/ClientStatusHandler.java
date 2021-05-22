@@ -23,7 +23,7 @@ public final class ClientStatusHandler implements MessageHandler<GlowSession, Cl
 
             default:
                 ConsoleMessages.Info.Net.UNKNOWN_CLIENT_STATUS_ACTION.log(
-                        session, message.getAction());
+                    session, message.getAction());
         }
     }
 }

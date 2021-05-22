@@ -1,10 +1,9 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.network.Message;
+import javax.annotation.Nullable;
 import lombok.Data;
 import org.bukkit.SoundCategory;
-
-import javax.annotation.Nullable;
 
 @Data
 public final class StopSoundMessage implements Message {

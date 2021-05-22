@@ -15,7 +15,8 @@ import org.jetbrains.annotations.NotNull;
 public class BlockWoodenTrapDoor extends BlockOpenable {
 
     // TODO: 1.13: new trap door types
-    private static final Collection<ItemStack> DROP = Collections.unmodifiableCollection(Arrays.asList(new ItemStack(Material.LEGACY_TRAP_DOOR)));
+    private static final Collection<ItemStack> DROP =
+        Collections.unmodifiableCollection(Arrays.asList(new ItemStack(Material.LEGACY_TRAP_DOOR)));
     private BlockTrapDoor trapDoor;
 
     public BlockWoodenTrapDoor() {
@@ -24,7 +25,7 @@ public class BlockWoodenTrapDoor extends BlockOpenable {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         trapDoor.placeBlock(player, state, face, holding, clickedLoc);
     }

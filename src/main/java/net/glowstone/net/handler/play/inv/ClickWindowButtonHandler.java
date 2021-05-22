@@ -10,7 +10,8 @@ import org.bukkit.inventory.LecternInventory;
 import org.bukkit.inventory.LoomInventory;
 import org.bukkit.inventory.StonecutterInventory;
 
-public final class ClickWindowButtonHandler implements MessageHandler<GlowSession, ClickWindowButtonMessage> {
+public final class ClickWindowButtonHandler
+    implements MessageHandler<GlowSession, ClickWindowButtonMessage> {
 
     @Override
     public void handle(GlowSession session, ClickWindowButtonMessage message) {

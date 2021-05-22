@@ -1,10 +1,9 @@
 package net.glowstone.net;
 
 import com.destroystokyo.paper.network.StatusClient;
-import lombok.RequiredArgsConstructor;
-
-import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
+import javax.annotation.Nullable;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class GlowStatusClient implements StatusClient {

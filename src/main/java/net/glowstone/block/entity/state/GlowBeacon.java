@@ -1,5 +1,6 @@
 package net.glowstone.block.entity.state;
 
+import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BeaconEntity;
 import net.glowstone.inventory.GlowBeaconInventory;
@@ -9,8 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.BeaconInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.Collection;
 
 public class GlowBeacon extends GlowContainer implements Beacon {
 
@@ -31,22 +30,14 @@ public class GlowBeacon extends GlowContainer implements Beacon {
 
     @Override
     public Collection<LivingEntity> getEntitiesInRange() {
-        return getWorld().getNearbyEntitiesByType(Player.class, getLocation(), getTier() * RADIUS_MULTIPLIER, getWorld().getMaxHeight());
+        return getWorld()
+            .getNearbyEntitiesByType(Player.class, getLocation(), getTier() * RADIUS_MULTIPLIER,
+                getWorld().getMaxHeight());
     }
 
     @Override
     public int getTier() {
         return getBlockEntity().getLevels();
-    }
-
-    @Override
-    public void setPrimaryEffect(PotionEffectType primary) {
-        getBlockEntity().setPrimaryEffectId(primary.getId());
-    }
-
-    @Override
-    public void setSecondaryEffect(PotionEffectType secondary) {
-        getBlockEntity().setSecondaryEffectId(secondary.getId());
     }
 
     @Override
@@ -70,8 +61,18 @@ public class GlowBeacon extends GlowContainer implements Beacon {
     }
 
     @Override
+    public void setPrimaryEffect(PotionEffectType primary) {
+        getBlockEntity().setPrimaryEffectId(primary.getId());
+    }
+
+    @Override
     public PotionEffect getSecondaryEffect() {
         return getBlockEntity().getEffect(BeaconEntity.BeaconEffectPriority.SECONDARY);
+    }
+
+    @Override
+    public void setSecondaryEffect(PotionEffectType secondary) {
+        getBlockEntity().setSecondaryEffectId(secondary.getId());
     }
 
     @Override

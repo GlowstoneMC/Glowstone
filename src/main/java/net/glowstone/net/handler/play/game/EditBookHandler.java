@@ -31,7 +31,7 @@ public final class EditBookHandler implements MessageHandler<GlowSession, EditBo
 
         // Verify item in hand is also a book
         ItemStack inHand = message.getHand() == 0 ?
-                player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
+            player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
         if (!isWritableBook(inHand)) {
             return;
         }
@@ -58,7 +58,7 @@ public final class EditBookHandler implements MessageHandler<GlowSession, EditBo
 
     private boolean isWritableBook(ItemStack item) {
         return item != null
-                && item.getType() == Material.WRITABLE_BOOK
-                && item.getItemMeta() instanceof BookMeta;
+            && item.getType() == Material.WRITABLE_BOOK
+            && item.getItemMeta() instanceof BookMeta;
     }
 }

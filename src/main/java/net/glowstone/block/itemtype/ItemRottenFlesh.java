@@ -20,7 +20,7 @@ public class ItemRottenFlesh extends ItemFood {
 
         if (Math.random() < 0.8) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER,
-                    TickUtil.secondsToTicks(30), 0), true);
+                TickUtil.secondsToTicks(30), 0), true);
         }
         return true;
     }

@@ -26,7 +26,7 @@ public class TpCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -44,32 +44,32 @@ public class TpCommand extends GlowVanillaCommand {
                 }
                 String name = args[0];
                 if (name.startsWith("@") && !name.startsWith("@e") && name.length() >= 2
-                        && CommandUtils.isPhysical(sender)) {
+                    && CommandUtils.isPhysical(sender)) {
                     Location location = from.getLocation();
                     CommandTarget target = new CommandTarget(sender, name);
                     Entity[] matched = target.getMatched(location);
                     if (matched.length == 0) {
                         commandMessages.getGeneric(GenericMessage.NO_MATCHES)
-                                .sendInColor(ChatColor.RED, sender, name);
+                            .sendInColor(ChatColor.RED, sender, name);
                         return false;
                     }
                     for (Entity entity : matched) {
                         from.teleport(entity);
                         sender.sendMessage(
-                                "Teleported " + CommandUtils.getName(from) + " to " + CommandUtils
-                                        .getName(entity));
+                            "Teleported " + CommandUtils.getName(from) + " to " + CommandUtils
+                                .getName(entity));
                     }
                     return true;
                 } else {
                     Player player = Bukkit.getPlayerExact(name);
                     if (player == null) {
                         commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                                .sendInColor(ChatColor.RED, sender, name);
+                            .sendInColor(ChatColor.RED, sender, name);
                         return false;
                     } else {
                         from.teleport(player);
                         sender.sendMessage("Teleported " + CommandUtils.getName(from) + " to "
-                                        + player.getName());
+                            + player.getName());
                         return true;
                     }
                 }
@@ -78,24 +78,24 @@ public class TpCommand extends GlowVanillaCommand {
                 String fromName = args[0];
                 String destName = args[1];
                 if (fromName.startsWith("@") && fromName.length() >= 2 && CommandUtils
-                        .isPhysical(sender)) {
+                    .isPhysical(sender)) {
                     Location location = CommandUtils.getLocation(sender);
                     CommandTarget target = new CommandTarget(sender, fromName);
                     Entity[] matched = target.getMatched(location);
                     if (matched.length == 0) {
                         commandMessages.getGeneric(GenericMessage.NO_MATCHES)
-                                .sendInColor(ChatColor.RED, sender, fromName);
+                            .sendInColor(ChatColor.RED, sender, fromName);
                         return false;
                     }
                     for (Entity entity : matched) {
                         if (destName.startsWith("@") && !destName.startsWith("@e")
-                                && destName.length() >= 2 && CommandUtils.isPhysical(sender)) {
+                            && destName.length() >= 2 && CommandUtils.isPhysical(sender)) {
                             Location location2 = CommandUtils.getLocation(sender);
                             CommandTarget target2 = new CommandTarget(sender, destName);
                             Entity[] matched2 = target2.getMatched(location2);
                             if (matched2.length == 0) {
                                 commandMessages.getGeneric(GenericMessage.NO_MATCHES)
-                                        .sendInColor(ChatColor.RED, sender,
+                                    .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             }
@@ -104,7 +104,7 @@ public class TpCommand extends GlowVanillaCommand {
                             Player player = Bukkit.getPlayerExact(destName);
                             if (player == null) {
                                 commandMessages.getGeneric(GenericMessage.NO_MATCHES)
-                                        .sendInColor(ChatColor.RED, sender,
+                                    .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             } else {
@@ -113,26 +113,26 @@ public class TpCommand extends GlowVanillaCommand {
                         }
                         entity.teleport(destination);
                         sender.sendMessage(
-                                "Teleported " + CommandUtils.getName(entity) + " to " + CommandUtils
-                                        .getName(destination));
+                            "Teleported " + CommandUtils.getName(entity) + " to " + CommandUtils
+                                .getName(destination));
                     }
                     return true;
                 } else {
                     Player player = Bukkit.getPlayerExact(fromName);
                     if (player == null) {
                         sender
-                                .sendMessage(
-                                        ChatColor.RED + "Player '" + fromName + "' is not online");
+                            .sendMessage(
+                                ChatColor.RED + "Player '" + fromName + "' is not online");
                         return false;
                     } else {
                         if (destName.startsWith("@") && !destName.startsWith("@e")
-                                && destName.length() >= 2 && CommandUtils.isPhysical(sender)) {
+                            && destName.length() >= 2 && CommandUtils.isPhysical(sender)) {
                             Location location2 = CommandUtils.getLocation(sender);
                             CommandTarget target2 = new CommandTarget(sender, destName);
                             Entity[] matched2 = target2.getMatched(location2);
                             if (matched2.length == 0) {
                                 commandMessages.getGeneric(GenericMessage.NO_MATCHES)
-                                        .sendInColor(ChatColor.RED, sender,
+                                    .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             }
@@ -141,7 +141,7 @@ public class TpCommand extends GlowVanillaCommand {
                             Player player2 = Bukkit.getPlayerExact(destName);
                             if (player2 == null) {
                                 commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                                        .sendInColor(ChatColor.RED, sender,
+                                    .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             } else {
@@ -151,7 +151,7 @@ public class TpCommand extends GlowVanillaCommand {
                     }
                     player.teleport(destination);
                     sender.sendMessage("Teleported " + player.getName() + " to " + CommandUtils
-                            .getName(destination));
+                        .getName(destination));
                     return true;
                 }
             default:
@@ -167,17 +167,17 @@ public class TpCommand extends GlowVanillaCommand {
             Entity[] matched = target.getMatched(location);
             if (matched.length == 0) {
                 sender.sendMessage(
-                        ChatColor.RED + "Selector " + selector + " found nothing");
+                    ChatColor.RED + "Selector " + selector + " found nothing");
             }
             return matched;
         } else {
             Player player = Bukkit.getPlayerExact(selector);
             if (player == null) {
                 sender.sendMessage(
-                        ChatColor.RED + "Player '" + selector + "' is not online");
+                    ChatColor.RED + "Player '" + selector + "' is not online");
                 return new Entity[0];
             } else {
-                return new Entity[] { player };
+                return new Entity[] {player};
             }
         }
     }
@@ -200,8 +200,8 @@ public class TpCommand extends GlowVanillaCommand {
 
             from.teleport(destination, PlayerTeleportEvent.TeleportCause.COMMAND);
             sender.sendMessage(
-                    "Teleported " + CommandUtils.getName(from) + " to " + CommandUtils
-                            .getName(destination));
+                "Teleported " + CommandUtils.getName(from) + " to " + CommandUtils
+                    .getName(destination));
             return true;
         }
     }
@@ -218,8 +218,8 @@ public class TpCommand extends GlowVanillaCommand {
             for (Entity entity : matchedFrom) {
                 entity.teleport(destination, PlayerTeleportEvent.TeleportCause.COMMAND);
                 sender.sendMessage(
-                        "Teleported " + CommandUtils.getName(entity) + " to " + CommandUtils
-                                .getName(destination));
+                    "Teleported " + CommandUtils.getName(entity) + " to " + CommandUtils
+                        .getName(destination));
             }
             return true;
         }
@@ -231,7 +231,7 @@ public class TpCommand extends GlowVanillaCommand {
         Entity[] entities;
         if (name == null) {
             if (sender instanceof Player) {
-                entities = new Entity[] { (Entity) sender };
+                entities = new Entity[] {(Entity) sender};
             } else {
                 sender.sendMessage(ChatColor.RED + "Only entities can be teleported");
                 return false;
@@ -252,8 +252,8 @@ public class TpCommand extends GlowVanillaCommand {
         for (Entity entity : entities) {
             entity.teleport(location, PlayerTeleportEvent.TeleportCause.COMMAND);
             sender.sendMessage(
-                    "Teleported " + CommandUtils.getName(entity) + " to " + location.getX()
-                            + ", " + location.getY() + ", " + location.getZ());
+                "Teleported " + CommandUtils.getName(entity) + " to " + location.getX()
+                    + ", " + location.getY() + ", " + location.getZ());
         }
         return true;
     }

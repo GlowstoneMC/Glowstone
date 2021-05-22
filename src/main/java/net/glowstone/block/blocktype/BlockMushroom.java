@@ -32,7 +32,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
         Material type = belowBlock.getType();
         if (type == Material.GRASS_BLOCK || type == Material.DIRT) {
             if (block.getLightLevel()
-                    < 13) { // checking light level for dirt, coarse dirt and grass
+                < 13) { // checking light level for dirt, coarse dirt and grass
                 return true;
             }
         } else if (type == Material.MYCELIUM || type == Material.PODZOL) {
@@ -70,10 +70,10 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
         Location loc = block.getLocation();
         BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         if (GlowTree.newInstance(type, ThreadLocalRandom.current(), blockStateDelegate)
-                .generate(loc)) {
+            .generate(loc)) {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, true, player,
-                    blockStates);
+                blockStates);
             EventFactory.getInstance().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 for (BlockState state : blockStates) {
@@ -95,7 +95,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
                 for (z = block.getZ() - 4; z <= block.getZ() + 4; z++) {
                     for (y = block.getY() - 1; y <= block.getY() + 1; y++) {
                         if (world.getBlockAt(x, y, z).getType() == mushroomType
-                                && ++nearbyShrooms > 4) {
+                            && ++nearbyShrooms > 4) {
                             return;
                         }
                     }
@@ -107,7 +107,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
             int nz;
             nx = block.getX() + ThreadLocalRandom.current().nextInt(3) - 1;
             ny = block.getY() + ThreadLocalRandom.current().nextInt(2)
-                    - ThreadLocalRandom.current().nextInt(2);
+                - ThreadLocalRandom.current().nextInt(2);
             nz = block.getZ() + ThreadLocalRandom.current().nextInt(3) - 1;
 
             x = block.getX();
@@ -122,7 +122,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
                 }
                 nx = x + ThreadLocalRandom.current().nextInt(3) - 1;
                 ny = y + ThreadLocalRandom.current().nextInt(2) - ThreadLocalRandom.current()
-                        .nextInt(2);
+                    .nextInt(2);
                 nz = z + ThreadLocalRandom.current().nextInt(3) - 1;
             }
 

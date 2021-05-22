@@ -1,6 +1,7 @@
 package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
+import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
@@ -16,8 +17,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.Objects;
 
 
 public final class PlayerUpdateHandler implements MessageHandler<GlowSession, PlayerUpdateMessage> {

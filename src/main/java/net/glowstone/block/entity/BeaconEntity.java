@@ -3,6 +3,9 @@ package net.glowstone.block.entity;
 import com.destroystokyo.paper.event.block.BeaconEffectEvent;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -19,19 +22,15 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public class BeaconEntity extends BlockEntity {
 
     private static final Set<Material> BEACON_BASE = Sets.newHashSet(
-            Material.EMERALD_BLOCK, Material.GOLD_BLOCK,
-            Material.DIAMOND_BLOCK, Material.IRON_BLOCK
+        Material.EMERALD_BLOCK, Material.GOLD_BLOCK,
+        Material.DIAMOND_BLOCK, Material.IRON_BLOCK
     );
     private static final Set<Material> TRANSPARENT_BLOCKS = ImmutableSet.of(
-            Sets.newHashSet(Material.AIR, Material.GLASS, Material.GLASS_PANE),
-            MaterialUtil.STAINED_GLASS_PANES, MaterialUtil.STAINED_GLASS_BLOCKS
+        Sets.newHashSet(Material.AIR, Material.GLASS, Material.GLASS_PANE),
+        MaterialUtil.STAINED_GLASS_PANES, MaterialUtil.STAINED_GLASS_BLOCKS
     ).stream().flatMap(Collection::stream).collect(Collectors.toSet());
 
     private String lock = null; // todo: support item locks
@@ -72,7 +71,8 @@ public class BeaconEntity extends BlockEntity {
     private boolean canBeEnabled() {
         World world = block.getWorld();
         for (int y = block.getY() + 1; y < world.getMaxHeight(); y++) {
-            if (!TRANSPARENT_BLOCKS.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())) {
+            if (!TRANSPARENT_BLOCKS
+                .contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())) {
                 return false;
             }
         }
@@ -91,7 +91,8 @@ public class BeaconEntity extends BlockEntity {
             boolean isLayerComplete = true;
             for (int x = beaconX - layer; x <= beaconX + layer && isLayerComplete; ++x) {
                 for (int z = beaconZ - layer; z <= beaconZ + layer; ++z) {
-                    if (!BEACON_BASE.contains(getBlock().getWorld().getBlockAt(x, layerY, z).getType())) {
+                    if (!BEACON_BASE
+                        .contains(getBlock().getWorld().getBlockAt(x, layerY, z).getType())) {
                         isLayerComplete = false;
                         break;
                     }
@@ -112,7 +113,9 @@ public class BeaconEntity extends BlockEntity {
                 if (effect == null) {
                     continue;
                 }
-                BeaconEffectEvent event = new BeaconEffectEvent(block, effect, (Player) livingEntity, priority == BeaconEffectPriority.PRIMARY);
+                BeaconEffectEvent event =
+                    new BeaconEffectEvent(block, effect, (Player) livingEntity,
+                        priority == BeaconEffectPriority.PRIMARY);
                 if (!EventFactory.getInstance().callEvent(event).isCancelled()) {
                     livingEntity.addPotionEffect(event.getEffect(), true);
                 }
@@ -121,7 +124,8 @@ public class BeaconEntity extends BlockEntity {
     }
 
     public PotionEffect getEffect(BeaconEffectPriority priority) {
-        PotionEffectType type = PotionEffectType.getById(priority == BeaconEffectPriority.PRIMARY ? primaryEffectId : secondaryEffectId);
+        PotionEffectType type = PotionEffectType.getById(
+            priority == BeaconEffectPriority.PRIMARY ? primaryEffectId : secondaryEffectId);
         if (type == null) {
             return null;
         }

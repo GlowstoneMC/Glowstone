@@ -3,9 +3,8 @@ package net.glowstone.net.codec.login;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.login.LoginSuccessMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.login.LoginSuccessMessage;
 
 public final class LoginSuccessCodec implements Codec<LoginSuccessMessage> {
 

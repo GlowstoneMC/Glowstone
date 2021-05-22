@@ -25,14 +25,14 @@ import org.bukkit.inventory.HorseInventory;
 public class GlowHorse extends GlowAbstractHorse implements Horse {
 
     private static final Map<Material, Double> HEALING_FOODS = ImmutableMap
-            .<Material, Double>builder()
-            .put(Material.SUGAR, 1.0)
-            .put(Material.WHEAT, 2.0)
-            .put(Material.APPLE, 3.0)
-            .put(Material.GOLDEN_CARROT, 4.0)
-            .put(Material.GOLDEN_APPLE, 10.0)
-            .put(Material.HAY_BLOCK, 20.0)
-            .build();
+        .<Material, Double>builder()
+        .put(Material.SUGAR, 1.0)
+        .put(Material.WHEAT, 2.0)
+        .put(Material.APPLE, 3.0)
+        .put(Material.GOLDEN_CARROT, 4.0)
+        .put(Material.GOLDEN_APPLE, 10.0)
+        .put(Material.HAY_BLOCK, 20.0)
+        .build();
     private static final Variant[] VARIANTS = Variant.values();
     private static final Color[] COLORS = Color.values();
     private static final Style[] STYLES = Style.values();
@@ -66,7 +66,7 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
         Double healingAmount = HEALING_FOODS.get(food);
         if (healingAmount != null) {
             boolean healed = EntityUtils.heal(this, healingAmount,
-                    EntityRegainHealthEvent.RegainReason.EATING);
+                EntityRegainHealthEvent.RegainReason.EATING);
             return super.tryFeed(food, player) || healed;
         }
         return super.tryFeed(food, player);

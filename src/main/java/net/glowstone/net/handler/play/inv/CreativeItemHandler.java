@@ -1,6 +1,7 @@
 package net.glowstone.net.handler.play.inv;
 
 import com.flowpowered.network.MessageHandler;
+import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.GlowPlayer;
@@ -16,8 +17,6 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Objects;
-
 public final class CreativeItemHandler implements MessageHandler<GlowSession, CreativeItemMessage> {
 
     @Override
@@ -30,7 +29,7 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
 
         // only if creative mode; only if default (player) inventory
         if (player.getGameMode() != GameMode.CREATIVE
-                || !GlowInventoryView.isDefault(player.getOpenInventory())) {
+            || !GlowInventoryView.isDefault(player.getOpenInventory())) {
             player.kickPlayer(GlowstoneMessages.Kick.CREATIVE_ITEM.get());
             return;
         }

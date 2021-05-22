@@ -2,9 +2,8 @@ package net.glowstone.net.codec.play.inv;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.inv.ClickWindowButtonMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.inv.ClickWindowButtonMessage;
 
 public final class ClickWindowButtonCodec implements Codec<ClickWindowButtonMessage> {
 

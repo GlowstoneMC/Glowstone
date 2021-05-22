@@ -1,5 +1,6 @@
 package net.glowstone.block.entity.state;
 
+import java.util.Collection;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
@@ -12,8 +13,6 @@ import org.bukkit.block.Jukebox;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
 
 public class GlowJukebox extends GlowBlockState implements Jukebox {
 
@@ -62,11 +61,6 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
     }
 
     @Override
-    public void stopPlaying() {
-        setPlaying(null);
-    }
-
-    @Override
     public void setPlaying(Material record) {
         int id = 0;
         if (record == null || record == Material.AIR) {
@@ -80,6 +74,11 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
             player.playEffect(getLocation(), Effect.RECORD_PLAY, id);
         }
         setRawData((byte) (id > 0 ? 1 : 0));
+    }
+
+    @Override
+    public void stopPlaying() {
+        setPlaying(null);
     }
 
     @Override

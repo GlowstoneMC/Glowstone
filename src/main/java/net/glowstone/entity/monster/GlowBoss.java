@@ -19,6 +19,44 @@ public class GlowBoss extends GlowMonster implements Boss {
     @Getter
     protected final BossBar bossBar;
 
+    /**
+     * Creates a new boss.
+     *
+     * @param loc       The location of the non-passive mob.
+     * @param type      The type of mob.
+     * @param maxHealth The max health for this mob.
+     * @param title     The boss bar title. TODO: i18n
+     * @param color     The boss bar color.
+     * @param style     The boss bar style.
+     * @param barFlags  Flags controlling the boss bar.
+     */
+    public GlowBoss(Location loc, EntityType type, double maxHealth, String title,
+                    BarColor color, BarStyle style,
+                    BarFlag... barFlags) {
+        super(loc, type, maxHealth);
+        bossBar = getServer().createBossBar(title, color, style, barFlags);
+        bossBar.setProgress(1);
+        for (Player player : world.getPlayers()) {
+            // TODO: Check facing direction
+            bossBar.addPlayer(player);
+        }
+    }
+
+    /**
+     * Creates a new boss, whose boss-bar title is equal to its type name.
+     *
+     * @param loc       The location of the non-passive mob.
+     * @param type      The type of mob.
+     * @param maxHealth The max health for this mob.
+     * @param color     The boss bar color.
+     * @param style     The boss bar style.
+     * @param barFlags  Flags controlling the boss bar.
+     */
+    public GlowBoss(Location loc, EntityType type, double maxHealth, BarColor color, BarStyle style,
+                    BarFlag... barFlags) {
+        this(loc, type, maxHealth, type.getName(), color, style, barFlags);
+    }
+
     @Override
     public boolean teleport(Location location) {
         World oldWorld = world;
@@ -35,42 +73,6 @@ public class GlowBoss extends GlowMonster implements Boss {
             worldLock.readLock().unlock();
         }
         return result;
-    }
-
-    /**
-     * Creates a new boss.
-     * @param loc The location of the non-passive mob.
-     * @param type The type of mob.
-     * @param maxHealth The max health for this mob.
-     * @param title The boss bar title. TODO: i18n
-     * @param color The boss bar color.
-     * @param style The boss bar style.
-     * @param barFlags Flags controlling the boss bar.
-     */
-    public GlowBoss(Location loc, EntityType type, double maxHealth, String title,
-            BarColor color, BarStyle style,
-            BarFlag... barFlags) {
-        super(loc, type, maxHealth);
-        bossBar = getServer().createBossBar(title, color, style, barFlags);
-        bossBar.setProgress(1);
-        for (Player player : world.getPlayers()) {
-            // TODO: Check facing direction
-            bossBar.addPlayer(player);
-        }
-    }
-
-    /**
-     * Creates a new boss, whose boss-bar title is equal to its type name.
-     * @param loc The location of the non-passive mob.
-     * @param type The type of mob.
-     * @param maxHealth The max health for this mob.
-     * @param color The boss bar color.
-     * @param style The boss bar style.
-     * @param barFlags Flags controlling the boss bar.
-     */
-    public GlowBoss(Location loc, EntityType type, double maxHealth, BarColor color, BarStyle style,
-            BarFlag... barFlags) {
-        this(loc, type, maxHealth, type.getName(), color, style, barFlags);
     }
 
     @Override

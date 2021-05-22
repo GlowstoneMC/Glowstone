@@ -1,15 +1,14 @@
 package net.glowstone.net.message.play.game;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.flowpowered.network.Message;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import net.glowstone.util.TextMessage;
-
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 @Data
 public final class MapDataMessage implements Message {
@@ -44,11 +43,12 @@ public final class MapDataMessage implements Message {
 
         /**
          * Creates an instance.
-         * @param width the section width
+         *
+         * @param width  the section width
          * @param height the section height
-         * @param x the x offset
-         * @param z the z offset
-         * @param data the data
+         * @param x      the x offset
+         * @param z      the z offset
+         * @param data   the data
          */
         public Section(int width, int height, int x, int z, byte... data) {
             checkArgument(width * height == data.length, "width * height == data.length");

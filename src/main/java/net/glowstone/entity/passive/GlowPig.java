@@ -2,7 +2,6 @@ package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
 import java.util.Set;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowAnimal;
@@ -24,16 +23,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class GlowPig extends GlowAnimal implements Pig {
 
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT,
+        Material.POTATO,
+        Material.BEETROOT);
     @Getter
     @Setter
     private int boostTicks;
     @Getter
     @Setter
     private int currentBoostTicks;
-
-    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT,
-            Material.POTATO,
-            Material.BEETROOT);
 
     public GlowPig(Location location) {
         super(location, EntityType.PIG, 10);

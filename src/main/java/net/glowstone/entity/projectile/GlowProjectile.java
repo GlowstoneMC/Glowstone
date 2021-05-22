@@ -57,9 +57,9 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-                new SpawnObjectMessage(entityId, getUniqueId(), getObjectId(), x, y, z, pitch, yaw),
-                new EntityMetadataMessage(entityId, metadata.getEntryList()),
-                new EntityVelocityMessage(entityId, getVelocity())
+            new SpawnObjectMessage(entityId, getUniqueId(), getObjectId(), x, y, z, pitch, yaw),
+            new EntityMetadataMessage(entityId, metadata.getEntryList()),
+            new EntityVelocityMessage(entityId, getVelocity())
         );
     }
 
@@ -68,7 +68,7 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
         if (boundingBox != null) {
             Vector size = boundingBox.getSize();
             for (Entity entity : world.getNearbyEntities(
-                    location, size.getX(), size.getY(), size.getZ())) {
+                location, size.getX(), size.getY(), size.getZ())) {
                 if (entity != this && !(entity.equals(shooter))) {
                     if (entity instanceof LivingEntity) {
                         EventFactory.getInstance().callEvent(new ProjectileHitEvent(this, entity));

@@ -23,7 +23,7 @@ public class ItemMinecart extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         // TODO: 1.13: catch all rail types
         if (target == null || target.getType() != Material.RAIL) {
             return;

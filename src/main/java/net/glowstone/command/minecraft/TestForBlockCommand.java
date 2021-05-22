@@ -32,7 +32,7 @@ public class TestForBlockCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages messages) {
+                           CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
@@ -45,16 +45,16 @@ public class TestForBlockCommand extends GlowVanillaCommand {
         ResourceBundle bundle = messages.getResourceBundle();
         if (type == null) {
             new LocalizedStringImpl("testforblock.invalid-block", bundle)
-                    .sendInColor(ChatColor.RED, sender, itemName);
+                .sendInColor(ChatColor.RED, sender, itemName);
         }
         Location location = CommandUtils
-                .getLocation(CommandUtils.getLocation(sender), args[0], args[1], args[2]);
+            .getLocation(CommandUtils.getLocation(sender), args[0], args[1], args[2]);
         GlowBlock block = (GlowBlock) location.getBlock();
         if (block.getType() != type) {
             new LocalizedStringImpl("testforblock.wrong-block", bundle)
-                    .sendInColor(ChatColor.RED, sender,
-                            location.getBlockX(), location.getBlockY(), location.getBlockZ(),
-                            ItemIds.getName(block.getType()), ItemIds.getName(type));
+                .sendInColor(ChatColor.RED, sender,
+                    location.getBlockX(), location.getBlockY(), location.getBlockZ(),
+                    ItemIds.getName(block.getType()), ItemIds.getName(type));
             return false;
         }
         if (args.length > 4) {
@@ -65,22 +65,22 @@ public class TestForBlockCommand extends GlowVanillaCommand {
             }
             if (data.isNumeric() && block.getData() != data.getNumericValue()) {
                 new LocalizedStringImpl("testforblock.wrong-data", bundle)
-                        .sendInColor(ChatColor.RED, sender,
-                                location.getBlockX(), location.getBlockY(), location.getBlockZ(),
-                                block.getData(), data);
+                    .sendInColor(ChatColor.RED, sender,
+                        location.getBlockX(), location.getBlockY(), location.getBlockZ(),
+                        block.getData(), data);
                 return false;
             } else if (!data.isNumeric()) {
                 try {
                     boolean matches = StateSerialization
-                            .matches(block.getType(), block.getState().getData(), data);
+                        .matches(block.getType(), block.getState().getData(), data);
                     if (!matches) {
                         // TODO: Print the actual state of the block
                         new LocalizedStringImpl("testforblock.wrong-state",
-                                bundle)
-                                .sendInColor(ChatColor.RED, sender,
-                                        location.getBlockX(), location.getBlockY(),
-                                        location.getBlockZ(),
-                                        state);
+                            bundle)
+                            .sendInColor(ChatColor.RED, sender,
+                                location.getBlockX(), location.getBlockY(),
+                                location.getBlockZ(),
+                                state);
                         return false;
                     }
                 } catch (InvalidBlockStateException e) {
@@ -91,33 +91,33 @@ public class TestForBlockCommand extends GlowVanillaCommand {
         }
         if (args.length > 5 && block.getBlockEntity() != null) {
             String dataTag = String
-                    .join(" ", new ArrayList<>(Arrays.asList(args)).subList(5, args.length));
+                .join(" ", new ArrayList<>(Arrays.asList(args)).subList(5, args.length));
             try {
                 CompoundTag tag = Mojangson.parseCompound(dataTag);
                 CompoundTag blockTag = new CompoundTag();
                 block.getBlockEntity().saveNbt(blockTag);
                 if (!tag.matches(blockTag)) {
                     new LocalizedStringImpl("testforblock.wrong-data", bundle).sendInColor(
-                            ChatColor.RED, sender,
-                            location.getBlockX(), location.getBlockY(), location.getBlockZ(),
-                            blockTag, tag);
+                        ChatColor.RED, sender,
+                        location.getBlockX(), location.getBlockY(), location.getBlockZ(),
+                        blockTag, tag);
                     return false;
                 }
             } catch (MojangsonParseException e) {
                 messages.getGeneric(GenericMessage.INVALID_JSON)
-                        .sendInColor(ChatColor.RED, sender, e.getMessage());
+                    .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
         }
         // All is well
         new LocalizedStringImpl("testforblock.done", bundle)
-                .send(sender, location.getBlockX(), location.getBlockY(), location.getBlockZ());
+            .send(sender, location.getBlockX(), location.getBlockY(), location.getBlockZ());
         return true;
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length == 4) {
             return ItemIds.getTabCompletion(args[3]);
         }
