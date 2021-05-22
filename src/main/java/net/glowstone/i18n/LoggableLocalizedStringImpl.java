@@ -1,11 +1,10 @@
 package net.glowstone.i18n;
 
-import net.glowstone.GlowServer;
-
 import java.text.Format;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.glowstone.GlowServer;
 
 class LoggableLocalizedStringImpl extends LocalizedStringImpl
     implements LoggableLocalizedString {
@@ -20,18 +19,18 @@ class LoggableLocalizedStringImpl extends LocalizedStringImpl
         this.logger = GlowServer.logger;
     }
 
-    @Override
-    LoggableLocalizedStringImpl setFormatByArgumentIndex(int argumentIndex, Format format) {
-        return (LoggableLocalizedStringImpl)
-                (super.setFormatByArgumentIndex(argumentIndex, format));
-    }
-
     LoggableLocalizedStringImpl(String key, Level logLevel,
                                 ResourceBundle resourceBundle,
                                 Logger logger) {
         super(key, resourceBundle);
         this.logLevel = logLevel;
         this.logger = logger;
+    }
+
+    @Override
+    LoggableLocalizedStringImpl setFormatByArgumentIndex(int argumentIndex, Format format) {
+        return (LoggableLocalizedStringImpl)
+            (super.setFormatByArgumentIndex(argumentIndex, format));
     }
 
     @Override

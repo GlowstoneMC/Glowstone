@@ -111,14 +111,14 @@ public class BlockVine extends BlockClimbable {
         if (!connectedAbove) {
             if ((data & VINE_NORTH) != 0 && me.getRelative(BlockFace.NORTH).getType().isSolid()) {
                 return;
-            } else if ((data & VINE_EAST) != 0 &&
-                me.getRelative(BlockFace.EAST).getType().isSolid()) {
+            } else if ((data & VINE_EAST) != 0
+                && me.getRelative(BlockFace.EAST).getType().isSolid()) {
                 return;
-            } else if ((data & VINE_SOUTH) != 0 &&
-                me.getRelative(BlockFace.SOUTH).getType().isSolid()) {
+            } else if ((data & VINE_SOUTH) != 0
+                && me.getRelative(BlockFace.SOUTH).getType().isSolid()) {
                 return;
-            } else if ((data & VINE_WEST) != 0 &&
-                me.getRelative(BlockFace.WEST).getType().isSolid()) {
+            } else if ((data & VINE_WEST) != 0
+                && me.getRelative(BlockFace.WEST).getType().isSolid()) {
                 return;
             }
             me.breakNaturally();

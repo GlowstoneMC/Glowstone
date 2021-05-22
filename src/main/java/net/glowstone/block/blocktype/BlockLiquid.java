@@ -166,8 +166,8 @@ public abstract class BlockLiquid extends BlockType {
         byte strength = fromToEvent.getBlock().getState().getRawData();
         if (DOWN != fromToEvent.getFace()) {
             if (strength < (isWater(fromToEvent.getBlock().getType())
-                || fromToEvent.getBlock().getWorld().getEnvironment() == World.Environment.NETHER ?
-                STRENGTH_MIN_WATER
+                || fromToEvent.getBlock().getWorld().getEnvironment() == World.Environment.NETHER
+                ? STRENGTH_MIN_WATER
                 : STRENGTH_MIN_LAVA)) {
                 // decrease the strength
                 strength += 1;
@@ -247,8 +247,8 @@ public abstract class BlockLiquid extends BlockType {
             }
         }
         if (!(me.getState().getRawData()
-            == (isWater || me.getWorld().getEnvironment() == World.Environment.NETHER ?
-            STRENGTH_MIN_WATER
+            == (isWater || me.getWorld().getEnvironment() == World.Environment.NETHER
+            ? STRENGTH_MIN_WATER
             : STRENGTH_MIN_LAVA)) || me.getRelative(DOWN).getType() == Material.AIR) {
             calculateFlow(me);
         }
@@ -261,8 +261,9 @@ public abstract class BlockLiquid extends BlockType {
 
     @Override
     public int getPulseTickSpeed(GlowBlock block) {
-        return isWater(block.getType()) ||
-            block.getWorld().getEnvironment() == World.Environment.NETHER ? TICK_RATE_WATER
+        return isWater(block.getType())
+            || block.getWorld().getEnvironment() == World.Environment.NETHER
+            ? TICK_RATE_WATER
             : TICK_RATE_LAVA;
     }
 }

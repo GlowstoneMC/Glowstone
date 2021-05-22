@@ -1,5 +1,6 @@
 package net.glowstone.data;
 
+import java.util.Set;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -7,8 +8,6 @@ import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Set;
 
 @RequiredArgsConstructor
 public class GlowTag<T extends Keyed> implements Tag<T> {

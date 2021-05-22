@@ -1,13 +1,12 @@
 package net.glowstone.i18n;
 
+import java.text.Format;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NonNls;
-
-import java.text.Format;
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
 
 public class LocalizedStringImpl implements LocalizedString {
     private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings"); // NON-NLS
@@ -38,7 +37,7 @@ public class LocalizedStringImpl implements LocalizedString {
      * Wraps {@link MessageFormat#setFormatByArgumentIndex}.
      *
      * @param argumentIndex the argument index
-     * @param format the new format
+     * @param format        the new format
      * @return this
      */
     LocalizedStringImpl setFormatByArgumentIndex(int argumentIndex, Format format) {

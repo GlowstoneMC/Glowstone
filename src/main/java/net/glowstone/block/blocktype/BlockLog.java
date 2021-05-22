@@ -49,8 +49,8 @@ public class BlockLog extends BlockType {
                 for (int y = 0; y < 9; y++) {
                     GlowBlock b = world.getBlockAt(block.getLocation().add(x - 4, y - 4, z - 4));
                     // TODO: 1.13 leaves types
-                    if (b.getType() == Material.LEGACY_LEAVES ||
-                        b.getType() == Material.LEGACY_LEAVES_2) {
+                    if (b.getType() == Material.LEGACY_LEAVES
+                        || b.getType() == Material.LEGACY_LEAVES_2) {
                         GlowBlockState state = b.getState();
                         if ((state.getRawData() & 0x08) == 0 && (state.getRawData() & 0x04)
                             == 0) { // check decay is off and decay is on

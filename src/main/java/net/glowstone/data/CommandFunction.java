@@ -1,14 +1,13 @@
 package net.glowstone.data;
 
-import lombok.Data;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import lombok.Data;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 
 @Data
 public class CommandFunction {

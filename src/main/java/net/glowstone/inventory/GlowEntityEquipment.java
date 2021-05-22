@@ -81,6 +81,11 @@ public class GlowEntityEquipment implements EntityEquipment {
     }
 
     @Override
+    public void setItemInMainHand(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.HAND, itemStack, silent);
+    }
+
+    @Override
     public ItemStack getItemInOffHand() {
         return getItem(EquipmentSlot.OFF_HAND);
     }
@@ -88,6 +93,11 @@ public class GlowEntityEquipment implements EntityEquipment {
     @Override
     public void setItemInOffHand(ItemStack itemStack) {
         setItem(EquipmentSlot.OFF_HAND, itemStack);
+    }
+
+    @Override
+    public void setItemInOffHand(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.OFF_HAND, itemStack, silent);
     }
 
     @Override
@@ -111,6 +121,11 @@ public class GlowEntityEquipment implements EntityEquipment {
     }
 
     @Override
+    public void setHelmet(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.HEAD, itemStack, silent);
+    }
+
+    @Override
     public ItemStack getChestplate() {
         return getItem(EquipmentSlot.CHEST);
     }
@@ -118,6 +133,11 @@ public class GlowEntityEquipment implements EntityEquipment {
     @Override
     public void setChestplate(ItemStack itemStack) {
         setItem(EquipmentSlot.CHEST, itemStack);
+    }
+
+    @Override
+    public void setChestplate(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.CHEST, itemStack, silent);
     }
 
     @Override
@@ -131,6 +151,11 @@ public class GlowEntityEquipment implements EntityEquipment {
     }
 
     @Override
+    public void setLeggings(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.LEGS, itemStack, silent);
+    }
+
+    @Override
     public ItemStack getBoots() {
         return getItem(EquipmentSlot.FEET);
     }
@@ -141,33 +166,8 @@ public class GlowEntityEquipment implements EntityEquipment {
     }
 
     @Override
-    public void setHelmet(@Nullable ItemStack itemStack, boolean silent) {
-        setItem(EquipmentSlot.HEAD, itemStack, silent);
-    }
-
-    @Override
-    public void setChestplate(@Nullable ItemStack itemStack, boolean silent) {
-        setItem(EquipmentSlot.CHEST, itemStack, silent);
-    }
-
-    @Override
-    public void setLeggings(@Nullable ItemStack itemStack, boolean silent) {
-        setItem(EquipmentSlot.LEGS, itemStack, silent);
-    }
-
-    @Override
     public void setBoots(@Nullable ItemStack itemStack, boolean silent) {
         setItem(EquipmentSlot.FEET, itemStack, silent);
-    }
-
-    @Override
-    public void setItemInMainHand(@Nullable ItemStack itemStack, boolean silent) {
-        setItem(EquipmentSlot.HAND, itemStack, silent);
-    }
-
-    @Override
-    public void setItemInOffHand(@Nullable ItemStack itemStack, boolean silent) {
-        setItem(EquipmentSlot.OFF_HAND, itemStack, silent);
     }
 
     @Override

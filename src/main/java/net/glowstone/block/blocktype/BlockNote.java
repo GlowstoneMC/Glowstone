@@ -60,8 +60,8 @@ public class BlockNote extends BlockType {
                 return PLING;
             default:
                 // TODO: use SAND_LIKES tag with HashObservableSets
-                if (Tag.SAND.isTagged(type) || MaterialTags.CONCRETE_POWDER.isTagged(type) ||
-                    type == Material.GRAVEL) {
+                if (Tag.SAND.isTagged(type) || MaterialTags.CONCRETE_POWDER.isTagged(type)
+                    || type == Material.GRAVEL) {
                     return SNARE_DRUM;
                 }
                 if (Tag.WOOL.isTagged(type)) {

@@ -45,8 +45,8 @@ public class ItemDye extends ItemType {
                         }
                     }
                 }
-            } else if (dye.getColor() == DyeColor.BROWN &&
-                target.getType() == Material.JUNGLE_LOG) {
+            } else if (dye.getColor() == DyeColor.BROWN
+                && target.getType() == Material.JUNGLE_LOG) {
                 ItemTable.instance().getBlock(Material.COCOA)
                     .rightClickBlock(player, target, face, holding, clickedLoc, hand);
             }

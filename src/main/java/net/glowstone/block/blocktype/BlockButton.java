@@ -51,8 +51,8 @@ public class BlockButton extends BlockAttachable {
                     || block.getType() == Material.STONE_BUTTON) {
                     extraUpdate(block);
                     block.getWorld().playSound(block.getLocation(),
-                        block.getType() == Material.LEGACY_WOOD_BUTTON ?
-                            Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF
+                        block.getType() == Material.LEGACY_WOOD_BUTTON
+                            ? Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF
                             : Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 0.3f, 0.5f);
                 }
             }

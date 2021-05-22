@@ -2,7 +2,6 @@ package net.glowstone.inventory;
 
 import java.util.Locale;
 import java.util.function.UnaryOperator;
-
 import net.glowstone.util.nbt.CompoundTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;

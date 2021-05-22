@@ -210,8 +210,8 @@ public class BlockRedstone extends BlockNeedsAttached {
                         continue;
                     }
                     GlowBlock underTarget = target.getRelative(BlockFace.DOWN);
-                    if (underTarget.getType() == Material.REDSTONE_TORCH &&
-                        ((Redstone) (underTarget.getState().getData())).isPowered()) {
+                    if (underTarget.getType() == Material.REDSTONE_TORCH
+                        && ((Redstone) (underTarget.getState().getData())).isPowered()) {
                         setFullyPowered(me);
                         return;
                     }

@@ -77,8 +77,8 @@ public class BlockLeaves extends BlockType {
                 for (int y = 0; y < 3; y++) {
                     GlowBlock b = world.getBlockAt(block.getLocation().add(x - 1, y - 1, z - 1));
                     // TODO: 1.13 leaves
-                    if (b.getType() == Material.LEGACY_LEAVES ||
-                        b.getType() == Material.LEGACY_LEAVES_2) {
+                    if (b.getType() == Material.LEGACY_LEAVES
+                        || b.getType() == Material.LEGACY_LEAVES_2) {
                         GlowBlockState state = b.getState();
                         if ((state.getRawData() & 0x08) == 0 && (state.getRawData() & 0x04)
                             == 0) { // check decay is off and decay is on
@@ -112,8 +112,8 @@ public class BlockLeaves extends BlockType {
                                 z - LEAVE_BLOCK_DECAY_RANGE));
                     byte val = 127;
                     // TODO: 1.13 leaves and log types
-                    if (b.getType() == Material.LEGACY_LOG ||
-                        b.getType() == Material.LEGACY_LOG_2) {
+                    if (b.getType() == Material.LEGACY_LOG
+                        || b.getType() == Material.LEGACY_LOG_2) {
                         val = 0;
                     } else if (b.getType() == Material.LEGACY_LEAVES
                         || b.getType() == Material.LEGACY_LEAVES_2) {

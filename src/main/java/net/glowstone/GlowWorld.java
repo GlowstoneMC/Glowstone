@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.destroystokyo.paper.HeightmapType;
 import com.flowpowered.network.Message;
+import io.papermc.paper.world.MoonPhase;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -25,8 +26,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-
-import io.papermc.paper.world.MoonPhase;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -1384,6 +1383,11 @@ public class GlowWorld implements World {
         return getHighestBlockAt(location, heightMap).getY();
     }
 
+    @Override
+    public int getHighestBlockYAt(int x, int z) {
+        return getChunkAt(x >> 4, z >> 4).getHeight(x & 0xf, z & 0xf);
+    }
+
     @NotNull
     @Override
     public Block getHighestBlockAt(int x, int z, @NotNull HeightMap heightMap) {
@@ -1396,11 +1400,6 @@ public class GlowWorld implements World {
     public Block getHighestBlockAt(@NotNull Location location, @NotNull HeightMap heightMap) {
         // TODO: Support height maps
         return getHighestBlockAt(location);
-    }
-
-    @Override
-    public int getHighestBlockYAt(int x, int z) {
-        return getChunkAt(x >> 4, z >> 4).getHeight(x & 0xf, z & 0xf);
     }
 
     @Override

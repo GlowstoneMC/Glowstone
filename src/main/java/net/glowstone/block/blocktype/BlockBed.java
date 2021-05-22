@@ -253,8 +253,8 @@ public class BlockBed extends BlockType {
                 block.setType(Material.AIR);
             }
         }
-        if (changedBlock.equals(getHead(block).getRelative(BlockFace.DOWN)) ||
-            changedBlock.equals(getFoot(block).getRelative(BlockFace.DOWN))) {
+        if (changedBlock.equals(getHead(block).getRelative(BlockFace.DOWN))
+            || changedBlock.equals(getFoot(block).getRelative(BlockFace.DOWN))) {
             if (newType == Material.AIR) {
                 block.setType(Material.AIR);
             }
@@ -343,10 +343,10 @@ public class BlockBed extends BlockType {
         // Check for hostile mobs relative to the block below the head of the bed
         // (Don't use getEntitiesByType etc., because they copy the entire list of entities)
         for (Entity e : world.getEntityManager()) {
-            if (e instanceof Creature &&
-                (e.getType() != EntityType.ZOMBIFIED_PIGLIN || ((PigZombie) e)
-                    .isAngry()) &&
-                isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
+            if (e instanceof Creature
+                && (e.getType() != EntityType.ZOMBIFIED_PIGLIN || ((PigZombie) e)
+                    .isAngry())
+                && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
                 GlowstoneMessages.Bed.MOB.send(player);
                 return true;
             }

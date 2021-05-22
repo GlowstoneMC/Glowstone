@@ -101,11 +101,6 @@ public class GlowBlock implements Block {
     }
 
     @Override
-    public void setBlockData(@NotNull BlockData data, boolean applyPhysics) {
-        // TODO
-    }
-
-    @Override
     public Location getLocation() {
         return new Location(getWorld(), x, y, z);
     }
@@ -327,16 +322,6 @@ public class GlowBlock implements Block {
         setData(data, true);
     }
 
-    @Override
-    public BlockData getBlockData() {
-        return null; // TODO
-    }
-
-    @Override
-    public void setBlockData(@NotNull BlockData data) {
-        // TODO
-    }
-
     public void setData(byte data, boolean applyPhysics) {
         byte oldData = getData();
         ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, data);
@@ -350,6 +335,21 @@ public class GlowBlock implements Block {
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z,
             blockDataManager.convertToBlockId(blockData), data);
         world.broadcastBlockChangeInRange(key, bcmsg);
+    }
+
+    @Override
+    public void setBlockData(@NotNull BlockData data, boolean applyPhysics) {
+        // TODO
+    }
+
+    @Override
+    public void setBlockData(@NotNull BlockData data) {
+        // TODO
+    }
+
+    @Override
+    public BlockData getBlockData() {
+        return null; // TODO
     }
 
     @Override
