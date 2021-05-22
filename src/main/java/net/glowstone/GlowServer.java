@@ -55,6 +55,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
+import io.papermc.paper.datapack.DatapackManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.advancement.GlowAdvancement;
@@ -168,6 +169,8 @@ import net.glowstone.util.library.Library;
 import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager;
 import net.glowstone.util.loot.LootingManager;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.BanEntry;
@@ -221,7 +224,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.loot.LootTable;
-import org.bukkit.map.MapView;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -236,6 +238,7 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -1285,8 +1288,7 @@ public class GlowServer implements Server {
         pluginManager.clearPlugins();
         pluginManager.registerInterface(JavaPluginLoader.class);
         Plugin[] plugins = pluginManager
-                .loadPlugins(folder.getPath(), pluginTypeDetector.bukkitPlugins
-                        .toArray(new File[pluginTypeDetector.bukkitPlugins.size()]));
+                .loadPlugins(folder, pluginTypeDetector.bukkitPlugins);
 
         // call onLoad methods
         for (Plugin plugin : plugins) {
@@ -2242,6 +2244,11 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public int broadcast(@NotNull Component component, @NotNull String s) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
     public void broadcast(BaseComponent component) {
         broadcastMessage(component.toLegacyText());
     }
@@ -2335,11 +2342,12 @@ public class GlowServer implements Server {
     }
 
     @Override
-    public @org.jetbrains.annotations.Nullable MapView getMap(int i) {
+    public World getWorld(@NotNull NamespacedKey namespacedKey) {
         return null;
     }
 
-    public GlowMapView getMap(short id) {
+    @Override
+    public GlowMapView getMap(int id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -2490,6 +2498,11 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public @NotNull Inventory createInventory(@org.jetbrains.annotations.Nullable InventoryHolder inventoryHolder, @NotNull InventoryType inventoryType, @NotNull Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
     public Inventory createInventory(InventoryHolder owner, InventoryType type, String title) {
         return new GlowInventory(owner, type, type.getDefaultSize(), title);
     }
@@ -2500,8 +2513,18 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public @NotNull Inventory createInventory(@org.jetbrains.annotations.Nullable InventoryHolder inventoryHolder, int i, @NotNull Component component) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
     public Inventory createInventory(InventoryHolder owner, int size, String title) {
         return new GlowInventory(owner, InventoryType.CHEST, size, title);
+    }
+
+    @Override
+    public @NotNull Merchant createMerchant(@org.jetbrains.annotations.Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -2739,6 +2762,11 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public @NotNull Component motd() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
     public File getWorldContainer() {
         return new File(config.getString(Key.WORLD_FOLDER));
     }
@@ -2827,6 +2855,11 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public @NotNull DatapackManager getDatapackManager() {
+        throw new UnsupportedOperationException("Datapacks are not yet supported.");
+    }
+
+    @Override
     public boolean isHardcore() {
         return config.getBoolean(Key.HARDCORE);
     }
@@ -2868,6 +2901,11 @@ public class GlowServer implements Server {
     @Override
     public String getShutdownMessage() {
         return config.getString(Key.SHUTDOWN_MESSAGE);
+    }
+
+    @Override
+    public @Nullable Component shutdownMessage() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -3014,5 +3052,10 @@ public class GlowServer implements Server {
                     + "Only one custom storage provider may be provided.");
         }
         this.storageProviderFactory = storageProviderFactory;
+    }
+
+    @Override
+    public @NonNull Iterable<? extends Audience> audiences() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 }

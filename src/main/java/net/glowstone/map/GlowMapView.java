@@ -37,6 +37,12 @@ public final class GlowMapView implements MapView {
     @Getter
     @Setter
     private boolean unlimitedTracking;
+    @Getter
+    @Setter
+    private boolean trackingPosition;
+    @Getter
+    @Setter
+    private boolean locked;
 
     protected GlowMapView(World world, int id) {
         this.world = world;

@@ -8,11 +8,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -40,6 +36,8 @@ import org.fusesource.jansi.Ansi.Attribute;
 import org.fusesource.jansi.Ansi.Color;
 import org.fusesource.jansi.AnsiConsole;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A meta-class to handle all logging and input-related console improvements. Portions are heavily
@@ -400,6 +398,22 @@ public final class ConsoleManager {
         }
 
         @Override
+        public void sendMessage(@Nullable UUID uuid, @NotNull String s) {
+            if (uuid == null) {
+                sendMessage(s);
+            } else {
+                sendMessage(String.format("[%s] %s", uuid, s));
+            }
+        }
+
+        @Override
+        public void sendMessage(@Nullable UUID uuid, @NotNull String[] strings) {
+            for (String line : strings) {
+                sendMessage(uuid, line);
+            }
+        }
+
+        @Override
         public GlowServer getServer() {
             return server;
         }
@@ -506,6 +520,11 @@ public final class ConsoleManager {
 
         @Override
         public void sendRawMessage(String message) {
+
+        }
+
+        @Override
+        public void sendRawMessage(@Nullable UUID uuid, @NotNull String s) {
 
         }
     }

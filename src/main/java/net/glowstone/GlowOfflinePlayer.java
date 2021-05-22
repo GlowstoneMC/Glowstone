@@ -10,13 +10,14 @@ import lombok.Getter;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
+import net.glowstone.util.StatisticMap;
 import net.glowstone.util.UuidUtils;
+import org.bukkit.*;
 import org.bukkit.BanList.Type;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 
 /**
  * Represents a player which is not connected to the server.
@@ -37,6 +38,10 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     private String lastName;
     @Getter
     private Location bedSpawnLocation;
+    /**
+     * The player's statistics, and related data.
+     */
+    private final StatisticMap stats = new StatisticMap();
 
     /**
      * Create a new offline player for the given name. If possible, the player's data will be
@@ -173,6 +178,110 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         } else {
             server.getWhitelist().remove(profile);
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Statistics
+
+    @Override
+    public int getStatistic(Statistic statistic) throws IllegalArgumentException {
+        return stats.get(statistic);
+    }
+
+    @Override
+    public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
+        return stats.get(statistic, material);
+    }
+
+    @Override
+    public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+        return stats.get(statistic, entityType);
+    }
+
+    @Override
+    public void setStatistic(Statistic statistic, int newValue) throws IllegalArgumentException {
+        stats.set(statistic, newValue);
+    }
+
+    @Override
+    public void setStatistic(Statistic statistic, Material material,
+                             int newValue) throws IllegalArgumentException {
+        stats.set(statistic, material, newValue);
+    }
+
+    @Override
+    public void setStatistic(Statistic statistic, EntityType entityType, int newValue) {
+        stats.set(statistic, entityType, newValue);
+    }
+
+    @Override
+    public void incrementStatistic(Statistic statistic) {
+        incrementStatistic(statistic, 1);
+    }
+
+    @Override
+    public void incrementStatistic(Statistic statistic, int amount) {
+        stats.add(statistic, amount);
+    }
+
+    @Override
+    public void incrementStatistic(Statistic statistic, Material material) {
+        incrementStatistic(statistic, material, 1);
+    }
+
+    @Override
+    public void incrementStatistic(Statistic statistic, Material material, int amount) {
+        stats.add(statistic, material, amount);
+    }
+
+    @Override
+    public void incrementStatistic(Statistic statistic,
+                                   EntityType entityType) throws IllegalArgumentException {
+        incrementStatistic(statistic, entityType, 1);
+    }
+
+    @Override
+    public void incrementStatistic(Statistic statistic, EntityType entityType,
+                                   int amount) throws IllegalArgumentException {
+        stats.add(statistic, entityType, amount);
+    }
+
+    @Override
+    public void decrementStatistic(Statistic statistic) throws IllegalArgumentException {
+        stats.add(statistic, -1);
+    }
+
+    @Override
+    public void decrementStatistic(Statistic statistic,
+                                   int amount) throws IllegalArgumentException {
+        stats.add(statistic, -amount);
+    }
+
+    @Override
+    public void decrementStatistic(Statistic statistic,
+                                   Material material) throws IllegalArgumentException {
+        stats.add(statistic, material, -1);
+    }
+
+    @Override
+    public void decrementStatistic(Statistic statistic, Material material,
+                                   int amount) throws IllegalArgumentException {
+        stats.add(statistic, material, -amount);
+    }
+
+    @Override
+    public void decrementStatistic(Statistic statistic,
+                                   EntityType entityType) throws IllegalArgumentException {
+        stats.add(statistic, entityType, -1);
+    }
+
+    @Override
+    public void decrementStatistic(Statistic statistic, EntityType entityType, int amount) {
+        stats.add(statistic, entityType, -amount);
+    }
+
+    public StatisticMap getStatisticMap() {
+        return stats;
     }
 
     @Override
