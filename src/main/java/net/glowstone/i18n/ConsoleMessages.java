@@ -101,6 +101,16 @@ public interface ConsoleMessages {
                     "console.i18n-failed.gamemode", Level.SEVERE);
         }
 
+        interface Manager {
+            LoggableLocalizedString COMMAND_READ = new LoggableLocalizedStringImpl(
+                "console.manager.command-read-failed", Level.SEVERE
+            );
+
+            LoggableLocalizedString LOG_FILE = new LoggableLocalizedStringImpl(
+                "console.manager.log-file-failed", Level.SEVERE
+            );
+        }
+
         interface Permission {
             LoggableLocalizedString INVALID = new LoggableLocalizedStringImpl(
                     "console.permission.invalid", Level.SEVERE
@@ -237,6 +247,12 @@ public interface ConsoleMessages {
         LoggableLocalizedString IMPORT = new LoggableLocalizedStringImpl(
                 "console.import", Level.INFO
         );
+
+        interface Manager {
+            LoggableLocalizedString ROTATE = new LoggableLocalizedStringImpl(
+                "console.manager.log-rotate", Level.INFO
+            );
+        }
 
         interface NativeTransport {
             LoggableLocalizedString EPOLL = new LoggableLocalizedStringImpl(
@@ -480,6 +496,20 @@ public interface ConsoleMessages {
 
             LoggableLocalizedString REMOVING_SINGLE_PLAYER = new LoggableLocalizedStringImpl(
                     "console.io.removing-single-player", Level.WARNING
+            );
+        }
+
+        interface Manager {
+            LoggableLocalizedString COMMAND = new LoggableLocalizedStringImpl(
+                "console.manager.command-failed", Level.WARNING
+            );
+
+            LoggableLocalizedString LOG_FOLDER = new LoggableLocalizedStringImpl(
+                "console.manager.log-folder-failed", Level.WARNING
+            );
+
+            LoggableLocalizedString TAB_COMPLETE = new LoggableLocalizedStringImpl(
+                "console.manager.tab-complete-failed", Level.WARNING
             );
         }
 

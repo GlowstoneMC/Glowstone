@@ -409,7 +409,6 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
         DNS_OVERRIDES("server.dns", new ArrayList<>()),
 
         // console
-        USE_JLINE("console.use-jline", true, Boolean.class::isInstance),
         CONSOLE_PROMPT("console.prompt", "> ", String.class::isInstance),
         CONSOLE_DATE("console.date-format", "HH:mm:ss", String.class::isInstance),
         CONSOLE_LOG_DATE("console.log-date-format", "yyyy/MM/dd HH:mm:ss",

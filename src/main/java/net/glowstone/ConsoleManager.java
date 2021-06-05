@@ -1,10 +1,8 @@
 package net.glowstone;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -12,17 +10,16 @@ import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
-import jline.console.ConsoleReader;
-import jline.console.completer.Completer;
+import javax.annotation.Nullable;
 import lombok.Getter;
+import net.glowstone.i18n.ConsoleMessages;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
@@ -35,27 +32,31 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
-import org.fusesource.jansi.Ansi;
-import org.fusesource.jansi.Ansi.Attribute;
-import org.fusesource.jansi.Ansi.Color;
-import org.fusesource.jansi.AnsiConsole;
 import org.jetbrains.annotations.NonNls;
+import org.jline.reader.Candidate;
+import org.jline.reader.Completer;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.ParsedLine;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
 /**
- * A meta-class to handle all logging and input-related console improvements. Portions are heavily
- * based on CraftBukkit.
+ * Handles all logging and input-related console improvements.
  */
 public final class ConsoleManager {
 
-    private static final Logger logger = Logger.getLogger("");
-    @NonNls private static String CONSOLE_DATE = "HH:mm:ss";
-    @NonNls private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
-    @NonNls private static String CONSOLE_PROMPT = ">";
+    @NonNls
+    private static String CONSOLE_DATE = "HH:mm:ss";
+    @NonNls
+    private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
+    @NonNls
+    private static String CONSOLE_PROMPT = "> "; // TODO: fix prompt
     private final GlowServer server;
-    private final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
+    private static final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
     private final ChatColor[] colors = ChatColor.values();
-
-    private ConsoleReader reader;
+    protected LineReader reader;
+    private boolean color;
     /**
      * Returns this ConsoleManager's console as a ConsoleCommandSender.
      *
@@ -64,8 +65,38 @@ public final class ConsoleManager {
     @Getter
     private ConsoleCommandSender sender;
 
-    private boolean running = true;
-    private boolean jline;
+    protected boolean running;
+
+    private ConsoleHandler handler;
+
+    static {
+        addReplacement(ChatColor.BLACK, "\u001B[0;30;22m");
+        addReplacement(ChatColor.DARK_BLUE, "\u001B[0;34;22m");
+        addReplacement(ChatColor.DARK_GREEN, "\u001B[0;32;22m");
+        addReplacement(ChatColor.DARK_AQUA, "\u001B[0;36;22m");
+        addReplacement(ChatColor.DARK_RED, "\u001B[0;31;22m");
+        addReplacement(ChatColor.DARK_PURPLE, "\u001B[0;35;22m");
+        addReplacement(ChatColor.GOLD, "\u001B[0;33;22m");
+        addReplacement(ChatColor.GRAY, "\u001B[0;37;22m");
+        addReplacement(ChatColor.DARK_GRAY, "\u001B[0;30;1m");
+        addReplacement(ChatColor.BLUE, "\u001B[0;34;1m");
+        addReplacement(ChatColor.GREEN, "\u001B[0;32;1m");
+        addReplacement(ChatColor.AQUA, "\u001B[0;36;1m");
+        addReplacement(ChatColor.RED, "\u001B[0;31;1m");
+        addReplacement(ChatColor.LIGHT_PURPLE, "\u001B[0;35;1m");
+        addReplacement(ChatColor.YELLOW, "\u001B[0;33;1m");
+        addReplacement(ChatColor.WHITE, "\u001B[0;37;1m");
+        addReplacement(ChatColor.MAGIC, "\u001B[5m");
+        addReplacement(ChatColor.BOLD, "\u001B[21m");
+        addReplacement(ChatColor.STRIKETHROUGH, "\u001B[9m");
+        addReplacement(ChatColor.UNDERLINE, "\u001B[4m");
+        addReplacement(ChatColor.ITALIC, "\u001B[3m");
+        addReplacement(ChatColor.RESET, "\u001B[39;0m");
+    }
+
+    private static void addReplacement(ChatColor formatting, @NonNls String ansi) {
+        replacements.put(formatting, ansi);
+    }
 
     /**
      * Creates the instance for the given server.
@@ -74,101 +105,45 @@ public final class ConsoleManager {
      */
     public ConsoleManager(GlowServer server) {
         this.server = server;
+        GlowServer.logger.setUseParentHandlers(false);
 
-        for (Handler h : logger.getHandlers()) {
-            logger.removeHandler(h);
+        try (Terminal terminal = TerminalBuilder.builder()
+                .system(true)
+                .name("Glowstone") // NON-NLS
+                .build()) {
+            reader = LineReaderBuilder.builder()
+                    .appName("Glowstone") // NON-NLS
+                    .terminal(terminal)
+                    .completer(new CommandCompleter())
+                    .build();
+            reader.unsetOpt(LineReader.Option.INSERT_TAB);
+            color = !Objects.equals(terminal.getType(), Terminal.TYPE_DUMB);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        // add log handler which writes to console
-        logger.addHandler(new FancyConsoleHandler());
-
-        // reader must be initialized before standard streams are changed
-        try {
-            reader = new ConsoleReader();
-        } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Exception initializing console reader", ex);
-        }
-        reader.addCompleter(new CommandCompleter());
-
-        // set system output streams
-        System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), false));
-        System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), false));
     }
 
     /**
      * Starts the console.
-     *
-     * @param jline whether the console should use JLine
      */
-    public void startConsole(boolean jline) {
-        this.jline = jline;
-
-        if (jline) {
-            setupColors();
-        }
-
+    public void start() {
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
-        for (Handler handler : logger.getHandlers()) {
-            if (handler.getClass() == FancyConsoleHandler.class) {
-                handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
-            }
-        }
+        handler = new ConsoleHandler();
+        handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, color));
+        GlowServer.logger.addHandler(handler);
         CONSOLE_PROMPT = server.getConsolePrompt();
-        Thread thread = new ConsoleCommandThread();
-        thread.setName("ConsoleCommandThread");
-        thread.setDaemon(true);
-        thread.start();
+        if (!running) {
+            running = true;
+            new ConsoleCommandThread().start();
+        }
     }
 
-    private void setupColors() {
-        // install Ansi code handler, which makes colors work on Windows
-        AnsiConsole.systemInstall();
-
-        // set up colorization replacements
-        replacements.put(ChatColor.BLACK,
-            Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).boldOff().toString());
-        replacements.put(ChatColor.DARK_BLUE,
-            Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).boldOff().toString());
-        replacements.put(ChatColor.DARK_GREEN,
-            Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).boldOff().toString());
-        replacements.put(ChatColor.DARK_AQUA,
-            Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).boldOff().toString());
-        replacements.put(ChatColor.DARK_RED,
-            Ansi.ansi().a(Attribute.RESET).fg(Color.RED).boldOff().toString());
-        replacements.put(ChatColor.DARK_PURPLE,
-            Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).boldOff().toString());
-        replacements.put(ChatColor.GOLD,
-            Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).boldOff().toString());
-        replacements.put(ChatColor.GRAY,
-            Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).boldOff().toString());
-        replacements.put(ChatColor.DARK_GRAY,
-            Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).bold().toString());
-        replacements
-            .put(ChatColor.BLUE, Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).bold()
-                .toString());
-        replacements
-            .put(ChatColor.GREEN, Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).bold()
-                .toString());
-        replacements
-            .put(ChatColor.AQUA, Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).bold()
-                .toString());
-        replacements
-            .put(ChatColor.RED, Ansi.ansi().a(Attribute.RESET).fg(Color.RED).bold().toString());
-        replacements.put(ChatColor.LIGHT_PURPLE,
-            Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).bold().toString());
-        replacements.put(ChatColor.YELLOW,
-            Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).bold().toString());
-        replacements
-            .put(ChatColor.WHITE, Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).bold()
-                .toString());
-        replacements.put(ChatColor.MAGIC, Ansi.ansi().a(Attribute.BLINK_SLOW).toString());
-        replacements.put(ChatColor.BOLD, Ansi.ansi().a(Attribute.UNDERLINE_DOUBLE).toString());
-        replacements
-            .put(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Attribute.STRIKETHROUGH_ON).toString());
-        replacements.put(ChatColor.UNDERLINE, Ansi.ansi().a(Attribute.UNDERLINE).toString());
-        replacements.put(ChatColor.ITALIC, Ansi.ansi().a(Attribute.ITALIC).toString());
-        replacements.put(ChatColor.RESET, Ansi.ansi().a(Attribute.RESET).toString());
+    /**
+     * Stops all console-log handlers.
+     */
+    public void stop() {
+        running = false;
     }
 
     /**
@@ -179,62 +154,60 @@ public final class ConsoleManager {
     public void startFile(String logfile) {
         File parent = new File(logfile).getParentFile();
         if (!parent.isDirectory() && !parent.mkdirs()) {
-            logger.warning("Could not create log folder: " + parent);
+            ConsoleMessages.Warn.Manager.LOG_FOLDER.log(parent);
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
         FILE_DATE = server.getConsoleLogDateFormat();
         fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
-        logger.addHandler(fileHandler);
+        GlowServer.logger.addHandler(fileHandler);
     }
 
-    /**
-     * Stops all console-log handlers.
-     */
-    public void stop() {
-        running = false;
-        for (Handler handler : logger.getHandlers()) {
-            handler.flush();
-            handler.close();
-        }
-    }
+    private class DateOutputFormatter extends Formatter {
 
-    private String colorize(String string) {
-        if (string == null || string.indexOf(ChatColor.COLOR_CHAR) < 0) {
-            return string;  // no colors in the message
-        } else if (!jline || !reader.getTerminal().isAnsiSupported()) {
-            return ChatColor.stripColor(string);  // color not supported
-        } else {
-            // colorize or strip all colors
-            for (ChatColor color : colors) {
-                if (replacements.containsKey(color)) {
-                    string = string.replaceAll("(?i)" + color, replacements.get(color)); // NON-NLS
-                } else {
-                    string = string.replaceAll("(?i)" + color, ""); // NON-NLS
-                }
-            }
-            return string + Ansi.ansi().reset();
-        }
-    }
+        private final SimpleDateFormat date;
+        private final boolean color;
 
-    private static class LoggerOutputStream extends ByteArrayOutputStream {
-
-        private final String separator = System.getProperty("line.separator");
-        private final Level level;
-
-        public LoggerOutputStream(Level level) {
-            this.level = level;
+        public DateOutputFormatter(String pattern, boolean color) {
+            date = new SimpleDateFormat(pattern);
+            this.color = color;
         }
 
         @Override
-        public synchronized void flush() throws IOException {
-            super.flush();
-            String record = toString();
-            reset();
+        @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+        public String format(LogRecord record) {
+            StringBuilder builder = new StringBuilder();
 
-            if (!record.isEmpty() && !record.equals(separator)) {
-                logger.logp(level, "LoggerOutputStream", "log" + level, record); // NON-NLS
+            builder.append(date.format(record.getMillis()));
+            builder.append(" ["); // NON-NLS
+            builder.append(record.getLevel().getLocalizedName().toUpperCase());
+            builder.append("] "); // NON-NLS
+            if (color) {
+                builder.append(colorize(formatMessage(record)));
+            } else {
+                builder.append(formatMessage(record));
             }
+            builder.append('\n');
+
+            if (record.getThrown() != null) {
+                try (PrintWriter writer = new PrintWriter(new StringWriter())) {
+                    record.getThrown().printStackTrace(writer);
+                    builder.append(writer);
+                }
+            }
+
+            return builder.toString();
         }
+    }
+
+    protected String colorize(String string) {
+        if (string.indexOf(ChatColor.COLOR_CHAR) < 0) {
+            return string; // no colors in the message
+        }
+        for (ChatColor color : colors) {
+            string = string.replaceAll("(?i)" + color, // NON-NLS
+                    this.color ? replacements.getOrDefault(color, "") : "");
+        }
+        return string;
     }
 
     private static class RotatingFileHandler extends StreamHandler {
@@ -247,7 +220,7 @@ public final class ConsoleManager {
         public RotatingFileHandler(String template) {
             this.template = template;
             rotate = template.contains("%D"); // NON-NLS
-            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // NON-NLS
             filename = calculateFilename();
             updateOutput();
         }
@@ -256,7 +229,7 @@ public final class ConsoleManager {
             try {
                 setOutputStream(new FileOutputStream(filename, true));
             } catch (IOException ex) {
-                logger.log(Level.SEVERE, "Unable to open " + filename + " for writing", ex);
+                ConsoleMessages.Error.Manager.LOG_FILE.log(ex, filename);
             }
         }
 
@@ -266,7 +239,7 @@ public final class ConsoleManager {
                 if (!filename.equals(newFilename)) {
                     filename = newFilename;
                     // note that the console handler doesn't see this message
-                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename));
+                    super.publish(ConsoleMessages.Info.Manager.ROTATE.record(filename));
                     updateOutput();
                 }
             }
@@ -296,46 +269,49 @@ public final class ConsoleManager {
     private class CommandCompleter implements Completer {
 
         @Override
-        public int complete(String buffer, int cursor, List<CharSequence> candidates) {
+        public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
+            List<String> completions = null;
             try {
-                List<String> completions = server.getScheduler()
-                        .syncIfNeeded(() -> server.getCommandMap().tabComplete(sender, buffer));
-                if (completions == null) {
-                    return cursor;  // no completions
-                }
-                candidates.addAll(completions);
+                completions = server.getScheduler().syncIfNeeded(
+                    () -> server.getCommandMap().tabComplete(sender, line.line()));
+            } catch (Exception e) {
+                ConsoleMessages.Warn.Manager.TAB_COMPLETE.log(e);
+            }
 
-                // location to position the cursor at (before autofilling takes place)
-                return buffer.lastIndexOf(' ') + 1;
-            } catch (Throwable t) {
-                logger.log(Level.WARNING, "Error while tab completing", t);
-                return cursor;
+            if (completions != null) {
+                completions.forEach(completion -> candidates.add(new Candidate(completion)));
             }
         }
     }
 
     private class ConsoleCommandThread extends Thread {
 
+        ConsoleCommandThread() {
+            setName("ConsoleCommandThread"); // NON-NLS
+            setDaemon(true);
+        }
+
         @Override
         public void run() {
-            String command = "";
+            String command = null;
             while (running) {
                 try {
-                    if (jline) {
-                        command = reader.readLine(CONSOLE_PROMPT, null);
+                    if (color) {
+                        command = reader.readLine(colorize(ChatColor.RESET.toString())
+                                + CONSOLE_PROMPT);
                     } else {
-                        command = reader.readLine();
+                        command = reader.readLine(CONSOLE_PROMPT);
                     }
-
-                    if (command == null || command.trim().isEmpty()) {
-                        continue;
+                    if (command != null && !(command = command.trim()).isEmpty()) {
+                        reader.getTerminal().writer().println(colorize(String.format(
+                                "%s====%sg>%s\"%s\"", // NON-NLS
+                                ChatColor.RESET, ChatColor.GOLD, ChatColor.RESET, command)));
+                        server.getScheduler().runTask(null, new CommandTask(command));
                     }
-
-                    server.getScheduler().runTask(null, new CommandTask(command.trim()));
                 } catch (CommandException ex) {
-                    logger.log(Level.WARNING, "Exception while executing command: " + command, ex);
+                    ConsoleMessages.Warn.Manager.COMMAND.log(ex, command);
                 } catch (Exception ex) {
-                    logger.log(Level.SEVERE, "Error while reading commands", ex);
+                    ConsoleMessages.Error.Manager.COMMAND_READ.log(ex);
                 }
             }
         }
@@ -359,7 +335,7 @@ public final class ConsoleManager {
         }
     }
 
-    private class ColoredCommandSender implements ConsoleCommandSender {
+    public class ColoredCommandSender implements ConsoleCommandSender {
 
         private final PermissibleBase perm = new PermissibleBase(this);
 
@@ -379,7 +355,7 @@ public final class ConsoleManager {
 
         @Override
         public String getName() {
-            return "CONSOLE";
+            return "CONSOLE";  // NON-NLS
         }
 
         @Override
@@ -389,7 +365,7 @@ public final class ConsoleManager {
 
         @Override
         public void sendMessage(String text) {
-            server.getLogger().info(text);
+            GlowServer.logger.info(text);
         }
 
         @Override
@@ -440,7 +416,7 @@ public final class ConsoleManager {
 
         @Override
         public PermissionAttachment addAttachment(Plugin plugin,
-                @NonNls String name, boolean value) {
+                                                  @NonNls String name, boolean value) {
             return perm.addAttachment(plugin, name, value);
         }
 
@@ -451,7 +427,7 @@ public final class ConsoleManager {
 
         @Override
         public PermissionAttachment addAttachment(Plugin plugin, @NonNls String name, boolean value,
-                int ticks) {
+                                                  int ticks) {
             return perm.addAttachment(plugin, name, value, ticks);
         }
 
@@ -500,7 +476,7 @@ public final class ConsoleManager {
 
         @Override
         public void abandonConversation(Conversation conversation,
-                ConversationAbandonedEvent details) {
+                                        ConversationAbandonedEvent details) {
 
         }
 
@@ -508,73 +484,71 @@ public final class ConsoleManager {
         public void sendRawMessage(String message) {
 
         }
-    }
 
-    private class FancyConsoleHandler extends ConsoleHandler {
+        // Additional methods
 
-        public FancyConsoleHandler() {
-            setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
-            setOutputStream(System.out);
+        /**
+         * Returns the line reader for this console. Used to implement some commands.
+         *
+         * @return the line reader
+         */
+        public LineReader getLineReader() {
+            return reader;
         }
 
-        @Override
-        public synchronized void flush() {
-            try {
-                if (jline) {
-                    reader.print(ConsoleReader.RESET_LINE + "");
-                    reader.flush();
-                    super.flush();
-                    try {
-                        reader.drawLine();
-                    } catch (Throwable ex) {
-                        reader.getCursorBuffer().clear();
-                    }
-                    reader.flush();
-                } else {
-                    super.flush();
+        private LineReader.Option getOption(String name) {
+            for (LineReader.Option option : LineReader.Option.values()) {
+                if (option.name().equalsIgnoreCase(name)) {
+                    return option;
                 }
-            } catch (IOException ex) {
-                logger.log(Level.SEVERE, "I/O exception flushing console output", ex);
             }
-        }
-    }
-
-    private class DateOutputFormatter extends Formatter {
-
-        private final SimpleDateFormat date;
-        private final boolean color;
-
-        public DateOutputFormatter(String pattern, boolean color) {
-            date = new SimpleDateFormat(pattern);
-            this.color = color;
+            return null;
         }
 
-        @Override
-        @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-        public String format(LogRecord record) {
-            StringBuilder builder = new StringBuilder();
-
-            builder.append(date.format(record.getMillis()));
-            builder.append(" [");
-            builder.append(record.getLevel().getLocalizedName().toUpperCase());
-            builder.append("] ");
-            if (color) {
-                builder.append(colorize(formatMessage(record)));
+        /**
+         * Gets the value of an option or variable from the line reader.
+         *
+         * @param name the name
+         * @return the value
+         * @see #getLineReaderOption(String)
+         * @see LineReader#isSet(LineReader.Option)
+         * @see LineReader#getVariable(String)
+         */
+        @Nullable
+        public Object getLineReaderOption(String name) {
+            LineReader.Option option = getOption(name);
+            Object value;
+            if (option == null) {
+                value = reader.getVariable(name);
             } else {
-                builder.append(formatMessage(record));
+                value = reader.isSet(option);
             }
-            builder.append('\n');
-
-            if (record.getThrown() != null) {
-                // StringWriter's close() is trivial
-                @SuppressWarnings("resource")
-                StringWriter writer = new StringWriter();
-                record.getThrown().printStackTrace(new PrintWriter(writer));
-                builder.append(writer);
-            }
-
-            return builder.toString();
+            return value;
         }
+
+        /**
+         * Sets the value of an option or variable on the line reader.
+         *
+         * @param name  the name
+         * @param value the new value
+         * @see #getLineReaderOption(String)
+         * @see LineReader#option(LineReader.Option, boolean)
+         * @see LineReader#setVariable(String, Object)
+         */
+        public void setLineReaderOption(String name, @Nullable Object value) {
+            LineReader.Option option = getOption(name);
+            if (option != null) {
+                if (value instanceof Boolean) {
+                    reader.option(option, (Boolean) value);
+                } else {
+                    throw new IllegalArgumentException(
+                            "Option " + option + " must be true or false");
+                }
+            } else {
+                reader.setVariable(name, value);
+            }
+        }
+
     }
 
 }

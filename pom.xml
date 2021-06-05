@@ -65,9 +65,9 @@
       <version>1.17.1</version>
     </dependency>
     <dependency>
-      <groupId>jline</groupId>
+      <groupId>org.jline</groupId>
       <artifactId>jline</artifactId>
-      <version>2.14.6</version>
+      <version>3.7.1</version>
     </dependency>
     <dependency>
       <groupId>it.unimi.dsi</groupId>
@@ -197,7 +197,6 @@
     <finalName>glowstone</finalName>
 
     <directory>${project.basedir}/target</directory>
-
     <resources>
       <resource>
         <directory>${project.basedir}/src/main/resources</directory>
