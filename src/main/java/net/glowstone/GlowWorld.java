@@ -58,6 +58,7 @@ import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
+import net.glowstone.util.GlowTravelAgent;
 import net.glowstone.util.RayUtil;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.collection.ConcurrentSet;
@@ -374,6 +375,11 @@ public class GlowWorld implements World {
      */
     @Getter
     private boolean initialized;
+    /**
+     * The TravelAgent of this world. Currently is null when this world is a THE_END world.
+     */
+    @Getter
+    private GlowTravelAgent travelAgent;
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -389,6 +395,10 @@ public class GlowWorld implements World {
         // set up values from WorldCreator
         name = creator.name();
         environment = creator.environment();
+        // end portals are not implemented yet
+        if (environment != Environment.THE_END) {
+            travelAgent = new GlowTravelAgent(this);
+        }
         worldType = creator.type();
         generateStructures = creator.generateStructures();
 
@@ -762,6 +772,22 @@ public class GlowWorld implements World {
         }
 
         return 0;
+    }
+
+    /**
+     * Determines if a nether portal can port to a certain world.
+     * If the nether is allowed, both NORMAL and NETHER environments are valid, else only NORMAL ones are allowed.
+     * @param destination the world to check for. May be null.
+     *
+     * @return whether a nether portal can port to a certain world
+     */
+    public boolean isNetherPortalDestinationValid(GlowWorld destination) {
+        // Do not allow Nether portals to be accessed from the end
+        if (destination == null || environment == Environment.THE_END) {
+            return false;
+        }
+        Environment environment = destination.environment;
+        return environment == Environment.NORMAL || (environment == Environment.NETHER && server.getAllowNether());
     }
 
     public Collection<GlowPlayer> getRawPlayers() {

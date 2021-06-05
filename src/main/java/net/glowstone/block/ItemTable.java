@@ -68,6 +68,7 @@ import net.glowstone.block.blocktype.BlockNote;
 import net.glowstone.block.blocktype.BlockObserver;
 import net.glowstone.block.blocktype.BlockOre;
 import net.glowstone.block.blocktype.BlockPiston;
+import net.glowstone.block.blocktype.BlockPortal;
 import net.glowstone.block.blocktype.BlockPotato;
 import net.glowstone.block.blocktype.BlockPumpkin;
 import net.glowstone.block.blocktype.BlockPumpkinBase;
@@ -273,6 +274,7 @@ public final class ItemTable {
         reg(Material.WEB, new BlockWeb());
         reg(Material.FIRE, new BlockFire());
         reg(Material.ENDER_PORTAL_FRAME, new BlockEnderPortalFrame());
+        reg(Material.PORTAL, new BlockPortal());
         reg(Material.FENCE_GATE, new BlockFenceGate());
         reg(Material.ACACIA_FENCE_GATE, new BlockFenceGate());
         reg(Material.BIRCH_FENCE_GATE, new BlockFenceGate());

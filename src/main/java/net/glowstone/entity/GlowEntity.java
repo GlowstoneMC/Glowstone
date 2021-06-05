@@ -22,6 +22,8 @@ import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.blocktype.BlockPortal;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
@@ -49,6 +51,7 @@ import org.bukkit.Chunk;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.TravelAgent;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
@@ -290,6 +293,10 @@ public abstract class GlowEntity implements Entity {
     @Getter
     @Setter
     private int portalCooldown;
+
+    @Getter
+    private boolean isInPortal;
+
     /**
      * Whether this entity has operator permissions.
      */
@@ -571,6 +578,9 @@ public abstract class GlowEntity implements Entity {
         if (fireTicks > 0) {
             --fireTicks;
         }
+        if (portalCooldown > 0) {
+            --portalCooldown;
+        }
         metadata.setBit(MetadataIndex.STATUS, StatusFlags.ON_FIRE, fireTicks > 0);
 
         // resend position if it's been a while, causes ItemFrames to disappear and GlowPaintings
@@ -615,6 +625,52 @@ public abstract class GlowEntity implements Entity {
                     }
                 }
             }
+        }
+        GlowBlock block = world.getBlockAt(location);
+        // Nether portal handling
+        if (block.getType().equals(Material.PORTAL)
+            && BlockPortal.getBoundingBox(block).intersects(boundingBox)) {
+            if (!isInPortal) {
+                //Entity just entered the Portal, fire EnterEvent
+                EventFactory.getInstance().callEvent(
+                    new EntityPortalEnterEvent(this, block.getLocation()));
+                // prevent EnterEvent being fired again
+                isInPortal = true;
+            }
+            // only try porting if the nether exists
+            if (server.getAllowNether() && portalCooldown <= 0) {
+                // determine destination world
+                GlowWorld destination = getWorld().getEnvironment().equals(Environment.NETHER)
+                    ? server.getWorld("world") : server.getWorld("world_nether");
+                if (world.isNetherPortalDestinationValid(destination)) {
+                    TravelAgent agent = destination.getTravelAgent();
+                    boolean destIsNether = destination.getEnvironment().equals(Environment.NETHER);
+                    // Destination Coordinates: NetherX * 8 = OverworldX etc.
+                    int destX = destIsNether ? location.getBlockX() / 8 : location.getBlockX() * 8;
+                    int destY = destIsNether ? location.getBlockY() / 8 : location.getBlockY() * 8;
+                    int destZ = destIsNether ? location.getBlockZ() / 8 : location.getBlockZ() * 8;
+                    Location requested = new Location(destination, destX, destY, destZ);
+                    if (agent.getCanCreatePortal() || agent.findPortal(requested) != null) {
+                        Location teleportLocation = agent.findOrCreate(requested);
+                        //attempt teleportation: fire porting event, abort if cancelled
+                        EntityPortalEvent p = EventFactory.getInstance().callEvent(
+                                new EntityPortalEvent(this,
+                                        location.clone(), teleportLocation.clone(), agent));
+                        if (!p.isCancelled()) {
+                            // if not, teleport the Entity to the location specified by the event
+                            teleport(p.getTo());
+                            setPortalCooldown(300);
+                            // change the velocity based on the portal exit event
+                            setVelocity(EventFactory.getInstance().callEvent(
+                                    new EntityPortalExitEvent(this, previousLocation,
+                                            location.clone(), velocity.clone(), new Vector())).getAfter());
+                        }
+                    }
+                }
+            }
+        } else {
+            // entity has left the portal
+            isInPortal = false;
         }
 
         if (leashHolderUniqueId != null && ticksLived < 2) {
