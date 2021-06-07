@@ -74,6 +74,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityAirChangeEvent;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -306,14 +307,15 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             --noDamageTicks;
         }
 
-        Material mat = getEyeLocation().getBlock().getType();
+        Block eyeBlock = getEyeLocation().getBlock();
+        Material mat = eyeBlock.getType();
         // breathing
         if (mat == Material.WATER || mat == Material.STATIONARY_WATER) {
             if (canTakeDamage(DamageCause.DROWNING)) {
                 --remainingAir;
                 if (remainingAir <= -20) {
                     remainingAir = 0;
-                    damage(1, DamageCause.DROWNING);
+                    damage(1, eyeBlock, DamageCause.DROWNING);
                 }
             }
         } else {
@@ -321,24 +323,30 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         if (isTouchingMaterial(Material.CACTUS)) {
-            damage(1, DamageCause.CONTACT);
+            for (Block block : getTouchingBlocks()) {
+                if (block.getType() == Material.CACTUS) {
+                    damage(1, block, DamageCause.CONTACT);
+                    break;
+                }
+            }
         }
+
         if (location.getY() < -64) { // no canTakeDamage call - pierces through game modes
             damage(4, DamageCause.VOID);
         }
 
         if (isWithinSolidBlock()) {
-            damage(1, DamageCause.SUFFOCATION);
+            damage(1, eyeBlock, DamageCause.SUFFOCATION);
         }
 
         // fire and lava damage
         if (getLocation().getBlock().getType() == Material.FIRE) {
-            damage(1, DamageCause.FIRE);
+            damage(1, getLocation().getBlock(), DamageCause.FIRE);
             // not applying additional fire ticks after dying in fire
             stoodInFire = !isDead();
         } else if (getLocation().getBlock().getType() == Material.LAVA
                 || getLocation().getBlock().getType() == Material.STATIONARY_LAVA) {
-            damage(4, DamageCause.LAVA);
+            damage(4, getLocation().getBlock(), DamageCause.LAVA);
             if (swamInLava) {
                 setFireTicks(getFireTicks() + 2);
             } else {
@@ -348,7 +356,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         } else if (isTouchingMaterial(Material.FIRE)
                 || isTouchingMaterial(Material.LAVA)
                 || isTouchingMaterial(Material.STATIONARY_LAVA)) {
-            damage(1, DamageCause.FIRE);
+            for (Block block : getTouchingBlocks()) {
+                if (block.getType() == Material.FIRE || block.getType() == Material.LAVA || block.getType() == Material.STATIONARY_LAVA) {
+                    damage(1, block, DamageCause.CONTACT);
+                    break;
+                }
+            }
             // increment the ticks stood adjacent to fire or lava
             adjacentBurnTicks++;
             if (adjacentBurnTicks > 40) {
@@ -628,6 +641,17 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     public boolean canTakeDamage(DamageCause damageCause) {
         return true;
+    }
+
+    /**
+     * Get whether this entity should take damage from any source.
+     *
+     * <p>Usually used to check environmental sources such as drowning.
+     *
+     * @return whether this entity can take damage
+     */
+    public boolean canTakeDamage() {
+        return noDamageTicks == 0 && health > 0 && !isInvulnerable();
     }
 
     /**
@@ -946,10 +970,64 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
     }
 
+    private boolean callDamageEvent(EntityDamageEvent event) {
+        if (event.isCancelled()) {
+            return true;
+        }
+        // apply damage
+        lastDamage = event.getFinalDamage();
+        return false;
+    }
+
+    private double getEffectiveDamage(double amount) {
+        // armor damage protection
+        // formula source: http://minecraft.gamepedia.com/Armor#Damage_Protection
+        double defensePoints = getAttributeManager().getPropertyValue(Key.KEY_ARMOR);
+        double toughness = getAttributeManager().getPropertyValue(Key.KEY_ARMOR_TOUGHNESS);
+        return amount * (1 - Math.min(20.0,
+                Math.max(defensePoints / 5.0,
+                        defensePoints - amount / (2.0 + toughness / 4.0))) / 25);
+    }
+
+    @Override
+    public void damage(double amount, Block block, DamageCause cause) {
+        if (noDamageTicks > 0 || health <= 0 || isInvulnerable() || !canTakeDamage(cause)) {
+            return;
+        } else {
+            noDamageTicks = maximumNoDamageTicks;
+        }
+
+        amount = getEffectiveDamage(amount);
+
+
+        // fire event
+        EntityDamageByBlockEvent event = EventFactory.getInstance().onEntityDamage(
+                new EntityDamageByBlockEvent(block, this, cause, amount));
+
+        if (callDamageEvent(event)) {
+            return;
+        }
+
+        // apply damage
+        amount = event.getFinalDamage();
+        lastDamage = amount;
+
+        setHealth(health - amount);
+        playEffectKnownAndSelf(EntityEffect.HURT);
+
+        // play sounds, handle death
+        if (health > 0) {
+            Sound hurtSound = getHurtSound();
+            if (hurtSound != null && !isSilent()) {
+                world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
+            }
+        }
+    }
+
     @Override
     public void damage(double amount, Entity source, DamageCause cause) {
         // invincibility timer
-        if (noDamageTicks > 0 || health <= 0 || !canTakeDamage(cause) || isInvulnerable()) {
+        if (noDamageTicks > 0 || health <= 0 || isInvulnerable() || !canTakeDamage(cause)) {
             return;
         } else {
             noDamageTicks = maximumNoDamageTicks;
@@ -972,13 +1050,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             }
         }
 
-        // armor damage protection
-        // formula source: http://minecraft.gamepedia.com/Armor#Damage_Protection
-        double defensePoints = getAttributeManager().getPropertyValue(Key.KEY_ARMOR);
-        double toughness = getAttributeManager().getPropertyValue(Key.KEY_ARMOR_TOUGHNESS);
-        amount = amount * (1 - Math.min(20.0,
-                Math.max(defensePoints / 5.0,
-                        defensePoints - amount / (2.0 + toughness / 4.0))) / 25);
+        amount = getEffectiveDamage(amount);
 
         // fire event
         EntityDamageEvent event = EventFactory.getInstance().onEntityDamage(source == null

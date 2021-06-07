@@ -1,6 +1,7 @@
 package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
+import net.glowstone.entity.GlowEntity;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -14,6 +15,10 @@ public class BlockMagma extends BlockDirectDrops {
 
     @Override
     public void onEntityStep(GlowBlock block, LivingEntity entity) {
-        entity.damage(1.0, EntityDamageEvent.DamageCause.FIRE);
+        if (entity instanceof GlowEntity) {
+            ((GlowEntity) entity).damage(1, block, EntityDamageEvent.DamageCause.FIRE);
+        } else {
+            entity.damage(1.0, EntityDamageEvent.DamageCause.FIRE);
+        }
     }
 }
