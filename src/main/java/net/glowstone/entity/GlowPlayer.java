@@ -537,7 +537,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     private int prevCentralX;
     /**
-     * The player's previous chunk x coordinate.
+     * The player's previous chunk z coordinate.
      */
     private int prevCentralZ;
     /**
