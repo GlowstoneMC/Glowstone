@@ -4,6 +4,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.constants.GlowBiomeClimate;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockSpreadEvent;
@@ -36,6 +37,28 @@ public class BlockWater extends BlockLiquid {
                 if (!spreadEvent.isCancelled()) {
                     state.update(true);
                 }
+            }
+        }
+    }
+
+    @Override
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
+        // spread bubble column up or let it die out
+        if (face != BlockFace.DOWN) {
+            return;
+        }
+        switch (newType) {
+            case BUBBLE_COLUMN: {
+                block.setType(Material.BUBBLE_COLUMN);
+                Bukkit.getLogger().info("spread bubble column at " + block.getLocation());
+                // todo: set 'drag' blockdata to that of the block below
+                break;
+            }
+            case WATER: {
+                block.setType(Material.WATER);
+                Bukkit.getLogger().info("destroy bubble column at " + block.getLocation());
+                break;
             }
         }
     }
