@@ -93,16 +93,16 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             List<AttributeModifier> modifiers = new ArrayList<>();
             tag.iterateCompoundList("Modifiers", modifierTag -> {
                 if (modifierTag.isDouble("Amount")
-                        && modifierTag.isString("Name")
-                        && modifierTag.isInt("Operation")
-                        && modifierTag.isLong("UUIDLeast")
-                        && modifierTag.isLong("UUIDMost")) {
+                    && modifierTag.isString("Name")
+                    && modifierTag.isInt("Operation")
+                    && modifierTag.isLong("UUIDLeast")
+                    && modifierTag.isLong("UUIDMost")) {
                     modifiers.add(new AttributeModifier(
-                            new UUID(modifierTag.getLong("UUIDLeast"),
-                                    modifierTag.getLong("UUIDMost")),
-                            modifierTag.getString("Name"),
-                            modifierTag.getDouble("Amount"),
-                            AttributeModifier.Operation.values()[modifierTag.getInt("Operation")]));
+                        new UUID(modifierTag.getLong("UUIDLeast"),
+                            modifierTag.getLong("UUIDMost")),
+                        modifierTag.getString("Name"),
+                        modifierTag.getDouble("Amount"),
+                        AttributeModifier.Operation.values()[modifierTag.getInt("Operation")]));
                 }
             });
             AttributeManager.Key key = AttributeManager.Key.fromName(tag.getString("Name"));
@@ -112,13 +112,13 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
         if (maybeLeash.isPresent()) {
             CompoundTag leash = maybeLeash.get();
             if (!leash.readUuid("UUIDMost", "UUIDLeast", entity::setLeashHolderUniqueId)
-                    && leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
+                && leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
                 int x = leash.getInt("X");
                 int y = leash.getInt("Y");
                 int z = leash.getInt("Z");
 
                 LeashHitch leashHitch = GlowLeashHitch
-                        .getLeashHitchAt(new Location(entity.getWorld(), x, y, z).getBlock());
+                    .getLeashHitchAt(new Location(entity.getWorld(), x, y, z).getBlock());
                 entity.setLeashHolder(leashHitch);
             }
         } else {
@@ -260,25 +260,25 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
         EntityEquipment equip = entity.getEquipment();
         if (equip != null) {
             tag.putCompoundList("HandItems", Arrays.asList(
-                    NbtSerialization.writeItem(equip.getItemInMainHand(), -1),
-                    NbtSerialization.writeItem(equip.getItemInOffHand(), -1)
+                NbtSerialization.writeItem(equip.getItemInMainHand(), -1),
+                NbtSerialization.writeItem(equip.getItemInOffHand(), -1)
             ));
             tag.putCompoundList("ArmorItems", Arrays.asList(
-                    NbtSerialization.writeItem(equip.getBoots(), -1),
-                    NbtSerialization.writeItem(equip.getLeggings(), -1),
-                    NbtSerialization.writeItem(equip.getChestplate(), -1),
-                    NbtSerialization.writeItem(equip.getHelmet(), -1)
+                NbtSerialization.writeItem(equip.getBoots(), -1),
+                NbtSerialization.writeItem(equip.getLeggings(), -1),
+                NbtSerialization.writeItem(equip.getChestplate(), -1),
+                NbtSerialization.writeItem(equip.getHelmet(), -1)
             ));
 
             tag.putFloatList("HandDropChances", Arrays.asList(
-                    equip.getItemInMainHandDropChance(),
-                    equip.getItemInOffHandDropChance()
+                equip.getItemInMainHandDropChance(),
+                equip.getItemInOffHandDropChance()
             ));
             tag.putFloatList("ArmorDropChances", Arrays.asList(
-                    equip.getBootsDropChance(),
-                    equip.getLeggingsDropChance(),
-                    equip.getChestplateDropChance(),
-                    equip.getHelmetDropChance()
+                equip.getBootsDropChance(),
+                equip.getLeggingsDropChance(),
+                equip.getChestplateDropChance(),
+                equip.getHelmetDropChance()
             ));
         }
         tag.putBool("CanPickUpLoot", entity.getCanPickupItems());

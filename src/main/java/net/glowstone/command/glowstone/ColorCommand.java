@@ -15,7 +15,7 @@ public class ColorCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         ChatColor[] values = ChatColor.values();
         for (int i = 0; i < values.length; i += 2) {
             sender.sendMessage(

@@ -166,12 +166,13 @@ public class GlowSession extends BasicSession {
     /**
      * Creates a new session.
      *
-     * @param server The server this session belongs to.
-     * @param channel The channel associated with this session.
+     * @param server            The server this session belongs to.
+     * @param channel           The channel associated with this session.
      * @param connectionManager The connection manager to manage connections for this
-     *         session.
+     *                          session.
      */
-    public GlowSession(GlowServer server, ProtocolProvider protocolProvider, Channel channel, ConnectionManager connectionManager) {
+    public GlowSession(GlowServer server, ProtocolProvider protocolProvider, Channel channel,
+                       ConnectionManager connectionManager) {
         super(channel, protocolProvider.handshake);
         this.server = server;
         this.protocolProvider = protocolProvider;
@@ -191,7 +192,7 @@ public class GlowSession extends BasicSession {
         this.proxyData = proxyData;
         address = proxyData.getAddress();
         virtualHost = InetSocketAddress.createUnresolved(
-                proxyData.getHostname(), virtualHost.getPort());
+            proxyData.getHostname(), virtualHost.getPort());
     }
 
     /**
@@ -238,7 +239,7 @@ public class GlowSession extends BasicSession {
      *
      * @param profile The player's profile with name and UUID information.
      * @throws IllegalStateException if there is already a player associated with this
-     *         session.
+     *                               session.
      */
     public void setPlayer(GlowPlayerProfile profile) {
         if (player != null) {
@@ -274,7 +275,7 @@ public class GlowSession extends BasicSession {
 
         // login event
         PlayerLoginEvent event = EventFactory.getInstance()
-                .onPlayerLogin(player, virtualHost.toString());
+            .onPlayerLogin(player, virtualHost.toString());
         if (event.getResult() != Result.ALLOWED) {
             disconnect(event.getKickMessage(), true);
             return;
@@ -288,7 +289,7 @@ public class GlowSession extends BasicSession {
         online = true;
 
         GlowServer.logger.info(player.getName() + " [" + address + "] connected, UUID: "
-                + UuidUtils.toString(player.getUniqueId()));
+            + UuidUtils.toString(player.getUniqueId()));
 
         // message and user list
         String message = EventFactory.getInstance().onPlayerJoin(player).getJoinMessage();
@@ -323,7 +324,7 @@ public class GlowSession extends BasicSession {
      * Send the message and release the specified byte buffer after it is sent.
      *
      * @param message The message.
-     * @param buf The byte buffer.
+     * @param buf     The byte buffer.
      */
     public void sendAndRelease(Message message, ByteBuf buf) {
         sendWithFuture(message).addListener(f -> buf.release());
@@ -333,7 +334,7 @@ public class GlowSession extends BasicSession {
      * Send the message and release the specified byte buffers after it is sent.
      *
      * @param message The message.
-     * @param bufs The byte buffers.
+     * @param bufs    The byte buffers.
      */
     public void sendAndRelease(Message message, ByteBuf... bufs) {
         sendWithFuture(message).addListener(f -> {
@@ -365,7 +366,7 @@ public class GlowSession extends BasicSession {
      *
      * <p>This causes a KickMessage to be sent. When it has been delivered, the channel is closed.
      *
-     * @param reason The reason for disconnection.
+     * @param reason       The reason for disconnection.
      * @param overrideKick Whether to skip the kick event.
      */
     public void disconnect(String reason, boolean overrideKick) {
@@ -391,7 +392,7 @@ public class GlowSession extends BasicSession {
 
         // perform the kick, sending a kick message if possible
         if (isActive() && (getProtocol() instanceof LoginProtocol
-                || getProtocol() instanceof PlayProtocol)) {
+            || getProtocol() instanceof PlayProtocol)) {
             // channel is both currently connected and in a protocol state allowing kicks
             ChannelFuture future = sendWithFuture(new KickMessage(reason));
             if (future != null) {
@@ -467,7 +468,7 @@ public class GlowSession extends BasicSession {
                     continue;
                 }
                 other.getSession().send(new DestroyEntitiesMessage(Collections
-                        .singletonList(player.getEntityId())));
+                    .singletonList(player.getEntityId())));
             }
             player = null; // in case we are disposed twice
         }
@@ -497,7 +498,7 @@ public class GlowSession extends BasicSession {
     public void setProtocol(AbstractProtocol proto) {
         getChannel().flush();
 
-        updatePipeline("codecs", new CodecsHandler((GlowProtocol)proto));
+        updatePipeline("codecs", new CodecsHandler((GlowProtocol) proto));
         super.setProtocol(proto);
     }
 
@@ -573,8 +574,8 @@ public class GlowSession extends BasicSession {
         //TODO disconnect on error
         // can be safely logged and the connection maintained
         GlowServer.logger.log(Level.SEVERE,
-                "Error while handling " + message + " (handler: " + handle.getClass()
-                        .getSimpleName() + ")", t);
+            "Error while handling " + message + " (handler: " + handle.getClass()
+                .getSimpleName() + ")", t);
     }
 
     @Override

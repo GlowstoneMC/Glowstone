@@ -12,7 +12,7 @@ import org.bukkit.block.BlockFace;
 
 public class TaxicabBlockIterator implements Iterator<Block> {
 
-    private static final BlockFace[] VALID_FACES = new BlockFace[]{BlockFace.DOWN, BlockFace.UP,
+    private static final BlockFace[] VALID_FACES = new BlockFace[] {BlockFace.DOWN, BlockFace.UP,
         BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST};
 
     private final Queue<Object> pendingAnalysis = new LinkedList<>();
@@ -63,7 +63,7 @@ public class TaxicabBlockIterator implements Iterator<Block> {
         // Note that the pending analysis queue will always contain at least one element: the end
         // of distance marker.
         while (nextValidBlocks.isEmpty() && currentDistance <= maxDistance
-                && pendingAnalysis.size() >= 2) {
+            && pendingAnalysis.size() >= 2) {
             Object object = pendingAnalysis.remove();
 
             // If we find the end of distance marker, we'll increase the distance, and then we'll

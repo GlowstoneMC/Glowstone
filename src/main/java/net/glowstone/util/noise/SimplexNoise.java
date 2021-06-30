@@ -53,7 +53,7 @@ public class SimplexNoise extends PerlinNoise {
 
     @Override
     protected double[] get2dNoise(double[] noise, double x, double z, int sizeX, int sizeY,
-        double scaleX, double scaleY, double amplitude) {
+                                  double scaleX, double scaleY, double amplitude) {
         int index = 0;
         for (int i = 0; i < sizeY; i++) {
             double zin = offsetY + (z + i) * scaleY;
@@ -67,7 +67,8 @@ public class SimplexNoise extends PerlinNoise {
 
     @Override
     protected double[] get3dNoise(double[] noise, double x, double y, double z, int sizeX,
-        int sizeY, int sizeZ, double scaleX, double scaleY, double scaleZ, double amplitude) {
+                                  int sizeY, int sizeZ, double scaleX, double scaleY, double scaleZ,
+                                  double amplitude) {
         int index = 0;
         for (int i = 0; i < sizeZ; i++) {
             double zin = offsetZ + (z + i) * scaleZ;

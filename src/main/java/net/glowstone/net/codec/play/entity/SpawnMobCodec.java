@@ -17,7 +17,6 @@ public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
         int id = ByteBufUtils.readVarInt(buf);
         UUID uuid = GlowBufUtils.readUuid(buf);
         int type = ByteBufUtils.readVarInt(buf);
-        ;
         double x = buf.readDouble();
         double y = buf.readDouble();
         double z = buf.readDouble();

@@ -226,7 +226,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.fillWithRandomMaterial(new Vector(10, 1, 8), new Vector(10, 1, 10), random, stones);
         builder.setBlock(new Vector(10, 2, 9), Material.MOSSY_COBBLESTONE);
         builder.fillWithRandomMaterial(new Vector(8, 1, 8), new Vector(8, 1, 10), random, stones);
-        builder.fill(new Vector(8, 2, 11), new Vector(10, 2, 11), Material.SMOOTH_BRICK, 3);
+        builder.fill(new Vector(8, 2, 11), new Vector(10, 2, 11), Material.CHISELED_STONE_BRICKS);
         Lever lever = new Lever(Material.LEVER,
             (byte) 4); // workaround for bukkit, can't set an attached BlockFace
         lever.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
@@ -263,15 +263,16 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.fill(new Vector(8, 1, 6), new Vector(9, 1, 6), Material.REDSTONE_WIRE);
         builder.setBlock(new Vector(9, 1, 5), Material.REDSTONE_WIRE);
         builder.setBlock(new Vector(9, 2, 4), Material.REDSTONE_WIRE);
-        PistonBaseMaterial pistonE = new PistonBaseMaterial(Material.PISTON_STICKY_BASE);
+        PistonBaseMaterial pistonE = new PistonBaseMaterial(Material.PISTON);
         pistonE.setFacingDirection(getRelativeFacing(BlockFace.WEST));
         builder.fill(new Vector(10, 2, 8), new Vector(10, 3, 8), pistonE.getItemType(), pistonE);
-        PistonBaseMaterial pistonUp = new PistonBaseMaterial(Material.PISTON_STICKY_BASE);
+        // TODO: 1.13 is this the right piston material??
+        PistonBaseMaterial pistonUp = new PistonBaseMaterial(Material.STICKY_PISTON);
         pistonUp.setFacingDirection(BlockFace.UP);
         builder.setBlock(new Vector(9, 2, 8), pistonUp.getItemType(), pistonUp);
         builder.setBlock(new Vector(10, 3, 9), Material.REDSTONE_WIRE);
         builder.fill(new Vector(8, 2, 9), new Vector(8, 2, 10), Material.REDSTONE_WIRE);
-        Diode repeater = new Diode(Material.DIODE_BLOCK_OFF);
+        Diode repeater = new Diode(Material.REPEATER);
         repeater.setDelay(1);
         repeater.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
         builder.setBlock(new Vector(10, 2, 10), repeater.getItemType(), repeater);

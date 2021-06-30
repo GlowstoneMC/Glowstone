@@ -1,6 +1,8 @@
 package net.glowstone.testutils;
 
+import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.destroystokyo.paper.profile.PlayerProfile;
+import io.papermc.paper.datapack.DatapackManager;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -18,22 +21,32 @@ import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
+import net.glowstone.util.GlowUnsafeValues;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Keyed;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.StructureType;
+import org.bukkit.Tag;
 import org.bukkit.UnsafeValues;
 import org.bukkit.Warning;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
@@ -50,6 +63,7 @@ import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.loot.LootTable;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -57,6 +71,8 @@ import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.mockito.Mockito;
 
 /**
@@ -77,6 +93,7 @@ public class ServerShim implements Server {
 
     private final WorldScheduler worldScheduler = new WorldScheduler();
     private final SessionRegistry sessionRegistry = new SessionRegistry();
+    private final UnsafeValues unsafeAccess = new GlowUnsafeValues();
 
     @Getter
     private final PluginManager pluginManager
@@ -102,6 +119,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @NotNull String getMinecraftVersion() {
+        return "1.16.5";
+    }
+
+    @Override
     public ItemFactory getItemFactory() {
         return GlowItemFactory.instance();
     }
@@ -124,6 +146,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public void setMaxPlayers(int i) {
+
+    }
+
+    @Override
     public int getPort() {
         return 0;
     }
@@ -139,16 +166,6 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public String getServerName() {
-        return null;
-    }
-
-    @Override
-    public String getServerId() {
-        return null;
-    }
-
-    @Override
     public String getWorldType() {
         return null;
     }
@@ -156,6 +173,11 @@ public class ServerShim implements Server {
     @Override
     public boolean getGenerateStructures() {
         return false;
+    }
+
+    @Override
+    public int getMaxWorldSize() {
+        return 0;
     }
 
     @Override
@@ -229,6 +251,21 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public int getTicksPerWaterSpawns() {
+        return 0;
+    }
+
+    @Override
+    public int getTicksPerWaterAmbientSpawns() {
+        return 0;
+    }
+
+    @Override
+    public int getTicksPerAmbientSpawns() {
+        return 0;
+    }
+
+    @Override
     public Player getPlayer(String name) {
         return null;
     }
@@ -290,12 +327,28 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public MapView getMap(short id) {
+    public @org.jetbrains.annotations.Nullable World getWorld(
+        @NotNull NamespacedKey namespacedKey) {
+        return null;
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable MapView getMap(int id) {
         return null;
     }
 
     @Override
     public MapView createMap(World world) {
+        return null;
+    }
+
+    @Override
+    public @NotNull ItemStack createExplorerMap(@NotNull World world, @NotNull Location location, @NotNull StructureType structureType) {
+        return null;
+    }
+
+    @Override
+    public @NotNull ItemStack createExplorerMap(@NotNull World world, @NotNull Location location, @NotNull StructureType structureType, int radius, boolean findUnexplored) {
         return null;
     }
 
@@ -336,6 +389,12 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @org.jetbrains.annotations.Nullable Recipe getRecipe(
+        @NotNull NamespacedKey namespacedKey) {
+        return null;
+    }
+
+    @Override
     public Iterator<Recipe> recipeIterator() {
         return null;
     }
@@ -348,6 +407,11 @@ public class ServerShim implements Server {
     @Override
     public void resetRecipes() {
 
+    }
+
+    @Override
+    public boolean removeRecipe(@NotNull NamespacedKey namespacedKey) {
+        return false;
     }
 
     @Override
@@ -391,7 +455,18 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public int broadcast(@NotNull Component component, @NotNull String s) {
+        return 0;
+    }
+
+    @Override
     public OfflinePlayer getOfflinePlayer(String name) {
+        return null;
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable OfflinePlayer getOfflinePlayerIfCached(
+        @NotNull String s) {
         return null;
     }
 
@@ -471,6 +546,13 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @NotNull Inventory createInventory(
+        @org.jetbrains.annotations.Nullable InventoryHolder inventoryHolder,
+        @NotNull InventoryType inventoryType, @NotNull Component component) {
+        return null;
+    }
+
+    @Override
     public Inventory createInventory(InventoryHolder owner, InventoryType type, String title) {
         return null;
     }
@@ -482,8 +564,21 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @NotNull Inventory createInventory(
+        @org.jetbrains.annotations.Nullable InventoryHolder inventoryHolder, int i,
+        @NotNull Component component) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
     public Inventory createInventory(InventoryHolder owner, int size, String title)
         throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
+    public @NotNull Merchant createMerchant(
+        @org.jetbrains.annotations.Nullable Component component) {
         return null;
     }
 
@@ -508,6 +603,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public int getWaterAmbientSpawnLimit() {
+        return 0;
+    }
+
+    @Override
     public int getAmbientSpawnLimit() {
         return 0;
     }
@@ -518,7 +618,17 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @NotNull Component motd() {
+        return null;
+    }
+
+    @Override
     public String getMotd() {
+        return null;
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable Component shutdownMessage() {
         return null;
     }
 
@@ -568,9 +678,35 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public ChunkGenerator.@NotNull ChunkData createVanillaChunkData(@NotNull World world, int i,
+                                                                    int i1) {
+        return null;
+    }
+
+    @Override
     public BossBar createBossBar(String s, BarColor barColor, BarStyle barStyle,
         BarFlag... barFlags) {
         return null;
+    }
+
+    @Override
+    public @NotNull KeyedBossBar createBossBar(@NotNull NamespacedKey key, @org.jetbrains.annotations.Nullable String title, @NotNull BarColor color, @NotNull BarStyle style, @NotNull BarFlag... flags) {
+        return null;
+    }
+
+    @Override
+    public @NotNull Iterator<KeyedBossBar> getBossBars() {
+        return null;
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable KeyedBossBar getBossBar(@NotNull NamespacedKey key) {
+        return null;
+    }
+
+    @Override
+    public boolean removeBossBar(@NotNull NamespacedKey key) {
+        return false;
     }
 
     @Override
@@ -579,8 +715,18 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @NotNull long[] getTickTimes() {
+        return new long[0];
+    }
+
+    @Override
+    public double getAverageTickTime() {
+        return 0;
+    }
+
+    @Override
     public UnsafeValues getUnsafe() {
-        return null;
+        return unsafeAccess;
     }
 
     @Override
@@ -595,6 +741,46 @@ public class ServerShim implements Server {
 
     @Override
     public Iterator<Advancement> advancementIterator() {
+        return null;
+    }
+
+    @Override
+    public @NotNull BlockData createBlockData(@NotNull Material material) {
+        return null;
+    }
+
+    @Override
+    public @NotNull BlockData createBlockData(@NotNull Material material, @org.jetbrains.annotations.Nullable Consumer<BlockData> consumer) {
+        return null;
+    }
+
+    @Override
+    public @NotNull BlockData createBlockData(@NotNull String data) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
+    public @NotNull BlockData createBlockData(@org.jetbrains.annotations.Nullable Material material, @org.jetbrains.annotations.Nullable String data) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
+    public <T extends Keyed> Tag<T> getTag(@NotNull String registry, @NotNull NamespacedKey tag, @NotNull Class<T> clazz) {
+        return null;
+    }
+
+    @Override
+    public @NotNull <T extends Keyed> Iterable<Tag<T>> getTags(@NotNull String registry, @NotNull Class<T> clazz) {
+        return null;
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable LootTable getLootTable(@NotNull NamespacedKey key) {
+        return null;
+    }
+
+    @Override
+    public @NotNull List<Entity> selectEntities(@NotNull CommandSender sender, @NotNull String selector) throws IllegalArgumentException {
         return null;
     }
 
@@ -624,6 +810,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public @NotNull String getPermissionMessage() {
+        return null;
+    }
+
+    @Override
     public PlayerProfile createProfile(UUID id) {
         return null;
     }
@@ -639,12 +830,37 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public int getCurrentTick() {
+        return 0;
+    }
+
+    @Override
+    public boolean isStopping() {
+        return false;
+    }
+
+    @Override
+    public @NotNull MobGoals getMobGoals() {
+        return null;
+    }
+
+    @Override
+    public @NotNull DatapackManager getDatapackManager() {
+        return null;
+    }
+
+    @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
 
     }
 
     @Override
     public Set<String> getListeningPluginChannels() {
+        return null;
+    }
+
+    @Override
+    public @NonNull Iterable<? extends Audience> audiences() {
         return null;
     }
 }

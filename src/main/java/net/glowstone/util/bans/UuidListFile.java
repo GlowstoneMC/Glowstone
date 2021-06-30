@@ -21,16 +21,16 @@ public final class UuidListFile extends JsonListFile {
 
     private Map<UUID, Entry> entriesByUuid = new ConcurrentHashMap<>();
 
+    public UuidListFile(File file) {
+        super(file);
+    }
+
     @Override
     public void load() {
         super.load();
         for (BaseEntry entry : entries) {
             entriesByUuid.put(((Entry) entry).uuid, (Entry) entry);
         }
-    }
-
-    public UuidListFile(File file) {
-        super(file);
     }
 
     /**
@@ -40,16 +40,16 @@ public final class UuidListFile extends JsonListFile {
      */
     public List<GlowPlayerProfile> getProfiles() {
         return entries
-                .stream()
-                .parallel()
-                .map(entry -> {
-                    try {
-                        return ProfileCache.getProfile(((Entry) entry).uuid).get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toList());
+            .stream()
+            .parallel()
+            .map(entry -> {
+                try {
+                    return ProfileCache.getProfile(((Entry) entry).uuid).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            })
+            .collect(Collectors.toList());
     }
 
     /**

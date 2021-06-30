@@ -7,6 +7,8 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BedEntity;
 import org.bukkit.DyeColor;
 import org.bukkit.block.Bed;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowBed extends GlowBlockState implements Bed {
 
@@ -32,5 +34,10 @@ public class GlowBed extends GlowBlockState implements Bed {
             getBlockEntity().updateInRange();
         }
         return result;
+    }
+
+    @Override
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
+        throw new UnsupportedOperationException();
     }
 }

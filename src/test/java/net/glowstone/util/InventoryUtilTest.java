@@ -41,7 +41,7 @@ public class InventoryUtilTest {
             OrderingComparison.greaterThanOrEqualTo(0));
         inventory.setItem(0, new ItemStack(Material.APPLE));
         assertThat(0, is(InventoryUtil.getRandomSlot(random, inventory, true)));
-        inventory.setItem(1, new ItemStack(Material.CARROT_ITEM));
+        inventory.setItem(1, new ItemStack(Material.CARROT));
         assertThat(InventoryUtil.getRandomSlot(random, inventory, true),
             OrderingComparison.greaterThanOrEqualTo(0));
     }

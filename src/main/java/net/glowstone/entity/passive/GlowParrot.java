@@ -82,7 +82,7 @@ public class GlowParrot extends GlowTameable implements Parrot {
     /**
      * Sits on the given player's shoulder.
      *
-     * @param player the player whose shoulder to sit on
+     * @param player   the player whose shoulder to sit on
      * @param shoulder which shoulder to sit on
      */
     public void setSittingOn(Player player, Shoulder shoulder) {
@@ -110,10 +110,10 @@ public class GlowParrot extends GlowTameable implements Parrot {
                 damage(getHealth(), player, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
                 world.spawnParticle(Particle.SPELL, location, 1);
                 player.getInventory().consumeItemInHand(message.getHandSlot());
-            } else if (!isTamed() && hand.getType() == Material.SEEDS) {
+            } else if (!isTamed() && hand.getType() == Material.WHEAT_SEEDS) {
                 // One in 3 chances of taming
                 if (ThreadLocalRandom.current().nextInt(3) == 0
-                        && fireEntityTameEvent(player)) {
+                    && fireEntityTameEvent(player)) {
                     setTamed(true);
                     setOwner(player);
                     world.spawnParticle(Particle.HEART, location, 1);

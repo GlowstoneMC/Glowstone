@@ -13,6 +13,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockFence;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -42,9 +43,9 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
     /**
      * Creates a leash hitch entity, for when a leash is hitched to a block such as a fencepost.
      *
-     * @param location the location
+     * @param location    the location
      * @param clickedface the side of the block that was clicked
-     *         (TODO: what difference does this make?)
+     *                    (TODO: what difference does this make?)
      */
     public GlowLeashHitch(Location location, BlockFace clickedface) {
         super(location, clickedface);
@@ -108,7 +109,8 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
 
         return Lists.newArrayList(
             new SpawnObjectMessage(
-                    entityId, getUniqueId(), SpawnObjectMessage.LEASH_HITCH, x, y, z, 0, 0),
+                entityId, getUniqueId(), EntityNetworkUtil.getObjectId(EntityType.LEASH_HITCH),
+                x, y, z, 0, 0),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
@@ -163,7 +165,7 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
         }
 
         if ((message.getAction() == Action.INTERACT.ordinal())
-                && message.getHandSlot() == EquipmentSlot.HAND) {
+            && message.getHandSlot() == EquipmentSlot.HAND) {
             EventFactory eventFactory = EventFactory.getInstance();
             if (player.getLeashedEntities().isEmpty()) {
                 List<GlowEntity> entities = ImmutableList.copyOf(getLeashedEntities());
@@ -174,7 +176,7 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
                         continue;
                     }
                     if (player.getGameMode() != GameMode.CREATIVE) {
-                        world.dropItemNaturally(this.location, new ItemStack(Material.LEASH));
+                        world.dropItemNaturally(this.location, new ItemStack(Material.LEAD));
                     }
                     leashedEntity.setLeashHolder(null);
                 }

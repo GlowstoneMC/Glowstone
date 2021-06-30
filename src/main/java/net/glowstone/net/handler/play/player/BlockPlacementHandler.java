@@ -51,7 +51,59 @@ public final class BlockPlacementHandler implements
 
     private static boolean bothHandsEmpty(GlowPlayer player) {
         return InventoryUtil.isEmpty(player.getInventory().getItem(EquipmentSlot.HAND))
-                && InventoryUtil.isEmpty(player.getInventory().getItem(EquipmentSlot.OFF_HAND));
+            && InventoryUtil.isEmpty(player.getInventory().getItem(EquipmentSlot.OFF_HAND));
+    }
+
+    static void handleRightClickBlock(
+        GlowPlayer player, ItemStack holding, EquipmentSlot slot, GlowBlock clicked,
+        BlockFace face, Vector clickedLoc) {
+        // call interact event
+        PlayerInteractEvent event = EventFactory.getInstance().onPlayerInteract(
+            player, Action.RIGHT_CLICK_BLOCK, slot, clicked, face);
+
+        // attempt to use interacted block
+        // DEFAULT is treated as ALLOW, and sneaking is always considered
+        boolean useInteractedBlock = event.useInteractedBlock() != Result.DENY;
+        if (useInteractedBlock && (!player.isSneaking() || bothHandsEmpty(player))) {
+            BlockType blockType = ItemTable.instance().getBlock(clicked.getType());
+            if (blockType != null) {
+                useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);
+            } else {
+                ConsoleMessages.Info.Block.UNKNOWN_CLICKED.log(clicked.getType());
+            }
+        } else {
+            useInteractedBlock = false;
+        }
+
+        // attempt to use item in hand
+        // follows ALLOW/DENY: default to if no block was interacted with
+        if (selectResult(event.useItemInHand(), !useInteractedBlock)) {
+            ItemType type = ItemTable.instance().getItem(holding.getType());
+            if (holding.getType() != Material.AIR
+                && type.getContext().isBlockApplicable()) {
+                type.rightClickBlock(player, clicked, face, holding, clickedLoc, slot);
+            }
+        }
+
+        // make sure the player's up to date
+        // in case something is unimplemented or otherwise screwy on our side
+        revert(player, clicked);
+        revert(player, clicked.getRelative(face));
+
+        // if there's been a change in the held item, make it valid again
+        if (!InventoryUtil.isEmpty(holding) && holding.getType().getMaxDurability() > 0
+            && holding.getDurability() > holding.getType().getMaxDurability()) {
+            holding.setAmount(holding.getAmount() - 1);
+            holding.setDurability((short) 0);
+        }
+
+        if (holding.getAmount() <= 0) {
+            player.getInventory().setItem(slot, InventoryUtil.createEmptyStack());
+        } else {
+            // Set the item in `slot` to `holding`, as it was cloned before its amount was
+            // decremented.
+            player.getInventory().setItem(slot, holding);
+        }
     }
 
     @Override
@@ -98,56 +150,5 @@ public final class BlockPlacementHandler implements
         }
 
         handleRightClickBlock(player, holding, message.getHandSlot(), clicked, face, clickedLoc);
-    }
-
-    static void handleRightClickBlock(
-            GlowPlayer player, ItemStack holding, EquipmentSlot slot, GlowBlock clicked,
-            BlockFace face, Vector clickedLoc) {
-        // call interact event
-        PlayerInteractEvent event = EventFactory.getInstance().onPlayerInteract(
-                player, Action.RIGHT_CLICK_BLOCK, slot, clicked, face);
-
-        // attempt to use interacted block
-        // DEFAULT is treated as ALLOW, and sneaking is always considered
-        boolean useInteractedBlock = event.useInteractedBlock() != Result.DENY;
-        if (useInteractedBlock && (!player.isSneaking() || bothHandsEmpty(player))) {
-            BlockType blockType = ItemTable.instance().getBlock(clicked.getType());
-            if (blockType != null) {
-                useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);
-            } else {
-                ConsoleMessages.Info.Block.UNKNOWN_CLICKED.log(clicked.getType());
-            }
-        } else {
-            useInteractedBlock = false;
-        }
-
-        // attempt to use item in hand
-        // follows ALLOW/DENY: default to if no block was interacted with
-        if (selectResult(event.useItemInHand(), !useInteractedBlock)) {
-            ItemType type = ItemTable.instance().getItem(holding.getType());
-            if (holding.getType() != Material.AIR
-                && type.getContext().isBlockApplicable()) {
-                type.rightClickBlock(player, clicked, face, holding, clickedLoc, slot);
-            }
-        }
-
-        // make sure the player's up to date
-        // in case something is unimplemented or otherwise screwy on our side
-        revert(player, clicked);
-        revert(player, clicked.getRelative(face));
-
-        // if there's been a change in the held item, make it valid again
-        if (!InventoryUtil.isEmpty(holding) && holding.getType().getMaxDurability() > 0
-            && holding.getDurability() > holding.getType().getMaxDurability()) {
-            holding.setAmount(holding.getAmount() - 1);
-            holding.setDurability((short) 0);
-        }
-
-        if (holding.getAmount() <= 0) {
-            player.getInventory().setItem(slot, InventoryUtil.createEmptyStack());
-        } else {
-            // Set the item in `slot` to `holding`, as it was cloned before its amount was decremented.
-            player.getInventory().setItem(slot, holding);
-        }
     }
 }

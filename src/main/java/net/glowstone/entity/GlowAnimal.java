@@ -3,10 +3,12 @@ package net.glowstone.entity;
 import com.google.common.collect.Sets;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.UUID;
 import net.glowstone.entity.ai.EntityDirector;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,6 +17,7 @@ import org.bukkit.entity.Animals;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents an Animal, such as a Cow.
@@ -22,15 +25,15 @@ import org.bukkit.util.Vector;
 public class GlowAnimal extends GlowAgeable implements Animals {
 
     private static final Set<Material> DEFAULT_BREEDING_FOODS =
-            Sets.immutableEnumSet(EnumSet.noneOf(Material.class));
+        Sets.immutableEnumSet(EnumSet.noneOf(Material.class));
 
     private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
 
     /**
      * Creates a new ageable animal.
      *
-     * @param location The location of the animal.
-     * @param type The type of animal.
+     * @param location  The location of the animal.
+     * @param type      The type of animal.
      * @param maxHealth The max health of this animal.
      */
     public GlowAnimal(Location location, EntityType type, double maxHealth) {
@@ -54,15 +57,15 @@ public class GlowAnimal extends GlowAgeable implements Animals {
      * of eating it.
      *
      * @param player the player feeding the entity, for statistical purposes
-     * @param type an item that may be food
+     * @param type   an item that may be food
      * @return true if the item should be consumed; false otherwise
      */
     protected boolean tryFeed(Material type, GlowPlayer player) {
         if (!getBreedingFoods().contains(type)) {
             return false;
         }
-        if (canBreed() && getInLove() <= 0) {
-            setInLove(1000); // TODO get the correct duration
+        if (canBreed() && getLoveModeTicks() <= 0) {
+            setLoveModeTicks(1000); // TODO get the correct duration
             player.incrementStatistic(Statistic.ANIMALS_BRED);
             return true;
         }
@@ -77,7 +80,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (!super.entityInteract(player, message)
-                && message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+            && message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
             GameMode gameMode = player.getGameMode();
             if (gameMode == GameMode.SPECTATOR) {
                 return false;
@@ -98,6 +101,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
 
     /**
      * Returns an immutable set containing the breeding foods for the current animal.
+     *
      * @return an immutable set containing Material
      */
     public Set<Material> getBreedingFoods() {
@@ -111,5 +115,22 @@ public class GlowAnimal extends GlowAgeable implements Animals {
         }
 
         return 0;
+    }
+
+    @Override
+    public @Nullable UUID getBreedCause() {
+        // TODO: 1.13
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void setBreedCause(@Nullable UUID uuid) {
+        // TODO: 1.13
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isLoveMode() {
+        return getLoveModeTicks() > 0;
     }
 }

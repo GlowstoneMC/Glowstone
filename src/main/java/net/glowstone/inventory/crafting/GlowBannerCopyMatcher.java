@@ -22,7 +22,8 @@ public class GlowBannerCopyMatcher extends ItemMatcher {
                 continue;
             }
 
-            if (item.getType() == Material.BANNER) {
+            // TODO: handle all new banner types
+            if (item.getType() == Material.LEGACY_BANNER) {
                 banners.add(item);
                 continue;
             }

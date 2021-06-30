@@ -1,47 +1,75 @@
 package net.glowstone.generator.objects.trees;
 
+import com.google.common.collect.Sets;
 import io.netty.util.internal.ThreadLocalRandom;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
+import java.util.Set;
 import net.glowstone.generator.objects.TerrainObject;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.Dirt;
-import org.bukkit.material.types.DirtType;
 
-/** Oak tree, and superclass for other types. */
+/**
+ * Oak tree, and superclass for other types.
+ */
 public class GenericTree implements TerrainObject {
+
+    protected static final Set<Material> LEAF_TYPES = Sets.immutableEnumSet(
+            Material.OAK_LEAVES,
+            Material.SPRUCE_LEAVES,
+            Material.BIRCH_LEAVES,
+            Material.JUNGLE_LEAVES,
+            Material.ACACIA_LEAVES,
+            Material.DARK_OAK_LEAVES
+    );
 
     protected final BlockStateDelegate delegate;
     protected int height;
-    protected int logType;
-    protected int leavesType;
+    protected Material logType;
+    protected Material leavesType;
     protected Collection<Material> overridables;
 
     /**
      * Initializes this tree with a random height, preparing it to attempt to generate.
      *
-     * @param random the PRNG
+     * @param random   the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill in wood and leaves
      */
     public GenericTree(Random random, BlockStateDelegate delegate) {
         this.delegate = delegate;
         setOverridables(
-            Material.AIR,
-            Material.LEAVES,
-            Material.GRASS,
-            Material.DIRT,
-            Material.LOG,
-            Material.LOG_2,
-            Material.SAPLING,
-            Material.VINE
+                Material.AIR,
+                Material.DIRT,
+                Material.GRASS_BLOCK,
+                Material.VINE,
+                // Leaves
+                Material.OAK_LEAVES,
+                Material.SPRUCE_LEAVES,
+                Material.BIRCH_LEAVES,
+                Material.JUNGLE_LEAVES,
+                Material.ACACIA_LEAVES,
+                Material.DARK_OAK_LEAVES,
+                // Logs
+                Material.OAK_LOG,
+                Material.SPRUCE_LOG,
+                Material.BIRCH_LOG,
+                Material.JUNGLE_LOG,
+                Material.ACACIA_LOG,
+                Material.DARK_OAK_LOG,
+                // Saplings
+                Material.OAK_SAPLING,
+                Material.SPRUCE_SAPLING,
+                Material.BIRCH_SAPLING,
+                Material.JUNGLE_SAPLING,
+                Material.ACACIA_SAPLING,
+                Material.DARK_OAK_SAPLING
         );
         setHeight(random.nextInt(3) + 4);
-        setTypes(0, 0);
+        setTypes(Material.OAK_LOG, Material.OAK_LEAVES);
     }
 
     protected final void setOverridables(Material... overridables) {
@@ -55,18 +83,18 @@ public class GenericTree implements TerrainObject {
     /**
      * Sets the block data values for this tree's blocks.
      *
-     * @param logType the species portion of the data value for wood blocks.
+     * @param logType    the species portion of the data value for wood blocks.
      * @param leavesType the species portion of the data value for leaf blocks.
      */
-    protected final void setTypes(int logType, int leavesType) {
+    protected final void setTypes(Material logType, Material leavesType) {
         this.logType = logType;
         this.leavesType = leavesType;
     }
 
     /**
      * Checks whether this tree fits under the upper world limit.
-     * @param baseHeight the height of the base of the trunk
      *
+     * @param baseHeight the height of the base of the trunk
      * @return true if this tree can grow without exceeding block height 255; false otherwise.
      */
     public boolean canHeightFit(int baseHeight) {
@@ -75,12 +103,15 @@ public class GenericTree implements TerrainObject {
 
     /**
      * Checks whether this tree can grow on top of the given block.
+     *
      * @param soil the block we're growing on
      * @return true if this tree can grow on the type of block below it; false otherwise
      */
     public boolean canPlaceOn(BlockState soil) {
-        return soil.getType() == Material.GRASS || soil.getType() == Material.DIRT
-            || soil.getType() == Material.SOIL;
+        return soil.getType() == Material.GRASS_BLOCK
+                || soil.getType() == Material.DIRT
+                || soil.getType() == Material.COARSE_DIRT
+                || soil.getType() == Material.FARMLAND;
     }
 
     /**
@@ -146,9 +177,9 @@ public class GenericTree implements TerrainObject {
             for (int x = blockX - radius; x <= blockX + radius; x++) {
                 for (int z = blockZ - radius; z <= blockZ + radius; z++) {
                     if (Math.abs(x - blockX) != radius
-                        || Math.abs(z - blockZ) != radius
-                        || random.nextBoolean() && n != 0) {
-                        replaceIfAirOrLeaves(x, y, z, Material.LEAVES, leavesType, world);
+                            || Math.abs(z - blockZ) != radius
+                            || random.nextBoolean() && n != 0) {
+                        replaceIfAirOrLeaves(x, y, z, leavesType, world);
                     }
                 }
             }
@@ -156,16 +187,11 @@ public class GenericTree implements TerrainObject {
 
         // generate the trunk
         for (int y = 0; y < height; y++) {
-            replaceIfAirOrLeaves(blockX,
-                    blockY + y, blockZ, Material.LOG, logType, world);
+            replaceIfAirOrLeaves(blockX, blockY + y, blockZ, logType, world);
         }
 
         // block below trunk is always dirt
-        Dirt dirt = new Dirt(DirtType.NORMAL);
-        delegate
-            .setTypeAndData(world, blockX, blockY - 1, blockZ,
-                Material.DIRT, dirt);
-
+        delegate.setType(world, blockX, blockY - 1, blockZ, Material.DIRT);
         return true;
     }
 
@@ -180,7 +206,7 @@ public class GenericTree implements TerrainObject {
      * @return true if any of the checks prevent us from generating, false otherwise
      */
     protected boolean cannotGenerateAt(int baseX, int baseY, int baseZ,
-            World world) {
+                                       World world) {
         return !canHeightFit(baseY)
                 || !canPlaceOn(world.getBlockAt(baseX, baseY - 1, baseZ).getState())
                 || !canPlace(baseX, baseY, baseZ, world);
@@ -189,26 +215,26 @@ public class GenericTree implements TerrainObject {
     /**
      * Replaces the block at a location with the given new one, if it is air or leaves.
      *
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
+     * @param x           the x coordinate
+     * @param y           the y coordinate
+     * @param z           the z coordinate
      * @param newMaterial the new block type
-     * @param data the new block data
-     * @param world the world we are generating in
+     * @param world       the world we are generating in
      */
-    protected void replaceIfAirOrLeaves(int x, int y, int z, Material newMaterial, int data,
-            World world) {
+    protected void replaceIfAirOrLeaves(int x, int y, int z, Material newMaterial,
+                                        World world) {
         Material oldMaterial = blockTypeAt(x, y, z, world);
-        if (oldMaterial == Material.AIR || oldMaterial == Material.LEAVES) {
-            delegate.setTypeAndRawData(world, x, y, z, newMaterial, data);
+        if (oldMaterial == Material.AIR || LEAF_TYPES.contains(oldMaterial)) {
+            delegate.setType(world, x, y, z, newMaterial);
         }
     }
 
     /**
      * Returns the block type at the given coordinates.
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
+     *
+     * @param x     the x coordinate
+     * @param y     the y coordinate
+     * @param z     the z coordinate
      * @param world the world we are generating in
      * @return the block type
      */

@@ -34,7 +34,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
         session.setVersion(message.getVersion());
         session.setVirtualHost(InetSocketAddress.createUnresolved(
-                message.getAddress(), message.getPort()));
+            message.getAddress(), message.getPort()));
 
         // Proxies modify the hostname in the HandshakeMessage to contain
         // the client's UUID and (optionally) properties
@@ -52,7 +52,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
             } catch (Exception ex) {
                 if (protocol == loginProtocol) {
                     GlowServer.logger.log(Level.SEVERE,
-                            "Error parsing proxy data for " + session, ex);
+                        "Error parsing proxy data for " + session, ex);
                     session.disconnect("Failed to parse proxy data.");
                 }
                 return; // silently ignore parse data in PING protocol

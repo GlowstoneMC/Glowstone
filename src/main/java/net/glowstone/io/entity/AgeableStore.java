@@ -8,7 +8,7 @@ import org.bukkit.entity.EntityType;
 
 public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
 
-    private Function<Location, ? extends T> creator;
+    private final Function<Location, ? extends T> creator;
 
     public AgeableStore(Class<T> clazz, EntityType type, Function<Location, ? extends T> creator) {
         super(clazz, type);
@@ -35,7 +35,7 @@ public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
         super.load(entity, compound);
         compound.readInt("Age", entity::setAge);
         compound.readBoolean("AgeLocked", entity::setAgeLock);
-        compound.readInt("InLove", entity::setInLove);
+        compound.readInt("InLove", entity::setLoveModeTicks);
         compound.readInt("ForcedAge", entity::setForcedAge);
     }
 
@@ -44,7 +44,7 @@ public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
         super.save(entity, tag);
         tag.putInt("Age", entity.getAge());
         tag.putBool("AgeLocked", entity.getAgeLock());
-        tag.putInt("InLove", entity.getInLove());
+        tag.putInt("InLove", entity.getLoveModeTicks());
         tag.putInt("ForcedAge", entity.getForcedAge());
     }
 }

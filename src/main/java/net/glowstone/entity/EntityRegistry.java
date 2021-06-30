@@ -152,7 +152,6 @@ import org.bukkit.entity.TippedArrow;
 import org.bukkit.entity.Vex;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Vindicator;
-import org.bukkit.entity.Weather;
 import org.bukkit.entity.Witch;
 import org.bukkit.entity.Wither;
 import org.bukkit.entity.WitherSkeleton;
@@ -166,101 +165,100 @@ public class EntityRegistry {
     private static final Map<String, CustomEntityDescriptor> CUSTOM_ENTITIES = new HashMap<>();
 
     private static final ImmutableBiMap<Class<? extends Entity>, Class<? extends GlowEntity>>
-            ENTITIES
-            = ImmutableBiMap.<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
-            .put(AbstractHorse.class, GlowAbstractHorse.class)
-            .put(AreaEffectCloud.class, GlowAreaEffectCloud.class)
-            .put(ArmorStand.class, GlowArmorStand.class)
-            .put(Arrow.class, GlowArrow.class)
-            .put(Bat.class, GlowBat.class)
-            .put(Blaze.class, GlowBlaze.class)
-            .put(Boat.class, GlowBoat.class)
-            .put(CaveSpider.class, GlowCaveSpider.class)
-            .put(ChestedHorse.class, GlowChestedHorse.class)
-            .put(Chicken.class, GlowChicken.class)
-            .put(Cow.class, GlowCow.class)
-            .put(Creeper.class, GlowCreeper.class)
-            .put(Donkey.class, GlowDonkey.class)
-            .put(Egg.class, GlowEgg.class)
-            .put(ElderGuardian.class, GlowElderGuardian.class)
-            .put(EnderCrystal.class, GlowEnderCrystal.class)
-            .put(EnderDragon.class, GlowEnderDragon.class)
-            .put(EnderPearl.class, GlowEnderPearl.class)
-            //TODO: Ender Signal
-            .put(Enderman.class, GlowEnderman.class)
-            .put(Endermite.class, GlowEndermite.class)
-            .put(ExperienceOrb.class, GlowExperienceOrb.class)
-            .put(Evoker.class, GlowEvoker.class)
-            .put(EvokerFangs.class, GlowEvokerFangs.class)
-            .put(FallingBlock.class, GlowFallingBlock.class)
-            .put(Fireball.class, GlowFireball.class)
-            .put(Firework.class, GlowFirework.class)
-            .put(FishHook.class, GlowFishingHook.class)
-            .put(Ghast.class, GlowGhast.class)
-            .put(Giant.class, GlowGiant.class)
-            .put(Guardian.class, GlowGuardian.class)
-            .put(Horse.class, GlowHorse.class)
-            .put(Husk.class, GlowHusk.class)
-            .put(IronGolem.class, GlowIronGolem.class)
-            .put(Item.class, GlowItem.class)
-            .put(ItemFrame.class, GlowItemFrame.class)
-            .put(LeashHitch.class, GlowLeashHitch.class)
-            .put(LightningStrike.class, GlowLightningStrike.class)
-            .put(LingeringPotion.class, GlowLingeringPotion.class)
-            .put(Llama.class, GlowLlama.class)
-            .put(MagmaCube.class, GlowMagmaCube.class)
-            .put(GlowMinecart.MinecartType.RIDEABLE.getEntityClass(),
-                    GlowMinecart.MinecartType.RIDEABLE.getMinecartClass())
-            .put(GlowMinecart.MinecartType.CHEST.getEntityClass(),
-                    GlowMinecart.MinecartType.CHEST.getMinecartClass())
-            .put(GlowMinecart.MinecartType.FURNACE.getEntityClass(),
-                    GlowMinecart.MinecartType.FURNACE.getMinecartClass())
-            .put(GlowMinecart.MinecartType.TNT.getEntityClass(),
-                    GlowMinecart.MinecartType.TNT.getMinecartClass())
-            .put(GlowMinecart.MinecartType.HOPPER.getEntityClass(),
-                    GlowMinecart.MinecartType.HOPPER.getMinecartClass())
-            .put(GlowMinecart.MinecartType.SPAWNER.getEntityClass(),
-                    GlowMinecart.MinecartType.SPAWNER.getMinecartClass())
-            //TODO: Command Block minecart
-            .put(Mule.class, GlowMule.class)
-            .put(MushroomCow.class, GlowMooshroom.class)
-            .put(Ocelot.class, GlowOcelot.class)
-            .put(Painting.class, GlowPainting.class)
-            .put(Parrot.class, GlowParrot.class)
-            .put(Pig.class, GlowPig.class)
-            .put(PigZombie.class, GlowPigZombie.class)
-            .put(Player.class, GlowPlayer.class)
-            .put(PolarBear.class, GlowPolarBear.class)
-            .put(TNTPrimed.class, GlowTntPrimed.class)
-            .put(Rabbit.class, GlowRabbit.class)
-            .put(Sheep.class, GlowSheep.class)
-            .put(Shulker.class, GlowShulker.class)
-            .put(Silverfish.class, GlowSilverfish.class)
-            .put(Skeleton.class, GlowSkeleton.class)
-            .put(SkeletonHorse.class, GlowSkeletonHorse.class)
-            .put(Slime.class, GlowSlime.class)
-            .put(Snowball.class, GlowSnowball.class)
-            .put(Snowman.class, GlowSnowman.class)
-            .put(SpectralArrow.class, GlowSpectralArrow.class)
-            .put(Spider.class, GlowSpider.class)
-            .put(SplashPotion.class, GlowSplashPotion.class)
-            .put(Squid.class, GlowSquid.class)
-            .put(Stray.class, GlowStray.class)
-            .put(ThrownExpBottle.class, GlowThrownExpBottle.class)
-            .put(TippedArrow.class, GlowTippedArrow.class)
-            .put(Vex.class, GlowVex.class)
-            .put(Villager.class, GlowVillager.class)
-            .put(Vindicator.class, GlowVindicator.class)
-            .put(Weather.class, GlowWeather.class)
-            .put(Witch.class, GlowWitch.class)
-            .put(Wither.class, GlowWither.class)
-            .put(WitherSkeleton.class, GlowWitherSkeleton.class)
-            //TODO: Wither Skull
-            .put(Wolf.class, GlowWolf.class)
-            .put(Zombie.class, GlowZombie.class)
-            .put(ZombieHorse.class, GlowZombieHorse.class)
-            .put(ZombieVillager.class, GlowZombieVillager.class)
-            .build();
+        ENTITIES
+        = ImmutableBiMap.<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
+        .put(AbstractHorse.class, GlowAbstractHorse.class)
+        .put(AreaEffectCloud.class, GlowAreaEffectCloud.class)
+        .put(ArmorStand.class, GlowArmorStand.class)
+        .put(Arrow.class, GlowArrow.class)
+        .put(Bat.class, GlowBat.class)
+        .put(Blaze.class, GlowBlaze.class)
+        .put(Boat.class, GlowBoat.class)
+        .put(CaveSpider.class, GlowCaveSpider.class)
+        .put(ChestedHorse.class, GlowChestedHorse.class)
+        .put(Chicken.class, GlowChicken.class)
+        .put(Cow.class, GlowCow.class)
+        .put(Creeper.class, GlowCreeper.class)
+        .put(Donkey.class, GlowDonkey.class)
+        .put(Egg.class, GlowEgg.class)
+        .put(ElderGuardian.class, GlowElderGuardian.class)
+        .put(EnderCrystal.class, GlowEnderCrystal.class)
+        .put(EnderDragon.class, GlowEnderDragon.class)
+        .put(EnderPearl.class, GlowEnderPearl.class)
+        //TODO: Ender Signal
+        .put(Enderman.class, GlowEnderman.class)
+        .put(Endermite.class, GlowEndermite.class)
+        .put(ExperienceOrb.class, GlowExperienceOrb.class)
+        .put(Evoker.class, GlowEvoker.class)
+        .put(EvokerFangs.class, GlowEvokerFangs.class)
+        .put(FallingBlock.class, GlowFallingBlock.class)
+        .put(Fireball.class, GlowFireball.class)
+        .put(Firework.class, GlowFirework.class)
+        .put(FishHook.class, GlowFishingHook.class)
+        .put(Ghast.class, GlowGhast.class)
+        .put(Giant.class, GlowGiant.class)
+        .put(Guardian.class, GlowGuardian.class)
+        .put(Horse.class, GlowHorse.class)
+        .put(Husk.class, GlowHusk.class)
+        .put(IronGolem.class, GlowIronGolem.class)
+        .put(Item.class, GlowItem.class)
+        .put(ItemFrame.class, GlowItemFrame.class)
+        .put(LeashHitch.class, GlowLeashHitch.class)
+        .put(LightningStrike.class, GlowLightningStrike.class)
+        .put(LingeringPotion.class, GlowLingeringPotion.class)
+        .put(Llama.class, GlowLlama.class)
+        .put(MagmaCube.class, GlowMagmaCube.class)
+        .put(GlowMinecart.MinecartType.RIDEABLE.getEntityClass(),
+            GlowMinecart.MinecartType.RIDEABLE.getMinecartClass())
+        .put(GlowMinecart.MinecartType.CHEST.getEntityClass(),
+            GlowMinecart.MinecartType.CHEST.getMinecartClass())
+        .put(GlowMinecart.MinecartType.FURNACE.getEntityClass(),
+            GlowMinecart.MinecartType.FURNACE.getMinecartClass())
+        .put(GlowMinecart.MinecartType.TNT.getEntityClass(),
+            GlowMinecart.MinecartType.TNT.getMinecartClass())
+        .put(GlowMinecart.MinecartType.HOPPER.getEntityClass(),
+            GlowMinecart.MinecartType.HOPPER.getMinecartClass())
+        .put(GlowMinecart.MinecartType.SPAWNER.getEntityClass(),
+            GlowMinecart.MinecartType.SPAWNER.getMinecartClass())
+        //TODO: Command Block minecart
+        .put(Mule.class, GlowMule.class)
+        .put(MushroomCow.class, GlowMooshroom.class)
+        .put(Ocelot.class, GlowOcelot.class)
+        .put(Painting.class, GlowPainting.class)
+        .put(Parrot.class, GlowParrot.class)
+        .put(Pig.class, GlowPig.class)
+        .put(PigZombie.class, GlowPigZombie.class)
+        .put(Player.class, GlowPlayer.class)
+        .put(PolarBear.class, GlowPolarBear.class)
+        .put(TNTPrimed.class, GlowTntPrimed.class)
+        .put(Rabbit.class, GlowRabbit.class)
+        .put(Sheep.class, GlowSheep.class)
+        .put(Shulker.class, GlowShulker.class)
+        .put(Silverfish.class, GlowSilverfish.class)
+        .put(Skeleton.class, GlowSkeleton.class)
+        .put(SkeletonHorse.class, GlowSkeletonHorse.class)
+        .put(Slime.class, GlowSlime.class)
+        .put(Snowball.class, GlowSnowball.class)
+        .put(Snowman.class, GlowSnowman.class)
+        .put(SpectralArrow.class, GlowSpectralArrow.class)
+        .put(Spider.class, GlowSpider.class)
+        .put(SplashPotion.class, GlowSplashPotion.class)
+        .put(Squid.class, GlowSquid.class)
+        .put(Stray.class, GlowStray.class)
+        .put(ThrownExpBottle.class, GlowThrownExpBottle.class)
+        .put(TippedArrow.class, GlowTippedArrow.class)
+        .put(Vex.class, GlowVex.class)
+        .put(Villager.class, GlowVillager.class)
+        .put(Vindicator.class, GlowVindicator.class)
+        .put(Witch.class, GlowWitch.class)
+        .put(Wither.class, GlowWither.class)
+        .put(WitherSkeleton.class, GlowWitherSkeleton.class)
+        //TODO: Wither Skull
+        .put(Wolf.class, GlowWolf.class)
+        .put(Zombie.class, GlowZombie.class)
+        .put(ZombieHorse.class, GlowZombieHorse.class)
+        .put(ZombieVillager.class, GlowZombieVillager.class)
+        .build();
 
     public static Class<? extends GlowEntity> getEntity(EntityType type) {
         return ENTITIES.get(type.getEntityClass());
@@ -287,14 +285,14 @@ public class EntityRegistry {
      *                   {@link CustomEntityDescriptor#getStorage()} must be non-null
      */
     public static void registerCustomEntity(
-            CustomEntityDescriptor<? extends GlowEntity> descriptor) {
+        CustomEntityDescriptor<? extends GlowEntity> descriptor) {
         if (descriptor == null || descriptor.getEntityClass() == null || descriptor.getId() == null
-                || descriptor.getPlugin() == null) {
+            || descriptor.getPlugin() == null) {
             return;
         }
         if (descriptor.getPlugin().isEnabled()) {
             ConsoleMessages.Warn.Entity.LOAD_TOO_LATE.log(
-                    descriptor.getId(), descriptor.getPlugin());
+                descriptor.getId(), descriptor.getPlugin());
             return;
         }
         if (CUSTOM_ENTITIES.containsKey(descriptor.getId().toLowerCase())) {

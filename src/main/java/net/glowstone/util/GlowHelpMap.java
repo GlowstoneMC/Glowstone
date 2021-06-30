@@ -37,9 +37,9 @@ import org.bukkit.help.IndexHelpTopic;
 public final class GlowHelpMap implements HelpMap {
 
     private static final Comparator<String> NAME_COMPARE = HelpTopicComparator
-            .topicNameComparatorInstance();
+        .topicNameComparatorInstance();
     private static final Comparator<HelpTopic> TOPIC_COMPARE = HelpTopicComparator
-            .helpTopicComparatorInstance();
+        .helpTopicComparatorInstance();
 
     private final GlowServer server;
 
@@ -60,8 +60,8 @@ public final class GlowHelpMap implements HelpMap {
         this.server = server;
         helpTopics = new TreeMap<>(NAME_COMPARE);
         defaultTopic
-                = new IndexHelpTopic("Index", null, null, indexTopics, "Use /help [n] to get page"
-                + " n of help.");
+            = new IndexHelpTopic("Index", null, null, indexTopics, "Use /help [n] to get page"
+            + " n of help.");
     }
 
     @Override
@@ -96,9 +96,9 @@ public final class GlowHelpMap implements HelpMap {
     @SuppressWarnings("unchecked")
     public void registerHelpTopicFactory(Class commandClass, HelpTopicFactory factory) {
         if (!Command.class.isAssignableFrom(commandClass) && !CommandExecutor.class
-                .isAssignableFrom(commandClass)) {
+            .isAssignableFrom(commandClass)) {
             throw new IllegalArgumentException("commandClass must implement either Command or "
-                    + "CommandExecutor!");
+                + "CommandExecutor!");
         }
         topicFactoryMap.put(commandClass, factory);
     }
@@ -151,7 +151,7 @@ public final class GlowHelpMap implements HelpMap {
                         }
                     }
                     addTopic(new GeneralHelpTopic(key, color(shortText), color(fullText), topic
-                            .getString("permission", null)));
+                        .getString("permission", null)));
                 }
             }
         }
@@ -166,7 +166,7 @@ public final class GlowHelpMap implements HelpMap {
                     String preamble = color(topic.getString("preamble", null));
                     String permission = topic.getString("permission", null);
                     HelpTopic helpTopic = new LazyIndexTopic(key, shortText, permission, topic
-                            .getStringList("commands"), preamble);
+                        .getStringList("commands"), preamble);
                     if (key.equals("Default")) {
                         defaultTopic = helpTopic;
                     } else {
@@ -208,7 +208,7 @@ public final class GlowHelpMap implements HelpMap {
                     continue outer;
                 }
                 if (command instanceof PluginCommand && ((Class<?>) entry.getKey())
-                        .isAssignableFrom(((PluginCommand) command).getExecutor().getClass())) {
+                    .isAssignableFrom(((PluginCommand) command).getExecutor().getClass())) {
                     HelpTopic t = entry.getValue().createTopic(command);
                     if (t != null) {
                         addCommandTopic(t);
@@ -259,8 +259,8 @@ public final class GlowHelpMap implements HelpMap {
         for (Entry<String, Set<HelpTopic>> entry : pluginIndexes.entrySet()) {
             String key = entry.getKey();
             addTopic(new IndexHelpTopic(key,
-                    "All commands for " + key, null, entry.getValue(),
-                    "Below is a list of all " + key + " commands:"));
+                "All commands for " + key, null, entry.getValue(),
+                "Below is a list of all " + key + " commands:"));
         }
     }
 
@@ -283,7 +283,7 @@ public final class GlowHelpMap implements HelpMap {
                 }
 
                 target.amendTopic(color(amend.getString("shortText")), color(amend
-                        .getString("fullText")));
+                    .getString("fullText")));
                 String perm = amend.getString("permission", null);
                 if (perm != null) {
                     // empty string can be specified to remove permission
@@ -323,7 +323,7 @@ public final class GlowHelpMap implements HelpMap {
         @Override
         public boolean canSee(CommandSender sender) {
             return sender instanceof ConsoleCommandSender || amendedPermission == null || sender
-                    .hasPermission(amendedPermission);
+                .hasPermission(amendedPermission);
         }
     }
 
@@ -353,7 +353,7 @@ public final class GlowHelpMap implements HelpMap {
         private Collection<String> topics;
 
         public LazyIndexTopic(String name, String shortText, String permission,
-                Collection<String> topics, String preamble) {
+                              Collection<String> topics, String preamble) {
             super(name, shortText, permission, Collections.emptyList(), preamble);
             this.topics = topics;
         }

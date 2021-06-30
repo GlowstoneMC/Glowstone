@@ -13,6 +13,8 @@ public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
         int action = ByteBufUtils.readVarInt(buf);
         boolean bookOpen = buf.readBoolean();
         boolean filterOpen = buf.readBoolean();
+        boolean smeltingBookOpen = buf.readBoolean();
+        boolean smeltingFilterOpen = buf.readBoolean();
 
         int sizeOfRecipes = ByteBufUtils.readVarInt(buf);
         int[] recipes = new int[sizeOfRecipes];
@@ -20,7 +22,8 @@ public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
             recipes[i] = ByteBufUtils.readVarInt(buf);
         }
         if (action != UnlockRecipesMessage.ACTION_INIT) {
-            return new UnlockRecipesMessage(action, bookOpen, filterOpen, recipes);
+            return new UnlockRecipesMessage(action, bookOpen, filterOpen,
+                smeltingBookOpen, smeltingFilterOpen, recipes);
         }
         // action = INIT (0)
         sizeOfRecipes = ByteBufUtils.readVarInt(buf);
@@ -28,7 +31,8 @@ public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
         for (int i = 0; i < sizeOfRecipes; i++) {
             allRecipes[i] = ByteBufUtils.readVarInt(buf);
         }
-        return new UnlockRecipesMessage(action, bookOpen, filterOpen, recipes, allRecipes);
+        return new UnlockRecipesMessage(action, bookOpen, filterOpen,
+            smeltingBookOpen, smeltingFilterOpen, recipes, allRecipes);
     }
 
     @Override
@@ -36,6 +40,8 @@ public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
         ByteBufUtils.writeVarInt(buf, message.getAction());
         buf.writeBoolean(message.isBookOpen());
         buf.writeBoolean(message.isFilterOpen());
+        buf.writeBoolean(message.isSmeltingBookOpen());
+        buf.writeBoolean(message.isSmeltingFilterOpen());
         ByteBufUtils.writeVarInt(buf, message.getRecipes().length);
         for (int recipe : message.getRecipes()) {
             ByteBufUtils.writeVarInt(buf, recipe);

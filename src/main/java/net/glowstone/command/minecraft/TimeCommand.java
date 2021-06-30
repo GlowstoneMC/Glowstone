@@ -12,7 +12,7 @@ import org.bukkit.util.StringUtil;
 public class TimeCommand extends GlowVanillaCommand {
 
     private static final List<String> SUBCOMMANDS = Arrays.asList("set", "add");
-    private static final List<String> TIMES = Arrays.asList("day", "night");
+    private static final List<String> TIMES = Arrays.asList("day", "night", "noon", "midnight");
 
     /**
      * Creates the instance for this command.
@@ -24,7 +24,7 @@ public class TimeCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -43,6 +43,10 @@ public class TimeCommand extends GlowVanillaCommand {
                 mod = 1000;
             } else if (value.equals("night")) {
                 mod = 13000;
+            } else if (value.equals("noon")) {
+                mod = 6000;
+            } else if (value.equals("midnight")) {
+                mod = 18000;
             } else {
                 try {
                     mod = Integer.valueOf(value);
@@ -62,6 +66,7 @@ public class TimeCommand extends GlowVanillaCommand {
             }
             sender.sendMessage("Added " + mod + " to the time");
         } else if (subcommand.equals("query")) {
+            //TODO: query subcommand
             String output;
             switch (value.toLowerCase()) {
                 case "gametime":
@@ -90,14 +95,14 @@ public class TimeCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length == 1) {
             return StringUtil
-                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
+                .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
         }
         if (args.length == 2 && args[0].equals("set")) {
             return StringUtil
-                    .copyPartialMatches(args[1], TIMES, new ArrayList<>(TIMES.size()));
+                .copyPartialMatches(args[1], TIMES, new ArrayList<>(TIMES.size()));
         }
         return Collections.emptyList();
     }

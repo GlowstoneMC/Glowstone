@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockSnow extends BlockNeedsAttached {
 
@@ -31,7 +32,7 @@ public class BlockSnow extends BlockNeedsAttached {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         // note: does not emulate certain weird broken Vanilla behaviors,
         // such as placing snow an extra block away from where it should
 
@@ -42,7 +43,7 @@ public class BlockSnow extends BlockNeedsAttached {
             if (data < 6) {
                 state.setRawData((byte) (data + 1));
 
-            // set to snow block if high enough
+                // set to snow block if high enough
             } else {
                 state.setType(Material.SNOW_BLOCK);
             }
@@ -52,10 +53,11 @@ public class BlockSnow extends BlockNeedsAttached {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        if (tool != null && ToolType.SPADE.matches(tool.getType())) {
-            return Arrays.asList(new ItemStack(Material.SNOW_BALL, block.getData() + 1));
+        if (tool != null && ToolType.SHOVEL.matches(tool.getType())) {
+            return Arrays.asList(new ItemStack(Material.SNOWBALL, block.getData() + 1));
         } else {
             return Collections.emptyList();
         }

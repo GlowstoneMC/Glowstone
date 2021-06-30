@@ -2,6 +2,7 @@ package net.glowstone.inventory.crafting;
 
 import java.util.List;
 import lombok.Getter;
+import net.glowstone.block.MaterialUtil;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -15,7 +16,7 @@ import org.bukkit.material.Dye;
  */
 public class GlowBannerMatcher extends ItemMatcher {
 
-    ItemStack result = new ItemStack(Material.BANNER); // Default result
+    ItemStack result = new ItemStack(Material.WHITE_BANNER); // Default result
 
     @Override
     public ItemStack getResult(ItemStack[] matrix) {
@@ -27,14 +28,14 @@ public class GlowBannerMatcher extends ItemMatcher {
             if (item == null) {
                 continue;
             }
-            if (item.getType() == Material.BANNER) {
+            if (MaterialUtil.BANNERS.contains(item.getType())) {
                 if (banner != null) {
                     return null; // Multiple banners found
                 }
                 banner = item;
                 continue;
             }
-            if (item.getType() == Material.INK_SACK) {
+            if (MaterialUtil.DYES.contains(item.getType())) {
                 DyeColor itemColor = ((Dye) item.getData()).getColor();
                 if (color != null && itemColor != color) {
                     return null; // Can't have multiple colors
@@ -55,11 +56,11 @@ public class GlowBannerMatcher extends ItemMatcher {
                         continue; // Ignore blanks
                     }
 
-                    if (item.getType() == Material.BANNER) {
+                    if (MaterialUtil.BANNERS.contains(item.getType())) {
                         continue; // Banner is already checked
                     }
 
-                    if (item.getType() == Material.INK_SACK) {
+                    if (MaterialUtil.DYES.contains(item.getType())) {
                         if (foundDye) {
                             continue recipe; // Can't have multiple dyes
                         }
@@ -92,10 +93,10 @@ public class GlowBannerMatcher extends ItemMatcher {
                 for (int i = 0; i < 9; i++) {
                     boolean hasValue = recipe.getValues()[i] == '#';
                     ItemStack item = matrix[i];
-                    if (hasValue && item != null && item.getType() == Material.INK_SACK) {
+                    if (hasValue && item != null && MaterialUtil.DYES.contains(item.getType())) {
                         continue;
                     }
-                    if (!hasValue && (item == null || item.getType() == Material.BANNER)) {
+                    if (!hasValue && (item == null || MaterialUtil.BANNERS.contains(item.getType()))) {
                         continue; // Allow banner and blanks
                     }
                     continue recipe; // Non-recipe item found or no dye where dye should be
@@ -123,10 +124,10 @@ public class GlowBannerMatcher extends ItemMatcher {
         BOTTOM_HALF("   ", "###", "###"),
         BRICK(Material.BRICK),
         CIRCLE("   ", " # ", "   "),
-        CREEPER(Material.SKULL_ITEM, (short) 4),
+        CREEPER(Material.CREEPER_HEAD),
         CURLY_BORDER(Material.VINE),
         DIAGONAL_CROSS("# #", " # ", "# #"),
-        FLOWER(Material.RED_ROSE, (short) 8),
+        FLOWER(Material.OXEYE_DAISY),
         GRADIENT("# #", " # ", " # "),
         GRADIENT_UP(" # ", " # ", "# #"),
         LEFT_HALF("## ", "## ", "## "),
@@ -135,7 +136,7 @@ public class GlowBannerMatcher extends ItemMatcher {
         RHOMBUS(" # ", "# #", " # "),
         SAW_BOTTOM("   ", "# #", " # "),
         SAW_TOP(" # ", "# #", "   "),
-        SKULL(Material.SKULL_ITEM, (short) 1),
+        SKULL(Material.WITHER_SKELETON_SKULL),
         STRIPES("# #", "# #", "   "),
         SQUARE_BOTTOM_LEFT("   ", "   ", "#  "),
         SQUARE_BOTTOM_RIGHT("   ", "   ", "  #"),

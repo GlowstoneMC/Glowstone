@@ -74,9 +74,7 @@ public class EntityDecorator extends BlockPopulator {
             double x = radius * Math.sin(angle) + centerX;
             double z = radius * Math.cos(angle) + centerZ;
             Block block = world.getHighestBlockAt(new Location(world, x, 0, z));
-            if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER
-                || block.getType() == Material.LAVA
-                || block.getType() == Material.STATIONARY_LAVA) {
+            if (block.getType() == Material.WATER || block.getType() == Material.LAVA) {
                 i--;
                 attempts--;
                 continue;

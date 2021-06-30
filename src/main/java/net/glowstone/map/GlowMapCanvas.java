@@ -28,22 +28,22 @@ public final class GlowMapCanvas implements MapCanvas {
     private MapCursorCollection cursors = new MapCursorCollection();
     private byte[] base;
 
+    protected GlowMapCanvas(MapView mapView) {
+        this.mapView = mapView;
+    }
+
     /**
      * Creates a new GlowMapCanvas for the given {@link MapView} and applies all updates seen by the
      * given player.
      *
      * @param mapView The {@link MapView} to associate with this canvas and render
-     * @param player The player to pass to {@link MapRenderer#render(MapView, MapCanvas, Player)}
+     * @param player  The player to pass to {@link MapRenderer#render(MapView, MapCanvas, Player)}
      * @return a new, rendered GlowMapCanvas
      */
     public static GlowMapCanvas createAndRender(MapView mapView, Player player) {
         GlowMapCanvas out = new GlowMapCanvas(mapView);
         out.update(player);
         return out;
-    }
-
-    protected GlowMapCanvas(MapView mapView) {
-        this.mapView = mapView;
     }
 
     /**
@@ -106,6 +106,6 @@ public final class GlowMapCanvas implements MapCanvas {
      */
     public Section toSection() {
         return new Section(
-                MAP_SIZE, MAP_SIZE, mapView.getCenterX(), mapView.getCenterZ(), buffer.clone());
+            MAP_SIZE, MAP_SIZE, mapView.getCenterX(), mapView.getCenterZ(), buffer.clone());
     }
 }

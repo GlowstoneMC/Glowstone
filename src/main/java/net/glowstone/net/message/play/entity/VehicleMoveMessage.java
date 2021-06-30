@@ -16,10 +16,10 @@ public class VehicleMoveMessage implements Message {
     /**
      * Creates a message.
      *
-     * @param x the X coordinate
-     * @param y the Y coordinate
-     * @param z the Z coordinate
-     * @param yaw the yaw angle
+     * @param x     the X coordinate
+     * @param y     the Y coordinate
+     * @param z     the Z coordinate
+     * @param yaw   the yaw angle
      * @param pitch the pitch angle
      */
     public VehicleMoveMessage(double x, double y, double z, float yaw, float pitch) {

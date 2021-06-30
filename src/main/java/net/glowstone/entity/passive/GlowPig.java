@@ -2,6 +2,8 @@ package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -17,12 +19,19 @@ import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowPig extends GlowAnimal implements Pig {
 
-    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT_ITEM,
-            Material.POTATO_ITEM,
-            Material.BEETROOT);
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT,
+        Material.POTATO,
+        Material.BEETROOT);
+    @Getter
+    @Setter
+    private int boostTicks;
+    @Getter
+    @Setter
+    private int currentBoostTicks;
 
     public GlowPig(Location location) {
         super(location, EntityType.PIG, 10);
@@ -37,6 +46,11 @@ public class GlowPig extends GlowAnimal implements Pig {
     @Override
     public void setSaddle(boolean hasSaddle) {
         metadata.set(MetadataIndex.PIG_SADDLE, hasSaddle);
+    }
+
+    @Override
+    public @NotNull Material getSteerMaterial() {
+        return Material.CARROT_ON_A_STICK;
     }
 
     @Override
@@ -79,7 +93,7 @@ public class GlowPig extends GlowAnimal implements Pig {
     }
 
     @Override
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
         if (!DamageCause.LIGHTNING.equals(cause)) {
             super.damage(amount, source, cause);
             return;

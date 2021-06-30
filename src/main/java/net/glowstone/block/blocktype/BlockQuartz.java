@@ -11,12 +11,13 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockQuartz extends BlockNeedsTool {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         if (holding.getDurability() > 1) {
@@ -40,6 +41,7 @@ public class BlockQuartz extends BlockNeedsTool {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         //TODO use MaterialData instead of magic value if possible
@@ -48,7 +50,7 @@ public class BlockQuartz extends BlockNeedsTool {
     }
 
     @Override
-    protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
+    public MaterialMatcher getNeededMiningTool(GlowBlock block) {
         return ToolType.PICKAXE;
     }
 }

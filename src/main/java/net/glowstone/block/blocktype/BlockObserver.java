@@ -21,6 +21,7 @@ public class BlockObserver extends BlockDirectional {
 
     /**
      * Returns the direction the given block is facing, if it's an observer, or null otherwise.
+     *
      * @param block a block
      * @return the direction the block is facing, or null if the block isn't an observer
      */
@@ -34,7 +35,7 @@ public class BlockObserver extends BlockDirectional {
 
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
-        Material oldType, byte oldData, Material newType, byte newData) {
+                                   Material oldType, byte oldData, Material newType, byte newData) {
         byte data = (byte) (block.getData() & ~(1 << POWERED_MASK));
         if (data != block.getData()) {
             return;

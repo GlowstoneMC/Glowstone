@@ -1,37 +1,51 @@
 package net.glowstone.entity.projectile;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.blocktype.BlockTnt;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowArrow extends GlowProjectile implements Arrow {
 
-    /** How many ticks an arrow lasts when stuck in a block. */
+    /**
+     * How many ticks an arrow lasts when stuck in a block.
+     */
     private static final int TICKS_TO_LIVE_ON_GROUND = 20 * 60;
-    private volatile PickupStatus customPickupStatus = null;
+    /**
+     * How long an entity burns after being shot with a burning arrow.
+     */
+    private static final int TARGET_BURN_TICKS = 100;
     private final Arrow.Spigot spigot = new GlowArrow.Spigot();
+    private volatile PickupStatus customPickupStatus = null;
     @Getter
     @Setter
     private int knockbackStrength;
     @Getter
     @Setter
     private short life;
-    /**
-     * How long an entity burns after being shot with a burning arrow.
-     */
-    private static final int TARGET_BURN_TICKS = 100;
+    @Getter
+    @Setter
+    private double damage;
 
     /**
      * Creates an arrow entity.
@@ -50,11 +64,9 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     protected void pulsePhysics() {
         super.pulsePhysics();
         if (!isInBlock()) {
-            if (isTouchingMaterial(Material.WATER)
-                    || isTouchingMaterial(Material.STATIONARY_WATER)) {
+            if (isTouchingMaterial(Material.WATER)) {
                 setFireTicks(0);
-            } else if (isTouchingMaterial(Material.LAVA)
-                    || isTouchingMaterial(Material.STATIONARY_LAVA)) {
+            } else if (isTouchingMaterial(Material.LAVA)) {
                 setFireTicks(Integer.MAX_VALUE);
             }
         }
@@ -84,11 +96,22 @@ public class GlowArrow extends GlowProjectile implements Arrow {
             case TNT:
                 BlockTnt.igniteBlock(block, false);
                 break;
-            case WOOD_BUTTON:
+            case OAK_BUTTON:
+            case DARK_OAK_BUTTON:
+            case ACACIA_BUTTON:
+            case BIRCH_BUTTON:
+            case JUNGLE_BUTTON:
+            case SPRUCE_BUTTON:
             case STONE_BUTTON:
-            case WOOD_PLATE:
-            case STONE_PLATE:
-            case GOLD_PLATE:
+            case OAK_PRESSURE_PLATE:
+            case DARK_OAK_PRESSURE_PLATE:
+            case ACACIA_PRESSURE_PLATE:
+            case BIRCH_PRESSURE_PLATE:
+            case JUNGLE_PRESSURE_PLATE:
+            case SPRUCE_PRESSURE_PLATE:
+            case STONE_PRESSURE_PLATE:
+            case LIGHT_WEIGHTED_PRESSURE_PLATE:
+            case HEAVY_WEIGHTED_PRESSURE_PLATE:
             case TRIPWIRE:
                 // TODO: Becomes powered as long as arrow is stuck
             default:
@@ -99,13 +122,13 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     public void collide(LivingEntity entity) {
-        double damage = spigot.getDamage();
+        double damage = getDamage();
         ProjectileSource shooter = getShooter();
         if (isCritical()) {
             damage += 1.0;
         }
         entity.damage(damage, shooter instanceof Entity ? (Entity) shooter : null,
-                EntityDamageEvent.DamageCause.PROJECTILE);
+            EntityDamageEvent.DamageCause.PROJECTILE);
         // Burning arrow ignites target, but doesn't stack if target is already on fire.
         if (getFireTicks() > 0 && entity.getFireTicks() < TARGET_BURN_TICKS) {
             entity.setFireTicks(TARGET_BURN_TICKS);
@@ -117,7 +140,17 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.ARROW;
+        return EntityNetworkUtil.getObjectId(EntityType.ARROW);
+    }
+
+    @Override
+    public int getPierceLevel() {
+        return 0;
+    }
+
+    @Override
+    public void setPierceLevel(int i) {
+
     }
 
     @Override
@@ -134,13 +167,30 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     public PickupStatus getPickupStatus() {
         PickupStatus customPickupStatus = this.customPickupStatus;
         return customPickupStatus != null ? customPickupStatus :
-                getShooter() instanceof Monster ? PickupStatus.DISALLOWED :
+            getShooter() instanceof Monster ? PickupStatus.DISALLOWED :
                 PickupStatus.ALLOWED;
     }
 
     @Override
     public void setPickupStatus(PickupStatus pickupStatus) {
         customPickupStatus = pickupStatus;
+    }
+
+    @Override
+    public boolean isShotFromCrossbow() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setShotFromCrossbow(boolean b) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public @NotNull ItemStack getItemStack() {
+        return new ItemStack(Material.ARROW);
     }
 
     @Override
@@ -161,9 +211,66 @@ public class GlowArrow extends GlowProjectile implements Arrow {
         return spigot;
     }
 
+    @Override
+    public @NotNull PotionData getBasePotionData() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setBasePotionData(@NotNull PotionData potionData) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public @NotNull Color getColor() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setColor(@NotNull Color color) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean hasCustomEffects() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public @NotNull List<PotionEffect> getCustomEffects() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean addCustomEffect(@NotNull PotionEffect potionEffect, boolean b) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean removeCustomEffect(@NotNull PotionEffectType potionEffectType) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean hasCustomEffect(@Nullable PotionEffectType potionEffectType) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void clearCustomEffects() {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
     private class Spigot extends Arrow.Spigot {
-        @Getter
-        @Setter
-        private volatile double damage;
     }
 }

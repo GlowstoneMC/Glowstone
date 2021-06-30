@@ -85,7 +85,7 @@ import net.glowstone.util.config.ServerConfig.Key;
 public class RegionFile {
 
     private static final boolean COMPRESSION_ENABLED =
-            ((GlowServer) ServerProvider.getServer()).getConfig()
+        ((GlowServer) ServerProvider.getServer()).getConfig()
             .getBoolean(Key.REGION_COMPRESSION);
 
     private static final byte VERSION_GZIP = 1;
@@ -99,9 +99,9 @@ public class RegionFile {
     private static final byte[] emptySector = new byte[SECTOR_BYTES];
     private final int[] offsets;
     private final int[] chunkTimestamps;
-    private RandomAccessFile file;
-    private BitSet sectorsUsed;
     private final AtomicInteger sizeDelta = new AtomicInteger();
+    private final RandomAccessFile file;
+    private final BitSet sectorsUsed;
     /**
      * Returns the modification timestamp of the region file when it was first opened by this
      * instance, or zero if this instance created the file. The timestamp is in milliseconds since
@@ -145,8 +145,8 @@ public class RegionFile {
                 // if the file size is under 8KB, grow it
                 sizeDelta.set(2 * SECTOR_BYTES - initialLength);
                 GlowServer.logger.warning(
-                        "Region \"" + path + "\" under 8K: " + initialLength + " increasing by " + (
-                                2 * SECTOR_BYTES - initialLength));
+                    "Region \"" + path + "\" under 8K: " + initialLength + " increasing by " + (
+                        2 * SECTOR_BYTES - initialLength));
 
                 for (long i = 0; i < sizeDelta.get(); ++i) {
                     file.write(0);
@@ -155,9 +155,9 @@ public class RegionFile {
                 // if the file size is not a multiple of 4KB, grow it
                 sizeDelta.set(initialLength & (SECTOR_BYTES - 1));
                 GlowServer.logger.warning(
-                        "Region \"" + path + "\" not aligned: " + initialLength + " increasing by "
-                                + (
-                                SECTOR_BYTES - (initialLength & (SECTOR_BYTES - 1))));
+                    "Region \"" + path + "\" not aligned: " + initialLength + " increasing by "
+                        + (
+                        SECTOR_BYTES - (initialLength & (SECTOR_BYTES - 1))));
 
                 for (long i = 0; i < sizeDelta.get(); ++i) {
                     file.write(0);
@@ -196,9 +196,9 @@ public class RegionFile {
                 sectorsUsed.set(startSector, startSector + numSectors + 1);
             } else if (offset != 0) {
                 GlowServer.logger.warning(
-                        "Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> "
-                                + startSector
-                                + "," + numSectors + " does not fit");
+                    "Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> "
+                        + startSector
+                        + "," + numSectors + " does not fit");
             }
         }
 
@@ -239,7 +239,7 @@ public class RegionFile {
         int numSectors = offset & 0xFF;
         if (sectorNumber + numSectors > totalSectors) {
             throw new IOException(
-                    "Invalid sector: " + sectorNumber + "+" + numSectors + " > " + totalSectors);
+                "Invalid sector: " + sectorNumber + "+" + numSectors + " > " + totalSectors);
         }
 
         file.seek(sectorNumber * SECTOR_BYTES);
@@ -256,7 +256,7 @@ public class RegionFile {
             file.read(data);
             try {
                 return new DataInputStream(new BufferedInputStream(
-                        new GZIPInputStream(new ByteArrayInputStream(data), 2048)));
+                    new GZIPInputStream(new ByteArrayInputStream(data), 2048)));
             } catch (ZipException e) {
                 if (e.getMessage().equals("Not in GZIP format")) {
                     GlowServer.logger.info("Incorrect region version, switching to zlib...");
@@ -276,7 +276,7 @@ public class RegionFile {
 
     private DataInputStream getZlibInputStream(byte[] data) {
         return new DataInputStream(new BufferedInputStream(new InflaterInputStream(
-                new ByteArrayInputStream(data), new Inflater(), 2048)));
+            new ByteArrayInputStream(data), new Inflater(), 2048)));
     }
 
     /**
@@ -285,12 +285,12 @@ public class RegionFile {
      * @param x the chunk X coordinate within the region
      * @param z the chunk Z coordinate within the region
      * @return a {@link DataOutputStream}, backed by memory, that can prepare the chunk for writing
-     *         to disk.
+     * to disk.
      */
     public DataOutputStream getChunkDataOutputStream(int x, int z) {
         checkBounds(x, z);
         Deflater deflater = new Deflater(
-                COMPRESSION_ENABLED ? Deflater.BEST_SPEED : Deflater.NO_COMPRESSION);
+            COMPRESSION_ENABLED ? Deflater.BEST_SPEED : Deflater.NO_COMPRESSION);
         deflater.setStrategy(Deflater.HUFFMAN_ONLY);
         DeflaterOutputStream dos = new DeflaterOutputStream(new ChunkBuffer(x, z), deflater, 2048) {
             @Override

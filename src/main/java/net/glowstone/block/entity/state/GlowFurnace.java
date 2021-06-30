@@ -17,7 +17,7 @@ public class GlowFurnace extends GlowContainer implements Furnace {
     private short cookTime;
 
     /**
-     /**
+     * /**
      * Creates an instance for the given block.
      *
      * @param block the furnace block
@@ -31,9 +31,9 @@ public class GlowFurnace extends GlowContainer implements Furnace {
     /**
      * Creates an instance for the given block.
      *
-     * @param block the furnace block
+     * @param block    the furnace block
      * @param burnTime the number of ticks before this furnace must consume more fuel, or 0 if not
-     *         burning
+     *                 burning
      * @param cookTime the number of ticks the current item has been cooking
      */
     public GlowFurnace(GlowBlock block, short burnTime, short cookTime) {
@@ -44,6 +44,27 @@ public class GlowFurnace extends GlowContainer implements Furnace {
 
     private FurnaceEntity getBlockEntity() {
         return (FurnaceEntity) getBlock().getBlockEntity();
+    }
+
+    // TODO: furnace cook API
+    @Override
+    public int getCookTimeTotal() {
+        return 0;
+    }
+
+    @Override
+    public void setCookTimeTotal(int cookTimeTotal) {
+
+    }
+
+    @Override
+    public double getCookSpeedMultiplier() {
+        return 0;
+    }
+
+    @Override
+    public void setCookSpeedMultiplier(double multiplier) {
+
     }
 
     @Override

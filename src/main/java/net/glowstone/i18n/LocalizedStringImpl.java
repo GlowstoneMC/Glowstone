@@ -37,7 +37,7 @@ public class LocalizedStringImpl implements LocalizedString {
      * Wraps {@link MessageFormat#setFormatByArgumentIndex}.
      *
      * @param argumentIndex the argument index
-     * @param format the new format
+     * @param format        the new format
      * @return this
      */
     LocalizedStringImpl setFormatByArgumentIndex(int argumentIndex, Format format) {

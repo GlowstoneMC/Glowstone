@@ -2,8 +2,9 @@ package net.glowstone.entity.projectile;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.entity.EntityNetworkUtil;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.WitherSkull;
 
 public class GlowWitherSkull extends GlowFireball implements WitherSkull {
@@ -14,9 +15,9 @@ public class GlowWitherSkull extends GlowFireball implements WitherSkull {
     public GlowWitherSkull(Location location) {
         super(location);
     }
-    
+
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.WITHER_SKULL;
+        return EntityNetworkUtil.getObjectId(EntityType.WITHER_SKULL);
     }
 }

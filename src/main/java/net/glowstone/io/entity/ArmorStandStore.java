@@ -15,6 +15,14 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
         super(GlowArmorStand.class, EntityType.ARMOR_STAND);
     }
 
+    private static List<Float> toFloatList(EulerAngle angle) {
+        return Arrays.asList(
+            (float) Math.toDegrees(angle.getX()),
+            (float) Math.toDegrees(angle.getY()),
+            (float) Math.toDegrees(angle.getZ())
+        );
+    }
+
     @Override
     public GlowArmorStand createEntity(Location location, CompoundTag compound) {
         return new GlowArmorStand(location);
@@ -59,21 +67,13 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
         tag.putCompound("Pose", pose);
     }
 
-    private static List<Float> toFloatList(EulerAngle angle) {
-        return Arrays.asList(
-            (float) Math.toDegrees(angle.getX()),
-            (float) Math.toDegrees(angle.getY()),
-            (float) Math.toDegrees(angle.getZ())
-        );
-    }
-
     private EulerAngle readSafeAngle(CompoundTag tag, @NonNls String key) {
         final EulerAngle[] out = {EulerAngle.ZERO};
         tag.readFloatList(key, list -> {
             if (list.size() >= 3) {
                 out[0] = new EulerAngle(
-                        Math.toRadians(list.get(0)), Math.toRadians(list.get(1)),
-                        Math.toRadians(list.get(2)));
+                    Math.toRadians(list.get(0)), Math.toRadians(list.get(1)),
+                    Math.toRadians(list.get(2)));
             }
         });
         return out[0];

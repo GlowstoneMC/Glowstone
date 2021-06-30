@@ -1,17 +1,12 @@
 package net.glowstone.entity.monster;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.UUID;
-
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.junit.Assert;
 import org.mockito.Mockito;
 

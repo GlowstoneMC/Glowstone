@@ -30,7 +30,7 @@ final class GlowBanEntry implements BaseEntry, BanEntry, Cloneable {
     private String reason;
 
     GlowBanEntry(GlowBanList list, String target, String reason, Date created, Date expires,
-        String source) {
+                 String source) {
         if (reason == null) {
             reason = "Banned";
         }

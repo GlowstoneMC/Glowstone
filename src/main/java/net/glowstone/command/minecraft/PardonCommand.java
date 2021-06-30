@@ -19,7 +19,7 @@ public class PardonCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -33,7 +33,7 @@ public class PardonCommand extends GlowVanillaCommand {
         server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
             if (ex != null) {
                 new LocalizedStringImpl("pardon.exception", commandMessages.getResourceBundle())
-                        .sendInColor(ChatColor.RED, sender, name, ex.getMessage());
+                    .sendInColor(ChatColor.RED, sender, name, ex.getMessage());
                 ex.printStackTrace();
                 return;
             }
@@ -41,12 +41,12 @@ public class PardonCommand extends GlowVanillaCommand {
             String exactName = player.getName();
             if (!banList.isBanned(exactName)) {
                 new LocalizedStringImpl("pardon.not-banned", commandMessages.getResourceBundle())
-                        .sendInColor(ChatColor.RED, sender, exactName);
+                    .sendInColor(ChatColor.RED, sender, exactName);
                 return;
             }
             banList.pardon(exactName);
             new LocalizedStringImpl("pardon.done", commandMessages.getResourceBundle())
-                    .send(sender, exactName);
+                .send(sender, exactName);
         });
         // todo: asynchronous command callbacks?
         return true;

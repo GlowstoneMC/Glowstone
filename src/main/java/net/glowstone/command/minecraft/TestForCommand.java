@@ -27,7 +27,7 @@ public class TestForCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -45,7 +45,7 @@ public class TestForCommand extends GlowVanillaCommand {
 
             if (entities.length == 0) {
                 commandMessages.getGeneric(GenericMessage.NO_MATCHES)
-                        .sendInColor(ChatColor.RED, sender, name);
+                    .sendInColor(ChatColor.RED, sender, name);
                 return false;
             }
         } else {
@@ -53,15 +53,15 @@ public class TestForCommand extends GlowVanillaCommand {
             GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(args[0]);
             if (player == null) {
                 commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                        .sendInColor(ChatColor.RED, sender, name);
+                    .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
-                entities = new Entity[]{player};
+                entities = new Entity[] {player};
             }
         }
 
         LocalizedStringImpl foundMessage = new LocalizedStringImpl("testfor.found",
-                commandMessages.getResourceBundle());
+            commandMessages.getResourceBundle());
         if (args.length >= 2) {
             String data = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
             CompoundTag tag;
@@ -69,12 +69,12 @@ public class TestForCommand extends GlowVanillaCommand {
                 tag = Mojangson.parseCompound(data);
             } catch (MojangsonParseException e) {
                 commandMessages.getGeneric(GenericMessage.INVALID_JSON)
-                        .sendInColor(ChatColor.RED, sender, e.getMessage());
+                    .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
             LocalizedStringImpl wrongDataMessage =
-                    new LocalizedStringImpl("testfor.wrong-data",
-                            commandMessages.getResourceBundle());
+                new LocalizedStringImpl("testfor.wrong-data",
+                    commandMessages.getResourceBundle());
             for (Entity entity : entities) {
                 if (entity instanceof GlowEntity) {
                     CompoundTag entityTag = new CompoundTag();
@@ -83,7 +83,7 @@ public class TestForCommand extends GlowVanillaCommand {
                         foundMessage.send(sender, CommandUtils.getName(entity));
                     } else {
                         wrongDataMessage.sendInColor(ChatColor.RED, sender,
-                                CommandUtils.getName(entity));
+                            CommandUtils.getName(entity));
                     }
                 }
             }

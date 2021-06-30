@@ -75,19 +75,19 @@ public class ItemBow extends ItemTimedUsage {
                 break;
             default:
                 GlowServer.logger.log(Level.SEVERE, () ->
-                        String.format("Attempt to fire %s from a bow", arrowType));
+                    String.format("Attempt to fire %s from a bow", arrowType));
 
         }
         if (launchedProjectile != null) {
             float chargeFraction = (TICKS_TO_FULLY_CHARGE
                 - Floats.constrainToRange(player.getUsageTime(), 0.0f, TICKS_TO_FULLY_CHARGE))
                 / TICKS_TO_FULLY_CHARGE;
-            EntityShootBowEvent event = EventFactory.getInstance().callEvent(
-                    new EntityShootBowEvent(player, bow, arrow, launchedProjectile, chargeFraction,
-                            consumeArrow));
+            EntityShootBowEvent event =
+                new EntityShootBowEvent(player, bow, arrow, launchedProjectile, chargeFraction);
+            event.setConsumeArrow(consumeArrow);
+            event = EventFactory.getInstance().callEvent(event);
             consumeArrow = event.getConsumeArrow();
             //TODO: Call for Skeleton firing too when implemented
-
             if (event.isCancelled()) {
                 launchedProjectile.remove();
             } else {
@@ -107,9 +107,9 @@ public class ItemBow extends ItemTimedUsage {
                     + (chargeFraction == 1.0
                     && ThreadLocalRandom.current().nextFloat() >= 0.8 ? 1 : 0)
                     * chargeFraction
-                        * (1 + 0.25 * bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE)));
+                    * (1 + 0.25 * bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE)));
                 launchedProjectile.setVelocity(player.getEyeLocation().getDirection().multiply(
-                        Math.max(5, chargeFraction * MAX_SPEED)));
+                    Math.max(5, chargeFraction * MAX_SPEED)));
 
                 if (bow.containsEnchantment(Enchantment.ARROW_FIRE)) {
                     // Arrow will burn as long as it's in flight, unless extinguished by water
@@ -118,10 +118,10 @@ public class ItemBow extends ItemTimedUsage {
                 // Plugin may change projectile to non arrow.
                 if (launchedProjectile instanceof Arrow) {
                     Arrow launchedArrow = (Arrow) launchedProjectile;
-                    launchedArrow.spigot().setDamage(damage);
+                    launchedArrow.setDamage(damage);
                     launchedArrow
-                            .setKnockbackStrength(bow
-                                    .getEnchantmentLevel(Enchantment.ARROW_KNOCKBACK));
+                        .setKnockbackStrength(bow
+                            .getEnchantmentLevel(Enchantment.ARROW_KNOCKBACK));
                     // 20% crit chance
                     if (ThreadLocalRandom.current().nextDouble() < 0.2) {
                         launchedArrow.setCritical(true);

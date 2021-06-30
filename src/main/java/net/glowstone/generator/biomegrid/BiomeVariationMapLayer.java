@@ -1,32 +1,32 @@
 package net.glowstone.generator.biomegrid;
 
+import static org.bukkit.block.Biome.BADLANDS;
+import static org.bukkit.block.Biome.BADLANDS_PLATEAU;
 import static org.bukkit.block.Biome.BIRCH_FOREST;
 import static org.bukkit.block.Biome.BIRCH_FOREST_HILLS;
+import static org.bukkit.block.Biome.DARK_FOREST;
 import static org.bukkit.block.Biome.DEEP_OCEAN;
 import static org.bukkit.block.Biome.DESERT;
 import static org.bukkit.block.Biome.DESERT_HILLS;
-import static org.bukkit.block.Biome.EXTREME_HILLS;
-import static org.bukkit.block.Biome.EXTREME_HILLS_WITH_TREES;
 import static org.bukkit.block.Biome.FOREST;
-import static org.bukkit.block.Biome.FOREST_HILLS;
-import static org.bukkit.block.Biome.ICE_FLATS;
-import static org.bukkit.block.Biome.ICE_MOUNTAINS;
+import static org.bukkit.block.Biome.GIANT_TREE_TAIGA;
+import static org.bukkit.block.Biome.GIANT_TREE_TAIGA_HILLS;
 import static org.bukkit.block.Biome.JUNGLE;
 import static org.bukkit.block.Biome.JUNGLE_HILLS;
-import static org.bukkit.block.Biome.MESA;
-import static org.bukkit.block.Biome.MESA_CLEAR_ROCK;
-import static org.bukkit.block.Biome.MESA_ROCK;
+import static org.bukkit.block.Biome.MOUNTAINS;
 import static org.bukkit.block.Biome.OCEAN;
 import static org.bukkit.block.Biome.PLAINS;
-import static org.bukkit.block.Biome.REDWOOD_TAIGA;
-import static org.bukkit.block.Biome.REDWOOD_TAIGA_HILLS;
-import static org.bukkit.block.Biome.ROOFED_FOREST;
 import static org.bukkit.block.Biome.SAVANNA;
-import static org.bukkit.block.Biome.SAVANNA_ROCK;
+import static org.bukkit.block.Biome.SAVANNA_PLATEAU;
+import static org.bukkit.block.Biome.SNOWY_MOUNTAINS;
+import static org.bukkit.block.Biome.SNOWY_TAIGA;
+import static org.bukkit.block.Biome.SNOWY_TAIGA_HILLS;
+import static org.bukkit.block.Biome.SNOWY_TUNDRA;
 import static org.bukkit.block.Biome.TAIGA;
-import static org.bukkit.block.Biome.TAIGA_COLD;
-import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
 import static org.bukkit.block.Biome.TAIGA_HILLS;
+import static org.bukkit.block.Biome.WOODED_BADLANDS_PLATEAU;
+import static org.bukkit.block.Biome.WOODED_HILLS;
+import static org.bukkit.block.Biome.WOODED_MOUNTAINS;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,26 +40,26 @@ public class BiomeVariationMapLayer extends MapLayer {
 
     static {
         VARIATIONS.put(GlowBiome.getId(DESERT), new int[]{GlowBiome.getId(DESERT_HILLS)});
-        VARIATIONS.put(GlowBiome.getId(FOREST), new int[]{GlowBiome.getId(FOREST_HILLS)});
+        VARIATIONS.put(GlowBiome.getId(FOREST), new int[]{GlowBiome.getId(WOODED_HILLS)});
         VARIATIONS
             .put(GlowBiome.getId(BIRCH_FOREST), new int[]{GlowBiome.getId(BIRCH_FOREST_HILLS)});
-        VARIATIONS.put(GlowBiome.getId(ROOFED_FOREST), new int[]{GlowBiome.getId(PLAINS)});
+        VARIATIONS.put(GlowBiome.getId(DARK_FOREST), new int[]{GlowBiome.getId(PLAINS)});
         VARIATIONS.put(GlowBiome.getId(TAIGA), new int[]{GlowBiome.getId(TAIGA_HILLS)});
         VARIATIONS
-            .put(GlowBiome.getId(REDWOOD_TAIGA), new int[]{GlowBiome.getId(REDWOOD_TAIGA_HILLS)});
-        VARIATIONS.put(GlowBiome.getId(TAIGA_COLD), new int[]{GlowBiome.getId(TAIGA_COLD_HILLS)});
+            .put(GlowBiome.getId(GIANT_TREE_TAIGA), new int[]{GlowBiome.getId(GIANT_TREE_TAIGA_HILLS)});
+        VARIATIONS.put(GlowBiome.getId(SNOWY_TAIGA), new int[]{GlowBiome.getId(SNOWY_TAIGA_HILLS)});
         VARIATIONS.put(GlowBiome.getId(PLAINS),
             new int[]{GlowBiome.getId(FOREST), GlowBiome.getId(FOREST),
-                GlowBiome.getId(FOREST_HILLS)});
-        VARIATIONS.put(GlowBiome.getId(ICE_FLATS), new int[]{GlowBiome.getId(ICE_MOUNTAINS)});
+                GlowBiome.getId(WOODED_HILLS)});
+        VARIATIONS.put(GlowBiome.getId(SNOWY_TUNDRA), new int[]{GlowBiome.getId(SNOWY_MOUNTAINS)});
         VARIATIONS.put(GlowBiome.getId(JUNGLE), new int[]{GlowBiome.getId(JUNGLE_HILLS)});
         VARIATIONS.put(GlowBiome.getId(OCEAN), new int[]{GlowBiome.getId(DEEP_OCEAN)});
-        VARIATIONS.put(GlowBiome.getId(EXTREME_HILLS),
-            new int[]{GlowBiome.getId(EXTREME_HILLS_WITH_TREES)});
-        VARIATIONS.put(GlowBiome.getId(SAVANNA), new int[]{GlowBiome.getId(SAVANNA_ROCK)});
-        VARIATIONS.put(GlowBiome.getId(MESA_ROCK), new int[]{GlowBiome.getId(MESA)});
-        VARIATIONS.put(GlowBiome.getId(MESA_CLEAR_ROCK), new int[]{GlowBiome.getId(MESA)});
-        VARIATIONS.put(GlowBiome.getId(MESA), new int[]{GlowBiome.getId(MESA)});
+        VARIATIONS.put(GlowBiome.getId(MOUNTAINS),
+            new int[]{GlowBiome.getId(WOODED_MOUNTAINS)});
+        VARIATIONS.put(GlowBiome.getId(SAVANNA), new int[]{GlowBiome.getId(SAVANNA_PLATEAU)});
+        VARIATIONS.put(GlowBiome.getId(WOODED_BADLANDS_PLATEAU), new int[]{GlowBiome.getId(BADLANDS)});
+        VARIATIONS.put(GlowBiome.getId(BADLANDS_PLATEAU), new int[]{GlowBiome.getId(BADLANDS)});
+        VARIATIONS.put(GlowBiome.getId(BADLANDS), new int[]{GlowBiome.getId(BADLANDS)});
     }
 
     private final MapLayer belowLayer;

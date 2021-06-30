@@ -2,17 +2,21 @@ package net.glowstone.entity.monster;
 
 import lombok.Getter;
 import net.glowstone.entity.meta.MetadataIndex;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
 import org.bukkit.material.MaterialData;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEnderman extends GlowMonster implements Enderman {
 
+    // TODO: 1.13 block data
     @Getter
-    private MaterialData carriedMaterial = new MaterialData(Material.AIR);
+    private BlockData carriedBlock = Bukkit.getServer().createBlockData(Material.AIR);
 
     public GlowEnderman(Location loc) {
         super(loc, EntityType.ENDERMAN, 40);
@@ -25,14 +29,23 @@ public class GlowEnderman extends GlowMonster implements Enderman {
     }
 
     @Override
-    public void setCarriedMaterial(MaterialData type) {
-        carriedMaterial = type;
+    public @NotNull MaterialData getCarriedMaterial() {
+        return null;
+    }
+
+    @Override
+    public void setCarriedMaterial(@NotNull MaterialData material) {
+
+    }
+
+    public void setCarriedBlock(BlockData type) {
+        carriedBlock = type;
         if (type == null) {
             metadata.set(MetadataIndex.ENDERMAN_BLOCK, 0);
         } else {
             // TODO: store block data. This code appears to be broken (although documented in the
             // protocol): int blockId = type.getItemTypeId() << 4 | type.getData();
-            metadata.set(MetadataIndex.ENDERMAN_BLOCK, type.getItemTypeId());
+            metadata.set(MetadataIndex.ENDERMAN_BLOCK, type.getMaterial().getId());
         }
     }
 
@@ -46,16 +59,16 @@ public class GlowEnderman extends GlowMonster implements Enderman {
 
     @Override
     protected Sound getHurtSound() {
-        return Sound.ENTITY_ENDERMEN_HURT;
+        return Sound.ENTITY_ENDERMAN_HURT;
     }
 
     @Override
     protected Sound getDeathSound() {
-        return Sound.ENTITY_ENDERMEN_DEATH;
+        return Sound.ENTITY_ENDERMAN_DEATH;
     }
 
     @Override
     protected Sound getAmbientSound() {
-        return Sound.ENTITY_ENDERMEN_AMBIENT;
+        return Sound.ENTITY_ENDERMAN_AMBIENT;
     }
 }

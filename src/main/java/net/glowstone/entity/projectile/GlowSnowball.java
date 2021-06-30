@@ -1,16 +1,20 @@
 package net.glowstone.entity.projectile;
 
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.monster.GlowBlaze;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowSnowball extends GlowProjectile implements Snowball {
     private static final double VERTICAL_GRAVITY_ACCEL = -0.03;
@@ -63,6 +67,17 @@ public class GlowSnowball extends GlowProjectile implements Snowball {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.SNOWBALL;
+        return EntityNetworkUtil.getObjectId(EntityType.SNOWBALL);
+    }
+
+    @Override
+    public @NotNull ItemStack getItem() {
+        return new ItemStack(Material.SNOWBALL);
+    }
+
+    @Override
+    public void setItem(@NotNull ItemStack itemStack) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

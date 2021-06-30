@@ -1,0 +1,45 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+          server-id: glowstone-snapshots
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+
+      - name: Maven Build and Deploy
+        run: mvn --batch-mode package deploy -Pbuild-extras
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+
+      - name: "Upload Artifact: Glowstone Server"
+        uses: actions/upload-artifact@v2
+        with:
+          name: Glowstone Server (Java 8)
+          path: target/glowstone.jar
+
+      - name: "Upload Artifact: JavaDoc JAR"
+        uses: actions/upload-artifact@v2
+        with:
+          name: JavaDoc JAR (Java 8)
+          path: target/glowstone-javadoc.jar
+
+      - name: "Upload Artifact: Sources JAR"
+        uses: actions/upload-artifact@v2
+        with:
+          name: Sources JAR (Java 8)
+          path: target/glowstone-sources.jar

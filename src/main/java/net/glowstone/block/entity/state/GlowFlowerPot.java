@@ -5,10 +5,9 @@ import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.FlowerPotEntity;
-import org.bukkit.block.FlowerPot;
 import org.bukkit.material.MaterialData;
 
-public class GlowFlowerPot extends GlowBlockState implements FlowerPot {
+public class GlowFlowerPot extends GlowBlockState {
 
     @Getter
     @Setter

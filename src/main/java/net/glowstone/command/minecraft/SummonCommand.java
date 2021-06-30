@@ -37,7 +37,7 @@ public class SummonCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -62,12 +62,12 @@ public class SummonCommand extends GlowVanillaCommand {
         CompoundTag tag = null;
         if (args.length >= 5) {
             String data = String
-                    .join(" ", new ArrayList<>(Arrays.asList(args)).subList(4, args.length));
+                .join(" ", new ArrayList<>(Arrays.asList(args)).subList(4, args.length));
             try {
                 tag = Mojangson.parseCompound(data);
             } catch (MojangsonParseException e) {
                 commandMessages.getGeneric(GenericMessage.INVALID_JSON)
-                        .sendInColor(ChatColor.RED, sender, e.getMessage());
+                    .sendInColor(ChatColor.RED, sender, e.getMessage());
             }
         }
 
@@ -78,23 +78,23 @@ public class SummonCommand extends GlowVanillaCommand {
         GlowEntity entity;
         if (EntityType.fromName(entityName) != null) {
             entity = (GlowEntity) location.getWorld()
-                    .spawnEntity(location, EntityType.fromName(entityName));
+                .spawnEntity(location, EntityType.fromName(entityName));
         } else {
             Class<? extends GlowEntity> clazz = EntityRegistry.getCustomEntityDescriptor(entityName)
-                    .getEntityClass();
+                .getEntityClass();
             entity = ((GlowWorld) location.getWorld())
-                    .spawn(location, clazz, CreatureSpawnEvent.SpawnReason.CUSTOM);
+                .spawn(location, clazz, CreatureSpawnEvent.SpawnReason.CUSTOM);
         }
         if (tag != null) {
             EntityStorage.load(entity, tag);
         }
         new LocalizedStringImpl("summon.done", commandMessages.getResourceBundle())
-                .send(sender);
+            .send(sender);
         return true;
     }
 
     private boolean checkSummon(CommandSender sender, String type,
-            CommandMessages messages) {
+                                CommandMessages messages) {
         if (type == null) {
             return false;
         }
@@ -117,7 +117,7 @@ public class SummonCommand extends GlowVanillaCommand {
                 sendErrorIfSenderNonNull(sender, messages, canonicalName, "summon.not-impl");
                 return false;
             } else if (!entityType.isSpawnable() && !Summonable.class
-                    .isAssignableFrom(EntityRegistry.getEntity(entityType))) {
+                .isAssignableFrom(EntityRegistry.getEntity(entityType))) {
                 sendErrorIfSenderNonNull(sender, messages, canonicalName, "summon.error");
                 return false;
             } else {
@@ -127,16 +127,17 @@ public class SummonCommand extends GlowVanillaCommand {
     }
 
     private void sendErrorIfSenderNonNull(@Nullable CommandSender sender,
-            @Nullable CommandMessages messages, String entityType, @NonNls String key) {
+                                          @Nullable CommandMessages messages, String entityType,
+                                          @NonNls String key) {
         if (sender != null) {
             new LocalizedStringImpl(key, messages.getResourceBundle())
-                    .sendInColor(ChatColor.RED, sender, entityType);
+                .sendInColor(ChatColor.RED, sender, entityType);
         }
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         Preconditions.checkNotNull(sender, "Sender cannot be null"); // NON-NLS
         Preconditions.checkNotNull(args, "Arguments cannot be null"); // NON-NLS
         Preconditions.checkNotNull(alias, "Alias cannot be null"); // NON-NLS
@@ -145,7 +146,7 @@ public class SummonCommand extends GlowVanillaCommand {
             ArrayList<String> completion = new ArrayList<>();
             for (EntityType type : EntityType.values()) {
                 if (checkSummon(null, type.getName(), null) && type.getName().toLowerCase()
-                        .startsWith(arg)) {
+                    .startsWith(arg)) {
                     completion.add(type.getName());
                 }
             }

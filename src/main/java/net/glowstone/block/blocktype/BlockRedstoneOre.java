@@ -5,8 +5,11 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.ToolType;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.util.Vector;
 
@@ -18,13 +21,15 @@ public class BlockRedstoneOre extends BlockRandomDrops {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
+        BlockData blockData = Bukkit.getServer().createBlockData(Material.REDSTONE_ORE);
+        ((Lightable) blockData).setLit(true);
         EntityChangeBlockEvent changeBlockEvent = new EntityChangeBlockEvent(player, block,
-            Material.GLOWING_REDSTONE_ORE, (byte) 0);
+            blockData);
         EventFactory.getInstance().callEvent(changeBlockEvent);
         if (!changeBlockEvent.isCancelled()) {
             GlowBlockState state = block.getState();
-            state.setType(Material.GLOWING_REDSTONE_ORE);
+            state.setType(Material.REDSTONE_ORE);
             state.update(true);
         }
         return false;

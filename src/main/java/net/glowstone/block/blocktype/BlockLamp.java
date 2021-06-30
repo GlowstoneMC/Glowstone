@@ -9,19 +9,20 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * A redstone lamp.
+ *
  * @author Sam
  */
 public class BlockLamp extends BlockType {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
-        Material oldType, byte oldData, Material newType, byte newData) {
+                                   Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
@@ -30,8 +31,9 @@ public class BlockLamp extends BlockType {
         super.updatePhysicsAfterEvent(me);
         boolean powered = me.isBlockPowered() || me.isBlockIndirectlyPowered();
 
-        if (powered != (me.getType() == Material.REDSTONE_LAMP_ON)) {
-            me.setType(powered ? Material.REDSTONE_LAMP_ON : Material.REDSTONE_LAMP_OFF);
+        if (powered != (me.getType() == Material.REDSTONE_LAMP)) { // 1.13 ON data
+            me.setType(
+                powered ? Material.REDSTONE_LAMP : Material.REDSTONE_LAMP); // 1.13 ON : OFF data
         }
     }
 }

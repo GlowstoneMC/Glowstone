@@ -41,8 +41,9 @@ public class BiomePopulator extends BlockPopulator {
         new TreeDecoration(GenericTree::new, 9)};
     private static final FlowerDecoration[] FLOWERS = {
         new FlowerDecoration(FlowerType.DANDELION, 2), new FlowerDecoration(FlowerType.POPPY, 1)};
-    protected final LakeDecorator waterLakeDecorator = new LakeDecorator(Material.STATIONARY_WATER);
-    protected final LakeDecorator lavaLakeDecorator = new LakeDecorator(Material.STATIONARY_LAVA);
+    // TODO: stationary
+    protected final LakeDecorator waterLakeDecorator = new LakeDecorator(Material.WATER);
+    protected final LakeDecorator lavaLakeDecorator = new LakeDecorator(Material.LAVA);
     protected final DungeonPopulator dungeonPopulator = new DungeonPopulator();
     protected final OrePopulator orePopulator = new OrePopulator();
     protected final UnderwaterDecorator sandPatchDecorator = new UnderwaterDecorator(Material.SAND);
@@ -106,13 +107,13 @@ public class BiomePopulator extends BlockPopulator {
         surfaceCaveDecorator.setAmount(1);
         sandPatchDecorator.setAmount(3);
         sandPatchDecorator.setRadii(7, 2);
-        sandPatchDecorator.setOverridableBlocks(Material.DIRT, Material.GRASS);
+        sandPatchDecorator.setOverridableBlocks(Material.DIRT, Material.GRASS_BLOCK);
         clayPatchDecorator.setAmount(1);
         clayPatchDecorator.setRadii(4, 1);
         clayPatchDecorator.setOverridableBlocks(Material.DIRT);
         gravelPatchDecorator.setAmount(1);
         gravelPatchDecorator.setRadii(6, 2);
-        gravelPatchDecorator.setOverridableBlocks(Material.DIRT, Material.GRASS);
+        gravelPatchDecorator.setOverridableBlocks(Material.DIRT, Material.GRASS_BLOCK);
 
         doublePlantDecorator.setAmount(0);
         treeDecorator.setAmount(Integer.MIN_VALUE);
@@ -153,7 +154,8 @@ public class BiomePopulator extends BlockPopulator {
     }
 
     protected void populateOnGround(World world, Random random, Chunk chunk) {
-        boolean doMobSpawning = ((GlowWorld) world).getGameRuleMap().getBoolean(GameRules.DO_MOB_SPAWNING);
+        boolean doMobSpawning = ((GlowWorld) world).getGameRuleMap()
+                .getBoolean(GameRules.DO_MOB_SPAWNING);
         if (doMobSpawning) {
             for (EntityDecorator entityDecorator : entityDecorators) {
                 entityDecorator.populate(world, random, chunk);

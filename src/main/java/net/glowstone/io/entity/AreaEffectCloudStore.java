@@ -90,10 +90,10 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
             tag.putString(POTION, GlowMetaPotion.dataToString(potion));
         }
         tag.putCompoundList(EFFECTS, entity
-                .getCustomEffects()
-                .stream()
-                .map(GlowMetaPotion::toNbt)
-                .collect(Collectors.toList()));
+            .getCustomEffects()
+            .stream()
+            .map(GlowMetaPotion::toNbt)
+            .collect(Collectors.toList()));
         // TODO: Are ParticleParam1 and ParticleParam2 unused?
     }
 

@@ -20,7 +20,7 @@ public class ItemPoisonousPotato extends ItemFood {
 
         if (Math.random() < 0.6) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.POISON,
-                    TickUtil.secondsToTicks(5), 0), true);
+                TickUtil.secondsToTicks(5), 0), true);
         }
         return true;
     }

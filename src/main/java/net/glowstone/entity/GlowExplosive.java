@@ -17,7 +17,7 @@ public abstract class GlowExplosive extends GlowEntity implements Explosive {
      * Creates a non-incendiary instance.
      *
      * @param location the location
-     * @param yield the explosive strength
+     * @param yield    the explosive strength
      */
     public GlowExplosive(Location location, float yield) {
         super(location);

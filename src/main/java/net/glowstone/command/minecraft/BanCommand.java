@@ -23,7 +23,7 @@ public class BanCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -35,27 +35,27 @@ public class BanCommand extends GlowVanillaCommand {
             server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
                 if (ex != null) {
                     new LocalizedStringImpl("ban.exception", resourceBundle)
-                            .sendInColor(ChatColor.RED, sender, name, ex.getMessage());
+                        .sendInColor(ChatColor.RED, sender, name, ex.getMessage());
                     return;
                 }
                 if (player == null) {
                     commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                            .sendInColor(ChatColor.RED, sender, name);
+                        .sendInColor(ChatColor.RED, sender, name);
                     return;
                 }
                 if (args.length == 1) {
                     Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(),
-                            null, null, null);
+                        null, null, null);
                 } else {
                     StringBuilder reason = new StringBuilder();
                     for (int i = 1; i < args.length; i++) {
                         reason.append(args[i]).append(" ");
                     }
                     Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(),
-                            reason.toString(), null, null);
+                        reason.toString(), null, null);
                 }
                 new LocalizedStringImpl("ban.done", resourceBundle)
-                        .send(sender, player.getName());
+                    .send(sender, player.getName());
             });
             // todo: asynchronous command callbacks?
             return true;
@@ -66,7 +66,7 @@ public class BanCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length == 1) {
             super.tabComplete(sender, alias, args);
         }

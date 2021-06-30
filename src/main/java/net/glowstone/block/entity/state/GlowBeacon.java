@@ -30,7 +30,9 @@ public class GlowBeacon extends GlowContainer implements Beacon {
 
     @Override
     public Collection<LivingEntity> getEntitiesInRange() {
-        return getWorld().getNearbyEntitiesByType(Player.class, getLocation(), getTier() * RADIUS_MULTIPLIER, getWorld().getMaxHeight());
+        return getWorld()
+            .getNearbyEntitiesByType(Player.class, getLocation(), getTier() * RADIUS_MULTIPLIER,
+                getWorld().getMaxHeight());
     }
 
     @Override
@@ -39,13 +41,18 @@ public class GlowBeacon extends GlowContainer implements Beacon {
     }
 
     @Override
-    public void setPrimaryEffect(PotionEffectType primary) {
-        getBlockEntity().setPrimaryEffectId(primary.getId());
+    public double getEffectRange() {
+        return getTier() * RADIUS_MULTIPLIER;
     }
 
     @Override
-    public void setSecondaryEffect(PotionEffectType secondary) {
-        getBlockEntity().setSecondaryEffectId(secondary.getId());
+    public void setEffectRange(double v) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void resetEffectRange() {
+        // TODO
     }
 
     @Override
@@ -54,8 +61,18 @@ public class GlowBeacon extends GlowContainer implements Beacon {
     }
 
     @Override
+    public void setPrimaryEffect(PotionEffectType primary) {
+        getBlockEntity().setPrimaryEffectId(primary.getId());
+    }
+
+    @Override
     public PotionEffect getSecondaryEffect() {
         return getBlockEntity().getEffect(BeaconEntity.BeaconEffectPriority.SECONDARY);
+    }
+
+    @Override
+    public void setSecondaryEffect(PotionEffectType secondary) {
+        getBlockEntity().setSecondaryEffectId(secondary.getId());
     }
 
     @Override

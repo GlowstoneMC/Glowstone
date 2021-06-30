@@ -15,9 +15,9 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
 import net.glowstone.net.message.play.game.ExplosionMessage.Record;
 import net.glowstone.util.RayUtil;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -370,10 +370,10 @@ public final class Explosion {
 
         if (power >= 2.0F && breakBlocks) {
             // send huge explosion
-            world.spigot().playEffect(location, Effect.EXPLOSION_HUGE);
+            world.spawnParticle(Particle.EXPLOSION_HUGE, location, 1);
         } else {
             // send large explosion
-            world.spigot().playEffect(location, Effect.EXPLOSION_LARGE);
+            world.spawnParticle(Particle.EXPLOSION_LARGE, location, 1);
         }
     }
 

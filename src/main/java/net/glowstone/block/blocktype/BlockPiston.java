@@ -11,6 +11,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.PistonMoveBehavior;
 import net.glowstone.chunk.GlowChunk;
+import net.glowstone.constants.GameRules;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockActionMessage;
 import org.bukkit.Location;
@@ -28,6 +29,11 @@ import org.bukkit.material.PistonBaseMaterial;
 public class BlockPiston extends BlockDirectional {
 
     private static final int PUSH_LIMIT = 12;
+    private static final BlockFace[] ADJACENT_FACES = new BlockFace[] {
+        BlockFace.NORTH, BlockFace.EAST,
+        BlockFace.SOUTH, BlockFace.WEST,
+        BlockFace.UP, BlockFace.DOWN
+    };
     /**
      * The piston is either non-sticky (default), or has a sticky behavior.
      *
@@ -36,13 +42,16 @@ public class BlockPiston extends BlockDirectional {
     @Getter
     private final boolean sticky;
 
-    /** Creates the basic (non-sticky) piston block type. */
+    /**
+     * Creates the basic (non-sticky) piston block type.
+     */
     public BlockPiston() {
         this(false);
     }
 
     /**
      * Creates a piston block type.
+     *
      * @param sticky true for the sticky-piston type; false for the basic piston type
      */
     public BlockPiston(boolean sticky) {
@@ -50,15 +59,15 @@ public class BlockPiston extends BlockDirectional {
         this.sticky = sticky;
 
         if (sticky) {
-            setDrops(new ItemStack(Material.PISTON_STICKY_BASE));
+            setDrops(new ItemStack(Material.STICKY_PISTON));
         } else {
-            setDrops(new ItemStack(Material.PISTON_BASE));
+            setDrops(new ItemStack(Material.PISTON));
         }
     }
 
     @Override
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
-        if (block.getType() == Material.PISTON_BASE) {
+        if (block.getType() == Material.PISTON) {
             // break piston extension if extended
             if (isPistonExtended(block)) {
                 block.getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing())
@@ -70,7 +79,7 @@ public class BlockPiston extends BlockDirectional {
     }
 
     private void performMovement(BlockFace direction,
-        List<Block> blocksToMove, List<Block> blocksToBreak) {
+                                 List<Block> blocksToMove, List<Block> blocksToBreak) {
 
         blocksToMove.sort((a, b) -> {
             switch (direction) {
@@ -96,10 +105,10 @@ public class BlockPiston extends BlockDirectional {
         }
 
         for (Block block : blocksToMove) {
-            setType(block.getRelative(direction), block.getTypeId(), block.getData());
+            setType(block.getRelative(direction), block.getType(), block.getData());
 
             // Need to do this to remove pulled blocks
-            setType(block, 0, 0);
+            setType(block, Material.AIR, 0);
         }
     }
 
@@ -109,7 +118,7 @@ public class BlockPiston extends BlockDirectional {
         BlockFace pistonBlockFace = piston.getFacing();
         int rawFace = BlockDirectional.getRawFace(pistonBlockFace);
         BlockActionMessage message = new BlockActionMessage(me.getX(), me.getY(), me.getZ(),
-            me.isBlockIndirectlyPowered() ? 0 : 1, rawFace, me.getTypeId());
+            me.isBlockIndirectlyPowered() ? 0 : 1, rawFace, me.getType().getId());
 
         GlowChunk chunk = me.getChunk();
         GlowChunk.Key chunkKey = GlowChunk.Key.of(chunk.getX(), chunk.getZ());
@@ -128,7 +137,7 @@ public class BlockPiston extends BlockDirectional {
             }
 
             BlockPistonExtendEvent event = EventFactory.getInstance().callEvent(
-                    new BlockPistonExtendEvent(me, blocksToMove, pistonBlockFace)
+                new BlockPistonExtendEvent(me, blocksToMove, pistonBlockFace)
             );
 
             if (event.isCancelled()) {
@@ -146,7 +155,8 @@ public class BlockPiston extends BlockDirectional {
             performMovement(pistonBlockFace, blocksToMove, blocksToBreak);
 
             // set piston head block when extended
-            setType(me.getRelative(pistonBlockFace), 34, sticky ? me.getData() | 0x08 : rawFace);
+            setType(me.getRelative(pistonBlockFace), Material.MOVING_PISTON,
+                sticky ? me.getData() | 0x08 : rawFace);
 
             return;
         }
@@ -178,7 +188,7 @@ public class BlockPiston extends BlockDirectional {
             0.75f);
 
         // normal state for piston
-        setType(me, me.getTypeId(), me.getData() & ~0x08);
+        setType(me, me.getType(), me.getData() & ~0x08);
 
         if (sticky && blocksToMove.size() > 0) {
             performMovement(pistonBlockFace.getOppositeFace(), blocksToMove, blocksToBreak);
@@ -188,20 +198,14 @@ public class BlockPiston extends BlockDirectional {
         }
     }
 
-    private static final BlockFace[] ADJACENT_FACES = new BlockFace[] {
-        BlockFace.NORTH, BlockFace.EAST,
-        BlockFace.SOUTH, BlockFace.WEST,
-        BlockFace.UP, BlockFace.DOWN
-    };
-
     private boolean addBlock(GlowBlock piston, BlockFace movementDirection,
-        GlowBlock block, BlockFace ignoredFace,
-        List<Block> blocksToMove, List<Block> blocksToBreak) {
+                             GlowBlock block, BlockFace ignoredFace,
+                             List<Block> blocksToMove, List<Block> blocksToBreak) {
 
         boolean isPushing = (movementDirection == ignoredFace.getOppositeFace());
         MaterialValueManager.ValueCollection materialValues = block.getMaterialValues();
-        PistonMoveBehavior moveBehavior =
-            isPushing ? materialValues.getPistonPushBehavior() : materialValues.getPistonPullBehavior();
+        PistonMoveBehavior moveBehavior = isPushing
+            ? materialValues.getPistonPushBehavior() : materialValues.getPistonPullBehavior();
 
         if (block.isEmpty()) {
             return true;
@@ -233,7 +237,6 @@ public class BlockPiston extends BlockDirectional {
                     break;
                 case BREAK:
                 case DONT_MOVE:
-                    return true;
                 default:
                     return true;
             }
@@ -278,12 +281,12 @@ public class BlockPiston extends BlockDirectional {
             return;
         }
 
-        GlowWorld world = (GlowWorld) block.getWorld();
+        GlowWorld world = block.getWorld();
 
         Collection<ItemStack> drops = new ArrayList<>();
 
         BlockType blockType = ItemTable.instance().getBlock(block.getType());
-        if (world.getGameRuleMap().getBoolean("doTileDrops")) {
+        if (world.getGameRuleMap().getBoolean(GameRules.DO_TILE_DROPS)) {
             drops.addAll(blockType.getMinedDrops(block));
         } else {
             // Container contents is dropped anyways
@@ -293,7 +296,7 @@ public class BlockPiston extends BlockDirectional {
         }
 
         Location location = block.getLocation();
-        setType(block, 0, 0);
+        setType(block, Material.AIR, 0);
         if (drops.size() > 0 && !(blockType instanceof BlockLiquid)) {
             drops.stream().forEach((stack) -> block.getWorld().dropItemNaturally(location, stack));
         }
@@ -304,11 +307,11 @@ public class BlockPiston extends BlockDirectional {
         // piston
         Block pistonHead = block
             .getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing());
-        return pistonHead.getType() == Material.PISTON_EXTENSION;
+        return pistonHead.getType() == Material.MOVING_PISTON;
     }
 
     // update block server side without sending block change packets
-    private void setType(Block block, int type, int data) {
+    private void setType(Block block, Material type, int data) {
         World world = block.getWorld();
         int x = block.getX();
         int y = block.getY();

@@ -17,25 +17,26 @@ public class RectangularRegion {
 
     /**
      * Creates a new region bounded by the two opposing locations.
+     *
      * @param from The first bounding corner.
-     * @param to The second bounding corner.
+     * @param to   The second bounding corner.
      */
     public RectangularRegion(Location from, Location to) {
         Preconditions.checkArgument(
-                from.getWorld() == to.getWorld(),
-                "The given locations do not have matching worlds."
+            from.getWorld() == to.getWorld(),
+            "The given locations do not have matching worlds."
         );
         this.lowCorner = new Location(
-                from.getWorld(),
-                Double.min(from.getX(), to.getX()),
-                Double.min(from.getY(), to.getY()),
-                Double.min(from.getZ(), to.getZ())
+            from.getWorld(),
+            Double.min(from.getX(), to.getX()),
+            Double.min(from.getY(), to.getY()),
+            Double.min(from.getZ(), to.getZ())
         );
         this.highCorner = new Location(
-                from.getWorld(),
-                Double.max(from.getX(), to.getX()),
-                Double.max(from.getY(), to.getY()),
-                Double.max(from.getZ(), to.getZ())
+            from.getWorld(),
+            Double.max(from.getX(), to.getX()),
+            Double.max(from.getY(), to.getY()),
+            Double.max(from.getZ(), to.getZ())
         );
         this.widthX = highCorner.getBlockX() - lowCorner.getBlockX();
         this.widthY = highCorner.getBlockY() - lowCorner.getBlockY();
@@ -44,24 +45,26 @@ public class RectangularRegion {
 
     /**
      * Creates a new region at the given corner with the same dimensions as this region.
+     *
      * @param lowCorner The corner to base the new region off of.
      * @return The new region.
      */
     public RectangularRegion moveTo(Location lowCorner) {
         return new RectangularRegion(
-                lowCorner,
-                new Location(
-                        lowCorner.getWorld(),
-                        lowCorner.getBlockX() + widthX,
-                        lowCorner.getBlockY() + widthY,
-                        lowCorner.getBlockZ() + widthZ
-                )
+            lowCorner,
+            new Location(
+                lowCorner.getWorld(),
+                lowCorner.getBlockX() + widthX,
+                lowCorner.getBlockY() + widthY,
+                lowCorner.getBlockZ() + widthZ
+            )
         );
     }
 
     /**
      * Returns an iterable over all block locations within the region, with the iterable's
      * directionality determined by the given arguments.
+     *
      * @param directionX The direction of iteration along the X axis.
      * @param directionY The direction of iteration along the Y axis.
      * @param directionZ The direction of iteration along the Z axis.
@@ -71,7 +74,24 @@ public class RectangularRegion {
                                              IterationDirection directionY,
                                              IterationDirection directionZ) {
         return new LocationIterable(lowCorner, directionX.iterable(widthX),
-                directionY.iterable(widthY), directionZ.iterable(widthZ));
+            directionY.iterable(widthY), directionZ.iterable(widthZ));
+    }
+
+    public enum IterationDirection {
+        FORWARDS {
+            @Override
+            public Iterable<Integer> iterable(int max) {
+                return new ForwardsAxisIterable(max);
+            }
+        },
+        BACKWARDS {
+            @Override
+            public Iterable<Integer> iterable(int max) {
+                return new BackwardsAxisIterable(max);
+            }
+        };
+
+        public abstract Iterable<Integer> iterable(int max);
     }
 
     private static class LocationIterable implements Iterable<Location> {
@@ -144,25 +164,8 @@ public class RectangularRegion {
 
         private Location getLocation() {
             return new Location(lowCorner.getWorld(), lowCorner.getBlockX() + x,
-                    lowCorner.getBlockY() + y, lowCorner.getBlockZ() + iteratorZ.next());
+                lowCorner.getBlockY() + y, lowCorner.getBlockZ() + iteratorZ.next());
         }
-    }
-
-    public enum IterationDirection {
-        FORWARDS {
-            @Override
-            public Iterable<Integer> iterable(int max) {
-                return new ForwardsAxisIterable(max);
-            }
-        },
-        BACKWARDS {
-            @Override
-            public Iterable<Integer> iterable(int max) {
-                return new BackwardsAxisIterable(max);
-            }
-        };
-
-        public abstract Iterable<Integer> iterable(int max);
     }
 
     private static class ForwardsAxisIterable implements Iterable<Integer> {

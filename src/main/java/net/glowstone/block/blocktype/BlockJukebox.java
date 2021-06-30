@@ -13,6 +13,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Jukebox;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockJukebox extends BlockType {
 
@@ -23,7 +24,7 @@ public class BlockJukebox extends BlockType {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         Jukebox jukebox = (Jukebox) block.getState();
         if (jukebox.isPlaying()) {
             jukebox.eject();
@@ -51,9 +52,10 @@ public class BlockJukebox extends BlockType {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        ItemStack disk = ((GlowJukebox) block.getState()).getPlayingItem();
+        ItemStack disk = ((GlowJukebox) block.getState()).getRecord();
         if (disk == null) {
             return Arrays.asList(new ItemStack(block.getType()));
         } else {

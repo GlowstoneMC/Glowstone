@@ -76,7 +76,7 @@ public class UseItemHandlerTest {
         Location location = new Location(world, 1.0, 1.0, 1.0);
         Location playerLocation = new Location(world, 2.0, 2.0, 2.0);
         GlowPlayerInventory inventory = new GlowPlayerInventory(player);
-        ItemStack stack = new ItemStack(Material.BOAT_JUNGLE);
+        ItemStack stack = new ItemStack(Material.JUNGLE_BOAT);
         GlowBoat boat = new GlowBoat(location);
         inventory.setItemInMainHand(stack);
         UseItemMessage message = new UseItemMessage(EquipmentSlot.HAND.ordinal());
@@ -101,11 +101,11 @@ public class UseItemHandlerTest {
         Mockito.when(world.spawn(location, Boat.class)).thenReturn(boat);
 
         // run test
-        Assert.assertTrue(inventory.contains(Material.BOAT_JUNGLE, 1));
+        Assert.assertTrue(inventory.contains(Material.JUNGLE_BOAT, 1));
         UseItemHandler handler = new UseItemHandler();
         handler.handle(session, message);
         // after calling use item and creating a boat, the inventory no longer contains a boat
-        Assert.assertFalse(inventory.contains(Material.BOAT_JUNGLE, 1));
+        Assert.assertFalse(inventory.contains(Material.JUNGLE_BOAT, 1));
     }
 
 

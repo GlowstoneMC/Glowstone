@@ -28,7 +28,7 @@ public class SpawnPointCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -48,14 +48,14 @@ public class SpawnPointCommand extends GlowVanillaCommand {
                 targets = ImmutableList.of((Player) sender);
             } else {
                 new LocalizedStringImpl("spawnpoint.no-player",
-                        commandMessages.getResourceBundle())
-                        .sendInColor(ChatColor.RED, sender);
+                    commandMessages.getResourceBundle())
+                    .sendInColor(ChatColor.RED, sender);
                 return false;
             }
         } else if (playerPattern.startsWith("@") && playerPattern.length() > 1 && CommandUtils
-                .isPhysical(sender)) { // Manage selectors
+            .isPhysical(sender)) { // Manage selectors
             final Location location = sender instanceof Entity ? ((Entity) sender).getLocation()
-                    : ((BlockCommandSender) sender).getBlock().getLocation();
+                : ((BlockCommandSender) sender).getBlock().getLocation();
             final Entity[] entities = new CommandTarget(sender, args[0]).getMatched(location);
             targets = new ArrayList<>(entities.length);
 
@@ -69,7 +69,7 @@ public class SpawnPointCommand extends GlowVanillaCommand {
 
             if (player == null) {
                 commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                        .sendInColor(ChatColor.RED, sender, playerPattern);
+                    .sendInColor(ChatColor.RED, sender, playerPattern);
                 return false;
             } else {
                 targets = Collections.singletonList(player);
@@ -86,11 +86,11 @@ public class SpawnPointCommand extends GlowVanillaCommand {
             if (args[1].startsWith("~") || args[2].startsWith("~") || args[3].startsWith("~")) {
                 if (!CommandUtils.isPhysical(sender)) {
                     commandMessages.getGeneric(GenericMessage.NOT_PHYSICAL_COORDS)
-                            .sendInColor(ChatColor.RED, sender);
+                        .sendInColor(ChatColor.RED, sender);
                     return false;
                 } else {
                     currentLocation = sender instanceof Entity ? ((Entity) sender).getLocation()
-                            : ((BlockCommandSender) sender).getBlock().getLocation();
+                        : ((BlockCommandSender) sender).getBlock().getLocation();
                 }
             } else { // Otherwise, the current location can be set to 0/0/0 (since it's absolute)
                 currentLocation = new Location(world, 0, 0, 0);
@@ -100,27 +100,27 @@ public class SpawnPointCommand extends GlowVanillaCommand {
 
             if (spawnLocation.getY() < 0) {
                 commandMessages.getGeneric(GenericMessage.TOO_LOW)
-                        .sendInColor(ChatColor.RED, sender);
+                    .sendInColor(ChatColor.RED, sender);
                 return false;
             } else if (spawnLocation.getBlockY() > world.getMaxHeight()) {
                 commandMessages.getGeneric(GenericMessage.TOO_HIGH)
-                        .sendInColor(ChatColor.RED, sender, world.getMaxHeight());
+                    .sendInColor(ChatColor.RED, sender, world.getMaxHeight());
                 return false;
             }
         } else { // Use the sender coordinates
             if (CommandUtils.isPhysical(sender)) {
                 spawnLocation = sender instanceof Entity ? ((Entity) sender).getLocation()
-                        : ((BlockCommandSender) sender).getBlock().getLocation();
+                    : ((BlockCommandSender) sender).getBlock().getLocation();
             } else {
                 commandMessages.getGeneric(GenericMessage.NOT_PHYSICAL_COORDS)
-                        .sendInColor(ChatColor.RED, sender);
+                    .sendInColor(ChatColor.RED, sender);
                 return false;
             }
         }
 
         // Update spawn location
         LocalizedStringImpl doneForOne = new LocalizedStringImpl("spawnpoint.done",
-                commandMessages.getResourceBundle());
+            commandMessages.getResourceBundle());
         int newX = spawnLocation.getBlockX();
         int newY = spawnLocation.getBlockY();
         int newZ = spawnLocation.getBlockZ();
@@ -134,7 +134,7 @@ public class SpawnPointCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         return args.length == 1 ? super.tabComplete(sender, alias, args) : Collections.emptyList();
     }
 }

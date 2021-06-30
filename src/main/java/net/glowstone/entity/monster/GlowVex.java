@@ -1,6 +1,5 @@
 package net.glowstone.entity.monster;
 
-import com.destroystokyo.paper.entity.SentientNPC;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +7,7 @@ import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Vex;
 
 public class GlowVex extends GlowMonster implements Vex {
@@ -15,6 +15,10 @@ public class GlowVex extends GlowMonster implements Vex {
     @Getter
     @Setter
     private int lifeTicks;
+
+    @Getter
+    @Setter
+    private Mob summoner; // TODO: Vex summoner/owner
 
     /**
      * Creates a vex with a random lifespan.
@@ -54,7 +58,13 @@ public class GlowVex extends GlowMonster implements Vex {
     }
 
     @Override
-    public SentientNPC getOwner() {
-        throw new UnsupportedOperationException("Not implemented yet.");
+    public boolean isCharging() {
+        // TODO: vex charging
+        return false;
+    }
+
+    @Override
+    public void setCharging(boolean charging) {
+
     }
 }

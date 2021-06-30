@@ -24,7 +24,7 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
      * Creates a new network event handler.
      *
      * @param connectionManager The connection manager to manage connections for this message
-     *         handler.
+     *                          handler.
      */
     public MessageHandler(GameServer connectionManager) {
         this.connectionManager = connectionManager;
@@ -65,7 +65,7 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
     public GlowSession getSession() {
         return session.get();
     }
-    
+
     public void setSession(GlowSession newSession) {
         session.set(newSession);
     }

@@ -26,7 +26,7 @@ public class FlowerPotEntity extends BlockEntity {
         super.loadNbt(tag);
         tag.tryGetMaterial("Item").ifPresent(
             item -> this.contents = item.getNewData(
-                    (byte) (int) (tag.tryGetInt("Data").orElse(0))));
+                (byte) (int) (tag.tryGetInt("Data").orElse(0))));
     }
 
     @Override

@@ -16,7 +16,7 @@ public class BlockOpenable extends BlockType {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         GlowBlockState blockState = block.getState();
         MaterialData materialData = blockState.getData();
         if (materialData instanceof Openable) {
@@ -39,12 +39,12 @@ public class BlockOpenable extends BlockType {
     }
 
     protected void onOpened(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc,
-        GlowBlockState state, MaterialData materialData) {
+                            GlowBlockState state, MaterialData materialData) {
         // Can be overridden
     }
 
     protected void onClosed(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc,
-        GlowBlockState state, MaterialData materialData) {
+                            GlowBlockState state, MaterialData materialData) {
         // Can be overridden
     }
 }

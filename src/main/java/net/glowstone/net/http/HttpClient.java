@@ -31,17 +31,19 @@ import net.glowstone.net.Networking;
 import net.glowstone.net.config.DnsEndpoint;
 
 public class HttpClient {
-    private DnsAddressResolverGroup resolverGroup;
+    private final DnsAddressResolverGroup resolverGroup;
 
     /**
      * Creates an HttpClient configured to hit the given DNS endpoints.
+     *
      * @param endpoints The DNS endpoints to use for resolving domains. If the list is empty, then
      */
     public HttpClient(List<DnsEndpoint> endpoints) {
         final DnsServerAddressStreamProvider dnsProvider;
         if (endpoints.size() > 0) {
             InetSocketAddress[] addresses = endpoints.stream()
-                .map((endpoint) -> SocketUtils.socketAddress(endpoint.getHost(), endpoint.getPort()))
+                .map(
+                    (endpoint) -> SocketUtils.socketAddress(endpoint.getHost(), endpoint.getPort()))
                 .toArray(InetSocketAddress[]::new);
 
             dnsProvider = new SequentialDnsServerAddressStreamProvider(addresses);
@@ -57,9 +59,9 @@ public class HttpClient {
     /**
      * Opens a URL.
      *
-     * @param url the URL to download
+     * @param url       the URL to download
      * @param eventLoop an {@link EventLoop} that will receive the response body
-     * @param callback a callback to handle the response or any error
+     * @param callback  a callback to handle the response or any error
      */
     public void connect(String url, EventLoop eventLoop, HttpCallback callback) {
 
@@ -113,8 +115,8 @@ public class HttpClient {
     @AllArgsConstructor
     private static class HttpChannelInitializer extends ChannelInitializer<Channel> {
 
-        private SslContext sslCtx;
-        private HttpCallback callback;
+        private final SslContext sslCtx;
+        private final HttpCallback callback;
 
         @Override
         protected void initChannel(Channel channel) throws Exception {

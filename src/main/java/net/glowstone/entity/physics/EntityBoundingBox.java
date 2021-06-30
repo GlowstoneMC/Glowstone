@@ -18,9 +18,9 @@ public class EntityBoundingBox extends BoundingBox {
     /**
      * Creates an instance with the given size.
      *
-     * @param width the size on the X axis
+     * @param width    the size on the X axis
      * @param vertSize the size on the Y axis
-     * @param depth the size on the Z axis
+     * @param depth    the size on the Z axis
      */
     public EntityBoundingBox(double width, double vertSize, double depth) {
         this.width = width;
@@ -35,6 +35,7 @@ public class EntityBoundingBox extends BoundingBox {
 
     /**
      * Moves this box so that its center is the given point.
+     *
      * @param x the center X coordinate
      * @param y the center Y coordinate
      * @param z the center Z coordinate

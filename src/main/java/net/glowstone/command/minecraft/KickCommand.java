@@ -21,7 +21,7 @@ public class KickCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -33,19 +33,19 @@ public class KickCommand extends GlowVanillaCommand {
         Player player = Bukkit.getPlayerExact(playerName);
         if (player == null) {
             commandMessages.getGeneric(GenericMessage.OFFLINE)
-                    .sendInColor(ChatColor.RED, sender, playerName);
+                .sendInColor(ChatColor.RED, sender, playerName);
             return false;
         }
         if (args.length == 1) {
             player.kickPlayer(null);
             new LocalizedStringImpl("kick.done.no-reason", commandMessages.getResourceBundle())
-                    .send(sender, player.getName());
+                .send(sender, player.getName());
             return true;
         }
         String reason = StringUtils.join(args, ' ', 1, args.length);
         player.kickPlayer(reason);
         new LocalizedStringImpl("kick.done", commandMessages.getResourceBundle())
-                .send(sender, player.getName(), reason);
+            .send(sender, player.getName(), reason);
         return true;
     }
 

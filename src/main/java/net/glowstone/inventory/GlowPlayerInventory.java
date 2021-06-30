@@ -12,7 +12,6 @@ import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -22,6 +21,8 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An Inventory representing the items a player is holding.
@@ -91,11 +92,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     ////////////////////////////////////////////////////////////////////////////
     // Internals
 
-    public static boolean canEquipInHelmetSlot(Material material) {
-        return EnchantmentTarget.ARMOR_HEAD.includes(material) || material == Material.PUMPKIN
-                || material == Material.SKULL_ITEM;
-    }
-
     /**
      * Sets which hotbar slot is the main-hand item.
      *
@@ -111,17 +107,18 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public boolean itemPlaceAllowed(int slot, ItemStack stack) {
+        EquipmentSlot itemSlot = stack.getType().getEquipmentSlot();
         if (slot == BOOTS_SLOT) {
-            return EnchantmentTarget.ARMOR_FEET.includes(stack);
+            return itemSlot == EquipmentSlot.FEET;
         }
         if (slot == LEGGINGS_SLOT) {
-            return EnchantmentTarget.ARMOR_LEGS.includes(stack);
+            return itemSlot == EquipmentSlot.LEGS;
         }
         if (slot == CHESTPLATE_SLOT) {
-            return EnchantmentTarget.ARMOR_TORSO.includes(stack);
+            return itemSlot == EquipmentSlot.CHEST;
         }
         if (slot == HELMET_SLOT) {
-            return canEquipInHelmetSlot(stack.getType());
+            return itemSlot == EquipmentSlot.HEAD;
         }
         return super.itemPlaceAllowed(slot, stack);
     }
@@ -193,6 +190,16 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
+    public float getDropChance(@NotNull EquipmentSlot equipmentSlot) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setDropChance(@NotNull EquipmentSlot equipmentSlot, float v) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public ItemStack getItem(EquipmentSlot slot) {
         switch (slot) {
             case HAND:
@@ -237,6 +244,12 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
                 // TODO: should this raise a warning?
                 // do nothing
         }
+    }
+
+    @Override
+    public void setItem(@NotNull EquipmentSlot slot, @Nullable ItemStack item, boolean silent) {
+        // TODO: silent; whether or not the equip sound should be silenced
+        setItem(slot, item);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -305,6 +318,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
+    public void setHelmet(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.HEAD, itemStack, silent);
+    }
+
+    @Override
     public ItemStack getChestplate() {
         return getItem(CHESTPLATE_SLOT);
     }
@@ -312,6 +330,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     @Override
     public void setChestplate(ItemStack chestplate) {
         setItem(CHESTPLATE_SLOT, chestplate);
+    }
+
+    @Override
+    public void setChestplate(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.CHEST, itemStack, silent);
     }
 
     @Override
@@ -325,6 +348,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
+    public void setLeggings(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.LEGS, itemStack, silent);
+    }
+
+    @Override
     public ItemStack getBoots() {
         return getItem(BOOTS_SLOT);
     }
@@ -332,6 +360,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     @Override
     public void setBoots(ItemStack boots) {
         setItem(BOOTS_SLOT, boots);
+    }
+
+    @Override
+    public void setBoots(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.FEET, itemStack, silent);
     }
 
     @Override
@@ -345,6 +378,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
+    public void setItemInMainHand(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.HAND, itemStack, silent);
+    }
+
+    @Override
     public ItemStack getItemInOffHand() {
         return getItem(OFF_HAND_SLOT).clone();
     }
@@ -352,6 +390,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     @Override
     public void setItemInOffHand(ItemStack item) {
         setItem(OFF_HAND_SLOT, item);
+    }
+
+    @Override
+    public void setItemInOffHand(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.OFF_HAND, itemStack, silent);
     }
 
     @Override
@@ -396,24 +439,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
             ItemStack stack = getItem(i);
             if (stack != null && (type == null || stack.getType() == type) && (data == null || stack
                     .getData().equals(data))) {
-                setItem(i, InventoryUtil.createEmptyStack());
-                if (!InventoryUtil.isEmpty(stack)) {
-                    // never report AIR as removed - else will report all empty slots cleared
-                    numCleared += stack.getAmount(); // report # items, not # stacks removed
-                }
-            }
-        }
-        return numCleared;
-    }
-
-    @Override
-    @Deprecated
-    public int clear(int id, int data) {
-        int numCleared = 0;
-        for (int i = 0; i < getSize(); ++i) {
-            ItemStack stack = getItem(i);
-            if (stack != null && (id == -1 || stack.getTypeId() == id) && (data == -1
-                    || stack.getData().getData() == data)) {
                 setItem(i, InventoryUtil.createEmptyStack());
                 if (!InventoryUtil.isEmpty(stack)) {
                     // never report AIR as removed - else will report all empty slots cleared

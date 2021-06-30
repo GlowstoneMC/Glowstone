@@ -6,7 +6,6 @@ import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 
@@ -20,15 +19,15 @@ class VillagerStore extends AgeableStore<GlowVillager> {
     public void load(GlowVillager entity, CompoundTag compound) {
         super.load(entity, compound);
         compound.tryGetInt("Profession")
-                .filter(GlowVillager::isValidProfession)
-                .map(GlowVillager::getProfessionById)
-                .ifPresent(entity::setProfession);
+            .filter(GlowVillager::isValidProfession)
+            .map(GlowVillager::getProfessionById)
+            .ifPresent(entity::setProfession);
         compound.tryGetInt("Career")
-                .map(id -> GlowVillager.getCareerById(id, entity.getProfession()))
-                .ifPresent(career -> {
-                    entity.setCareer(career);
-                    entity.setCareerLevel(compound.tryGetInt("CareerLevel").orElse(1));
-                });
+            .map(GlowVillager::getProfessionById)
+            .ifPresent(career -> {
+                entity.setProfession(career);
+                entity.setCareerLevel(compound.tryGetInt("CareerLevel").orElse(1));
+            });
         compound.readInt("Riches", entity::setRiches);
         compound.readBoolean("Willing", entity::setWilling);
         // Recipes
@@ -45,7 +44,7 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                         int uses = recipeTag.getInt("uses");
                         int maxUses = recipeTag.getInt("maxUses");
                         MerchantRecipe recipe = new MerchantRecipe(sell, uses, maxUses,
-                                experienceReward);
+                            experienceReward);
                         recipe.setIngredients(ingredients);
                         recipes.add(recipe);
                     });
@@ -59,11 +58,8 @@ class VillagerStore extends AgeableStore<GlowVillager> {
     @Override
     public void save(GlowVillager entity, CompoundTag tag) {
         super.save(entity, tag);
-        if (entity.getProfession() != null && entity.getProfession() != Villager.Profession.HUSK) {
+        if (entity.getProfession() != null) {
             tag.putInt("Profession", entity.getProfession().ordinal());
-        }
-        if (entity.getCareer() != null) {
-            tag.putInt("Career", GlowVillager.getCareerId(entity.getCareer()));
         }
         tag.putInt("Riches", entity.getRiches());
         tag.putBool("Willing", entity.isWilling());

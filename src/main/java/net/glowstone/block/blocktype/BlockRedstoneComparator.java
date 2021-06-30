@@ -12,12 +12,12 @@ import org.bukkit.util.Vector;
 public class BlockRedstoneComparator extends BlockNeedsAttached {
 
     public BlockRedstoneComparator() {
-        setDrops(new ItemStack(Material.REDSTONE_COMPARATOR));
+        setDrops(new ItemStack(Material.COMPARATOR));
     }
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         Comparator comparator = (Comparator) block.getState().getData();
         comparator.setSubtractionMode(!comparator.isSubtractionMode());
         block.setData(comparator.getData());
@@ -27,19 +27,19 @@ public class BlockRedstoneComparator extends BlockNeedsAttached {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
-        Material oldType, byte oldData, Material newType, byte newData) {
+                                   Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         Comparator comparator = (Comparator) state.getData();
         comparator.setFacingDirection(player.getCardinalFacing());

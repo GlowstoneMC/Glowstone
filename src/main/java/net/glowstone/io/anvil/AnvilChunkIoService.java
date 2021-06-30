@@ -124,13 +124,13 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 } catch (Exception ex) {
                     String id = blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
                     ConsoleMessages.Error.BlockEntity.LOAD_FAILED.log(
-                            ex, blockEntity.getBlock(), id);
+                        ex, blockEntity.getBlock(), id);
                 }
             } else {
                 String id =
-                        blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
+                    blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
                 ConsoleMessages.Warn.BlockEntity.UNKNOWN.log(
-                        chunk.getWorld().getName(), tx, ty, tz, id);
+                    chunk.getWorld().getName(), tx, ty, tz, id);
             }
         }
 
@@ -189,7 +189,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
             CompoundTag sectionTag = new CompoundTag();
             sectionTag.putByte("Y", i); // NON-NLS
-            sec.optimize();
+            sec.recount();
             sec.writeToNbt(sectionTag);
             sectionTags.add(sectionTag);
         }

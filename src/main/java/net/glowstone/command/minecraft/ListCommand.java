@@ -23,21 +23,21 @@ public class ListCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
         Collection<String> messages =
-                new ArrayList<>(players.size() + 1);
+            new ArrayList<>(players.size() + 1);
         messages.add(new LocalizedStringImpl("list.header", commandMessages.getResourceBundle())
-                .get(players.size(), Bukkit.getMaxPlayers()));
+            .get(players.size(), Bukkit.getMaxPlayers()));
         if (args.length > 0 && (Objects.equals(args[0], "uuids" /* NON-NLS */) || Objects
-                .equals(args[0], "ids" /* NON-NLS */))) {
+            .equals(args[0], "ids" /* NON-NLS */))) {
             LocalizedStringImpl nameAndUuidMessage = new LocalizedStringImpl("list.name-and-uuid",
-                    commandMessages.getResourceBundle());
+                commandMessages.getResourceBundle());
             Bukkit.getOnlinePlayers().forEach(p -> messages.add(
-                    nameAndUuidMessage.get(p.getName(), UuidUtils.toString(p.getUniqueId()))));
+                nameAndUuidMessage.get(p.getName(), UuidUtils.toString(p.getUniqueId()))));
         } else {
             Bukkit.getOnlinePlayers().forEach(p -> messages.add(p.getName()));
         }
@@ -47,7 +47,7 @@ public class ListCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length == 1) {
             return ImmutableList.of("uuids"); // NON-NLS
         }

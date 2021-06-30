@@ -29,7 +29,7 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
 
         // only if creative mode; only if default (player) inventory
         if (player.getGameMode() != GameMode.CREATIVE
-                || !GlowInventoryView.isDefault(player.getOpenInventory())) {
+            || !GlowInventoryView.isDefault(player.getOpenInventory())) {
             player.kickPlayer(GlowstoneMessages.Kick.CREATIVE_ITEM.get());
             return;
         }

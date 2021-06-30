@@ -14,7 +14,7 @@ public class ItemEndCrystal extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (target == null || (target.getType() != Material.BEDROCK
             && target.getType() != Material.OBSIDIAN)) {
             return;

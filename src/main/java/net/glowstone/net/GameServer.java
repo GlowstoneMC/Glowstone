@@ -16,6 +16,11 @@ import net.glowstone.net.protocol.ProtocolProvider;
 
 public final class GameServer extends GlowSocketServer implements ConnectionManager {
 
+    public GameServer(GlowServer server, ProtocolProvider protocolProvider, CountDownLatch latch) {
+        super(server, protocolProvider, latch);
+        bootstrap.childHandler(new GlowChannelInitializer(this));
+    }
+
     private static String formatAddress(InetSocketAddress socketAddress) {
         StringBuilder out = new StringBuilder();
         InetAddress ipAddress = socketAddress.getAddress();
@@ -31,9 +36,16 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
         return out.toString();
     }
 
-    public GameServer(GlowServer server, ProtocolProvider protocolProvider, CountDownLatch latch) {
-        super(server, protocolProvider, latch);
-        bootstrap.childHandler(new GlowChannelInitializer(this));
+    // Package-visible for testing.
+    static void logBindFailure(InetSocketAddress address, Throwable t) {
+        ConsoleMessages.Error.Net.BIND_FAILED.log(formatAddress(address));
+        if (t.getMessage().contains("Cannot assign requested address")) { // NON-NLS
+            ConsoleMessages.Error.Net.CANNOT_ASSIGN.log(t);
+        } else if (t.getMessage().contains("Address already in use")) { // NON-NLS
+            ConsoleMessages.Error.Net.IN_USE.log(t);
+        } else {
+            ConsoleMessages.Error.Net.BIND_FAILED_UNKNOWN.log(t);
+        }
     }
 
     @Override
@@ -54,18 +66,6 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
     public void onBindFailure(InetSocketAddress address, Throwable t) {
         logBindFailure(address, t);
         System.exit(1);
-    }
-
-    // Package-visible for testing.
-    static void logBindFailure(InetSocketAddress address, Throwable t) {
-        ConsoleMessages.Error.Net.BIND_FAILED.log(formatAddress(address));
-        if (t.getMessage().contains("Cannot assign requested address")) { // NON-NLS
-            ConsoleMessages.Error.Net.CANNOT_ASSIGN.log(t);
-        } else if (t.getMessage().contains("Address already in use")) { // NON-NLS
-            ConsoleMessages.Error.Net.IN_USE.log(t);
-        } else {
-            ConsoleMessages.Error.Net.BIND_FAILED_UNKNOWN.log(t);
-        }
     }
 
     @Override

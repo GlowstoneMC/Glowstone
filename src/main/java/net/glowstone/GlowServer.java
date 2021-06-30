@@ -2,6 +2,7 @@ package net.glowstone;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
@@ -15,6 +16,7 @@ import com.tobedevoured.naether.NaetherException;
 import com.tobedevoured.naether.api.Naether;
 import com.tobedevoured.naether.impl.NaetherImpl;
 import com.tobedevoured.naether.util.RepoBuilder;
+import io.papermc.paper.datapack.DatapackManager;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -41,10 +43,13 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,12 +57,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
+import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.block.entity.state.GlowDispenser;
 import net.glowstone.boss.GlowBossBar;
+import net.glowstone.boss.GlowKeyedBossBar;
 import net.glowstone.command.glowstone.ColorCommand;
 import net.glowstone.command.glowstone.GlowstoneCommand;
 import net.glowstone.command.minecraft.BanCommand;
@@ -108,10 +116,12 @@ import net.glowstone.command.minecraft.WorldBorderCommand;
 import net.glowstone.command.minecraft.XpCommand;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
+import net.glowstone.data.GlowTag;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.FishingRewardManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
+import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.NetherGenerator;
 import net.glowstone.generator.OverworldGenerator;
@@ -159,7 +169,10 @@ import net.glowstone.util.library.Library;
 import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager;
 import net.glowstone.util.loot.LootingManager;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
@@ -167,10 +180,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.Keyed;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.StructureType;
+import org.bukkit.Tag;
 import org.bukkit.UnsafeValues;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.World;
@@ -178,10 +195,12 @@ import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
@@ -204,6 +223,7 @@ import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.loot.LootTable;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -218,7 +238,9 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The core class of the Glowstone server.
@@ -234,11 +256,15 @@ public class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = NoInline.of("1.12.2");
+    public static final String GAME_VERSION = NoInline.of("1.16.5");
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = NoInline.of(340);
+    public static final int PROTOCOL_VERSION = NoInline.of(754);
+    /**
+     * The data version supported by the server.
+     */
+    public static final int DATA_VERSION = NoInline.of(2586);
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
@@ -275,6 +301,11 @@ public class GlowServer implements Server {
      * The crafting manager for this server.
      */
     private final CraftingManager craftingManager = new CraftingManager();
+    /**
+     * What manages the mapping of Material to BlockData and the mapping between State ID and BlockData.
+     */
+    @Getter
+    private final BlockDataManager blockDataManager = new BlockDataManager();
     /**
      * The configuration for the server.
      */
@@ -331,6 +362,14 @@ public class GlowServer implements Server {
      * The {@link GlowAdvancement}s of this server.
      */
     private final Map<NamespacedKey, Advancement> advancements;
+    /**
+     * The {@link KeyedBossBar}s of this server.
+     */
+    private final ConcurrentMap<NamespacedKey, KeyedBossBar> bossBars;
+    /**
+     * The {@link Tag}s of this server, per registry, mapped by namespaced key.
+     */
+    private final Map<String, Map<NamespacedKey, Tag<? extends Keyed>>> tags;
     /**
      * Default root permissions.
      */
@@ -434,6 +473,9 @@ public class GlowServer implements Server {
     private static final Set<LibraryKey> blacklistedRuntimeLibs = ImmutableSet.of(
             new LibraryKey("it.unimi.dsi", "fastutil")
     );
+    @Getter
+    @Setter
+    private int maxPlayers;
 
     /**
      * Creates a new server.
@@ -467,6 +509,8 @@ public class GlowServer implements Server {
         ipBans = new GlowBanList(this, Type.IP);
 
         loadConfig();
+        bossBars = new ConcurrentHashMap<>();
+        tags = new HashMap<>();
     }
 
     /**
@@ -989,6 +1033,7 @@ public class GlowServer implements Server {
         spawnRadius = config.getInt(Key.SPAWN_RADIUS);
         whitelistEnabled = config.getBoolean(Key.WHITELIST);
         idleTimeout = config.getInt(Key.PLAYER_IDLE_TIMEOUT);
+        maxPlayers = config.getInt(Key.MAX_PLAYERS);
         craftingManager.initialize();
 
         // special handling
@@ -1243,8 +1288,7 @@ public class GlowServer implements Server {
         pluginManager.clearPlugins();
         pluginManager.registerInterface(JavaPluginLoader.class);
         Plugin[] plugins = pluginManager
-                .loadPlugins(folder.getPath(), pluginTypeDetector.bukkitPlugins
-                        .toArray(new File[pluginTypeDetector.bukkitPlugins.size()]));
+                .loadPlugins(folder, pluginTypeDetector.bukkitPlugins);
 
         // call onLoad methods
         for (Plugin plugin : plugins) {
@@ -1453,6 +1497,53 @@ public class GlowServer implements Server {
     @Override
     public Iterator<Advancement> advancementIterator() {
         return Iterators.cycle(advancements.values());
+    }
+
+    @Override
+    public BlockData createBlockData(Material material) {
+        return blockDataManager.createBlockData(material);
+    }
+
+    @Override
+    public BlockData createBlockData(Material material, Consumer<BlockData> consumer) {
+        return blockDataManager.createBlockData(material, consumer);
+    }
+
+    @Override
+    public BlockData createBlockData(String data) throws IllegalArgumentException {
+        return blockDataManager.createBlockData(data);
+    }
+
+    @Override
+    public BlockData createBlockData(Material material, String data) throws IllegalArgumentException {
+        return blockDataManager.createBlockData(material, data);
+    }
+
+    @Override
+    public <T extends Keyed> Tag<T> getTag(@NotNull String registry, @NotNull NamespacedKey tagKey, @NotNull Class<T> clazz) {
+        // TODO: what are we supposed to do with clazz?
+        return (Tag<T>) tags.computeIfAbsent(registry, k -> new HashMap<>()).computeIfAbsent(tagKey, k -> new GlowTag<T>(tagKey));
+    }
+
+    @Override
+    public @NotNull <T extends Keyed> Iterable<Tag<T>> getTags(@NotNull String registry,
+            @NotNull Class<T> clazz) {
+        // TODO: what are we supposed to do with clazz?
+        // TODO: 1.13 impl
+        //return tags.computeIfAbsent(registry, k -> new HashMap<>()).values();
+        return null;
+    }
+
+    @Override
+    public LootTable getLootTable(@NotNull NamespacedKey tableKey) {
+        // TODO: 1.13, possible re-use our existing loot tables and implement the new API
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @NotNull List<Entity> selectEntities(@NotNull CommandSender commandSender,
+            @NotNull String s) throws IllegalArgumentException {
+        return null;
     }
 
     /**
@@ -1683,15 +1774,6 @@ public class GlowServer implements Server {
     }
 
     /**
-     * Get whether achievements should be announced.
-     *
-     * @return True if achievements should be announced in chat.
-     */
-    public boolean getAnnounceAchievements() {
-        return config.getBoolean(Key.ANNOUNCE_ACHIEVEMENTS);
-    }
-
-    /**
      * Get the time after a profile lookup should be cancelled.
      *
      * @return The maximum lookup time in seconds or zero to never cancel the lookup.
@@ -1736,6 +1818,11 @@ public class GlowServer implements Server {
     @Override
     public String getBukkitVersion() {
         return GlowServer.class.getPackage().getSpecificationVersion();
+    }
+
+    @Override
+    public String getMinecraftVersion() {
+        return GAME_VERSION;
     }
 
     @Override
@@ -1823,6 +1910,11 @@ public class GlowServer implements Server {
     @Override
     public boolean suggestPlayerNamesWhenNullTabCompletions() {
         return config.getBoolean(Key.SUGGEST_PLAYER_NAMES_WHEN_NULL_TAB_COMPLETIONS);
+    }
+
+    @Override
+    public @NotNull String getPermissionMessage() {
+        return null;
     }
 
     @Override
@@ -2075,6 +2167,16 @@ public class GlowServer implements Server {
         return new GlowOfflinePlayer(this, new GlowPlayerProfile(null, uuid, false));
     }
 
+    @Override
+    public OfflinePlayer getOfflinePlayerIfCached(@NotNull String username) {
+        UUID cached = ProfileCache.getUuidCached(username);
+        if (cached != null) {
+            return getOfflinePlayer(cached);
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Creates a new {@link GlowOfflinePlayer} instance for the given name.
      *
@@ -2139,6 +2241,11 @@ public class GlowServer implements Server {
 
         sent.forEach(cs -> cs.sendMessage(message));
         return sent.size();
+    }
+
+    @Override
+    public int broadcast(@NotNull Component component, @NotNull String s) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -2235,6 +2342,33 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public World getWorld(@NotNull NamespacedKey namespacedKey) {
+        return null;
+    }
+
+    @Override
+    public GlowMapView getMap(int id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public GlowMapView createMap(World world) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @NotNull ItemStack createExplorerMap(@NotNull World world, @NotNull Location location,
+                                                @NotNull StructureType structureType) {
+        return null;
+    }
+
+    @Override
+    public @NotNull ItemStack createExplorerMap(@NotNull World world, @NotNull Location location,
+                                                @NotNull StructureType structureType, int i, boolean b) {
+        return null;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<World> getWorlds() {
         // Shenanigans needed to cast List<GlowWorld> to List<World>
@@ -2320,23 +2454,18 @@ public class GlowServer implements Server {
         return false;
     }
 
-    @Override
-    public GlowMapView getMap(short id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public GlowMapView createMap(World world) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    // Inventory and crafting
 
     @Override
     public List<Recipe> getRecipesFor(ItemStack result) {
         return craftingManager.getRecipesFor(result);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Inventory and crafting
+    @Override
+    public Recipe getRecipe(@NotNull NamespacedKey key) {
+        return craftingManager.getRecipeByKey(key);
+    }
 
     @Override
     public Iterator<Recipe> recipeIterator() {
@@ -2359,8 +2488,18 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public boolean removeRecipe(@NotNull NamespacedKey key) {
+        return craftingManager.removeRecipe(key);
+    }
+
+    @Override
     public Inventory createInventory(InventoryHolder owner, InventoryType type) {
         return new GlowInventory(owner, type);
+    }
+
+    @Override
+    public @NotNull Inventory createInventory(@org.jetbrains.annotations.Nullable InventoryHolder inventoryHolder, @NotNull InventoryType inventoryType, @NotNull Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -2374,8 +2513,18 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public @NotNull Inventory createInventory(@org.jetbrains.annotations.Nullable InventoryHolder inventoryHolder, int i, @NotNull Component component) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
     public Inventory createInventory(InventoryHolder owner, int size, String title) {
         return new GlowInventory(owner, InventoryType.CHEST, size, title);
+    }
+
+    @Override
+    public @NotNull Merchant createMerchant(@org.jetbrains.annotations.Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -2475,8 +2624,40 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public ChunkData createVanillaChunkData(World world, int x, int z) {
+        ChunkData chunkData = createChunkData(world);
+        // TODO: This function should populate the chunk.
+        return chunkData;
+    }
+
+    @Override
     public BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags) {
         return new GlowBossBar(title, color, style, flags);
+    }
+
+    @Override
+    public @NotNull KeyedBossBar createBossBar(NamespacedKey key,
+            @Nullable String title, BarColor barColor,
+            BarStyle barStyle, BarFlag... barFlags) {
+        KeyedBossBar bar = new GlowKeyedBossBar(key, title, barColor, barStyle, 1.0, barFlags);
+        bossBars.put(key, bar);
+        return bar;
+    }
+
+    @Override
+    public @NotNull Iterator<KeyedBossBar> getBossBars() {
+        return bossBars.values().iterator();
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable KeyedBossBar getBossBar(
+            @NotNull NamespacedKey namespacedKey) {
+        return bossBars.get(namespacedKey);
+    }
+
+    @Override
+    public boolean removeBossBar(@NotNull NamespacedKey namespacedKey) {
+        return bossBars.remove(namespacedKey) != null;
     }
 
     @Override
@@ -2537,19 +2718,12 @@ public class GlowServer implements Server {
         return worldConfig;
     }
 
-    @Override
     public String getServerName() {
         return config.getString(Key.SERVER_NAME);
     }
 
-    @Override
     public String getServerId() {
         return Integer.toHexString(getServerName().hashCode());
-    }
-
-    @Override
-    public int getMaxPlayers() {
-        return config.getInt(Key.MAX_PLAYERS);
     }
 
     @Override
@@ -2585,6 +2759,11 @@ public class GlowServer implements Server {
     @Override
     public String getMotd() {
         return ChatColor.translateAlternateColorCodes('&', config.getString(Key.MOTD));
+    }
+
+    @Override
+    public @NotNull Component motd() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -2636,6 +2815,51 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public int getTicksPerWaterSpawns() {
+        return config.getInt(Key.WATER_TICKS);
+    }
+
+    @Override
+    public int getTicksPerWaterAmbientSpawns() {
+        return config.getInt(Key.WATER_AMBIENT_TICKS);
+    }
+
+    @Override
+    public int getTicksPerAmbientSpawns() {
+        return config.getInt(Key.AMBIENT_TICKS);
+    }
+
+    @Override
+    public long[] getTickTimes() {
+        throw new UnsupportedOperationException("Glowstone does not have a global tick loop.");
+    }
+
+    @Override
+    public double getAverageTickTime() {
+        throw new UnsupportedOperationException("Glowstone does not have a global tick loop.");
+    }
+
+    @Override
+    public int getCurrentTick() {
+        throw new UnsupportedOperationException("Glowstone does not have a global tick loop.");
+    }
+
+    @Override
+    public boolean isStopping() {
+        return isShuttingDown;
+    }
+
+    @Override
+    public MobGoals getMobGoals() {
+        throw new NotImplementedException("Mob AI is not implemented yet.");
+    }
+
+    @Override
+    public @NotNull DatapackManager getDatapackManager() {
+        throw new UnsupportedOperationException("Datapacks are not yet supported.");
+    }
+
+    @Override
     public boolean isHardcore() {
         return config.getBoolean(Key.HARDCORE);
     }
@@ -2670,8 +2894,18 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public int getWaterAmbientSpawnLimit() {
+        return config.getInt(Key.WATER_AMBIENT_LIMIT);
+    }
+
+    @Override
     public String getShutdownMessage() {
         return config.getString(Key.SHUTDOWN_MESSAGE);
+    }
+
+    @Override
+    public @Nullable Component shutdownMessage() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -2686,6 +2920,11 @@ public class GlowServer implements Server {
      */
     public int getMaxBuildHeight() {
         return Math.max(64, Math.min(256, config.getInt(Key.MAX_BUILD_HEIGHT)));
+    }
+
+    @Override
+    public int getMaxWorldSize() {
+        return Math.max(1, Math.min(29999984, config.getInt(Key.MAX_WORLD_SIZE)));
     }
 
     /**
@@ -2813,5 +3052,10 @@ public class GlowServer implements Server {
                     + "Only one custom storage provider may be provided.");
         }
         this.storageProviderFactory = storageProviderFactory;
+    }
+
+    @Override
+    public @NonNull Iterable<? extends Audience> audiences() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 }

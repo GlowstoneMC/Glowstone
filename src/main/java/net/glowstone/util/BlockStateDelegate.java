@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.MaterialData;
+import org.bukkit.block.data.BlockData;
 
 /**
  * A small utility class that allow to maintain a {@link BlockState}'s list in order to capture a
@@ -24,10 +24,10 @@ public class BlockStateDelegate {
      * Sets a block type and add it to the BlockState list.
      *
      * @param world the world which contains the block
-     * @param x the x-coordinate of this block
-     * @param y the y-coordinate of this block
-     * @param z the z-coordinate of this block
-     * @param type the new type of this block
+     * @param x     the x-coordinate of this block
+     * @param y     the y-coordinate of this block
+     * @param z     the z-coordinate of this block
+     * @param type  the new type of this block
      */
     public void setType(World world, int x, int y, int z, Material type) {
         GlowBlockState state = (GlowBlockState) world.getBlockAt(x, y, z).getState();
@@ -39,33 +39,17 @@ public class BlockStateDelegate {
      * Sets a block type and MaterialData, and add it to the BlockState list.
      *
      * @param world the world which contains the block
-     * @param x the x-coordinate of this block
-     * @param y the y-coordinate of this block
-     * @param z the z-coordinate of this block
-     * @param type the new type of this block
-     * @param data the new MaterialData of this block
+     * @param x     the x-coordinate of this block
+     * @param y     the y-coordinate of this block
+     * @param z     the z-coordinate of this block
+     * @param type  the new type of this block
+     * @param data  the new MaterialData of this block
      */
-    public void setTypeAndData(World world, int x, int y, int z, Material type, MaterialData data) {
+    public void setTypeAndData(World world, int x, int y, int z, Material type, BlockData data) {
+        // TODO: we probably don't need the type param, just use block data
         GlowBlockState state = (GlowBlockState) world.getBlockAt(x, y, z).getState();
         state.setType(type);
-        state.setData(data);
-        blockStateMap.put(world.getBlockAt(x, y, z).getLocation(), state);
-    }
-
-    /**
-     * Sets a block type, data and add it to the BlockState list.
-     *
-     * @param world the world which contains the block
-     * @param x the x-coordinate of this block
-     * @param y the y-coordinate of this block
-     * @param z the z-coordinate of this block
-     * @param type the new type of this block
-     * @param data the new data value of this block
-     */
-    public void setTypeAndRawData(World world, int x, int y, int z, Material type, int data) {
-        GlowBlockState state = (GlowBlockState) world.getBlockAt(x, y, z).getState();
-        state.setType(type);
-        state.setRawData((byte) data);
+        state.setBlockData(data);
         blockStateMap.put(world.getBlockAt(x, y, z).getLocation(), state);
     }
 
@@ -112,9 +96,9 @@ public class BlockStateDelegate {
      * Returns the {@link BlockState} of a block at the given coordinates.
      *
      * @param world the world which contains the block
-     * @param x the x-coordinate
-     * @param y the y-coordinate
-     * @param z the z-coordinate
+     * @param x     the x-coordinate
+     * @param y     the y-coordinate
+     * @param z     the z-coordinate
      * @return The {@link BlockState} state.
      */
     public BlockState getBlockState(World world, int x, int y, int z) {

@@ -27,6 +27,7 @@ import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.material.MaterialData;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A class which manages the {@link GlowChunk}s currently loaded in memory.
@@ -71,8 +72,8 @@ public final class ChunkManager {
     /**
      * Creates a new chunk manager with the specified I/O service and world generator.
      *
-     * @param world The chunk manager's world.
-     * @param service The I/O service.
+     * @param world     The chunk manager's world.
+     * @param service   The I/O service.
      * @param generator The world generator.
      */
     public ChunkManager(GlowWorld world, ChunkIoService service, ChunkGenerator generator) {
@@ -80,7 +81,7 @@ public final class ChunkManager {
         this.service = service;
         this.generator = generator;
         biomeGrid = MapLayer.initialize(
-                world.getSeed(), world.getEnvironment(), world.getWorldType());
+            world.getSeed(), world.getEnvironment(), world.getWorldType());
     }
 
     /**
@@ -129,8 +130,8 @@ public final class ChunkManager {
     /**
      * Call the ChunkIoService to load a chunk, optionally generating the chunk.
      *
-     * @param x The X coordinate of the chunk to load.
-     * @param z The Y coordinate of the chunk to load.
+     * @param x        The X coordinate of the chunk to load.
+     * @param z        The Y coordinate of the chunk to load.
      * @param generate Whether to generate the chunk if needed.
      * @return True on success, false on failure.
      */
@@ -140,7 +141,8 @@ public final class ChunkManager {
 
     /**
      * Attempts to load a chunk; handles exceptions.
-     * @param chunk the chunk address
+     *
+     * @param chunk    the chunk address
      * @param generate if true, generate the chunk if it's new or the saved copy is corrupted
      * @return true if the chunk was loaded or generated successfully, false otherwise
      */
@@ -149,7 +151,7 @@ public final class ChunkManager {
         try {
             if (service.read(chunk)) {
                 EventFactory.getInstance()
-                        .callEvent(new ChunkLoadEvent(chunk, false));
+                    .callEvent(new ChunkLoadEvent(chunk, false));
                 return true;
             }
         } catch (IOException e) {
@@ -263,7 +265,7 @@ public final class ChunkManager {
         BiomeGrid biomes = new BiomeGrid();
 
         int[] biomeValues = biomeGrid[0].generateValues(
-                x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
+            x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
         for (int i = 0; i < biomeValues.length; i++) {
             biomes.biomes[i] = (byte) biomeValues[i];
         }
@@ -272,10 +274,10 @@ public final class ChunkManager {
         GlowChunkData glowChunkData = null;
         if (generator instanceof GlowChunkGenerator) {
             glowChunkData = (GlowChunkData)
-                    generator.generateChunkData(world, random, x, z, biomes);
+                generator.generateChunkData(world, random, x, z, biomes);
         } else {
             ChunkGenerator.ChunkData chunkData =
-                    generator.generateChunkData(world, random, x, z, biomes);
+                generator.generateChunkData(world, random, x, z, biomes);
             if (chunkData != null) {
                 glowChunkData = new GlowChunkData(world);
                 for (int i = 0; i < 16; ++i) {
@@ -284,7 +286,7 @@ public final class ChunkManager {
                         for (int k = 0; k < maxHeight; ++k) {
                             MaterialData materialData = chunkData.getTypeAndData(i, k, j);
                             glowChunkData.setBlock(i, k, j, materialData == null
-                                    ? new MaterialData(Material.AIR) : materialData);
+                                ? new MaterialData(Material.AIR) : materialData);
                         }
                     }
                 }
@@ -307,55 +309,6 @@ public final class ChunkManager {
             }
         }
 
-        // extended sections
-        short[][] extSections = generator.generateExtBlockSections(world, random, x, z, biomes);
-        if (extSections != null) {
-            ChunkSection[] sections = new ChunkSection[extSections.length];
-            for (int i = 0; i < extSections.length; ++i) {
-                if (extSections[i] != null) {
-                    sections[i] = ChunkSection.fromIdArray(extSections[i]);
-                }
-            }
-            chunk.initializeSections(sections);
-            chunk.setBiomes(biomes.biomes);
-            chunk.automaticHeightMap();
-            return;
-        }
-
-        // normal sections
-        byte[][] blockSections = generator.generateBlockSections(world, random, x, z, biomes);
-        if (blockSections != null) {
-            ChunkSection[] sections = new ChunkSection[blockSections.length];
-            for (int i = 0; i < blockSections.length; ++i) {
-                if (blockSections[i] != null) {
-                    sections[i] = ChunkSection.fromIdArray(blockSections[i]);
-                }
-            }
-            chunk.initializeSections(sections);
-            chunk.setBiomes(biomes.biomes);
-            chunk.automaticHeightMap();
-            return;
-        }
-
-        // deprecated flat generation
-        byte[] types = generator.generate(world, random, x, z);
-        ChunkSection[] sections = new ChunkSection[8];
-        for (int sy = 0; sy < sections.length; ++sy) {
-            // We can't use a normal constructor here due to the "interesting"
-            // choices used for this deprecated API (blocks are in vertical columns)
-            ChunkSection sec = new ChunkSection();
-            int by = 16 * sy;
-            for (int cx = 0; cx < 16; ++cx) {
-                for (int cz = 0; cz < 16; ++cz) {
-                    for (int cy = by; cy < by + 16; ++cy) {
-                        char type = (char) types[(((cx << 4) + cz) << 7) + cy];
-                        sec.setType(cx, cy, cz, (char) (type << 4));
-                    }
-                }
-            }
-            sections[sy] = sec;
-        }
-        chunk.initializeSections(sections);
         chunk.setBiomes(biomes.biomes);
         chunk.automaticHeightMap();
     }
@@ -424,6 +377,7 @@ public final class ChunkManager {
     /**
      * Indicates that a chunk should be locked. A chunk may be locked multiple times, and will only
      * be unloaded when all instances of a lock has been released.
+     *
      * @param key The chunk's key
      */
     private void acquireLock(Key key) {
@@ -433,6 +387,7 @@ public final class ChunkManager {
     /**
      * Releases one instance of a chunk lock. A chunk may be locked multiple times, and will only be
      * unloaded when all instances of a lock has been released.
+     *
      * @param key The chunk's key
      */
     private void releaseLock(Key key) {
@@ -455,6 +410,7 @@ public final class ChunkManager {
 
         /**
          * Acquires a lock on the given chunk key, if it's not already held.
+         *
          * @param key the key to lock
          */
         public void acquire(Key key) {
@@ -468,6 +424,7 @@ public final class ChunkManager {
 
         /**
          * Releases a lock on the given chunk key, if it's not already held.
+         *
          * @param key the key to lock
          */
         public void release(Key key) {
@@ -506,17 +463,28 @@ public final class ChunkManager {
      */
     private static class BiomeGrid implements ChunkGenerator.BiomeGrid {
 
-        private final byte[] biomes = new byte[256];
+        private final byte[] biomes = new byte[4096];
 
         @Override
         public Biome getBiome(int x, int z) {
             // upcasting is very important to get extended biomes
-            return GlowBiome.getBiome(biomes[x | z << 4] & 0xFF);
+            return GlowBiome.getBiome(biomes[x | z << 4] & 0xFF).getType();
+        }
+
+        @NotNull
+        @Override
+        public Biome getBiome(int x, int y, int z) {
+            return GlowBiome.getBiome(biomes[x | z << 4 | y << 8] & 0xFF).getType();
         }
 
         @Override
         public void setBiome(int x, int z, Biome bio) {
             biomes[x | z << 4] = (byte) GlowBiome.getId(bio);
+        }
+
+        @Override
+        public void setBiome(int x, int y, int z, @NotNull Biome bio) {
+            biomes[x | z << 4 | y << 8] = (byte) GlowBiome.getId(bio);
         }
     }
 }

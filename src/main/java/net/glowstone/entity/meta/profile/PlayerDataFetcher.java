@@ -25,7 +25,8 @@ import org.json.simple.parser.ParseException;
  */
 class PlayerDataFetcher {
 
-    private static final String PROFILE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
+    private static final String PROFILE_URL =
+        "https://sessionserver.mojang.com/session/minecraft/profile/";
     private static final String PROFILE_URL_SUFFIX = "?unsigned=false";
 
     private static final String UUID_URL = "https://api.mojang.com/profiles/minecraft";

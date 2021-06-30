@@ -31,7 +31,7 @@ public class GlowBanList extends JsonListFile implements BanList {
      * Creates a new BanList of the given type.
      *
      * @param server The server this BanList belongs to.
-     * @param type The type of BanList.
+     * @param type   The type of BanList.
      */
     public GlowBanList(GlowServer server, Type type) {
         super(getFile(server, type));

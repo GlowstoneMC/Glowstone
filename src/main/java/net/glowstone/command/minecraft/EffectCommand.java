@@ -32,7 +32,7 @@ public class EffectCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -55,7 +55,7 @@ public class EffectCommand extends GlowVanillaCommand {
             GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(args[0]);
             if (player == null) {
                 commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                        .sendInColor(ChatColor.RED, sender, name);
+                    .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 players = Collections.singletonList(player);
@@ -68,14 +68,14 @@ public class EffectCommand extends GlowVanillaCommand {
                     player.removePotionEffect(potionEffect.getType());
                 }
                 new LocalizedStringImpl("effect.cleared", commandMessages.getResourceBundle())
-                        .send(sender, player.getName());
+                    .send(sender, player.getName());
             }
             return true;
         } else {
             PotionEffectType effectType = GlowPotionEffect.parsePotionEffectId(args[1]);
             if (effectType == null) {
                 new LocalizedStringImpl("effect.unknown", commandMessages.getResourceBundle())
-                        .sendInColor(ChatColor.RED, sender, args[1]);
+                    .sendInColor(ChatColor.RED, sender, args[1]);
                 return false;
             }
 
@@ -85,7 +85,7 @@ public class EffectCommand extends GlowVanillaCommand {
                     duration = TickUtil.secondsToTicks(Integer.parseInt(args[2]));
                 } catch (NumberFormatException exc) {
                     commandMessages.getGeneric(GenericMessage.NAN)
-                            .sendInColor(ChatColor.RED, sender, args[2]);
+                        .sendInColor(ChatColor.RED, sender, args[2]);
                     return false;
                 }
             }
@@ -96,7 +96,7 @@ public class EffectCommand extends GlowVanillaCommand {
                     amplifier = Integer.parseInt(args[3]);
                 } catch (NumberFormatException exc) {
                     commandMessages.getGeneric(GenericMessage.NAN)
-                            .sendInColor(ChatColor.RED, sender, args[3]);
+                        .sendInColor(ChatColor.RED, sender, args[3]);
                     return false;
                 }
             }
@@ -106,12 +106,12 @@ public class EffectCommand extends GlowVanillaCommand {
                 hideParticles = Boolean.parseBoolean(args[4]);
             }
             LocalizedStringImpl doneMessage = new LocalizedStringImpl("effect.done",
-                    commandMessages.getResourceBundle());
+                commandMessages.getResourceBundle());
             for (GlowPlayer player : players) {
                 player.addPotionEffect(
                     new PotionEffect(effectType, duration, amplifier, false, !hideParticles));
                 doneMessage.send(sender, effectType.getName(),
-                        effectType.getId(), amplifier + 1, player.getName(), duration / 20);
+                    effectType.getId(), amplifier + 1, player.getName(), duration / 20);
             }
             return true;
         }

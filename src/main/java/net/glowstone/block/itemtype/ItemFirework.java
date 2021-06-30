@@ -19,7 +19,7 @@ public class ItemFirework extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         spawnFirework(player, holding, target.getLocation().add(clickedLoc), player.getUniqueId(),
             null);
     }
@@ -36,8 +36,9 @@ public class ItemFirework extends ItemType {
     }
 
     private void spawnFirework(GlowPlayer player, ItemStack item, Location location, UUID spawner,
-        LivingEntity boostedEntity) {
-        if (item.getType() != Material.FIREWORK || !(item.getItemMeta() instanceof FireworkMeta)) {
+                               LivingEntity boostedEntity) {
+        if (item.getType() != Material.FIREWORK_STAR
+            || !(item.getItemMeta() instanceof FireworkMeta)) {
             return;
         }
         new GlowFirework(location, spawner, boostedEntity, item);

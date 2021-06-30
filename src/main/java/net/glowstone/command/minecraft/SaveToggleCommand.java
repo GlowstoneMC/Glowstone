@@ -27,7 +27,7 @@ public class SaveToggleCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -35,7 +35,7 @@ public class SaveToggleCommand extends GlowVanillaCommand {
             world.setAutoSave(on);
         }
         new LocalizedStringImpl(doneMessageKey, commandMessages.getResourceBundle())
-                .send(sender);
+            .send(sender);
         return true;
     }
 

@@ -1,14 +1,19 @@
 package net.glowstone;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.destroystokyo.paper.HeightmapType;
 import com.flowpowered.network.Message;
+import io.papermc.paper.world.MoonPhase;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +21,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -62,16 +69,23 @@ import net.glowstone.util.RayUtil;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.collection.ConcurrentSet;
 import net.glowstone.util.config.WorldConfig;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Difficulty;
 import org.bukkit.Effect;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.GameRule;
+import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
+import org.bukkit.Raid;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+import org.bukkit.StructureType;
 import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -79,6 +93,9 @@ import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.boss.DragonBattle;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -110,8 +127,11 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.Consumer;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A class which represents the in-game world.
@@ -198,22 +218,15 @@ public class GlowWorld implements World {
     @Getter
     private final long seed;
     /**
+     * The SHA-256 hash of the world seed.
+     */
+    @Getter
+    private final byte[] seedHash;
+    /**
      * Contains how regular blocks should be pulsed.
      */
     private final ConcurrentSet<Location> tickMap = new ConcurrentSet<>();
     private final Spigot spigot = new Spigot() {
-        @Override
-        public void playEffect(Location location, Effect effect) {
-            GlowWorld.this.playEffect(location, effect, 0);
-        }
-
-        @Override
-        public void playEffect(Location location, Effect effect, int id, int data, float offsetX,
-                               float offsetY, float offsetZ, float speed, int particleCount, int radius) {
-            showParticle(location, effect, id, data, offsetX, offsetY, offsetZ, speed,
-                particleCount, radius);
-        }
-
         @Override
         public LightningStrike strikeLightning(Location loc, boolean isSilent) {
             return strikeLightningFireEvent(loc, false, isSilent);
@@ -339,6 +352,21 @@ public class GlowWorld implements World {
     @Setter
     private int ticksPerMonsterSpawns;
     /**
+     * Ticks between when water mobs are spawned.
+     */
+    @Setter
+    private int ticksPerWaterSpawns;
+    /**
+     * Ticks between when ambient water mobs are spawned.
+     */
+    @Setter
+    private int ticksPerWaterAmbientSpawns;
+    /**
+     * Ticks between when ambient mobs are spawned.
+     */
+    @Setter
+    private int ticksPerAmbientSpawns;
+    /**
      * Per-world spawn limits on hostile mobs.
      */
     @Getter
@@ -351,11 +379,17 @@ public class GlowWorld implements World {
     @Setter
     private int animalSpawnLimit;
     /**
-     * Per-world spawn limits on water mobs (squids).
+     * Per-world spawn limits on water mobs.
      */
     @Getter
     @Setter
     private int waterAnimalSpawnLimit;
+    /**
+     * Per-world spawn limits on water ambient mobs.
+     */
+    @Getter
+    @Setter
+    private int waterAmbientSpawnLimit;
     /**
      * Per-world spawn limits on ambient mobs (bats).
      */
@@ -374,6 +408,18 @@ public class GlowWorld implements World {
      */
     @Getter
     private boolean initialized;
+    /**
+     * Per-world view distance.
+     */
+    @Getter
+    @Setter
+    private int viewDistance;
+    /**
+     * Per-world hardcore setting.
+     */
+    @Getter
+    @Setter
+    private boolean hardcore;
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -401,16 +447,22 @@ public class GlowWorld implements World {
         // set up values from server defaults
         ticksPerAnimalSpawns = server.getTicksPerAnimalSpawns();
         ticksPerMonsterSpawns = server.getTicksPerMonsterSpawns();
+        ticksPerAmbientSpawns = server.getTicksPerAmbientSpawns();
+        ticksPerWaterAmbientSpawns = server.getTicksPerWaterAmbientSpawns();
+        ticksPerWaterSpawns = server.getTicksPerWaterSpawns();
         monsterSpawnLimit = server.getMonsterSpawnLimit();
         animalSpawnLimit = server.getAnimalSpawnLimit();
         waterAnimalSpawnLimit = server.getWaterAnimalSpawnLimit();
         ambientSpawnLimit = server.getAmbientSpawnLimit();
+        waterAmbientSpawnLimit = server.getWaterAnimalSpawnLimit();
         keepSpawnLoaded = server.keepSpawnLoaded();
         populateAnchoredChunks = server.populateAnchoredChunks();
         difficulty = server.getDifficulty();
         maxHeight = server.getMaxBuildHeight();
         seaLevel = GlowServer.getWorldConfig().getInt(WorldConfig.Key.SEA_LEVEL);
         worldBorder = new GlowWorldBorder(this);
+        viewDistance = server.getViewDistance();
+        hardcore = server.isHardcore();
 
         // read in world data
         WorldFinalValues values;
@@ -425,6 +477,18 @@ public class GlowWorld implements World {
         } else {
             seed = creator.seed();
             uid = UUID.randomUUID();
+        }
+
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        if (digest != null) {
+            seedHash = digest.digest(String.valueOf(seed).getBytes(StandardCharsets.UTF_8));
+        } else {
+            seedHash = new byte[32];
         }
 
         chunkManager = new ChunkManager(this, storage.getChunkIoService(), generator);
@@ -747,21 +811,29 @@ public class GlowWorld implements World {
         return RayUtil.getExposure(location, entity.getLocation());
     }
 
-    public double getMoonPhase() {
-        // https://minecraft.gamepedia.com/Moon#Phases
-        double actualPhase = Math.floor((double) fullTime / TickUtil.TICKS_PER_DAY) % 8;
+    @Override
+    public @Nullable RayTraceResult rayTrace(@NotNull Location location, @NotNull Vector vector,
+            double v, @NotNull FluidCollisionMode fluidCollisionMode, boolean b, double v1,
+            @Nullable Predicate<Entity> predicate) {
+        return null; // TODO
+    }
 
-        if (actualPhase >= 0 && actualPhase < 1) {
-            return 1.0;
-        } else if ((actualPhase >= 1 && actualPhase < 2) || (actualPhase >= 7 && actualPhase < 8)) {
-            return 0.75;
-        } else if ((actualPhase >= 2 && actualPhase < 3) || (actualPhase >= 6 && actualPhase < 7)) {
-            return 0.50;
-        } else if ((actualPhase >= 3 && actualPhase < 4) || (actualPhase >= 5 && actualPhase < 6)) {
-            return 0.25;
-        }
+    @Override
+    public MoonPhase getMoonPhase() {
+        long actualPhase = (fullTime / TickUtil.TICKS_PER_DAY) % 8;
+        return MoonPhase.getPhase(actualPhase);
+    }
 
-        return 0;
+    /**
+     * Returns the fraction of the moon that is illuminated, ranging from 0.0 at new moon to 1.0 at
+     * full moon. Always a multiple of 0.25. See
+     * <a href="https://minecraft.gamepedia.com/Moon#Phases">Moon Phases</a> at Gamepedia.
+     *
+     * @return the fraction of the moon that is illuminated
+     */
+    public double getMoonPhaseFraction() {
+        MoonPhase phase = getMoonPhase();
+        return 0.25 * Math.abs(phase.ordinal() - 4);
     }
 
     public Collection<GlowPlayer> getRawPlayers() {
@@ -774,6 +846,16 @@ public class GlowWorld implements World {
     @Override
     public List<Player> getPlayers() {
         return new ArrayList<>(entityManager.getAll(GlowPlayer.class));
+    }
+
+    @Override
+    public Entity getEntity(UUID uuid) {
+        for (Entity entity : getEntities()) {
+            if (entity.getUniqueId().equals(uuid)) {
+                return entity;
+            }
+        }
+        return null;
     }
 
     /**
@@ -791,21 +873,73 @@ public class GlowWorld implements World {
     @Override
     public Collection<Entity> getNearbyEntities(Location location, double x, double y, double z) {
         Vector minCorner = new Vector(
-            location.getX() - x, location.getY() - y, location.getZ() - z);
+                location.getX() - x, location.getY() - y, location.getZ() - z);
         Vector maxCorner = new Vector(
-            location.getX() + x, location.getY() + y, location.getZ() + z);
+                location.getX() + x, location.getY() + y, location.getZ() + z);
         BoundingBox searchBox = BoundingBox.fromCorners(minCorner, maxCorner); // TODO: test
         GlowEntity except = null;
         return entityManager.getEntitiesInside(searchBox, except);
     }
 
     @Override
-    public Entity getEntity(UUID uuid) {
-        for (Entity entity : getEntities()) {
-            if (entity.getUniqueId().equals(uuid)) {
-                return entity;
-            }
-        }
+    public @NotNull Collection<Entity> getNearbyEntities(@NotNull Location location, double v,
+            double v1, double v2, @Nullable Predicate<Entity> predicate) {
+        return null;
+    }
+
+    @Override
+    public @NotNull Collection<Entity> getNearbyEntities(
+            org.bukkit.util.@NotNull BoundingBox boundingBox) {
+        return null;
+    }
+
+    @Override
+    public @NotNull Collection<Entity> getNearbyEntities(
+            org.bukkit.util.@NotNull BoundingBox boundingBox,
+            @Nullable Predicate<Entity> predicate) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceEntities(@NotNull Location location,
+            @NotNull Vector vector, double v) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceEntities(@NotNull Location location,
+            @NotNull Vector vector, double v, double v1) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceEntities(@NotNull Location location,
+            @NotNull Vector vector, double v, @Nullable Predicate<Entity> predicate) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceEntities(@NotNull Location location,
+            @NotNull Vector vector, double v, double v1, @Nullable Predicate<Entity> predicate) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceBlocks(@NotNull Location location,
+            @NotNull Vector vector, double v) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceBlocks(@NotNull Location location,
+            @NotNull Vector vector, double v, @NotNull FluidCollisionMode fluidCollisionMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceBlocks(@NotNull Location location,
+            @NotNull Vector vector, double v, @NotNull FluidCollisionMode fluidCollisionMode,
+            boolean b) {
         return null;
     }
 
@@ -859,6 +993,12 @@ public class GlowWorld implements World {
     @Override
     public boolean setSpawnLocation(Location newSpawn) {
         return setSpawnLocation(newSpawn, true);
+    }
+
+    @Override
+    public boolean setSpawnLocation(int x, int y, int z, float angle) {
+        // TODO: Not clear how to split angle in pitch & yaw
+        return setSpawnLocation(new Location(this, x, y, z, angle, angle), true);
     }
 
     @Override
@@ -1048,6 +1188,24 @@ public class GlowWorld implements World {
         return ticksPerMonsterSpawns;
     }
 
+    @Override
+    public long getTicksPerWaterSpawns() {
+        // Can't be lombokified because inherited return type is long, not int
+        return ticksPerWaterSpawns;
+    }
+
+    @Override
+    public long getTicksPerWaterAmbientSpawns() {
+        // Can't be lombokified because inherited return type is long, not int
+        return ticksPerWaterAmbientSpawns;
+    }
+
+    @Override
+    public long getTicksPerAmbientSpawns() {
+        // Can't be lombokified because inherited return type is long, not int
+        return ticksPerAmbientSpawns;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // force-save
 
@@ -1111,8 +1269,8 @@ public class GlowWorld implements World {
                 for (BlockState state : blockStates) {
                     state.update(true);
                     if (delegate != null) {
-                        delegate.setTypeIdAndData(state.getX(), state.getY(), state.getZ(), state
-                            .getTypeId(), state.getRawData());
+                        delegate.setBlockData(state.getX(), state.getY(), state.getZ(),
+                                state.getBlockData());
                     }
                 }
                 return true;
@@ -1196,14 +1354,13 @@ public class GlowWorld implements World {
         return new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y, z);
     }
 
-    @Override
-    public int getBlockTypeIdAt(Location location) {
-        return getBlockTypeIdAt(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    public Material getBlockTypeAt(int x, int y, int z) {
+        return getBlockDataAt(x, y, z).getMaterial();
     }
 
-    @Override
-    public int getBlockTypeIdAt(int x, int y, int z) {
-        return getChunkAt(x >> 4, z >> 4).getType(x & 0xF, z & 0xF, y);
+    public BlockData getBlockDataAt(int x, int y, int z) {
+        GlowChunk chunk = getChunkAt(x >> 4, z >> 4);
+        return chunk.getBlockData(x & 0xf, z & 0xf, y);
     }
 
     @Override
@@ -1212,8 +1369,37 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public int getHighestBlockYAt(int x, int z, @NotNull HeightmapType heightmapType) {
+        return getHighestBlockAt(x, z, heightmapType).getY();
+    }
+
+    @Override
+    public int getHighestBlockYAt(int x, int z, @NotNull HeightMap heightMap) {
+        return getHighestBlockAt(x, z, heightMap).getY();
+    }
+
+    @Override
+    public int getHighestBlockYAt(@NotNull Location location, @NotNull HeightMap heightMap) {
+        return getHighestBlockAt(location, heightMap).getY();
+    }
+
+    @Override
     public int getHighestBlockYAt(int x, int z) {
         return getChunkAt(x >> 4, z >> 4).getHeight(x & 0xf, z & 0xf);
+    }
+
+    @NotNull
+    @Override
+    public Block getHighestBlockAt(int x, int z, @NotNull HeightMap heightMap) {
+        // TODO: Support height maps
+        return getHighestBlockAt(x, z);
+    }
+
+    @NotNull
+    @Override
+    public Block getHighestBlockAt(@NotNull Location location, @NotNull HeightMap heightMap) {
+        // TODO: Support height maps
+        return getHighestBlockAt(location);
     }
 
     @Override
@@ -1263,11 +1449,6 @@ public class GlowWorld implements World {
     }
 
     @Override
-    public boolean isChunkGenerated(int x, int z) {
-        throw new UnsupportedOperationException("Not Implemented");
-    }
-
-    @Override
     public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
         ServerProvider.getServer().getScheduler()
             .runTaskAsynchronously(null, () -> cb.onLoad(chunkManager.getChunk(x, z)));
@@ -1283,6 +1464,30 @@ public class GlowWorld implements World {
         getChunkAtAsync(block.getX() >> 4, block.getZ() >> 4, cb);
     }
 
+    @Override
+    public @NotNull CompletableFuture<Chunk> getChunkAtAsync(int x, int z, boolean gen) {
+        return getChunkAtAsync(x, z, gen, false);
+    }
+
+    @NotNull
+    @Override
+    public CompletableFuture<Chunk> getChunkAtAsync(int x, int z, boolean gen, boolean urgent) {
+        // TODO: Support 'urgent'
+        CompletableFuture<Chunk> future = new CompletableFuture<>();
+        ServerProvider.getServer().getScheduler()
+                .runTaskAsynchronously(null, () -> {
+                    GlowChunk chunk = chunkManager.getChunk(x, z);
+                    chunk.load(gen);
+                    future.complete(chunk);
+                });
+        return future;
+    }
+
+    @Override
+    public @NotNull NamespacedKey getKey() {
+        return NamespacedKey.minecraft(name);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Chunk loading and unloading
 
@@ -1294,6 +1499,11 @@ public class GlowWorld implements World {
     @Override
     public boolean isChunkLoaded(int x, int z) {
         return chunkManager.isChunkLoaded(x, z);
+    }
+
+    @Override
+    public boolean isChunkGenerated(int x, int z) {
+        return chunkManager.getChunk(x, z).isPopulated();
     }
 
     @Override
@@ -1336,7 +1546,6 @@ public class GlowWorld implements World {
         return unloadChunk(x, z, save, true);
     }
 
-    @Override
     public boolean unloadChunk(int x, int z, boolean save, boolean safe) {
         return !isChunkLoaded(x, z) || getChunkAt(x, z).unload(save, safe);
     }
@@ -1346,7 +1555,6 @@ public class GlowWorld implements World {
         return unloadChunkRequest(x, z, true);
     }
 
-    @Override
     public boolean unloadChunkRequest(int x, int z, boolean safe) {
         if (safe && isChunkInUse(x, z)) {
             return false;
@@ -1386,6 +1594,48 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public boolean isChunkForceLoaded(int x, int z) {
+        return false;
+    }
+
+    @Override
+    public void setChunkForceLoaded(int x, int z, boolean forced) {
+        throw new UnsupportedOperationException("Force-loading chunks is not supported yet.");
+    }
+
+    @Override
+    public @NotNull Collection<Chunk> getForceLoadedChunks() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean addPluginChunkTicket(int x, int z, @NotNull Plugin plugin) {
+        throw new UnsupportedOperationException("Chunk tickets are not implemented yet.");
+    }
+
+    @Override
+    public boolean removePluginChunkTicket(int x, int z, @NotNull Plugin plugin) {
+        throw new UnsupportedOperationException("Chunk tickets are not implemented yet.");
+    }
+
+    @Override
+    public void removePluginChunkTickets(@NotNull Plugin plugin) {
+        throw new UnsupportedOperationException("Chunk tickets are not implemented yet.");
+    }
+
+    @NotNull
+    @Override
+    public Collection<Plugin> getPluginChunkTickets(int x, int z) {
+        throw new UnsupportedOperationException("Chunk tickets are not implemented yet.");
+    }
+
+    @NotNull
+    @Override
+    public Map<Plugin, Collection<Chunk>> getPluginChunkTickets() {
+        throw new UnsupportedOperationException("Chunk tickets are not implemented yet.");
+    }
+
+    @Override
     public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome,
                                                boolean includeBiomeTempRain) {
         return new EmptySnapshot(x, z, this, includeBiome, includeBiomeTempRain);
@@ -1397,19 +1647,30 @@ public class GlowWorld implements World {
     @Override
     public Biome getBiome(int x, int z) {
         if (environment == Environment.THE_END) {
-            return Biome.SKY;
-        } else if (environment == Environment.NETHER) {
-            return Biome.HELL;
+            return Biome.THE_END;
+        } else {
+            return GlowBiome.getBiome(getChunkAt(x >> 4, z >> 4).getBiome(x & 0xF, z & 0xF))
+                    .getType();
         }
+    }
 
-        return GlowBiome.getBiome(getChunkAt(x >> 4, z >> 4).getBiome(x & 0xF, z & 0xF));
+    @NotNull
+    @Override
+    public Biome getBiome(int x, int y, int z) {
+        return getBiome(x, z); // TODO: Biomes are now 3-dimensional
     }
 
     @Override
-    public void setBiome(int x, int z, Biome bio) {
+    public void setBiome(int x, int z, @NotNull Biome bio) {
         getChunkAtAsync(
             x >> 4, z >> 4, chunk -> ((GlowChunk) chunk)
                 .setBiome(x & 0xF, z & 0xF, GlowBiome.getId(bio)));
+    }
+
+    @Override
+    public void setBiome(int x, int y, int z, @NotNull Biome biome) {
+        // TODO: Biomes are now 3-dimensional
+        setBiome(x, z, biome);
     }
 
     @Override
@@ -1418,8 +1679,25 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public double getTemperature(int x, int y, int z) {
+        // TODO: Biomes are now 3-dimensional
+        return getTemperature(x, z);
+    }
+
+    @Override
     public double getHumidity(int x, int z) {
         return GlowBiomeClimate.getBiomeHumidity(getBiome(x, z));
+    }
+
+    @Override
+    public double getHumidity(int x, int y, int z) {
+        // TODO: Biomes are now 3-dimensional
+        return getHumidity(x, z);
+    }
+
+    @Override
+    public int getMinHeight() {
+        return 0;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1428,13 +1706,22 @@ public class GlowWorld implements World {
     @Override
     public <T extends Entity> T spawn(Location location,
                                       Class<T> clazz) throws IllegalArgumentException {
-        return (T) spawn(location, EntityRegistry.getEntity(clazz), SpawnReason.CUSTOM);
+        return (T) spawnGlowEntity(location, EntityRegistry.getEntity(clazz), SpawnReason.CUSTOM, null);
     }
 
     @Override
     public <T extends Entity> T spawn(Location location, Class<T> clazz,
                                       Consumer<T> function) throws IllegalArgumentException {
-        return null; // TODO: work on type mismatches
+        return (T) spawnGlowEntity(location, EntityRegistry.getEntity(clazz), SpawnReason.CUSTOM, function);
+    }
+
+    @NotNull
+    @Override
+    public <T extends Entity> T spawn(Location location,
+                                      Class<T> clazz,
+                                      Consumer<T> function,
+                                      CreatureSpawnEvent.SpawnReason spawnReason) throws IllegalArgumentException {
+        return (T) spawnGlowEntity(location, EntityRegistry.getEntity(clazz), spawnReason, function);
     }
 
     /**
@@ -1446,8 +1733,8 @@ public class GlowWorld implements World {
      * @return an instance of the spawned {@link Entity}
      * @throws IllegalArgumentException TODO: document the reason this can happen
      */
-    public GlowEntity spawn(Location location, Class<? extends GlowEntity> clazz,
-                            SpawnReason reason) throws IllegalArgumentException {
+    public <T extends GlowEntity, E extends Entity> GlowEntity spawnGlowEntity(Location location, Class<T> clazz,
+                                                                               SpawnReason reason, @Nullable Consumer<E> function) throws IllegalArgumentException {
         checkNotNull(location);
         checkNotNull(clazz);
 
@@ -1457,7 +1744,9 @@ public class GlowWorld implements World {
             if (EntityRegistry.getEntity(clazz) != null) {
                 entity = EntityStorage.create(clazz, location);
             }
-            // function.accept(entity); TODO: work on type mismatches
+            if (entity != null && function != null) {
+                function.accept((E) entity);
+            }
             EntitySpawnEvent spawnEvent = null;
             if (entity instanceof LivingEntity) {
                 spawnEvent = EventFactory.getInstance()
@@ -1540,6 +1829,15 @@ public class GlowWorld implements World {
         return entity;
     }
 
+    @Override
+    public @NotNull Item dropItem(@NotNull Location location, @NotNull ItemStack stack, @Nullable Consumer<Item> consumer) {
+        final GlowItem item = dropItem(location, stack);
+        if (!item.isRemoved() && consumer != null) {
+            consumer.accept(item);
+        }
+        return item;
+    }
+
     /**
      * Spawn an item at the given {@link Location} with shooting effect.
      *
@@ -1571,6 +1869,15 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public @NotNull Item dropItemNaturally(@NotNull Location location, @NotNull ItemStack stack, @Nullable Consumer<Item> consumer) {
+        final GlowItem item = dropItemNaturally(location, stack);
+        if (!item.isRemoved() && consumer != null) {
+            consumer.accept(item);
+        }
+        return item;
+    }
+
+    @Override
     public Arrow spawnArrow(Location location, Vector velocity, float speed, float spread) {
         // Transformative magic
         Vector randVec = new Vector(ThreadLocalRandom.current().nextGaussian(), ThreadLocalRandom
@@ -1589,10 +1896,11 @@ public class GlowWorld implements World {
         return arrow;
     }
 
+    @NotNull
     @Override
-    public <T extends Arrow> T spawnArrow(Location location, Vector direction, float speed,
-                                          float spread, Class<T> clazz) {
-        return null;
+    public <T extends AbstractArrow> T spawnArrow(@NotNull Location location, @NotNull Vector vector, float speed, float spread, @NotNull Class<T> aClass) {
+        // TODO: 1.16
+        throw new NotImplementedException();
     }
 
     @Override
@@ -1603,20 +1911,18 @@ public class GlowWorld implements World {
     }
 
     @Override
+    @Deprecated
     public FallingBlock spawnFallingBlock(Location location, Material material,
-                                          byte data) throws IllegalArgumentException {
-        checkNotNull(location);
-        checkNotNull(material, "Unknown material type.");
-        checkArgument(data >= 0, "Block data may not be negative.");
-        checkArgument(data < 16, "Block data may not be higher than 15.");
-        return new GlowFallingBlock(location, material, data);
+            byte data) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Deprecated API.");
     }
 
     @Override
-    public FallingBlock spawnFallingBlock(Location location, int blockId,
-                                          byte blockData) throws IllegalArgumentException {
-        Material material = Material.getMaterial(blockId);
-        return spawnFallingBlock(location, material, blockData);
+    public FallingBlock spawnFallingBlock(Location location, BlockData blockData)
+            throws IllegalArgumentException {
+        checkNotNull(location);
+        checkNotNull(blockData, "BlockData cannot be null.");
+        return new GlowFallingBlock(location, blockData);
     }
 
     @Override
@@ -1656,6 +1962,16 @@ public class GlowWorld implements World {
             % TickUtil.TICKS_PER_DAY;
 
         getRawPlayers().forEach(GlowPlayer::sendTime);
+    }
+
+    @Override
+    public boolean isDayTime() {
+        return false;
+    }
+
+    @Override
+    public long getGameTime() {
+        return 0;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1714,6 +2030,24 @@ public class GlowWorld implements World {
         }
     }
 
+    @Override
+    public boolean isClearWeather() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void setClearWeatherDuration(int i) {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public int getClearWeatherDuration() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
     private void updateWeather() {
         float previousRainDensity = rainDensity;
         float previousSkyDarkness = skyDarkness;
@@ -1753,6 +2087,16 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public boolean createExplosion(@NotNull Location location, float power, boolean setFire, boolean breakBlocks) {
+        return createExplosion(null, location, power, setFire, breakBlocks);
+    }
+
+    @Override
+    public boolean createExplosion(@NotNull Location location, float power, boolean setFire, boolean breakBlocks, @Nullable Entity source) {
+        return createExplosion(source, location, power, setFire, breakBlocks);
+    }
+
+    @Override
     public boolean createExplosion(double x, double y, double z, float power) {
         return createExplosion(x, y, z, power, false, true);
     }
@@ -1766,6 +2110,11 @@ public class GlowWorld implements World {
     public boolean createExplosion(double x, double y, double z, float power, boolean setFire,
                                    boolean breakBlocks) {
         return createExplosion(null, x, y, z, power, setFire, breakBlocks);
+    }
+
+    @Override
+    public boolean createExplosion(double x, double y, double z, float power, boolean setFire, boolean breakBlocks, @Nullable Entity source) {
+        return createExplosion(source, x, y, z, power, setFire, breakBlocks);
     }
 
     /**
@@ -1871,6 +2220,28 @@ public class GlowWorld implements World {
         return spigot;
     }
 
+    @Nullable
+    @Override
+    public Raid locateNearestRaid(@NotNull Location location, int radius) {
+        throw new UnsupportedOperationException("Raids are not supported yet.");
+    }
+
+    @NotNull
+    @Override
+    public List<Raid> getRaids() {
+        throw new UnsupportedOperationException("Raids are not supported yet.");
+    }
+
+    @Nullable
+    @Override
+    public DragonBattle getEnderDragonBattle() {
+        if (this.getEnvironment() == Environment.THE_END) {
+            throw new UnsupportedOperationException("The DragonBattle API is not supported yet.");
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Displays the given particle to all players.
      *
@@ -1894,8 +2265,7 @@ public class GlowWorld implements World {
             radius = 16;
         }
 
-        showParticle(loc, particle, particle
-            .getId(), 0, offsetX, offsetY, offsetZ, speed, amount, radius);
+        showParticle(loc, particle, particle.getId(), 0, offsetX, offsetY, offsetZ, speed, amount, radius);
     }
 
     /**
@@ -1921,10 +2291,10 @@ public class GlowWorld implements World {
         double radiusSquared = radius * radius;
 
         getRawPlayers().stream()
-            .filter(player -> player.getLocation().distanceSquared(loc) <= radiusSquared)
-            .forEach(player -> player.spigot()
-                .playEffect(loc, particle, id, data, offsetX, offsetY, offsetZ, speed,
-                    amount, radius));
+                .filter(player -> player.getLocation().distanceSquared(loc) <= radiusSquared)
+                .forEach(player -> player.showParticle(loc, particle,
+                        new MaterialData(server.getBlockDataManager().convertToBlockData(id).getMaterial(), (byte) data),
+                        offsetX, offsetY, offsetZ, speed, amount));
     }
 
     /**
@@ -2008,6 +2378,11 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public <T> T getGameRuleValue(GameRule<T> gameRule) {
+        return null; // TODO
+    }
+
+    @Override
     public boolean setGameRuleValue(@NonNls String rule, String value) {
         if (!gameRuleMap.setValue(rule, value)) {
             return false;
@@ -2031,6 +2406,16 @@ public class GlowWorld implements World {
     @Override
     public boolean isGameRule(String rule) {
         return gameRuleMap.isGameRule(rule);
+    }
+
+    @Override
+    public <T> T getGameRuleDefault(GameRule<T> gameRule) {
+        return null; // TODO
+    }
+
+    @Override
+    public <T> boolean setGameRule(GameRule<T> gameRule, T t) {
+        return false;
     }
 
     public Map<String, CommandFunction> getFunctions() {
@@ -2121,15 +2506,15 @@ public class GlowWorld implements World {
 
     @Override
     public <T> void spawnParticle(Particle particle, double x, double y, double z, int count,
-                                  double offsetX, double offsetY, double offsetZ, double extra, T data) {
+            double offsetX, double offsetY, double offsetZ, double extra, T data) {
         spawnParticle(particle, new Location(this, x, y, z), count, offsetX, offsetY, offsetZ,
-            extra, data);
+                extra, data);
     }
 
     @Override
     public <T> void spawnParticle(Particle particle, List<Player> receivers, Player source,
-                                  double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ,
-                                  double extra, T data) {
+            double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ,
+            double extra, T data) {
         if (receivers == null) {
             receivers = getPlayers();
         }
@@ -2143,8 +2528,118 @@ public class GlowWorld implements World {
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, List<Player> receivers, Player source, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra, T data, boolean force) {
+    public <T> void spawnParticle(@NotNull Particle particle, @Nullable List<Player> list,
+            @Nullable Player player, double v, double v1, double v2, int i, double v3, double v4,
+            double v5, double v6, @Nullable T t, boolean b) {
         throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    @Override
+    public <T> void spawnParticle(@NotNull Particle particle, @NotNull Location location, int i,
+            double v, double v1, double v2, double v3, @Nullable T t, boolean b) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(@NotNull Particle particle, double v, double v1, double v2, int i,
+            double v3, double v4, double v5, double v6, @Nullable T t, boolean b) {
+
+    }
+
+    @Override
+    public @Nullable Location locateNearestStructure(@NotNull Location location,
+            @NotNull StructureType structureType, int i, boolean b) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Location locateNearestBiome(@NotNull Location location, @NotNull Biome biome, int i) {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public @Nullable Location locateNearestBiome(@NotNull Location location, @NotNull Biome biome, int i, int i1) {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isUltrawarm() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isNatural() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public double getCoordinateScale() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean hasSkylight() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean hasBedrockCeiling() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isPiglinSafe() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean doesBedWork() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean doesRespawnAnchorWork() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean hasRaids() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isFixedTime() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public @NotNull Collection<Material> getInfiniburn() {
+        // TODO: 1.16
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public int getNoTickViewDistance() {
+        // TODO: Distinction between no-tick and tick view distance
+        return this.getViewDistance();
+    }
+
+    @Override
+    public void setNoTickViewDistance(int viewDistance) {
+        // TODO: Distinction between no-tick and tick view distance
+        this.setViewDistance(viewDistance);
     }
 
     @Override

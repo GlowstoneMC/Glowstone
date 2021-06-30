@@ -73,7 +73,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * <p>The helper methods provided in this class may be used to retrieve the value, such as
      * {@link #getBoolean(String)}.</p>
      *
-     * @param rule the rule to set, cannot be null
+     * @param rule  the rule to set, cannot be null
      * @param value the value to set, cannot be null or be represented as null
      * @return true if set, false otherwise
      */
@@ -136,7 +136,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * the default will be returned.
      *
      * @param rule the rule to look up
-     * @param def the default value
+     * @param def  the default value
      * @return the integer value of the rule, or the default
      */
     public int getInt(@NonNls String rule, int def) {

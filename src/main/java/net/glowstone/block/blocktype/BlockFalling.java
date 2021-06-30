@@ -6,6 +6,7 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -21,13 +22,13 @@ public class BlockFalling extends BlockType {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
     public void onNearBlockChanged(GlowBlock me, BlockFace face, GlowBlock other, Material oldType,
-        byte oldData, Material newType, byte newData) {
+                                   byte oldData, Material newType, byte newData) {
         if (face == BlockFace.DOWN) {
             updatePhysics(me);
         }
@@ -50,9 +51,9 @@ public class BlockFalling extends BlockType {
         me = me.getWorld().getBlockAt(me.getX(), me.getY(), me.getZ());
 
         if (!me.isEmpty()) {
-            byte data = me.getData();
+            BlockData data = me.getBlockData();
             me.setType(Material.AIR);
-            me.getWorld().spawnFallingBlock(me.getLocation().add(0.50, 0.00, 0.50), drop, data);
+            me.getWorld().spawnFallingBlock(me.getLocation().add(0.50, 0.00, 0.50), data);
         }
     }
 

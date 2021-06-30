@@ -36,7 +36,7 @@ public final class NibbleArray {
      * Construct a new NibbleArray with the given size in nibble, filled with the specified nibble
      * value.
      *
-     * @param size The number of nibbles in the array.
+     * @param size  The number of nibbles in the array.
      * @param value The value to fill the array with.
      * @throws IllegalArgumentException If size is not positive and even.
      */
@@ -125,8 +125,8 @@ public final class NibbleArray {
      */
     public void setRawData(byte... source) {
         checkArgument(
-                source.length == rawData.length,
-                "expected byte array of length " + rawData.length + ", not " + source.length);
+            source.length == rawData.length,
+            "expected byte array of length " + rawData.length + ", not " + source.length);
         System.arraycopy(source, 0, rawData, 0, source.length);
     }
 

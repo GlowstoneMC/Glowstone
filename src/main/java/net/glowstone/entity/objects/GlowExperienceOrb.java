@@ -19,6 +19,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
 
@@ -47,7 +48,7 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     /**
      * Creates an experience orb.
      *
-     * @param location the location
+     * @param location   the location
      * @param experience the amount of experience contained
      */
     public GlowExperienceOrb(Location location, int experience) {
@@ -64,7 +65,7 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     }
 
     @Override
-    public void damage(double amount, Entity source, EntityDamageEvent.DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull EntityDamageEvent.DamageCause cause) {
         if (!isInvulnerable()) {
             remove();
         }
@@ -99,7 +100,7 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
         DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(
             Collections.singletonList(this.getEntityId()));
         List<Message> spawnMessages = this.createSpawnMessage();
-        Message[] messages = new Message[]{destroyMessage, spawnMessages.get(0)};
+        Message[] messages = new Message[] {destroyMessage, spawnMessages.get(0)};
         getWorld()
             .getRawPlayers()
             .stream()

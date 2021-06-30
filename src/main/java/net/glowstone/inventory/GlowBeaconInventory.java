@@ -18,7 +18,8 @@ public class GlowBeaconInventory extends GlowInventory implements BeaconInventor
     private static final int INPUT_SLOT = 0;
 
     public GlowBeaconInventory(Beacon owner) {
-        super(owner, InventoryType.BEACON);
+        // TODO: Investigate why Beacon isn't InventoryHolder anymore...
+        super(null, InventoryType.BEACON);
 
         getSlot(INPUT_SLOT).setType(InventoryType.SlotType.CRAFTING);
     }

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,7 +13,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,12 +31,19 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a chunk of the map.
@@ -143,7 +153,7 @@ public class GlowChunk implements Chunk {
 
     @Override
     public Entity[] getEntities() {
-        return entities.toArray(new Entity[entities.size()]);
+        return entities.toArray(new Entity[0]);
     }
 
     public Collection<GlowEntity> getRawEntities() {
@@ -154,6 +164,25 @@ public class GlowChunk implements Chunk {
     @Deprecated
     public GlowBlockState[] getTileEntities() {
         return getBlockEntities();
+    }
+
+    @NotNull
+    @Override
+    public BlockState[] getTileEntities(boolean useSnapshot) {
+        if (!useSnapshot) {
+            return getBlockEntities();
+        }
+        throw new UnsupportedOperationException(
+            "getTileEntities(true) not yet implemented"); // TODO
+    }
+
+    @NotNull
+    @Override
+    public Collection<BlockState> getTileEntities(@NotNull Predicate<Block> blockPredicate,
+                                                  boolean useSnapshot) {
+        BlockState[] allBlockEntities = getTileEntities(useSnapshot);
+        return Arrays.stream(allBlockEntities)
+            .filter(state -> blockPredicate.test(state.getBlock())).collect(Collectors.toList());
     }
 
     /**
@@ -170,7 +199,7 @@ public class GlowChunk implements Chunk {
             }
         }
 
-        return states.toArray(new GlowBlockState[states.size()]);
+        return states.toArray(new GlowBlockState[0]);
     }
 
     public Collection<BlockEntity> getRawBlockEntities() {
@@ -194,6 +223,39 @@ public class GlowChunk implements Chunk {
         }
 
         return this.isSlimeChunk == 1;
+    }
+
+    @Override
+    public boolean isForceLoaded() {
+        return false;
+    }
+
+    @Override
+    public void setForceLoaded(boolean b) {
+
+    }
+
+    @Override
+    public boolean addPluginChunkTicket(@NotNull Plugin plugin) {
+        return false;
+    }
+
+    @Override
+    public boolean removePluginChunkTicket(@NotNull Plugin plugin) {
+        return false;
+    }
+
+    @NotNull
+    @Override
+    public Collection<Plugin> getPluginChunkTickets() {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public boolean contains(@NotNull BlockData block) {
+        // TODO
+        return false;
     }
 
     @Override
@@ -226,16 +288,17 @@ public class GlowChunk implements Chunk {
 
     @Override
     public boolean unload() {
-        return unload(true, true);
+        return unload(true, false);
     }
 
     @Override
     public boolean unload(boolean save) {
-        return unload(save, true);
+        return unload(save, false);
     }
 
-    @Override
+    @Deprecated
     public boolean unload(boolean save, boolean safe) {
+        safe = false;
         if (!isLoaded()) {
             return true;
         }
@@ -248,10 +311,7 @@ public class GlowChunk implements Chunk {
             return false;
         }
 
-        if (EventFactory.getInstance()
-            .callEvent(new ChunkUnloadEvent(this)).isCancelled()) {
-            return false;
-        }
+        EventFactory.getInstance().callEvent(new ChunkUnloadEvent(this));
 
         sections = null;
         biomes = null;
@@ -312,35 +372,87 @@ public class GlowChunk implements Chunk {
      * @param cz   the Z coordinate of the BlockEntity
      * @param type the type of BlockEntity
      * @return The BlockEntity that was created.
+     * @deprecated Uses ordinals in place of old integer IDs.
      */
+    @Deprecated
     public BlockEntity createEntity(int cx, int cy, int cz, int type) {
-        Material material = Material.getMaterial(type);
+        Material material =
+            ((GlowServer) Bukkit.getServer()).getBlockDataManager().convertToBlockData(type)
+                .getMaterial();
+        return createEntity(cx, cy, cz, material);
+    }
 
-        switch (material) {
-            case SIGN:
-            case SIGN_POST:
-            case WALL_SIGN:
-            case BED_BLOCK:
+    /**
+     * If needed, create a new block entity at the given location.
+     *
+     * @param cx   the X coordinate of the BlockEntity
+     * @param cy   the Y coordinate of the BlockEntity
+     * @param cz   the Z coordinate of the BlockEntity
+     * @param type the type of BlockEntity
+     * @return The BlockEntity that was created.
+     */
+    public BlockEntity createEntity(int cx, int cy, int cz, Material type) {
+        switch (type) {
+            // TODO: List may be incomplete
+            case BLACK_BED:
+            case BLUE_BED:
+            case GREEN_BED:
+            case CYAN_BED:
+            case RED_BED:
+            case PURPLE_BED:
+            case BROWN_BED:
+            case GRAY_BED:
+            case LIGHT_GRAY_BED:
+            case LIGHT_BLUE_BED:
+            case LIME_BED:
+            case ORANGE_BED:
+            case PINK_BED:
+            case MAGENTA_BED:
+            case YELLOW_BED:
+            case WHITE_BED:
             case CHEST:
             case TRAPPED_CHEST:
-            case BURNING_FURNACE:
             case FURNACE:
             case DISPENSER:
             case DROPPER:
             case END_GATEWAY:
             case HOPPER:
-            case MOB_SPAWNER:
+            case SPAWNER:
             case NOTE_BLOCK:
             case JUKEBOX:
             case BREWING_STAND:
-            case SKULL:
-            case COMMAND:
-            case COMMAND_CHAIN:
-            case COMMAND_REPEATING:
+            case PLAYER_HEAD:
+            case CREEPER_HEAD:
+            case DRAGON_HEAD:
+            case ZOMBIE_HEAD:
+            case SKELETON_SKULL:
+            case WITHER_SKELETON_SKULL:
+            case PLAYER_WALL_HEAD:
+            case CREEPER_WALL_HEAD:
+            case DRAGON_WALL_HEAD:
+            case ZOMBIE_WALL_HEAD:
+            case SKELETON_WALL_SKULL:
+            case WITHER_SKELETON_WALL_SKULL:
+            case COMMAND_BLOCK:
+            case CHAIN_COMMAND_BLOCK:
+            case REPEATING_COMMAND_BLOCK:
             case BEACON:
-            case BANNER:
-            case WALL_BANNER:
-            case STANDING_BANNER:
+            case BLACK_BANNER:
+            case BLUE_BANNER:
+            case GREEN_BANNER:
+            case CYAN_BANNER:
+            case RED_BANNER:
+            case PURPLE_BANNER:
+            case BROWN_BANNER:
+            case GRAY_BANNER:
+            case LIGHT_GRAY_BANNER:
+            case LIGHT_BLUE_BANNER:
+            case LIME_BANNER:
+            case ORANGE_BANNER:
+            case PINK_BANNER:
+            case MAGENTA_BANNER:
+            case YELLOW_BANNER:
+            case WHITE_BANNER:
             case FLOWER_POT:
             case STRUCTURE_BLOCK:
             case WHITE_SHULKER_BOX:
@@ -351,7 +463,7 @@ public class GlowChunk implements Chunk {
             case LIME_SHULKER_BOX:
             case PINK_SHULKER_BOX:
             case GRAY_SHULKER_BOX:
-            case SILVER_SHULKER_BOX:
+            case LIGHT_GRAY_SHULKER_BOX:
             case CYAN_SHULKER_BOX:
             case PURPLE_SHULKER_BOX:
             case BLUE_SHULKER_BOX:
@@ -359,13 +471,11 @@ public class GlowChunk implements Chunk {
             case GREEN_SHULKER_BOX:
             case RED_SHULKER_BOX:
             case BLACK_SHULKER_BOX:
-            case ENCHANTMENT_TABLE:
+            case ENCHANTING_TABLE:
             case ENDER_CHEST:
             case DAYLIGHT_DETECTOR:
-            case DAYLIGHT_DETECTOR_INVERTED:
-            case REDSTONE_COMPARATOR_OFF:
-            case REDSTONE_COMPARATOR_ON:
-                BlockType blockType = ItemTable.instance().getBlock(material);
+            case COMPARATOR:
+                BlockType blockType = ItemTable.instance().getBlock(type);
                 if (blockType == null) {
                     return null;
                 }
@@ -420,6 +530,12 @@ public class GlowChunk implements Chunk {
         return blockEntities.get(coordinateToIndex(x, z, y));
     }
 
+    public BlockData getBlockData(int x, int z, int y) {
+        ChunkSection section = getSection(y);
+        return section == null ? Bukkit.getServer().createBlockData(Material.AIR) :
+            section.getBlockData(x, y, z);
+    }
+
     /**
      * Gets the type of a block within this chunk.
      *
@@ -427,7 +543,10 @@ public class GlowChunk implements Chunk {
      * @param z The Z coordinate.
      * @param y The Y coordinate.
      * @return The type.
+     * @see #getBlockData(int, int, int) Replacement method.
+     * @deprecated Removed in 1.13.
      */
+    @Deprecated
     public int getType(int x, int z, int y) {
         ChunkSection section = getSection(y);
         return section == null ? 0 : section.getType(x, y, z) >> 4;
@@ -441,7 +560,19 @@ public class GlowChunk implements Chunk {
      * @param y    The Y coordinate.
      * @param type The type.
      */
-    public void setType(int x, int z, int y, int type) {
+    public void setType(int x, int z, int y, Material type) {
+        setType(x, z, y, type.getId());
+    }
+
+    /**
+     * Sets the type of a block within this chunk.
+     *
+     * @param x    The X coordinate.
+     * @param z    The Z coordinate.
+     * @param y    The Y coordinate.
+     * @param type The type.
+     */
+    private void setType(int x, int z, int y, int type) {
         if (type < 0 || type > 0xfff) {
             throw new IllegalArgumentException("Block type out of range: " + type);
         }
@@ -657,8 +788,12 @@ public class GlowChunk implements Chunk {
         return heightMap[z * WIDTH + x] & 0xff;
     }
 
+    /**
+     * Gets the regional difficulty for this chunk.
+     *
+     * @return the regional difficulty
+     */
     public double getRegionalDifficulty() {
-        final double moonPhase = world.getMoonPhase();
         final long worldTime = world.getFullTime();
         final Difficulty worldDifficulty = world.getDifficulty();
 
@@ -668,7 +803,7 @@ public class GlowChunk implements Chunk {
         } else if (worldTime < TickUtil.TICKS_PER_HOUR) {
             totalTimeFactor = 0;
         } else {
-            totalTimeFactor =  (worldTime - TickUtil.TICKS_PER_HOUR) / 5760000d;
+            totalTimeFactor = (worldTime - TickUtil.TICKS_PER_HOUR) / 5760000d;
         }
 
         double chunkFactor;
@@ -682,6 +817,7 @@ public class GlowChunk implements Chunk {
             chunkFactor *= 3d / 4d;
         }
 
+        final double moonPhase = world.getMoonPhaseFraction();
         if (moonPhase / 4 > totalTimeFactor) {
             chunkFactor += totalTimeFactor;
         } else {
@@ -704,6 +840,12 @@ public class GlowChunk implements Chunk {
         return regionalDifficulty;
     }
 
+    /**
+     * Returns 0.0 if the regional difficulty is below 2.0 and 1.0 if it is above 4.0, with a linear
+     * increase between those values.
+     *
+     * @return a rescaled regional difficulty clamped to the range [0.0, 1.0]
+     */
     public double getClampedRegionalDifficulty() {
         final double rd = getRegionalDifficulty();
 
@@ -837,7 +979,11 @@ public class GlowChunk implements Chunk {
 
         // biomes
         if (entireChunk && biomes != null) {
-            buf.writeBytes(biomes);
+            for (int i = 0; i < 256; i++) {
+                // TODO: 1.13 Biome ID (0 = OCEAN)
+                // For biome IDs, see https://minecraft.gamepedia.com/Biome#Biome_IDs
+                buf.writeInt(0);
+            }
         }
 
         Set<CompoundTag> blockEntities = new HashSet<>();
@@ -852,6 +998,12 @@ public class GlowChunk implements Chunk {
 
     public void addTick() {
         inhabitedTime++;
+    }
+
+    @NotNull
+    @Override
+    public PersistentDataContainer getPersistentDataContainer() {
+        return null;
     }
 
     /**

@@ -2,11 +2,12 @@ package net.glowstone.entity.projectile;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.entity.EntityNetworkUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.LivingEntity;
@@ -44,7 +45,7 @@ public class GlowFireball extends GlowProjectile implements Fireball {
     private void explode() {
         ProjectileSource source = getShooter();
         world.createExplosion(source instanceof Entity ? (Entity) source : this,
-                location.getX(), location.getY(), location.getZ(), yield, incendiary, true);
+            location.getX(), location.getY(), location.getZ(), yield, incendiary, true);
         remove();
     }
 
@@ -52,21 +53,21 @@ public class GlowFireball extends GlowProjectile implements Fireball {
     protected int getObjectId() {
         ProjectileSource shooter = getShooter();
         if (shooter instanceof Ghast) {
-            return SpawnObjectMessage.GHAST_FIREBALL;
+            return EntityNetworkUtil.getObjectId(EntityType.FIREBALL);
         } else if (shooter instanceof EnderDragon) {
-            return SpawnObjectMessage.ENDER_DRAGON_FIREBALL;
+            return EntityNetworkUtil.getObjectId(EntityType.DRAGON_FIREBALL);
         }
-        return SpawnObjectMessage.FIREBALL;
-    }
-
-    @Override
-    public void setDirection(Vector vector) {
-        setVelocity(vector.normalize().multiply(velocity.length()));
+        return EntityNetworkUtil.getObjectId(EntityType.SMALL_FIREBALL);
     }
 
     @Override
     public Vector getDirection() {
         return velocity.normalize();
+    }
+
+    @Override
+    public void setDirection(Vector vector) {
+        setVelocity(vector.normalize().multiply(velocity.length()));
     }
 
     @Override

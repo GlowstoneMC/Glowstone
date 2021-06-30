@@ -38,7 +38,7 @@ public final class NbtOutputStream implements Closeable {
      * Creates a new NBTOutputStream, which will write data to the specified underlying output
      * stream. A flag indicates if the output should be compressed with GZIP or not.
      *
-     * @param os The output stream.
+     * @param os         The output stream.
      * @param compressed A flag that indicates if the output should be compressed.
      * @throws IOException if an I/O error occurs.
      */
@@ -61,7 +61,7 @@ public final class NbtOutputStream implements Closeable {
      * Write a tag with a name.
      *
      * @param name The name to give the written tag.
-     * @param tag The tag to write.
+     * @param tag  The tag to write.
      * @throws IOException if an I/O error occurs.
      */
     private void writeTag(String name, Tag tag) throws IOException {
@@ -151,6 +151,14 @@ public final class NbtOutputStream implements Closeable {
                 os.writeInt(ints.length);
                 for (int value : ints) {
                     os.writeInt(value);
+                }
+                break;
+
+            case LONG_ARRAY:
+                long[] longs = (long[]) tag.getValue();
+                os.writeInt(longs.length);
+                for (long value : longs) {
+                    os.writeLong(value);
                 }
                 break;
 

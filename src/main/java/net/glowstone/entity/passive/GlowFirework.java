@@ -3,17 +3,20 @@ package net.glowstone.entity.passive;
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.Summonable;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.InventoryUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,16 +30,21 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FireworkExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
-    private static final ItemStack DEFAULT_FIREWORK_ITEM = new ItemStack(Material.FIREWORK);
+    private static final ItemStack DEFAULT_FIREWORK_ITEM = new ItemStack(Material.FIREWORK_ROCKET);
     @Getter
     @Setter
     private UUID spawningEntity;
     @Getter
     private LivingEntity boostedEntity;
+    @Getter
+    @Setter
+    private boolean shotAtAngle;
     /**
      * The number of ticks before this fireworks rocket explodes.
      */
@@ -52,13 +60,13 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
     /**
      * Creates an instance.
      *
-     * @param location the location
+     * @param location       the location
      * @param spawningEntity TODO: document this parameter
-     * @param boostedEntity TODO: document this parameter
-     * @param item the firework rocket as an item
+     * @param boostedEntity  TODO: document this parameter
+     * @param item           the firework rocket as an item
      */
     public GlowFirework(Location location, UUID spawningEntity, LivingEntity boostedEntity,
-        ItemStack item) {
+                        ItemStack item) {
         super(location);
         this.spawningEntity = spawningEntity;
         setBoostedEntity(boostedEntity);
@@ -85,7 +93,8 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
         return Arrays.asList(
             new SpawnObjectMessage(
-                    entityId, UUID.randomUUID(), SpawnObjectMessage.FIREWORK, x, y, z, 0, 0),
+                entityId, UUID.randomUUID(),
+                EntityNetworkUtil.getObjectId(EntityType.FIREWORK), x, y, z, 0, 0),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
@@ -114,7 +123,7 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
      */
     public ItemStack getFireworkItem() {
         ItemStack item = this.metadata.getItem(MetadataIndex.FIREWORK_INFO);
-        if (InventoryUtil.isEmpty(item) || !Material.FIREWORK.equals(item.getType())) {
+        if (InventoryUtil.isEmpty(item) || !Material.FIREWORK_ROCKET.equals(item.getType())) {
             item = DEFAULT_FIREWORK_ITEM.clone();
         }
         return item;
@@ -122,12 +131,12 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
     /**
      * Set the firework item of this firework entity. If an empty ItemStack, or none of the type
-     * {{@link Material#FIREWORK}} was given, a new Firework ItemStack will be created.
+     * {{@link Material#FIREWORK_ROCKET}} was given, a new Firework ItemStack will be created.
      *
      * @param item FireWork Item this entity should use
      */
     public void setFireworkItem(ItemStack item) {
-        if (InventoryUtil.isEmpty(item) || !Material.FIREWORK.equals(item.getType())) {
+        if (InventoryUtil.isEmpty(item) || !Material.FIREWORK_ROCKET.equals(item.getType())) {
             item = DEFAULT_FIREWORK_ITEM.clone();
         }
         this.metadata.set(MetadataIndex.FIREWORK_INFO, item.clone());
@@ -151,7 +160,8 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
         super.pulse();
 
         if (ticksLived == 1) {
-            world.playSound(this.location, Sound.ENTITY_FIREWORK_LAUNCH, SoundCategory.AMBIENT, 3,
+            world.playSound(this.location, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH,
+                SoundCategory.AMBIENT, 3,
                 1);
         }
 
@@ -231,5 +241,31 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
         if (boostedEntity != null) {
             metadata.set(MetadataIndex.FIREWORK_ENTITY, boostedEntity.getEntityId());
         }
+    }
+
+    @Override
+    public @Nullable ProjectileSource getShooter() {
+        return (ProjectileSource) Optional.ofNullable(spawningEntity).map(Bukkit::getEntity).get();
+    }
+
+    @Override
+    public void setShooter(@Nullable ProjectileSource shooter) {
+        if (shooter instanceof Entity) {
+            this.setSpawningEntity(((Entity) shooter).getUniqueId());
+        } else {
+            // TODO: Support non-entity shooters?
+            throw new UnsupportedOperationException("Not implemented yet.");
+        }
+    }
+
+    @Override
+    public boolean doesBounce() {
+        return false;
+    }
+
+    @Override
+    public void setBounce(boolean b) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

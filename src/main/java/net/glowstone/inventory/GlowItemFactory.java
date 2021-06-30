@@ -1,11 +1,22 @@
 package net.glowstone.inventory;
 
+import java.util.Locale;
+import java.util.function.UnaryOperator;
 import net.glowstone.util.nbt.CompoundTag;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.hover.content.Content;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An implementation of {@link ItemFactory} responsible for creating ItemMetas.
@@ -28,7 +39,7 @@ public final class GlowItemFactory implements ItemFactory {
     }
 
     @Override
-    public ItemMeta getItemMeta(Material material) {
+    public ItemMeta getItemMeta(@NotNull Material material) {
         return makeMeta(material, null);
     }
 
@@ -62,18 +73,35 @@ public final class GlowItemFactory implements ItemFactory {
     }
 
     @Override
-    public ItemMeta asMetaFor(ItemMeta meta, ItemStack stack) throws IllegalArgumentException {
+    public ItemMeta asMetaFor(@NotNull ItemMeta meta, ItemStack stack) throws IllegalArgumentException {
         return makeMeta(stack.getType(), toGlowMeta(meta));
     }
 
     @Override
-    public ItemMeta asMetaFor(ItemMeta meta, Material material) throws IllegalArgumentException {
+    public ItemMeta asMetaFor(@NotNull ItemMeta meta, @NotNull Material material) throws IllegalArgumentException {
         return makeMeta(material, toGlowMeta(meta));
     }
 
+    @NotNull
     @Override
     public Color getDefaultLeatherColor() {
         return LEATHER_COLOR;
+    }
+
+    @Override
+    public @NotNull Material updateMaterial(@NotNull ItemMeta meta, @NotNull Material material) throws IllegalArgumentException {
+        // TODO: implementation (1.13.2)
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public @NotNull HoverEvent<HoverEvent.ShowItem> asHoverEvent(@NotNull ItemStack itemStack, @NotNull UnaryOperator<HoverEvent.ShowItem> unaryOperator) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Component displayName(@NotNull ItemStack itemStack) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -85,7 +113,32 @@ public final class GlowItemFactory implements ItemFactory {
     @Override
     public String getI18NDisplayName(ItemStack itemStack) {
         // TODO: Implementation (1.12.1)
-        return null;
+        return WordUtils.capitalize(itemStack.getType().name().replaceAll("_", " ").toLowerCase(Locale.ROOT));
+    }
+
+    @Override
+    public @NotNull Content hoverContentOf(@NotNull ItemStack itemStack) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Content hoverContentOf(@NotNull Entity entity) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Content hoverContentOf(@NotNull Entity entity, @Nullable String s) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Content hoverContentOf(@NotNull Entity entity, @Nullable BaseComponent baseComponent) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Content hoverContentOf(@NotNull Entity entity, @NotNull BaseComponent[] baseComponents) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     /**
@@ -93,7 +146,7 @@ public final class GlowItemFactory implements ItemFactory {
      *
      * @param meta an {@link ItemMeta}
      * @return a compound tag that can become the "tag" subtag of an item NBT tag, or null if
-     *          {@code meta} matches an item with no "tag" subtag
+     * {@code meta} matches an item with no "tag" subtag
      */
     public CompoundTag writeNbt(ItemMeta meta) {
         CompoundTag result = new CompoundTag();
@@ -105,7 +158,7 @@ public final class GlowItemFactory implements ItemFactory {
      * Reads an {@link ItemMeta} from an NBT tag.
      *
      * @param material the material
-     * @param tag the "tag" subtag of an item NBT tag
+     * @param tag      the "tag" subtag of an item NBT tag
      * @return the tag's contents as an {@link ItemMeta}
      */
     public ItemMeta readNbt(Material material, CompoundTag tag) {
@@ -131,7 +184,7 @@ public final class GlowItemFactory implements ItemFactory {
             return (GlowMetaItem) meta;
         }
         throw new IllegalArgumentException(
-            "Item meta " + meta + " was not created by GlowItemFactory");
+                "Item meta " + meta + " was not created by GlowItemFactory");
     }
 
     /**
@@ -139,33 +192,39 @@ public final class GlowItemFactory implements ItemFactory {
      */
     private GlowMetaItem makeMeta(Material material, GlowMetaItem meta) {
         // todo: more specific metas
+        // TODO: 1.13 will probably be nuked or retooled?
         switch (material) {
             case AIR:
                 return null;
-            case BOOK_AND_QUILL:
+            case WRITABLE_BOOK:
             case WRITTEN_BOOK:
                 return new GlowMetaBook(meta);
             case ENCHANTED_BOOK:
                 return new GlowMetaEnchantedBook(meta);
-            case SKULL_ITEM:
+            case SKELETON_SKULL:
+            case WITHER_SKELETON_SKULL:
+            case CREEPER_HEAD:
+            case DRAGON_HEAD:
+            case PLAYER_HEAD:
+            case ZOMBIE_HEAD:
                 return new GlowMetaSkull(meta);
-            case BANNER:
+            case LEGACY_BANNER:
                 return new GlowMetaBanner(meta);
             case LEATHER_HELMET:
             case LEATHER_CHESTPLATE:
             case LEATHER_LEGGINGS:
             case LEATHER_BOOTS:
                 return new GlowMetaLeatherArmor(meta);
-            case FIREWORK:
+            case FIREWORK_ROCKET:
                 return new GlowMetaFirework(meta);
-            case FIREWORK_CHARGE:
+            case FIREWORK_STAR:
                 return new GlowMetaFireworkEffect(meta);
             case POTION:
             case SPLASH_POTION:
             case LINGERING_POTION:
             case TIPPED_ARROW:
                 return new GlowMetaPotion(meta);
-            case MONSTER_EGG:
+            case LEGACY_MONSTER_EGG:
                 return new GlowMetaSpawn(meta);
             case SHIELD:
                 return new GlowMetaShield(meta);

@@ -12,18 +12,19 @@ public class StateSerialization {
     private static final Map<Material, BlockStateReader> READERS = new EnumMap<>(Material.class);
 
     static {
-        READERS.put(Material.WOOL, new WoolStateDataReader());
+        // TODO: 1.13 wool colors
+        READERS.put(Material.LEGACY_WOOL, new WoolStateDataReader());
     }
 
     /**
      * Reads a {@link BlockStateData} instance from a string.
      *
      * @param material the block type
-     * @param state the state as a string, or null
+     * @param state    the state as a string, or null
      * @return the default state if {@code state} is null, empty or "*" after stripping leading and
-     *         trailing whitespace; otherwise, a state parsed from the string.
+     * trailing whitespace; otherwise, a state parsed from the string.
      * @throws InvalidBlockStateException if {@code type} isn't a block type with a
-     *         {@link BlockStateReader}, or {@code state} is an invalid block-state string
+     *                                    {@link BlockStateReader}, or {@code state} is an invalid block-state string
      */
     public static BlockStateData parse(Material material, String state)
         throws InvalidBlockStateException {
@@ -60,13 +61,14 @@ public class StateSerialization {
     /**
      * Returns whether the given {@link MaterialData} and the given {@link BlockStateData} are valid
      * for the given block type and describe the same state.
-     * @param type the block type, or null
-     * @param data the block state that's a {@link MaterialData}, or null
+     *
+     * @param type  the block type, or null
+     * @param data  the block state that's a {@link MaterialData}, or null
      * @param state the block state that's a {@link BlockStateData}, or null
      * @return true if all parameters are non-null, {@code data} is valid for {@code type}, and
-     *         {@code state} is empty or matches {@code data}; false otherwise
+     * {@code state} is empty or matches {@code data}; false otherwise
      * @throws InvalidBlockStateException if {@code type} is not null but isn't a block type with a
-     *         {@link BlockStateReader}
+     *                                    {@link BlockStateReader}
      */
     public static boolean matches(Material type, MaterialData data, BlockStateData state)
         throws InvalidBlockStateException {
@@ -86,12 +88,12 @@ public class StateSerialization {
     /**
      * Converts a {@link BlockStateData} instance to a {@link MaterialData} instance.
      *
-     * @param type the block type, or null
+     * @param type  the block type, or null
      * @param state the block state, or null
      * @return the block state as a {@link MaterialData} instance, or null if either parameter is
-     *         null
+     * null
      * @throws InvalidBlockStateException if {@code type} is not null but isn't a block type with a
-     *         {@link BlockStateReader}
+     *                                    {@link BlockStateReader}
      */
     public static MaterialData parseData(Material type, BlockStateData state)
         throws InvalidBlockStateException {
@@ -110,7 +112,7 @@ public class StateSerialization {
      *
      * @param material a material, or null
      * @return the {@link BlockStateReader} for {@code material}, or null if {@code material} is
-     *         null or not a block type that has a {@link BlockStateReader}
+     * null or not a block type that has a {@link BlockStateReader}
      */
     public static BlockStateReader<?> getReader(Material material) {
         if (material == null) {
@@ -124,7 +126,7 @@ public class StateSerialization {
      *
      * @param color the name of a color, or null
      * @return the {@link DyeColor} with that name, or null if {@code color} is null or no colors
-     *         match
+     * match
      */
     public static DyeColor getColor(String color) {
         if (color == null) {

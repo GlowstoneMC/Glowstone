@@ -24,7 +24,7 @@ public class ProfileCache {
             return CompletableFuture.completedFuture(profileCache.get(uuid));
         }
         CompletableFuture<GlowPlayerProfile> profileFuture = CompletableFuture
-                .supplyAsync(() -> PlayerDataFetcher.getProfile(uuid));
+            .supplyAsync(() -> PlayerDataFetcher.getProfile(uuid));
         profileFuture.thenAccept(profile -> profileCache.put(uuid, profile));
         return profileFuture;
     }
@@ -40,7 +40,7 @@ public class ProfileCache {
             return CompletableFuture.completedFuture(uuidCache.get(playerName));
         }
         CompletableFuture<UUID> uuidFuture = CompletableFuture
-                .supplyAsync(() -> PlayerDataFetcher.getUuid(playerName));
+            .supplyAsync(() -> PlayerDataFetcher.getUuid(playerName));
         uuidFuture.thenAccept(uid -> uuidCache.put(playerName, uid));
         return uuidFuture;
     }

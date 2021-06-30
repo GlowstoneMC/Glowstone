@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import net.glowstone.i18n.ConsoleMessages;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -25,15 +26,15 @@ import org.jetbrains.annotations.NonNls;
 public class FishingRewardManager {
 
     private final Multimap<RewardCategory, RewardItem> values = MultimapBuilder
-            .enumKeys(RewardCategory.class).arrayListValues().build();
+        .enumKeys(RewardCategory.class).arrayListValues().build();
 
     /**
      * Creates the instance.
      */
     public FishingRewardManager() {
         YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(
-                new InputStreamReader(getClass().getClassLoader()
-                        .getResourceAsStream("builtin/fishingRewards.yml")));
+            new InputStreamReader(getClass().getClassLoader()
+                .getResourceAsStream("builtin/fishingRewards.yml")));
 
         registerBuiltins(builtinValues);
     }
@@ -41,7 +42,7 @@ public class FishingRewardManager {
     @SuppressWarnings("unchecked")
     private void registerBuiltins(ConfigurationSection mainSection) {
         ConfigurationSection valuesSection
-                = mainSection.getConfigurationSection("rewards"); // NON-NLS
+            = mainSection.getConfigurationSection("rewards"); // NON-NLS
         if (valuesSection == null) {
             ConsoleMessages.Warn.Fishing.REWARDS_INVALID.log();
             return;
@@ -110,18 +111,11 @@ public class FishingRewardManager {
          */
         private int maxEnchantmentLevel;
 
-        private RewardItem() {}
-
-        @Override
-        public Map<String, Object> serialize() {
-            @NonNls Map<String, Object> args = new HashMap<>();
-            args.put("item", item.serialize());
-            args.put("chance", chance);
-            return args;
+        private RewardItem() {
         }
 
         private static int getAsIntOrDefault(
-                Map<String, ?> args, @NonNls String key, int defaultValue) {
+            Map<String, ?> args, @NonNls String key, int defaultValue) {
             Object value = args.get(key);
             if (value == null) {
                 return defaultValue;
@@ -146,7 +140,10 @@ public class FishingRewardManager {
 
             RewardItem result = new RewardItem();
             if (itemYaml.containsKey("item")) {
-                result.item = ItemStack.deserialize((Map<String, Object>) itemYaml.get("item"));
+                Map<String, Object> itemData = (Map<String, Object>) itemYaml.get("item");
+                // TODO: 1.13 hack patch it in
+                itemData.put("v", Bukkit.getUnsafe().getDataVersion());
+                result.item = ItemStack.deserialize(itemData);
             }
 
             if (itemYaml.containsKey("chance")) {
@@ -155,12 +152,20 @@ public class FishingRewardManager {
 
             if (itemYaml.containsKey("enchantment_level_min")) {
                 result.minEnchantmentLevel = getAsIntOrDefault(
-                        itemYaml, "enchantment_level_min", 0);
+                    itemYaml, "enchantment_level_min", 0);
                 result.maxEnchantmentLevel = getAsIntOrDefault(
-                        itemYaml, "enchantment_level_max", result.minEnchantmentLevel);
+                    itemYaml, "enchantment_level_max", result.minEnchantmentLevel);
             }
 
             return result;
+        }
+
+        @Override
+        public Map<String, Object> serialize() {
+            @NonNls Map<String, Object> args = new HashMap<>();
+            args.put("item", item.serialize());
+            args.put("chance", chance);
+            return args;
         }
     }
 }

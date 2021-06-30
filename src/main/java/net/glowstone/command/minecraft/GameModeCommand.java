@@ -26,7 +26,7 @@ public class GameModeCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages messages) {
+                           CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
@@ -39,7 +39,7 @@ public class GameModeCommand extends GlowVanillaCommand {
         GameMode gamemode = GameModeUtils.build(gm, messages.getLocale());
         if (gamemode == null) {
             new LocalizedStringImpl("gamemode.unknown", bundle)
-                    .sendInColor(ChatColor.RED, sender, gm);
+                .sendInColor(ChatColor.RED, sender, gm);
             return false;
         }
         if (args.length == 1) {
@@ -63,7 +63,7 @@ public class GameModeCommand extends GlowVanillaCommand {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
                 messages.getGeneric(GenericMessage.OFFLINE)
-                        .sendInColor(ChatColor.RED, sender, name);
+                    .sendInColor(ChatColor.RED, sender, name);
             } else {
                 updateGameMode(sender, player, gamemode, bundle);
             }
@@ -72,12 +72,12 @@ public class GameModeCommand extends GlowVanillaCommand {
     }
 
     private void updateGameMode(
-            CommandSender sender, Player who, GameMode gameMode, ResourceBundle bundle) {
+        CommandSender sender, Player who, GameMode gameMode, ResourceBundle bundle) {
         String gameModeName = GameModeUtils.prettyPrint(gameMode, bundle.getLocale());
         who.setGameMode(gameMode);
         if (!sender.equals(who)) {
             new LocalizedStringImpl("gamemode.done", bundle)
-                    .send(sender, who.getDisplayName(), gameModeName);
+                .send(sender, who.getDisplayName(), gameModeName);
             bundle = getBundle(who); // switch to target's locale for gamemode.done.to-you
         }
         new LocalizedStringImpl("gamemode.done.to-you", bundle).send(who, gameModeName);

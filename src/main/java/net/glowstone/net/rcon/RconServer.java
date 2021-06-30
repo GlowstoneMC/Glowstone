@@ -19,9 +19,9 @@ public class RconServer extends GlowSocketServer {
     /**
      * Creates an instance.
      *
-     * @param server the associated GlowServer
-     * @param latch The countdown latch used during server startup to wait for network server
-     *         binding.
+     * @param server   the associated GlowServer
+     * @param latch    The countdown latch used during server startup to wait for network server
+     *                 binding.
      * @param password the remote operator's password
      */
     public RconServer(GlowServer server, ProtocolProvider protocolProvider,
@@ -46,21 +46,21 @@ public class RconServer extends GlowSocketServer {
     @Override
     public ChannelFuture bind(InetSocketAddress address) {
         GlowServer.logger.info("Binding rcon to "
-                + address.getAddress().getHostAddress() + ":" + address.getPort() + "...");
+            + address.getAddress().getHostAddress() + ":" + address.getPort() + "...");
         return super.bind(address);
     }
 
     @Override
     public void onBindSuccess(InetSocketAddress address) {
         GlowServer.logger.info("Successfully bound rcon to "
-                + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
+            + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
         super.onBindSuccess(address);
     }
 
     @Override
     public void onBindFailure(InetSocketAddress address, Throwable t) {
         GlowServer.logger.warning("Failed to bind rcon to "
-                + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
+            + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
     }
 
     /**

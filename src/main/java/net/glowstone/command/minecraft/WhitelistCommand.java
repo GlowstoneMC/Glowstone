@@ -16,7 +16,7 @@ import org.bukkit.util.StringUtil;
 public class WhitelistCommand extends GlowVanillaCommand {
 
     private static final List<String> SUBCOMMANDS = Arrays
-            .asList("on", "off", "list", "add", "remove", "reload");
+        .asList("on", "off", "list", "add", "remove", "reload");
 
     /**
      * Creates the instance for this command.
@@ -28,7 +28,7 @@ public class WhitelistCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -68,7 +68,7 @@ public class WhitelistCommand extends GlowVanillaCommand {
             server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
                 if (ex != null) {
                     sender.sendMessage(ChatColor.RED + "Failed to add " + name
-                            + " to the whitelist: " + ex.getMessage());
+                        + " to the whitelist: " + ex.getMessage());
                     ex.printStackTrace();
                     return;
                 }
@@ -86,7 +86,7 @@ public class WhitelistCommand extends GlowVanillaCommand {
             server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
                 if (ex != null) {
                     sender.sendMessage(ChatColor.RED + "Failed to remove " + name
-                            + " from the whitelist: " + ex.getMessage());
+                        + " from the whitelist: " + ex.getMessage());
                     ex.printStackTrace();
                     return;
                 }
@@ -106,10 +106,10 @@ public class WhitelistCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length == 1) {
             return StringUtil
-                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
+                .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
         }
         if (args.length > 1) {
             String subcommand = args[0];
@@ -119,9 +119,9 @@ public class WhitelistCommand extends GlowVanillaCommand {
             if (subcommand.equals("remove")) {
                 Set<OfflinePlayer> whitelistedPlayers = sender.getServer().getWhitelistedPlayers();
                 List<String> names = whitelistedPlayers.stream().map(OfflinePlayer::getName)
-                        .collect(Collectors.toList());
+                    .collect(Collectors.toList());
                 return StringUtil
-                        .copyPartialMatches(args[1], names, new ArrayList<>(names.size()));
+                    .copyPartialMatches(args[1], names, new ArrayList<>(names.size()));
             }
             return Collections.emptyList();
         }

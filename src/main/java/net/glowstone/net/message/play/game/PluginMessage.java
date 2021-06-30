@@ -13,14 +13,15 @@ import org.jetbrains.annotations.NonNls;
 @Data
 public final class PluginMessage implements Message {
 
-    @NonNls private final String channel;
+    @NonNls
+    private final String channel;
     private final byte[] data;
 
     /**
      * Creates a message whose contents are a string in UTF8.
      *
      * @param channel the plugin message channel
-     * @param text the contents as a string
+     * @param text    the contents as a string
      * @return a message for {@code channel} containing a UTF8-encoded copy of {@code text}
      */
     public static PluginMessage fromString(@NonNls String channel, String text) {

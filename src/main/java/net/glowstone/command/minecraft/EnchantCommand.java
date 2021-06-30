@@ -36,7 +36,7 @@ public class EnchantCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -57,7 +57,7 @@ public class EnchantCommand extends GlowVanillaCommand {
             GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(args[0]);
             if (player == null) {
                 commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                        .sendInColor(ChatColor.RED, sender, name);
+                    .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 players = Collections.singletonList(player).stream();
@@ -67,7 +67,7 @@ public class EnchantCommand extends GlowVanillaCommand {
         Enchantment enchantment = GlowEnchantment.parseEnchantment(args[1]);
         if (enchantment == null) {
             new LocalizedStringImpl("enchant.unknown", commandMessages.getResourceBundle())
-                    .sendInColor(ChatColor.RED, sender, args[1]);
+                .sendInColor(ChatColor.RED, sender, args[1]);
             return false;
         }
 
@@ -76,11 +76,11 @@ public class EnchantCommand extends GlowVanillaCommand {
             level = Integer.parseInt(args[2]);
         } catch (NumberFormatException exc) {
             commandMessages.getGeneric(GenericMessage.NAN)
-                    .sendInColor(ChatColor.RED, sender, args[2]);
+                .sendInColor(ChatColor.RED, sender, args[2]);
             return false;
         }
         LocalizedStringImpl successMessage
-                = new LocalizedStringImpl("enchant.done", commandMessages.getResourceBundle());
+            = new LocalizedStringImpl("enchant.done", commandMessages.getResourceBundle());
         players
             .filter(player -> player.getItemInHand() != null)
             .filter(player -> player.getItemInHand().getData().getItemType() != Material.AIR)

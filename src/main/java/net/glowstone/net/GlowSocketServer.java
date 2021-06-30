@@ -24,8 +24,8 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
      * Creates an instance for the specified server.
      *
      * @param server the associated GlowServer
-     * @param latch The countdown latch used during server startup to wait for network server
-     *         binding.
+     * @param latch  The countdown latch used during server startup to wait for network server
+     *               binding.
      */
     public GlowSocketServer(GlowServer server, ProtocolProvider protocolProvider,
                             CountDownLatch latch) {

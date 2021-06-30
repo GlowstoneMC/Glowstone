@@ -10,7 +10,7 @@ public class ExperienceSplitter {
      * Cuts experience points into smaller 'cuts', and supplies them to {@code consumer}.
      *
      * @param experience the experience points to cut
-     * @param consumer the action to do for each cut
+     * @param consumer   the action to do for each cut
      */
     public static void forEachCut(int experience, final IntConsumer consumer) {
         int remaining = experience;

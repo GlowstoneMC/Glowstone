@@ -7,8 +7,8 @@ import lombok.Data;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.DoubleTallPlant;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.material.types.DoublePlantSpecies;
 
 public class DoublePlantDecorator extends BlockDecorator {
 
@@ -24,11 +24,11 @@ public class DoublePlantDecorator extends BlockDecorator {
         int sourceZ = (source.getZ() << 4) + random.nextInt(16);
         int sourceY = random.nextInt(world.getHighestBlockYAt(sourceX, sourceZ) + 32);
 
-        DoublePlantSpecies species = getRandomDoublePlant(random, doublePlants);
+        Material species = getRandomDoublePlant(random, doublePlants);
         new DoubleTallPlant(species).generate(world, random, sourceX, sourceY, sourceZ);
     }
 
-    private DoublePlantSpecies getRandomDoublePlant(Random random,
+    private Material getRandomDoublePlant(Random random,
         List<DoublePlantDecoration> decorations) {
         int totalWeight = 0;
         for (DoublePlantDecoration decoration : decorations) {
@@ -46,7 +46,7 @@ public class DoublePlantDecorator extends BlockDecorator {
 
     @Data
     public static final class DoublePlantDecoration {
-        private final DoublePlantSpecies species;
+        private final Material species;
         private final int weight;
     }
 }

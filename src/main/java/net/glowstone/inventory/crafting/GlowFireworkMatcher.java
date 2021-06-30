@@ -2,6 +2,7 @@ package net.glowstone.inventory.crafting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
@@ -21,10 +22,10 @@ public class GlowFireworkMatcher extends ItemMatcher {
             }
 
             switch (item.getType()) {
-                case SULPHUR:
+                case GUNPOWDER:
                     gunpowder++;
                     break;
-                case FIREWORK_CHARGE:
+                case FIREWORK_STAR:
                     charges.add(item);
                     break;
                 case PAPER:
@@ -45,7 +46,7 @@ public class GlowFireworkMatcher extends ItemMatcher {
             return null; // Paper needed
         }
 
-        ItemStack ret = new ItemStack(Material.FIREWORK, 3);
+        ItemStack ret = new ItemStack(Material.FIREWORK_ROCKET, 3);
 
         if (charges.isEmpty()) { // This makes no sense Mojang, but whatever
             return ret;
@@ -59,7 +60,7 @@ public class GlowFireworkMatcher extends ItemMatcher {
             if (!charge.hasEffect()) {
                 continue;
             }
-            firework.addEffect(charge.getEffect());
+            firework.addEffect(Objects.requireNonNull(charge.getEffect()));
         }
 
         ret.setItemMeta(firework);

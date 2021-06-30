@@ -42,7 +42,7 @@ public class TestForBlocksCommandTest extends CommandTest<TestForBlocksCommand> 
 
     public void createCubeAt(int x, int y, int z) {
         blockStorage.setBlockType(new Location(world, x, y, z), Material.COAL_ORE);
-        blockStorage.setBlockType(new Location(world, x, y, z + 1), Material.QUARTZ_ORE);
+        blockStorage.setBlockType(new Location(world, x, y, z + 1), Material.NETHER_QUARTZ_ORE);
         blockStorage.setBlockType(new Location(world, x, y + 1, z), Material.LAPIS_ORE);
         blockStorage.setBlockType(new Location(world, x, y + 1, z + 1), Material.EMERALD_ORE);
         blockStorage.setBlockType(new Location(world, x + 1, y, z), Material.IRON_ORE);

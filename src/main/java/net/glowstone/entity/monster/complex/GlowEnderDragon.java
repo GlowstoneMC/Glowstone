@@ -10,9 +10,12 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.DragonBattle;
 import org.bukkit.entity.ComplexEntityPart;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowEnderDragon extends GlowBoss implements EnderDragon {
 
@@ -21,8 +24,8 @@ public class GlowEnderDragon extends GlowBoss implements EnderDragon {
     /**
      * Creates an ender dragon.
      *
-     * @param loc the location
-     * @param type the entity type
+     * @param loc       the location
+     * @param type      the entity type
      * @param maxHealth the maximum health
      */
     public GlowEnderDragon(Location loc, EntityType type, double maxHealth) {
@@ -43,6 +46,7 @@ public class GlowEnderDragon extends GlowBoss implements EnderDragon {
         this(loc, EntityType.ENDER_DRAGON, 200d);
     }
 
+    @NotNull
     @Override
     public Phase getPhase() {
         return Phase.values()[metadata.getInt(MetadataIndex.ENDERDRAGON_PHASE)];
@@ -54,17 +58,28 @@ public class GlowEnderDragon extends GlowBoss implements EnderDragon {
     }
 
     @Override
+    public @Nullable DragonBattle getDragonBattle() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getDeathAnimationTicks() {
+        throw new UnsupportedOperationException();
+    }
+
+    @NotNull
+    @Override
     public Set<ComplexEntityPart> getParts() {
         return new HashSet<>(parts.values());
     }
 
     @Override
     protected Sound getDeathSound() {
-        return Sound.ENTITY_ENDERDRAGON_DEATH;
+        return Sound.ENTITY_ENDER_DRAGON_DEATH;
     }
 
     @Override
     protected Sound getAmbientSound() {
-        return Sound.ENTITY_ENDERDRAGON_AMBIENT;
+        return Sound.ENTITY_ENDER_DRAGON_AMBIENT;
     }
 }

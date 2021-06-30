@@ -19,7 +19,8 @@ import org.json.simple.parser.JSONParser;
 
 public class LootingManager {
 
-    private static final Map<EntityType, EntityLootTable> entities = new EnumMap<>(EntityType.class);
+    private static final Map<EntityType, EntityLootTable> entities =
+        new EnumMap<>(EntityType.class);
 
     /**
      * Registers the built-in loot data.
@@ -52,7 +53,7 @@ public class LootingManager {
         register(EntityType.OCELOT, baseDir + "ocelot.json");
         register(EntityType.PARROT, baseDir + "parrot.json");
         register(EntityType.PIG, baseDir + "pig.json");
-        register(EntityType.PIG_ZOMBIE, baseDir + "pig_zombie.json");
+        register(EntityType.ZOMBIFIED_PIGLIN, baseDir + "pig_zombie.json");
         register(EntityType.POLAR_BEAR, baseDir + "polar_bear.json");
         register(EntityType.RABBIT, baseDir + "rabbit.json");
         register(EntityType.SHEEP, baseDir + "sheep.json");

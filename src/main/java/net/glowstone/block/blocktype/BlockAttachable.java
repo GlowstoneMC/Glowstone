@@ -10,7 +10,8 @@ public class BlockAttachable extends BlockNeedsAttached {
 
     /**
      * Sets which face is attached to the adjacent block.
-     * @param state this block's BlockState
+     *
+     * @param state        this block's BlockState
      * @param attachedFace the face to attach
      */
     public void setAttachedFace(BlockState state, BlockFace attachedFace) {

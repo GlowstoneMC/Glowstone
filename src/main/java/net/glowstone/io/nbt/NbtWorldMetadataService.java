@@ -35,8 +35,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
      * Creates the instance for the given world's metadata.
      *
      * @param world the world
-     * @param dir the world's metadata folder, containing uid.dat and level.dat if the world has
-     *         been previously saved; if this folder doesn't exist, it is created
+     * @param dir   the world's metadata folder, containing uid.dat and level.dat if the world has
+     *              been previously saved; if this folder doesn't exist, it is created
      */
     public NbtWorldMetadataService(GlowWorld world, File dir) {
         this.world = world;
@@ -117,8 +117,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         // game rules
         if (level.readCompound("GameRules", gameRules ->
-                gameRules.getValue().keySet().stream().filter(gameRules::isString)
-                    .forEach(key -> world.setGameRuleValue(key, gameRules.getString(key)))
+            gameRules.getValue().keySet().stream().filter(gameRules::isString)
+                .forEach(key -> world.setGameRuleValue(key, gameRules.getString(key)))
         )) {
             level.remove("GameRules");
         }

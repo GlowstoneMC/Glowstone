@@ -9,8 +9,11 @@ import static net.glowstone.entity.meta.MetadataType.FLOAT;
 import static net.glowstone.entity.meta.MetadataType.INT;
 import static net.glowstone.entity.meta.MetadataType.ITEM;
 import static net.glowstone.entity.meta.MetadataType.NBTTAG;
+import static net.glowstone.entity.meta.MetadataType.OPTCHAT;
 import static net.glowstone.entity.meta.MetadataType.OPTPOSITION;
 import static net.glowstone.entity.meta.MetadataType.OPTUUID;
+import static net.glowstone.entity.meta.MetadataType.PARTICLE;
+import static net.glowstone.entity.meta.MetadataType.POSITION;
 import static net.glowstone.entity.meta.MetadataType.STRING;
 import static net.glowstone.entity.meta.MetadataType.VECTOR;
 
@@ -28,12 +31,15 @@ import org.bukkit.entity.Blaze;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Dolphin;
+import org.bukkit.entity.Drowned;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Evoker;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.Fish;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Guardian;
@@ -45,9 +51,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Llama;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Phantom;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.PolarBear;
+import org.bukkit.entity.PufferFish;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Shulker;
@@ -57,6 +65,9 @@ import org.bukkit.entity.Snowman;
 import org.bukkit.entity.Spider;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.TippedArrow;
+import org.bukkit.entity.Trident;
+import org.bukkit.entity.TropicalFish;
+import org.bukkit.entity.Turtle;
 import org.bukkit.entity.Vex;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Vindicator;
@@ -78,7 +89,7 @@ public enum MetadataIndex {
     //Entity
     STATUS(0, BYTE, Entity.class),
     AIR_TIME(1, INT, Entity.class),
-    NAME_TAG(2, STRING, Entity.class),
+    NAME_TAG(2, OPTCHAT, Entity.class),
     SHOW_NAME_TAG(3, BOOLEAN, Entity.class),
     SILENT(4, BOOLEAN, Entity.class),
     NOGRAVITY(5, BOOLEAN, Entity.class),
@@ -86,12 +97,14 @@ public enum MetadataIndex {
     AREAEFFECTCLOUD_RADIUS(6, FLOAT, AreaEffectCloud.class),
     AREAEFFECTCLOUD_COLOR(7, INT, AreaEffectCloud.class),
     AREAEFFECTCLOUD_POINT(8, BOOLEAN, AreaEffectCloud.class),
-    AREAEFFECTCLOUD_PARTICLEID(9, INT, AreaEffectCloud.class),
-    AREAEFFECTCLOUD_PARTICLE_PARAM1(10, INT, AreaEffectCloud.class),
-    AREAEFFECTCLOUD_PARTICLE_PARAM2(11, INT, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_PARTICLE(9, PARTICLE, AreaEffectCloud.class),
 
     ARROW_CRITICAL(6, BYTE, Arrow.class),
-    TIPPEDARROW_COLOR(7, INT, TippedArrow.class),
+    ARROW_SHOOTER_ID(7, OPTUUID, Arrow.class),
+
+    TIPPEDARROW_COLOR(8, INT, TippedArrow.class),
+
+    TRIDENT_LOYALTY(8, INT, Trident.class),
 
     BOAT_HIT_TIME(6, INT, Boat.class),
     BOAT_DIRECTION(7, INT, Boat.class),
@@ -99,6 +112,7 @@ public enum MetadataIndex {
     BOAT_TYPE(9, INT, Boat.class),
     BOAT_RIGHT_PADDLE_TURNING(10, BOOLEAN, Boat.class),
     BOAT_LEFT_PADDLE_TURNING(11, BOOLEAN, Boat.class),
+    BOAT_SPLASH_TIMER(12, INT, Boat.class),
 
     ENDERCRYSTAL_BEAM_TARGET(6, OPTPOSITION, EnderCrystal.class),
     ENDERCRYSTAL_SHOW_BOTTOM(7, BOOLEAN, EnderCrystal.class),
@@ -202,9 +216,10 @@ public enum MetadataIndex {
     ZOMBIE_IS_CHILD(12, BOOLEAN, Zombie.class),
     ZOMBIE_PROFESSION(13, INT, Zombie.class), // Unused as of 1.11
     ZOMBIE_HANDS_RISED_UP(14, BOOLEAN, Zombie.class),
+    ZOMBIE_BECOMING_DROWNED(15, BOOLEAN, Zombie.class),
 
-    ZOMBIE_VILLAGER_IS_CONVERTING(15, BOOLEAN, ZombieVillager.class),
-    ZOMBIE_VILLAGER_PROFESSION(16, INT, ZombieVillager.class),
+    ZOMBIE_VILLAGER_IS_CONVERTING(16, BOOLEAN, ZombieVillager.class),
+    ZOMBIE_VILLAGER_PROFESSION(17, INT, ZombieVillager.class),
 
     ENDERMAN_BLOCK(12, BLOCKID, Enderman.class),
     ENDERMAN_SCREAMING(13, BOOLEAN, Enderman.class),
@@ -230,6 +245,27 @@ public enum MetadataIndex {
 
     VINDICATOR_STATE(12, BYTE, Vindicator.class),
 
+    PHANTOM_SIZE(12, INT, Phantom.class),
+
+    DOLPHIN_TREASURE_POSITION(12, POSITION, Dolphin.class),
+    DOLPHIN_CAN_FIND_TREASURE(13, BOOLEAN, Dolphin.class),
+    DOLPHIN_HAS_FISH(14, POSITION, Dolphin.class),
+
+    FISH_FROM_BUCKET(12, BOOLEAN, Fish.class),
+
+    PUFFER_FISH_STATE(13, INT, PufferFish.class),
+
+    TROPICAL_FISH_VARIANT(13, INT, TropicalFish.class),
+
+    TURTLE_HOME_POSITION(13, POSITION, Turtle.class),
+    TURTLE_HAS_EGG(14, BOOLEAN, Turtle.class),
+    TURTLE_LAYING_EGG(15, BOOLEAN, Turtle.class),
+    TURTLE_TRAVEL_POS(16, POSITION, Turtle.class),
+    TURTLE_GOING_HOME(17, BOOLEAN, Turtle.class),
+    TURTLE_TRAVELLING(18, BOOLEAN, Turtle.class),
+
+    DROWNED_HAS_TARGET(15, BOOLEAN, Drowned.class),
+
     PARROT_VARIANT(15, INT, GlowParrot.class),
 
     MINECARTCOMMANDBLOCK_COMMAND(12, STRING, CommandMinecart.class),
@@ -252,8 +288,9 @@ public enum MetadataIndex {
 
     /**
      * Returns the first {@link MetadataIndex} with a given index and {@link MetadataType}.
+     *
      * @param index the index to look up
-     * @param type the type to look up
+     * @param type  the type to look up
      * @return a {@link MetadataIndex} with that index and type, or null if none match
      */
     public static MetadataIndex getIndex(int index, MetadataType type) {

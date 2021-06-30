@@ -7,19 +7,19 @@ import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Stone;
-import org.bukkit.material.types.StoneType;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockStone extends BlockNeedsTool {
 
     @Override
-    protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
+    public MaterialMatcher getNeededMiningTool(GlowBlock block) {
         return ToolType.PICKAXE;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
-        if (((Stone) block.getState().getData()).getType() == StoneType.NORMAL) {
+        if (block.getType() == Material.STONE) {
             return Arrays.asList(new ItemStack(Material.COBBLESTONE));
         } else {
             return Arrays.asList(new ItemStack(Material.STONE, 1, block.getData()));

@@ -31,7 +31,7 @@ public class BlockChest extends BlockContainer {
     }
 
     private static BlockFace getFacingDirection(BlockFace myFacing, BlockFace otherFacing,
-        BlockFace connection, GlowPlayer player) {
+                                                BlockFace connection, GlowPlayer player) {
         if (connection != myFacing && connection != myFacing.getOppositeFace()) {
             return myFacing;
         }
@@ -63,7 +63,7 @@ public class BlockChest extends BlockContainer {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData data = state.getData();
@@ -118,7 +118,7 @@ public class BlockChest extends BlockContainer {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         BlockState state = block.getState();
         if (state instanceof org.bukkit.block.Chest) {
             org.bukkit.block.Chest chest = (org.bukkit.block.Chest) state;
@@ -162,6 +162,7 @@ public class BlockChest extends BlockContainer {
 
     /**
      * Get the other half of a chest, or null if the given chest isn't part of a double chest.
+     *
      * @param me a chest block
      * @return the other half of the double chest if {@code me} is part of one; null otherwise
      */

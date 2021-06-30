@@ -8,9 +8,14 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
+import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The ItemMeta for book and quill and written book items.
@@ -29,6 +34,7 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
      * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
      * {@link BookMeta}, its title, author, pages and generation are copied; otherwise, the new book
      * is blank.
+     *
      * @param meta the {@link ItemMeta} to copy
      */
     public GlowMetaBook(ItemMeta meta) {
@@ -65,7 +71,7 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
 
     @Override
     public boolean isApplicable(Material material) {
-        return material == Material.BOOK_AND_QUILL || material == Material.WRITTEN_BOOK;
+        return material == Material.WRITABLE_BOOK || material == Material.WRITTEN_BOOK;
     }
 
     @Override
@@ -160,6 +166,57 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     @Override
     public boolean hasPages() {
         return pages != null && !pages.isEmpty();
+    }
+
+    @Override
+    public @Nullable Component title() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+
+    }
+
+    @Override
+    public @NotNull BookMeta title(@Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @Nullable Component author() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull BookMeta author(@Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NonNull List<Component> pages() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NonNull Book pages(@NonNull List<Component> pages) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Component page(int i) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void page(int i, @NotNull Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void addPages(@NotNull Component... components) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NonNull BookMetaBuilder toBuilder() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

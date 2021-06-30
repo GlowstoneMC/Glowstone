@@ -47,7 +47,6 @@ public class EnchantmentTest {
         assertThat("missing enchantment for " + field.getName(), enchant, notNullValue());
         assertThat("wrong name on wrapped effect", enchant.getName(), is(field.getName()));
         assertThat("missing from byName", Enchantment.getByName(enchant.getName()), is(enchant));
-        assertThat("missing from byId", Enchantment.getById(enchant.getId()), is(enchant));
         assertThat("wrong start level", enchant.getStartLevel(), is(1));
         assertThat("weird max level: " + enchant.getMaxLevel(),
             enchant.getMaxLevel() >= 1 && enchant.getMaxLevel() <= 5, is(true));

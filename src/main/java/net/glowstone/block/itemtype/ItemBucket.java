@@ -36,8 +36,8 @@ public class ItemBucket extends ItemType {
 
     @Override
     public void rightClickBlock(
-            GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding,
-            Vector clickedLoc, EquipmentSlot hand) {
+        GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding,
+        Vector clickedLoc, EquipmentSlot hand) {
         clickBucket(player, holding);
     }
 

@@ -7,9 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.material.DoublePlant;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.types.DoublePlantSpecies;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.BlockData;
 
 // TODO: Use this interface to reduce duplicate code in BlockPopulator subclasses.
 // TODO: Refactor GenericTree to implement this class.
@@ -22,9 +21,28 @@ public interface TerrainObject {
     /**
      * Plant block types.
      */
-    SortedSet<Material> PLANT_TYPES = ImmutableSortedSet
-            .of(Material.LONG_GRASS, Material.YELLOW_FLOWER, Material.RED_ROSE,
-                    Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM);
+    SortedSet<Material> PLANT_TYPES = ImmutableSortedSet.of(
+            // Flowers
+            Material.DANDELION,
+            Material.POPPY,
+            Material.BLUE_ORCHID,
+            Material.ALLIUM,
+            Material.AZURE_BLUET,
+            Material.RED_TULIP,
+            Material.ORANGE_TULIP,
+            Material.WHITE_TULIP,
+            Material.PINK_TULIP,
+            Material.OXEYE_DAISY,
+            Material.SUNFLOWER,
+            Material.LILAC,
+            Material.ROSE_BUSH,
+            Material.PEONY,
+            // Grass
+            Material.GRASS,
+            Material.FERN,
+            Material.TALL_GRASS,
+            Material.LARGE_FERN
+    );
 
     /**
      * Removes the grass, shrub, flower or mushroom directly above the given block, if present. Does
@@ -35,15 +53,15 @@ public interface TerrainObject {
      */
     static boolean killPlantAbove(Block block) {
         Block blockAbove = block.getRelative(BlockFace.UP);
-        Material mat = blockAbove.getType();
+        BlockData blockAboveData = blockAbove.getBlockData();
+        Material mat = blockAboveData.getMaterial();
         if (PLANT_TYPES.contains(mat)) {
-            if (mat == Material.DOUBLE_PLANT) {
-                MaterialData dataAbove = blockAbove.getState().getData();
-                if (dataAbove instanceof DoublePlant
-                        && ((DoublePlant) dataAbove).getSpecies()
-                        == DoublePlantSpecies.PLANT_APEX) {
-                    blockAbove.getRelative(BlockFace.UP)
-                            .setType(Material.AIR);
+            if (blockAboveData instanceof Bisected && ((Bisected) blockAboveData).getHalf() == Bisected.Half.BOTTOM) {
+                // Large plant
+                Block plantTop = blockAbove.getRelative(BlockFace.UP);
+                BlockData plantTopData = plantTop.getBlockData();
+                if (plantTopData.getMaterial() == mat && ((Bisected) plantTopData).getHalf() == Bisected.Half.TOP) {
+                    plantTop.setType(Material.AIR);
                 }
             }
             blockAbove.setType(Material.AIR);
@@ -55,8 +73,8 @@ public interface TerrainObject {
     /**
      * Generates this feature.
      *
-     * @param world the world to generate in
-     * @param random the PRNG that will choose the size and a few details of the shape
+     * @param world   the world to generate in
+     * @param random  the PRNG that will choose the size and a few details of the shape
      * @param sourceX the base X coordinate
      * @param sourceY the base Y coordinate
      * @param sourceZ the base Z coordinate

@@ -20,7 +20,7 @@ public class ItemRawChicken extends ItemFood {
 
         if (Math.random() < 0.3) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER,
-                    TickUtil.secondsToTicks(30), 0), true);
+                TickUtil.secondsToTicks(30), 0), true);
         }
         return true;
     }

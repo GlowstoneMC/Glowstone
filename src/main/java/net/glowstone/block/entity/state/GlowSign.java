@@ -1,14 +1,26 @@
 package net.glowstone.block.entity.state;
 
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.MaterialUtil;
 import net.glowstone.block.entity.SignEntity;
+import net.kyori.adventure.text.Component;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowSign extends GlowBlockState implements Sign {
 
     private final String[] lines;
+    @Getter
+    @Setter
+    public boolean editable = true;
 
     /**
      * Creates the instance for the given sign block.
@@ -17,9 +29,10 @@ public class GlowSign extends GlowBlockState implements Sign {
      */
     public GlowSign(GlowBlock block) {
         super(block);
-        if (block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN_POST) {
+        final Material type = block.getType();
+        if (!MaterialUtil.SIGNS.contains(type) && !MaterialUtil.WALL_SIGNS.contains(type)) {
             throw new IllegalArgumentException(
-                "GlowSign: expected WALL_SIGN or SIGN_POST, got " + block.getType());
+                "GlowSign: expected WALL_SIGN or SIGN got " + type);
         }
         lines = getBlockEntity().getLines();
     }
@@ -29,17 +42,34 @@ public class GlowSign extends GlowBlockState implements Sign {
     }
 
     @Override
+    public @NotNull List<Component> lines() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull Component line(int i) throws IndexOutOfBoundsException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void line(int i, @NotNull Component component) throws IndexOutOfBoundsException {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @NotNull
+    @Override
     public String[] getLines() {
         return lines.clone();
     }
 
+    @NotNull
     @Override
     public String getLine(int index) throws IndexOutOfBoundsException {
         return lines[index];
     }
 
     @Override
-    public void setLine(int index, String line) throws IndexOutOfBoundsException {
+    public void setLine(int index, @NotNull String line) throws IndexOutOfBoundsException {
         lines[index] = line;
     }
 
@@ -54,4 +84,18 @@ public class GlowSign extends GlowBlockState implements Sign {
         return result;
     }
 
+    @Override
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public @Nullable DyeColor getColor() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setColor(DyeColor dyeColor) {
+        throw new UnsupportedOperationException();
+    }
 }

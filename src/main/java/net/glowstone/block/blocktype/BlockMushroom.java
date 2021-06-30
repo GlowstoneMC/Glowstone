@@ -17,9 +17,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.material.Dirt;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.types.DirtType;
 
 public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -33,15 +30,12 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         GlowBlock belowBlock = block.getRelative(BlockFace.DOWN);
         Material type = belowBlock.getType();
-        MaterialData data = belowBlock.getState().getData();
-        if (type == Material.GRASS
-            || data instanceof Dirt && ((Dirt) data).getType() != DirtType.PODZOL) {
+        if (type == Material.GRASS_BLOCK || type == Material.DIRT) {
             if (block.getLightLevel()
                 < 13) { // checking light level for dirt, coarse dirt and grass
                 return true;
             }
-        } else if (type == Material.MYCEL
-            || data instanceof Dirt && ((Dirt) data).getType() == DirtType.PODZOL) {
+        } else if (type == Material.MYCELIUM || type == Material.PODZOL) {
             // not checking light level if mycel or podzol
             return true;
         }
@@ -101,7 +95,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
                 for (z = block.getZ() - 4; z <= block.getZ() + 4; z++) {
                     for (y = block.getY() - 1; y <= block.getY() + 1; y++) {
                         if (world.getBlockAt(x, y, z).getType() == mushroomType
-                                && ++nearbyShrooms > 4) {
+                            && ++nearbyShrooms > 4) {
                             return;
                         }
                     }
@@ -113,7 +107,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
             int nz;
             nx = block.getX() + ThreadLocalRandom.current().nextInt(3) - 1;
             ny = block.getY() + ThreadLocalRandom.current().nextInt(2)
-                    - ThreadLocalRandom.current().nextInt(2);
+                - ThreadLocalRandom.current().nextInt(2);
             nz = block.getZ() + ThreadLocalRandom.current().nextInt(3) - 1;
 
             x = block.getX();

@@ -1,5 +1,6 @@
 package net.glowstone.entity.meta;
 
+import com.destroystokyo.paper.ParticleBuilder;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public enum MetadataType {
     FLOAT(Float.class, false),
     STRING(String.class, false),
     CHAT(TextMessage.class, false),
+    OPTCHAT(TextMessage.class, true),
     ITEM(ItemStack.class, false),
     BOOLEAN(Boolean.class, false),
     VECTOR(EulerAngle.class, false),
@@ -27,7 +29,8 @@ public enum MetadataType {
     DIRECTION(Integer.class, false),
     OPTUUID(UUID.class, true),
     BLOCKID(Integer.class, false),
-    NBTTAG(CompoundTag.class, false),;
+    NBTTAG(CompoundTag.class, false),
+    PARTICLE(ParticleBuilder.class, false);
 
     @Getter
     private final Class<?> dataType;
@@ -36,6 +39,15 @@ public enum MetadataType {
 
     public static MetadataType byId(int id) {
         return values()[id];
+    }
+
+    public static MetadataType byClass(Class<?> clazz) {
+        for (MetadataType type : MetadataType.values()) {
+            if (type.getDataType() == clazz) {
+                return type;
+            }
+        }
+        return null;
     }
 
     public int getId() {

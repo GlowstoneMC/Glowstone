@@ -21,6 +21,7 @@ public class BlockDispenser extends BlockContainer {
 
     /**
      * Returns the position where an item will emerge from the dispenser.
+     *
      * @param block a dispenser block
      * @return the position as a Vector
      */
@@ -34,6 +35,7 @@ public class BlockDispenser extends BlockContainer {
 
     /**
      * Returns the direction a dispenser is facing.
+     *
      * @param block a dispenser block
      * @return the facing direction
      */
@@ -55,7 +57,7 @@ public class BlockDispenser extends BlockContainer {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof Dispenser) {
@@ -73,13 +75,13 @@ public class BlockDispenser extends BlockContainer {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
-        Material oldType, byte oldData, Material newType, byte newData) {
+                                   Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
@@ -88,7 +90,7 @@ public class BlockDispenser extends BlockContainer {
         super.updatePhysicsAfterEvent(me);
         GlowBlock up = me.getRelative(BlockFace.UP);
         boolean powered = me.isBlockPowered() || me.isBlockIndirectlyPowered()
-                || up.isBlockPowered() || up.isBlockIndirectlyPowered();
+            || up.isBlockPowered() || up.isBlockIndirectlyPowered();
 
         GlowBlockState state = me.getState();
         MaterialData data = state.getData();
@@ -117,6 +119,7 @@ public class BlockDispenser extends BlockContainer {
 
     /**
      * Dispense an item from the given block if it's a dispenser.
+     *
      * @param block the dispenser block
      */
     public void trigger(GlowBlock block) {

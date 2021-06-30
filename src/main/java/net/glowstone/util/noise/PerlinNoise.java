@@ -7,6 +7,7 @@ public class PerlinNoise extends PerlinNoiseGenerator {
 
     /**
      * Creates an instance using the given PRNG.
+     *
      * @param rand the PRNG used to generate the seed permutation
      */
     public PerlinNoise(Random rand) {
@@ -42,21 +43,22 @@ public class PerlinNoise extends PerlinNoiseGenerator {
     /**
      * Generates a rectangular section of this generator's noise.
      *
-     * @param noise the output of the previous noise layer
-     * @param x the X offset
-     * @param y the Y offset
-     * @param z the Z offset
-     * @param sizeX the size on the X axis
-     * @param sizeY the size on the Y axis
-     * @param sizeZ the size on the Z axis
-     * @param scaleX the X scale parameter
-     * @param scaleY the Y scale parameter
-     * @param scaleZ the Z scale parameter
+     * @param noise     the output of the previous noise layer
+     * @param x         the X offset
+     * @param y         the Y offset
+     * @param z         the Z offset
+     * @param sizeX     the size on the X axis
+     * @param sizeY     the size on the Y axis
+     * @param sizeZ     the size on the Z axis
+     * @param scaleX    the X scale parameter
+     * @param scaleY    the Y scale parameter
+     * @param scaleZ    the Z scale parameter
      * @param amplitude the amplitude parameter
      * @return {@code noise} with this layer of noise added
      */
     public double[] getNoise(double[] noise, double x, double y, double z, int sizeX, int sizeY,
-        int sizeZ, double scaleX, double scaleY, double scaleZ, double amplitude) {
+                             int sizeZ, double scaleX, double scaleY, double scaleZ,
+                             double amplitude) {
         if (sizeY == 1) {
             return get2dNoise(noise, x, z, sizeX, sizeZ, scaleX, scaleZ, amplitude);
         } else {
@@ -66,7 +68,7 @@ public class PerlinNoise extends PerlinNoiseGenerator {
     }
 
     protected double[] get2dNoise(double[] noise, double x, double z, int sizeX, int sizeZ,
-        double scaleX, double scaleZ, double amplitude) {
+                                  double scaleX, double scaleZ, double amplitude) {
         int index = 0;
         for (int i = 0; i < sizeX; i++) {
             double dx = x + offsetX + i * scaleX;
@@ -95,7 +97,8 @@ public class PerlinNoise extends PerlinNoiseGenerator {
     }
 
     protected double[] get3dNoise(double[] noise, double x, double y, double z, int sizeX,
-        int sizeY, int sizeZ, double scaleX, double scaleY, double scaleZ, double amplitude) {
+                                  int sizeY, int sizeZ, double scaleX, double scaleY, double scaleZ,
+                                  double amplitude) {
         int n = -1;
         double x1 = 0;
         double x2 = 0;

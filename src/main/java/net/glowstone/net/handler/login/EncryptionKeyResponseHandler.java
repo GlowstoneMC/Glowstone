@@ -37,7 +37,7 @@ public final class EncryptionKeyResponseHandler implements
     MessageHandler<GlowSession, EncryptionKeyResponseMessage> {
 
     private static final String BASE_URL =
-            "https://sessionserver.mojang.com/session/minecraft/hasJoined";
+        "https://sessionserver.mojang.com/session/minecraft/hasJoined";
     private static final JSONParser PARSER = new JSONParser();
 
     private final HttpClient httpClient;
@@ -65,7 +65,7 @@ public final class EncryptionKeyResponseHandler implements
         try {
             rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
             sharedSecret = new SecretKeySpec(rsaCipher.doFinal(message.getSharedSecret()),
-                    "AES"); // NON-NLS
+                "AES"); // NON-NLS
         } catch (Exception ex) {
             ConsoleMessages.Warn.Crypt.BAD_SHARED_SECRET.log(ex);
             session.disconnect(GlowstoneMessages.Kick.Crypt.SHARED_SECRET.get());
@@ -109,7 +109,7 @@ public final class EncryptionKeyResponseHandler implements
         }
 
         String url = BASE_URL + "?username=" + session.getVerifyUsername() // NON-NLS
-                + "&serverId=" + hash; // NON-NLS
+            + "&serverId=" + hash; // NON-NLS
         if (session.getServer().shouldPreventProxy()) {
             try {
                 // in case we are dealing with an IPv6 address rather than an IPv4 we have to encode
@@ -177,7 +177,7 @@ public final class EncryptionKeyResponseHandler implements
 
             // spawn player
             session.getServer().getScheduler().runTask(null, () -> session.setPlayer(
-                    new GlowPlayerProfile(name, uuid, properties, true)));
+                new GlowPlayerProfile(name, uuid, properties, true)));
         }
 
         @Override

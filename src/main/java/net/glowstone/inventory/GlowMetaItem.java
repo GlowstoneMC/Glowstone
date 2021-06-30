@@ -1,10 +1,17 @@
 package net.glowstone.inventory;
 
+import com.destroystokyo.paper.Namespaced;
 import com.google.common.base.Strings;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,17 +19,32 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
+import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
  */
 public class GlowMetaItem implements ItemMeta {
 
+    private final SetMultimap<Attribute, AttributeModifier> attributeModifiers = HashMultimap.create();
+    private final Set<Namespaced> placeableKeys = new HashSet<>();
+    private final Set<Namespaced> destroyableKeys = new HashSet<>();
+    private final Set<Material> canPlaceOn = new HashSet<>();
+    private final Set<Material> canDestroy = new HashSet<>();
     @Getter
     @Setter
     private String displayName;
@@ -77,7 +99,8 @@ public class GlowMetaItem implements ItemMeta {
 
         for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
             CompoundTag enchantmentTag = new CompoundTag();
-            enchantmentTag.putShort("id", enchantment.getKey().getId());
+
+            enchantmentTag.putString("id", enchantment.getKey().getKey().toString());
             enchantmentTag.putShort("lvl", enchantment.getValue());
             ench.add(enchantmentTag);
         }
@@ -88,8 +111,10 @@ public class GlowMetaItem implements ItemMeta {
     protected static Map<Enchantment, Integer> readNbtEnchants(String name, CompoundTag tag) {
         Map<Enchantment, Integer> result = new HashMap<>(4);
         tag.iterateCompoundList(name, enchantmentTag -> {
-            if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
-                Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
+            if (enchantmentTag.isString("id") && enchantmentTag.isShort("lvl")) {
+                Enchantment enchantment = Enchantment.getByKey(
+                        NbtSerialization.namespacedKeyFromString(
+                                enchantmentTag.getString("id")));
                 result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
             }
         });
@@ -110,18 +135,57 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     @Override
-    public Spigot spigot() {
-        return new Spigot() {
-            @Override
-            public boolean isUnbreakable() {
-                return GlowMetaItem.this.isUnbreakable();
-            }
+    public Set<Material> getCanDestroy() {
+        return new HashSet<>(canDestroy);
+    }
 
-            @Override
-            public void setUnbreakable(boolean unbreakable) {
-                GlowMetaItem.this.setUnbreakable(unbreakable);
-            }
-        };
+    @Override
+    public void setCanDestroy(Set<Material> canDestroy) {
+        this.canDestroy.clear();
+        this.canDestroy.addAll(canDestroy);
+    }
+
+    @Override
+    public Set<Material> getCanPlaceOn() {
+        return new HashSet<>(canPlaceOn);
+    }
+
+    @Override
+    public void setCanPlaceOn(Set<Material> canPlaceOn) {
+        this.canPlaceOn.clear();
+        this.canPlaceOn.addAll(canPlaceOn);
+    }
+
+    @Override
+    public @NotNull Set<Namespaced> getDestroyableKeys() {
+        return new HashSet<>(destroyableKeys);
+    }
+
+    @Override
+    public void setDestroyableKeys(@NotNull Collection<Namespaced> canDestroy) {
+        destroyableKeys.clear();
+        destroyableKeys.addAll(canDestroy);
+    }
+
+    @Override
+    public @NotNull Set<Namespaced> getPlaceableKeys() {
+        return new HashSet<>(placeableKeys);
+    }
+
+    @Override
+    public void setPlaceableKeys(@NotNull Collection<Namespaced> canPlaceOn) {
+        placeableKeys.clear();
+        placeableKeys.addAll(canPlaceOn);
+    }
+
+    @Override
+    public boolean hasPlaceableKeys() {
+        return !placeableKeys.isEmpty();
+    }
+
+    @Override
+    public boolean hasDestroyableKeys() {
+        return !destroyableKeys.isEmpty();
     }
 
     @Override
@@ -148,7 +212,7 @@ public class GlowMetaItem implements ItemMeta {
                 result.put("ItemFlags", hideFlags);
             }
         }
-
+        // TODO: New fields added in 1.13
         return result;
     }
 
@@ -166,7 +230,7 @@ public class GlowMetaItem implements ItemMeta {
         }
 
         if (hasEnchants()) {
-            writeNbtEnchants("ench", tag, enchants);
+            writeNbtEnchants("Enchantments", tag, enchants);
         }
 
         if (hideFlag != 0) {
@@ -182,7 +246,7 @@ public class GlowMetaItem implements ItemMeta {
         });
 
         //TODO currently ignoring level restriction, is that right?
-        Map<Enchantment, Integer> tagEnchants = readNbtEnchants("ench", tag);
+        Map<Enchantment, Integer> tagEnchants = readNbtEnchants("Enchantments", tag);
         if (tagEnchants != null) {
             if (enchants == null) {
                 enchants = tagEnchants;
@@ -208,6 +272,26 @@ public class GlowMetaItem implements ItemMeta {
         return !Strings.isNullOrEmpty(displayName);
     }
 
+    @Override
+    public @Nullable Component displayName() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void displayName(@Nullable Component component) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @NotNull BaseComponent[] getDisplayNameComponent() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void setDisplayNameComponent(@Nullable BaseComponent[] baseComponents) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
     // TODO: support localization
 
     @Override
@@ -231,9 +315,24 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     @Override
+    public @Nullable List<Component> lore() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void lore(@Nullable List<Component> list) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
     public List<String> getLore() {
         // TODO: Defensive copy
         return lore;
+    }
+
+    @Override
+    public @Nullable List<BaseComponent[]> getLoreComponents() {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
     }
 
     @Override
@@ -241,6 +340,26 @@ public class GlowMetaItem implements ItemMeta {
         // todo: fancy validation things
         // TODO: Defensive copy
         this.lore = lore;
+    }
+
+    @Override
+    public void setLoreComponents(@Nullable List<BaseComponent[]> list) {
+        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public boolean hasCustomModelData() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getCustomModelData() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setCustomModelData(@Nullable Integer integer) {
+        throw new UnsupportedOperationException();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -338,7 +457,71 @@ public class GlowMetaItem implements ItemMeta {
         return (hideFlag & bitModifier) == bitModifier;
     }
 
+    @Override
+    public boolean hasAttributeModifiers() {
+        return !attributeModifiers.isEmpty();
+    }
+
+    @Override
+    public @Nullable Multimap<Attribute, AttributeModifier> getAttributeModifiers() {
+        return HashMultimap.create(attributeModifiers);
+    }
+
+    @Override
+    public @NotNull Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot) {
+        return Multimaps.filterValues(getAttributeModifiers(), modifier -> slot == modifier.getSlot());
+    }
+
+    @Override
+    public @Nullable Collection<AttributeModifier> getAttributeModifiers(
+            @NotNull Attribute attribute) {
+        return null;
+    }
+
+    @Override
+    public boolean addAttributeModifier(@NotNull Attribute attribute,
+            @NotNull AttributeModifier modifier) {
+        return false;
+    }
+
+    @Override
+    public void setAttributeModifiers(
+            @Nullable Multimap<Attribute, AttributeModifier> attributeModifiers) {
+
+    }
+
+    @Override
+    public boolean removeAttributeModifier(@NotNull Attribute attribute) {
+        return false;
+    }
+
+    @Override
+    public boolean removeAttributeModifier(@NotNull EquipmentSlot slot) {
+        return false;
+    }
+
+    @Override
+    public boolean removeAttributeModifier(@NotNull Attribute attribute,
+            @NotNull AttributeModifier modifier) {
+        return false;
+    }
+
+    @Override
+    public @NotNull CustomItemTagContainer getCustomTagContainer() {
+        return null;
+    }
+
+    @Override
+    public void setVersion(int version) {
+        throw new UnsupportedOperationException();
+    }
+
     private byte getBitModifier(ItemFlag hideFlag) {
         return (byte) (1 << hideFlag.ordinal());
+    }
+
+    @Override
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
+        throw new UnsupportedOperationException();
     }
 }

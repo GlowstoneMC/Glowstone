@@ -4,11 +4,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.glowstone.entity.GlowHumanEntity;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Standard implementation of InventoryView for most inventories.
@@ -81,6 +83,11 @@ public class GlowInventoryView extends InventoryView {
     public ItemStack getItem(int slot) {
         checkSlot(slot);
         return super.getItem(slot);
+    }
+
+    @Override
+    public @NotNull String getTitle() {
+        throw new NotImplementedException();
     }
 
     /**

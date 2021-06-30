@@ -1,10 +1,12 @@
 package net.glowstone.block.blocktype;
 
-import static org.bukkit.Material.SKULL;
 import static org.bukkit.Material.SOUL_SAND;
+import static org.bukkit.Material.WITHER_SKELETON_SKULL;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumMap;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
@@ -22,25 +24,39 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Skull;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockSkull extends BlockType {
 
+    private static final ImmutableMap<SkullType, Material> SKULL_MATERIALS;
     private static final BlockPattern WITHER_PATTERN = new BlockPattern(
-        new BlockPattern.PatternItem(SKULL, (byte) 1, 0, 0),
-        new BlockPattern.PatternItem(SKULL, (byte) 1, 1, 0),
-        new BlockPattern.PatternItem(SKULL, (byte) 1, 2, 0),
+        new BlockPattern.PatternItem(WITHER_SKELETON_SKULL, (byte) 1, 0, 0),
+        new BlockPattern.PatternItem(WITHER_SKELETON_SKULL, (byte) 1, 1, 0),
+        new BlockPattern.PatternItem(WITHER_SKELETON_SKULL, (byte) 1, 2, 0),
         new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 0, 1),
         new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 1, 1),
         new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 2, 1),
         new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 1, 2)
     );
 
+    static {
+        EnumMap<SkullType, Material> skullTypesBuilder = new EnumMap<>(SkullType.class);
+        skullTypesBuilder.put(SkullType.CREEPER, Material.CREEPER_HEAD);
+        skullTypesBuilder.put(SkullType.DRAGON, Material.DRAGON_HEAD);
+        skullTypesBuilder.put(SkullType.PLAYER, Material.PLAYER_HEAD);
+        skullTypesBuilder.put(SkullType.ZOMBIE, Material.ZOMBIE_HEAD);
+        skullTypesBuilder.put(SkullType.SKELETON, Material.SKELETON_SKULL);
+        skullTypesBuilder.put(SkullType.WITHER, WITHER_SKELETON_SKULL);
+        SKULL_MATERIALS = ImmutableMap.copyOf(skullTypesBuilder);
+    }
+
     public BlockSkull() {
-        setDrops(new ItemStack(Material.SKULL_ITEM));
+        setDrops(new ItemStack(Material.SKELETON_SKULL));
     }
 
     /**
      * Returns the SkullType with the given ID.
+     *
      * @param id the ID to look up
      * @return the skull type
      */
@@ -66,7 +82,7 @@ public class BlockSkull extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (!(data instanceof Skull)) {
@@ -84,7 +100,7 @@ public class BlockSkull extends BlockType {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         GlowSkull skull = (GlowSkull) block.getState();
         skull.setSkullType(getType(holding.getDurability()));
         if (skull.getSkullType() == SkullType.PLAYER) {
@@ -115,11 +131,12 @@ public class BlockSkull extends BlockType {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         GlowSkull skull = (GlowSkull) block.getState();
-
-        ItemStack drop = new ItemStack(Material.SKULL_ITEM, 1);
+        Material skullMaterial = SKULL_MATERIALS.get(skull.getSkullType());
+        ItemStack drop = new ItemStack(skullMaterial, 1);
         if (skull.hasOwner()) {
             SkullMeta meta = (SkullMeta) drop.getItemMeta();
             meta.setOwner(skull.getOwner());

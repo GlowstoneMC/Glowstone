@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
  * @param <InventoryT> the inventory class this entity uses
  */
 public abstract class GlowChestedHorse<InventoryT extends AbstractHorseInventory>
-        extends GlowAbstractHorse implements ChestedHorse {
+    extends GlowAbstractHorse implements ChestedHorse {
 
     /**
      * Null when not carrying a chest; otherwise, a 15-slot container.
@@ -45,7 +45,7 @@ public abstract class GlowChestedHorse<InventoryT extends AbstractHorseInventory
      * Move all items from one inventory's chest to another, and drop those that don't fit.
      *
      * @param from the inventory to transfer from
-     * @param to the inventory to transfer to
+     * @param to   the inventory to transfer to
      */
     protected void moveChestContents(InventoryT from, InventoryT to) {
         for (ItemStack remaining : to.addItem(from.getContents()).values()) {

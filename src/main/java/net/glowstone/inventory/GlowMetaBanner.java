@@ -105,7 +105,8 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
 
     @Override
     public boolean isApplicable(Material material) {
-        return material == Material.BANNER;
+        // TODO: convert to 1.13 types, but meta classes will probably be nuked anyways...
+        return material == Material.LEGACY_BANNER;
     }
 
     @Override

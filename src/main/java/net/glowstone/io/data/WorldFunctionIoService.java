@@ -11,10 +11,9 @@ import net.glowstone.io.FunctionIoService;
 
 public class WorldFunctionIoService implements FunctionIoService {
 
-    private static final String FUNCTIONS_DIR_NAME = "functions";
     public static final String FUNCTION_EXT = ".mcfunction";
     public static final int FUNCTION_EXT_LENGTH = FUNCTION_EXT.length();
-
+    private static final String FUNCTIONS_DIR_NAME = "functions";
     private final File dataDir;
     private final GlowWorld world;
 

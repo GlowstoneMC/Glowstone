@@ -45,19 +45,19 @@ public class GlowDesertWell extends GlowStructurePiece {
 
         builder.fill(new Vector(0, 0, 0), new Vector(4, 2, 4), Material.SANDSTONE);
         builder.fill(new Vector(1, 2, 1), new Vector(3, 2, 3), Material.AIR);
-        builder.setBlock(new Vector(2, 2, 0), Material.STEP, 1);
-        builder.setBlock(new Vector(0, 2, 2), Material.STEP, 1);
-        builder.setBlock(new Vector(4, 2, 2), Material.STEP, 1);
-        builder.setBlock(new Vector(2, 2, 4), Material.STEP, 1);
-        builder.fill(new Vector(2, 1, 1), new Vector(2, 1, 3), Material.STATIONARY_WATER);
-        builder.fill(new Vector(1, 1, 2), new Vector(3, 1, 2), Material.STATIONARY_WATER);
+        builder.setBlock(new Vector(2, 2, 0), Material.SANDSTONE_SLAB);
+        builder.setBlock(new Vector(0, 2, 2), Material.SANDSTONE_SLAB);
+        builder.setBlock(new Vector(4, 2, 2), Material.SANDSTONE_SLAB);
+        builder.setBlock(new Vector(2, 2, 4), Material.SANDSTONE_SLAB);
+        builder.fill(new Vector(2, 1, 1), new Vector(2, 1, 3), Material.WATER);
+        builder.fill(new Vector(1, 1, 2), new Vector(3, 1, 2), Material.WATER);
 
         builder.fill(new Vector(1, 2, 1), new Vector(1, 4, 1), Material.SANDSTONE);
         builder.fill(new Vector(1, 2, 3), new Vector(1, 4, 3), Material.SANDSTONE);
         builder.fill(new Vector(3, 2, 1), new Vector(3, 4, 1), Material.SANDSTONE);
         builder.fill(new Vector(3, 2, 3), new Vector(3, 4, 3), Material.SANDSTONE);
 
-        builder.fill(new Vector(1, 5, 1), new Vector(3, 5, 3), Material.STEP, 1);
+        builder.fill(new Vector(1, 5, 1), new Vector(3, 5, 3), Material.SANDSTONE_SLAB);
         builder.setBlock(new Vector(2, 5, 2), Material.SANDSTONE);
 
         return true;

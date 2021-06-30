@@ -2,26 +2,32 @@ package net.glowstone.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowStatistic;
-import net.glowstone.net.message.play.game.StatisticMessage;
-import org.bukkit.Achievement;
+import net.glowstone.net.message.play.game.StatisticsMessage;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.Statistic.Type;
 import org.bukkit.entity.EntityType;
 
 /**
- * A container for achievement and statistic tracking.
+ * A container for statistic tracking.
  */
 public final class StatisticMap {
 
     private final Map<String, Integer> values = new HashMap<>();
 
-    public StatisticMessage toMessage() {
-        return new StatisticMessage(values);
+    public StatisticsMessage toMessage() {
+        Map<Statistic, Integer> statKeyedValues = new EnumMap<>(Statistic.class);
+        for (Statistic stat : Statistic.values()) {
+            Integer value = values.get(stat.name());
+            if (value != null) {
+                statKeyedValues.put(stat, value);
+            }
+        }
+        return new StatisticsMessage(statKeyedValues);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -32,7 +38,7 @@ public final class StatisticMap {
     }
 
     private void setValue(String key, int value) {
-        values.put(key, value < 0 ? 0 : value);
+        values.put(key, Math.max(value, 0));
     }
 
     private String name(Statistic stat) {
@@ -42,31 +48,23 @@ public final class StatisticMap {
     private String name(Statistic stat, Material mat) {
         if (mat.isBlock()) {
             checkArgument(
-                    stat.getType() == Type.BLOCK,
-                    "Statistic " + stat + " is not a block statistic");
+                stat.getType() == Type.BLOCK,
+                "Statistic " + stat + " is not a block statistic");
         } else {
             checkArgument(
-                    stat.getType() == Type.ITEM, "Statistic " + stat + " is not an item statistic");
+                stat.getType() == Type.ITEM, "Statistic " + stat + " is not an item statistic");
         }
         return GlowStatistic.getName(stat, mat);
     }
 
     private String name(Statistic stat, EntityType type) {
         checkArgument(
-                stat.getType() == Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
+            stat.getType() == Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
         return GlowStatistic.getName(stat, type);
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Achievement and stat accessors
-
-    public boolean hasAchievement(Achievement achievement) {
-        return getValue(GlowAchievement.getName(achievement)) != 0;
-    }
-
-    public void setAchievement(Achievement achievement, boolean has) {
-        setValue(GlowAchievement.getName(achievement), has ? 1 : 0);
-    }
+    // Stat accessors
 
     public int get(Statistic stat) {
         return getValue(name(stat));
@@ -100,9 +98,9 @@ public final class StatisticMap {
     /**
      * Increment the given Statistic for the given Material.
      *
-     * @param stat the Statistic
+     * @param stat     the Statistic
      * @param material the Material
-     * @param modify the amount to add
+     * @param modify   the amount to add
      */
     public void add(Statistic stat, Material material, int modify) {
         String name = name(stat);
@@ -118,9 +116,9 @@ public final class StatisticMap {
     /**
      * Increment the given Statistic for the given EntityType.
      *
-     * @param stat the Statistic
+     * @param stat       the Statistic
      * @param entityType the EntityType
-     * @param modify the amount to add
+     * @param modify     the amount to add
      */
     public void add(Statistic stat, EntityType entityType, int modify) {
         String name = name(stat);

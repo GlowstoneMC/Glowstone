@@ -5,6 +5,7 @@ import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.List;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage.Action;
 import org.bukkit.ChatColor;
@@ -25,14 +26,14 @@ public final class ScoreboardTeamCodec implements Codec<ScoreboardTeamMessage> {
 
         // CREATE and UPDATE
         if (action == Action.CREATE || action == Action.UPDATE) {
-            ByteBufUtils.writeUTF8(buf, message.getDisplayName());
-            ByteBufUtils.writeUTF8(buf, message.getPrefix());
-            ByteBufUtils.writeUTF8(buf, message.getSuffix());
+            GlowBufUtils.writeChat(buf, message.getDisplayName());
             buf.writeByte(message.getFlags());
             ByteBufUtils.writeUTF8(buf, message.getNametagVisibility().name().toLowerCase());
             ByteBufUtils.writeUTF8(buf, message.getCollisionRule().name().toLowerCase());
             buf.writeByte(
                 message.getColor() == ChatColor.RESET ? -1 : message.getColor().ordinal());
+            GlowBufUtils.writeChat(buf, message.getPrefix());
+            GlowBufUtils.writeChat(buf, message.getSuffix());
         }
 
         // CREATE, ADD_, and REMOVE_PLAYERS

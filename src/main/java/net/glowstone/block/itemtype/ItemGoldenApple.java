@@ -21,21 +21,21 @@ public class ItemGoldenApple extends ItemFood {
         byte data = item.getData().getData();
         if (data == 0) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION,
-                            TickUtil.minutesToTicks(2), 0), true);
+                TickUtil.minutesToTicks(2), 0), true);
             player
                 .addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,
-                        TickUtil.secondsToTicks(5), 1), true);
+                    TickUtil.secondsToTicks(5), 1), true);
         } else if (data == 1) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION,
-                            TickUtil.minutesToTicks(2), 3),true);
+                TickUtil.minutesToTicks(2), 3), true);
             player
                 .addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,
-                        TickUtil.secondsToTicks(20), 1), true);
+                    TickUtil.secondsToTicks(20), 1), true);
             player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,
-                        TickUtil.minutesToTicks(5), 0), true);
+                TickUtil.minutesToTicks(5), 0), true);
             player
                 .addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE,
-                                TickUtil.minutesToTicks(5), 0),true);
+                    TickUtil.minutesToTicks(5), 0), true);
         }
 
         return true;

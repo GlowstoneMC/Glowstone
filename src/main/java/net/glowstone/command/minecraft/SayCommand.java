@@ -19,7 +19,7 @@ public class SayCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -28,9 +28,9 @@ public class SayCommand extends GlowVanillaCommand {
             return false;
         }
         StringBuilder message = new StringBuilder("[")
-                .append(sender.getName() == null
-                        ? GlowstoneMessages.Command.SAY_SERVER.get() : sender.getName())
-                .append("] ");
+            .append(sender.getName() == null
+                ? GlowstoneMessages.Command.SAY_SERVER.get() : sender.getName())
+            .append("] ");
         for (String arg : args) {
             if (arg.startsWith("@") && arg.length() >= 2 && CommandUtils.isPhysical(sender)) {
                 // command targets
@@ -39,11 +39,11 @@ public class SayCommand extends GlowVanillaCommand {
                 Entity[] matched = target.getMatched(location);
                 if (matched.length == 0) {
                     commandMessages.getGeneric(GenericMessage.NO_MATCHES)
-                            .sendInColor(ChatColor.RED, sender, arg);
+                        .sendInColor(ChatColor.RED, sender, arg);
                     return false;
                 }
                 message.append(commandMessages.joinList(
-                        Arrays.stream(matched).map(Entity::getName))).append(' ');
+                    Arrays.stream(matched).map(Entity::getName))).append(' ');
             } else {
                 message.append(arg).append(' ');
             }

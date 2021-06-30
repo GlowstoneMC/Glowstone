@@ -92,7 +92,7 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
 
     @Override
     public boolean isApplicable(Material material) {
-        return material == Material.FIREWORK_CHARGE;
+        return material == Material.FIREWORK_STAR;
     }
 
     @Override

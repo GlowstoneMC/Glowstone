@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import net.glowstone.util.DynamicallyTypedMapWithFloats;
+import net.glowstone.util.TextMessage;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -112,8 +113,8 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
     /**
      * Sets or clears bits in an integer field.
      *
-     * @param index the field to update
-     * @param bit a mask of the bits to set or clear
+     * @param index  the field to update
+     * @param bit    a mask of the bits to set or clear
      * @param status true to set; false to clear
      */
     public void setBit(MetadataIndex index, int bit, boolean status) {
@@ -179,6 +180,20 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
      */
     public BlockVector getOptPosition(MetadataIndex index) {
         return get(index, MetadataType.OPTPOSITION, null);
+    }
+
+    public TextMessage getChat(MetadataIndex index) {
+        return get(index, MetadataType.CHAT, null);
+    }
+
+    /**
+     * Gets the optional chat value for the given MetadataIndex.
+     *
+     * @param index the MetadataIndex of the optional chat
+     * @return the chat value as a TextMessage, null if the value is not present
+     */
+    public TextMessage getOptChat(MetadataIndex index) {
+        return get(index, MetadataType.OPTCHAT, null);
     }
 
     /**

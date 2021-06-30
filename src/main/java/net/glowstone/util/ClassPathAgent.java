@@ -13,7 +13,7 @@ public class ClassPathAgent {
 
     /**
      * Adds a JAR file to the system class loader.
-     * 
+     *
      * @param file The JAR file to add to the class loader.
      */
     public static void addJarFile(JarFile file) {

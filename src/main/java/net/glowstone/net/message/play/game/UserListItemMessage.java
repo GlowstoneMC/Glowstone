@@ -20,8 +20,8 @@ public final class UserListItemMessage implements Message {
     /**
      * Creates an instance.
      *
-     * @param action the action code: 0 = add player; 1 = update gamemode; 2 = update latency;
-     *         3 = update display name; 4 = remove player
+     * @param action  the action code: 0 = add player; 1 = update gamemode; 2 = update latency;
+     *                3 = update display name; 4 = remove player
      * @param entries the players to add, update or remove
      */
     public UserListItemMessage(Action action, List<Entry> entries) {
@@ -31,7 +31,7 @@ public final class UserListItemMessage implements Message {
         for (Entry entry : entries) {
             if (entry.action != action) {
                 throw new IllegalArgumentException(
-                        "Entries must be " + action + ", not " + entry.action);
+                    "Entries must be " + action + ", not " + entry.action);
             }
         }
     }
@@ -49,9 +49,9 @@ public final class UserListItemMessage implements Message {
     /**
      * Adds a player to this message.
      *
-     * @param profile the player to add
-     * @param gameMode the player's game mode's value (see {@link org.bukkit.GameMode})
-     * @param ping the player's ping time in milliseconds (TODO: is this up, down, or round-trip?)
+     * @param profile     the player to add
+     * @param gameMode    the player's game mode's value (see {@link org.bukkit.GameMode})
+     * @param ping        the player's ping time in milliseconds (TODO: is this up, down, or round-trip?)
      * @param displayName the name to display for the player
      * @return The resultant entry
      */
@@ -59,7 +59,7 @@ public final class UserListItemMessage implements Message {
                             TextMessage displayName) {
         // TODO: measure ping
         return new Entry(profile.getId(), profile, gameMode, ping, displayName,
-                Action.ADD_PLAYER);
+            Action.ADD_PLAYER);
     }
 
     public static UserListItemMessage addOne(GlowPlayerProfile profile) {

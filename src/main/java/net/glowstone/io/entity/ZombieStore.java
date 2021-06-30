@@ -27,6 +27,6 @@ class ZombieStore<T extends GlowZombie> extends MonsterStore<GlowZombie> {
     public void save(GlowZombie entity, CompoundTag tag) {
         super.save(entity, tag);
         tag.putBool("IsBaby", entity.isBaby());
-        tag.putBool("CanBreakDoors", entity.isCanBreakDoors());
+        tag.putBool("CanBreakDoors", entity.canBreakDoors());
     }
 }

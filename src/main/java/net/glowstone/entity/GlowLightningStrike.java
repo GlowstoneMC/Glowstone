@@ -5,13 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.constants.GameRules;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
+import net.glowstone.net.message.play.entity.SpawnGlobalEntityMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -29,12 +30,12 @@ import org.bukkit.util.Vector;
 /**
  * A GlowLightning strike is an entity produced during thunderstorms.
  */
-public class GlowLightningStrike extends GlowWeather implements LightningStrike {
+public class GlowLightningStrike extends GlowEntity implements LightningStrike {
 
     /**
      * How long this lightning strike has to remain in the world.
      */
-    private final int ticksToLive;
+    private int ticksToLive;
     /**
      * Whether the lightning strike is just for effect.
      */
@@ -51,6 +52,10 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         }
     };
 
+    @Getter
+    @Setter
+    private int flashCount;
+
     public GlowLightningStrike(Location location) {
         this(location, false, false);
     }
@@ -59,7 +64,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
      * Creates a lightning strike.
      *
      * @param location the location to strike
-     * @param effect true if this lightning strike doesn't damage entities or start fires
+     * @param effect   true if this lightning strike doesn't damage entities or start fires
      * @param isSilent true to suppress the sound effect
      */
     public GlowLightningStrike(Location location, boolean effect, boolean isSilent) {
@@ -84,7 +89,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
             GlowWorld world = (GlowWorld) location.getWorld();
             // Play Sound
             if (!isSilent) {
-                world.playSound(location, Sound.ENTITY_LIGHTNING_THUNDER, 10000,
+                world.playSound(location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 10000,
                     0.8F + ThreadLocalRandom.current().nextFloat() * 0.2F);
                 world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 2,
                     0.5F + ThreadLocalRandom.current().nextFloat() * 0.2F);
@@ -126,12 +131,17 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         double x = location.getX();
         double y = location.getY();
         double z = location.getZ();
-        return Collections.singletonList(new SpawnLightningStrikeMessage(entityId, x, y, z));
+        return Collections.singletonList(new SpawnGlobalEntityMessage(entityId, x, y, z));
     }
 
     @Override
     public List<Message> createUpdateMessage(GlowSession session) {
         return Collections.emptyList();
+    }
+
+    @Override
+    public void setRotation(float yaw, float pitch) {
+        // No-op: lightning bolts are always vertical.
     }
 
     @Override
@@ -165,5 +175,15 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     @Override
     public LightningStrike.Spigot spigot() {
         return spigot;
+    }
+
+    @Override
+    public int getLifeTicks() {
+        return ticksToLive;
+    }
+
+    @Override
+    public void setLifeTicks(int i) {
+        this.ticksToLive = i;
     }
 }

@@ -25,8 +25,8 @@ public class ItemKnowledgeBook extends ItemType {
 
     @Override
     public void rightClickBlock(
-            GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding,
-            Vector clickedLoc, EquipmentSlot hand) {
+        GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding,
+        Vector clickedLoc, EquipmentSlot hand) {
         rightClickBook(player, holding);
     }
 
@@ -41,7 +41,7 @@ public class ItemKnowledgeBook extends ItemType {
             if (recipes.hasRecipes()) {
                 for (NamespacedKey recipe : recipes.getRecipes()) {
                     player.learnRecipe(((GlowServer) ServerProvider.getServer())
-                            .getCraftingManager().getRecipeByKey(recipe), true);
+                        .getCraftingManager().getRecipeByKey(recipe), true);
                 }
             }
 

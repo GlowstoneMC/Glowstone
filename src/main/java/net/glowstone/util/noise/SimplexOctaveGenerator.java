@@ -29,7 +29,7 @@ public class SimplexOctaveGenerator extends PerlinOctaveGenerator {
 
     @Override
     public double[] getFractalBrownianMotion(
-            double x, double y, double z, double lacunarity, double persistence) {
+        double x, double y, double z, double lacunarity, double persistence) {
         for (int i = 0; i < noise.length; i++) {
             noise[i] = 0;
         }

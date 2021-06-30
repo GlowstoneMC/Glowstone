@@ -10,7 +10,7 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class MinecartStore extends EntityStore<GlowMinecart> {
 
-    private GlowMinecart.MinecartType minecartType;
+    private final GlowMinecart.MinecartType minecartType;
 
     public MinecartStore(GlowMinecart.MinecartType minecartType) {
         super(minecartType.getMinecartClass(), minecartType.getEntityType());
@@ -44,7 +44,7 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
             InventoryHolder inv = (InventoryHolder) entity;
             if (inv.getInventory() != null) {
                 tag.putCompoundList("Items",
-                        NbtSerialization.writeInventory(inv.getInventory().getContents(), 0));
+                    NbtSerialization.writeInventory(inv.getInventory().getContents(), 0));
             }
         }
         // todo

@@ -28,8 +28,8 @@ public interface IBlockGrowable {
      * Called to grow a growable block.
      *
      * @param player the player who triggered the growth, this can be null if the growth is natural
-     *         or by plugin source
-     * @param block the targeted block to grow
+     *               or by plugin source
+     * @param block  the targeted block to grow
      */
     void grow(GlowPlayer player, GlowBlock block);
 }

@@ -1,10 +1,6 @@
 package net.glowstone.i18n;
 
 public interface GlowstoneMessages {
-    interface Achievement {
-        LocalizedString EARNED = new LocalizedStringImpl("glowstone.achievement.earned");
-    }
-
     interface Advancement {
         LocalizedString TITLE = new LocalizedStringImpl("glowstone.advancement.title");
     }
@@ -22,19 +18,19 @@ public interface GlowstoneMessages {
     }
 
     interface Command {
+        LocalizedString SAY_SERVER = new LocalizedStringImpl("glowstone.command.say.server");
+
         interface Error {
             LocalizedString UNKNOWN_COMMAND =
                 new LocalizedStringImpl("glowstone.command.error.unknown-command");
         }
-
-        LocalizedString SAY_SERVER = new LocalizedStringImpl("glowstone.command.say.server");
     }
 
     interface Entity {
         LocalizedString UNKNOWN_TYPE_WITH_ID =
-                new LocalizedStringImpl("glowstone.entity.unknown-type-no-id");
+            new LocalizedStringImpl("glowstone.entity.unknown-type-no-id");
         LocalizedString UNKNOWN_TYPE_NO_ID =
-                new LocalizedStringImpl("glowstone.entity.unknown-type-with-id");
+            new LocalizedStringImpl("glowstone.entity.unknown-type-with-id");
     }
 
     interface Kick {
@@ -52,22 +48,22 @@ public interface GlowstoneMessages {
 
         interface Crypt {
             LocalizedString HASH_FAILED = new LocalizedStringImpl(
-                    "glowstone.kick.crypt.sha1-failed");
+                "glowstone.kick.crypt.sha1-failed");
 
             LocalizedString RSA_INIT_FAILED = new LocalizedStringImpl(
-                    "glowstone.kick.crypt.rsa-init-failed");
+                "glowstone.kick.crypt.rsa-init-failed");
 
             LocalizedString SHARED_SECRET = new LocalizedStringImpl(
-                    "glowstone.kick.crypt.shared-secret");
+                "glowstone.kick.crypt.shared-secret");
 
             LocalizedString VERIFY_TOKEN = new LocalizedStringImpl(
-                    "glowstone.kick.crypt.verify-token");
+                "glowstone.kick.crypt.verify-token");
 
             LocalizedString AUTH_FAILED = new LocalizedStringImpl(
-                    "glowstone.kick.crypt.user-auth");
+                "glowstone.kick.crypt.user-auth");
 
             LocalizedString AUTH_INTERNAL = new LocalizedStringImpl(
-                    "glowstone.kick.crypt.auth-internal");
+                "glowstone.kick.crypt.auth-internal");
 
             LocalizedString BAD_UUID = new LocalizedStringImpl("glowstone.kick.crypt.invalid-uuid");
         }

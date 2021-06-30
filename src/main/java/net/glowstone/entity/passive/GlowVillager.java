@@ -1,13 +1,15 @@
 package net.glowstone.entity.passive;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.destroystokyo.paper.entity.villager.Reputation;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,14 +35,19 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowVillager extends GlowAgeable implements Villager {
 
     private static final Profession[] PROFESSIONS = Profession.values();
     private static final MerchantRecipe DEFAULT_RECIPE
-            = new MerchantRecipe(new ItemStack(Material.DIRT), 10);
-    @Getter
-    private Career career;
+        = new MerchantRecipe(new ItemStack(Material.DIRT), 10);
+
+    static {
+        DEFAULT_RECIPE.addIngredient(new ItemStack(Material.COBBLESTONE));
+    }
+
     @Getter
     @Setter
     private int riches;
@@ -62,7 +69,6 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Getter
     @Setter
     private boolean willing;
-
     /**
      * Get the current level of this villager's trading options.
      *
@@ -86,6 +92,41 @@ public class GlowVillager extends GlowAgeable implements Villager {
         this.recipes.add(DEFAULT_RECIPE);
     }
 
+    /**
+     * Gets a random {@link Villager.Profession}.
+     *
+     * @param random the random instance
+     * @return a random {@link Villager.Profession}
+     */
+    public static Profession getRandomProfession(Random random) {
+        checkNotNull(random);
+        // Ignore HUSK profession (deprecated)
+        return PROFESSIONS[random.nextInt(PROFESSIONS.length - 2)];
+    }
+
+    /**
+     * Checks whether or not the given {@link Villager.Profession} ID is valid.
+     *
+     * @param professionId the ID of the {@link Villager.Profession}
+     * @return true if the ID is valid, false otherwise
+     */
+    public static boolean isValidProfession(int professionId) {
+        return professionId >= 0 && professionId < PROFESSIONS.length - 1;
+    }
+
+    /**
+     * Gets the {@link Villager.Profession} corresponding to the given ID.
+     *
+     * @param professionId the ID of the {@link Villager.Profession}
+     * @return the corresponding {@link Villager.Profession}, or null if none exists
+     */
+    public static Profession getProfessionById(int professionId) {
+        if (!isValidProfession(professionId)) {
+            return null;
+        }
+        return PROFESSIONS[professionId];
+    }
+
     @Override
     public Profession getProfession() {
         return PROFESSIONS[metadata.getInt(MetadataIndex.VILLAGER_PROFESSION)];
@@ -93,33 +134,84 @@ public class GlowVillager extends GlowAgeable implements Villager {
 
     @Override
     public void setProfession(Profession profession) {
-        checkArgument(profession != Profession.HUSK);
-
         metadata.set(MetadataIndex.VILLAGER_PROFESSION, profession.ordinal());
-        assignCareer();
+        setProfession(getRandomProfession(ThreadLocalRandom.current()));
     }
 
     @Override
-    public void setCareer(Career career) {
-        setCareer(career, true);
+    public @NotNull Type getVillagerType() {
+        // TODO
+        return Type.PLAINS;
     }
 
     @Override
-    public void setCareer(Career career, boolean resetTrades) {
-        // todo: implement resetTrades
-        Profession profession = getProfession();
-        if (profession == null || profession.isZombie()) {
-            return;
-        }
-        if (career == null) {
-            assignCareer();
-            return;
-        }
-        if (career.getProfession() != profession) {
-            setProfession(profession);
-        }
-        this.career = career;
-        this.careerLevel = 1;
+    public void setVillagerType(@NotNull Type type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getVillagerLevel() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setVillagerLevel(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getVillagerExperience() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setVillagerExperience(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getRestocksToday() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setRestocksToday(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean sleep(@NotNull Location location) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void wakeup() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public @Nullable Reputation getReputation(@NotNull UUID uuid) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public @NotNull Map<UUID, Reputation> getReputations() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setReputations(@NotNull Map<UUID, Reputation> map) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setReputation(@NotNull UUID uuid, @NotNull Reputation reputation) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void clearReputations() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -160,6 +252,11 @@ public class GlowVillager extends GlowAgeable implements Villager {
     }
 
     @Override
+    public void resetOffers() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean isTrading() {
         return getTrader() != null;
     }
@@ -181,7 +278,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
         if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
             if (this.recipes.isEmpty()) {
                 GlowServer.logger.info(
-                        player.getName() + " tried trading with a villager with no recipes.");
+                    player.getName() + " tried trading with a villager with no recipes.");
                 return false;
             }
             // open merchant view
@@ -244,7 +341,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
     }
 
     @Override
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
         if (!DamageCause.LIGHTNING.equals(cause)) {
             super.damage(amount, source, cause);
             return;
@@ -254,88 +351,5 @@ public class GlowVillager extends GlowAgeable implements Villager {
         witch.damage(amount, source, cause);
         witch.setFireTicks(this.getFireTicks());
         remove();
-    }
-
-    /**
-     * Assigns a random career to the villager.
-     */
-    private void assignCareer() {
-        Profession profession = getProfession();
-        if (profession == null || profession.isZombie()) {
-            this.career = null;
-        } else {
-            List<Career> careers = profession.getCareers();
-            this.career = careers.get(ThreadLocalRandom.current().nextInt(careers.size()));
-            this.careerLevel = 1;
-        }
-    }
-
-    /**
-     * Gets the career associated with a given ID and profession.
-     *
-     * @param id         the id of the career
-     * @param profession the profession
-     * @return the career associated with the given ID and profession
-     */
-    public static Career getCareerById(int id, Profession profession) {
-        if (profession == null || profession.isZombie()) {
-            return null;
-        }
-        if (id >= profession.getCareers().size()) {
-            return null;
-        }
-        return profession.getCareers().get(id);
-    }
-
-    /**
-     * Gets the numerical ID of the given career.
-     *
-     * @param career the career
-     * @return the id of the career
-     */
-    public static int getCareerId(Career career) {
-        checkNotNull(career);
-
-        Profession profession = career.getProfession();
-        return profession.getCareers().indexOf(career);
-    }
-
-    /**
-     * Gets a random {@link Villager.Profession}.
-     *
-     * @param random the random instance
-     * @return a random {@link Villager.Profession}
-     */
-    public static Profession getRandomProfession(Random random) {
-        checkNotNull(random);
-        // Ignore HUSK profession (deprecated)
-        return PROFESSIONS[random.nextInt(PROFESSIONS.length - 2)];
-    }
-
-    /**
-     * Checks whether or not the given {@link Villager.Profession} ID is valid.
-     *
-     * @param professionId the ID of the {@link Villager.Profession}
-     * @return true if the ID is valid, false otherwise
-     */
-    public static boolean isValidProfession(int professionId) {
-        return professionId >= 0 && professionId < PROFESSIONS.length - 1;
-    }
-
-    /**
-     * Gets the {@link Villager.Profession} corresponding to the given ID.
-     *
-     * @param professionId the ID of the {@link Villager.Profession}
-     * @return the corresponding {@link Villager.Profession}, or null if none exists
-     */
-    public static Profession getProfessionById(int professionId) {
-        if (!isValidProfession(professionId)) {
-            return null;
-        }
-        return PROFESSIONS[professionId];
-    }
-
-    static {
-        DEFAULT_RECIPE.addIngredient(new ItemStack(Material.COBBLESTONE));
     }
 }

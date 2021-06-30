@@ -22,7 +22,7 @@ public class ProbableValue<T> {
      *
      * @param json a JSON object
      * @param type the JSON property of {@code json} to read, which is either an instance of
-     *         {@code T} or an array of objects of the form {@code {'chance': 0.123, 'value': T}}
+     *             {@code T} or an array of objects of the form {@code {'chance': 0.123, 'value': T}}
      */
     public ProbableValue(JSONObject json, @NonNls String type) {
         Object o = json.get(type);

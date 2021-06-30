@@ -15,9 +15,9 @@ public final class PlayerPositionMessage extends PlayerUpdateMessage {
     /**
      * Creates a message to update a player's location.
      *
-     * @param x the player's X coordinate
-     * @param y the player's Y coordinate
-     * @param z the player's Z coordinate
+     * @param x        the player's X coordinate
+     * @param y        the player's Y coordinate
+     * @param z        the player's Z coordinate
      * @param onGround whether the player is on the ground
      */
     public PlayerPositionMessage(boolean onGround, double x, double y, double z) {

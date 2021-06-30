@@ -20,4 +20,5 @@ public interface GameRules {
     String DO_LIMITED_CRAFTING = "doLimitedCrafting";
     String GAME_LOOP_FUNCTION = "gameLoopFunction";
     String MAX_COMMAND_CHAIN_LENGTH = "maxCommandChainLength";
+    String DO_IMMEDIATE_RESPAWN = "doImmediateRespawn";
 }

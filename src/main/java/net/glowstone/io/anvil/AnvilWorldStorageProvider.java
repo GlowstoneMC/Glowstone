@@ -24,26 +24,27 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
     private final File folder;
     private final File dataDir;
     private GlowWorld world;
+    @Getter(lazy = true)
+    private final PlayerDataService playerDataService
+        = new NbtPlayerDataService(world.getServer(), new File(folder, "playerdata"));
+    @Getter(lazy = true)
+    private final ScoreboardIoService scoreboardIoService
+        = new NbtScoreboardIoService(world.getServer(), new File(folder, "data"));
+    @Getter(lazy = true)
+    private final JsonPlayerStatisticIoService playerStatisticIoService
+        = new JsonPlayerStatisticIoService(world.getServer(), new File(folder, "stats"));
+    @Getter(lazy = true)
+    private final FunctionIoService functionIoService = new WorldFunctionIoService(world, dataDir);
     @Getter
     private AnvilChunkIoService chunkIoService;
     @Getter
     private NbtWorldMetadataService metadataService;
     @Getter
     private StructureDataService structureDataService;
-    @Getter(lazy = true)
-    private final PlayerDataService playerDataService
-            = new NbtPlayerDataService(world.getServer(), new File(folder, "playerdata"));
-    @Getter(lazy = true)
-    private final ScoreboardIoService scoreboardIoService
-            = new NbtScoreboardIoService(world.getServer(), new File(folder, "data"));
-    @Getter(lazy = true)
-    private final JsonPlayerStatisticIoService playerStatisticIoService
-            = new JsonPlayerStatisticIoService(world.getServer(), new File(folder, "stats"));
-    @Getter(lazy = true)
-    private final FunctionIoService functionIoService = new WorldFunctionIoService(world, dataDir);
 
     /**
      * Create an instance for the given root folder.
+     *
      * @param folder the root folder
      */
     public AnvilWorldStorageProvider(File folder) {

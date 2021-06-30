@@ -14,10 +14,11 @@ public class BlockPattern {
 
     /**
      * Test whether this pattern matches a block.
+     *
      * @param location the base location
-     * @param clear if true, change the matching blocks for one alignment to air
-     * @param xz TODO: document this parameter
-     * @param y TODO: document this parameter
+     * @param clear    if true, change the matching blocks for one alignment to air
+     * @param xz       TODO: document this parameter
+     * @param y        TODO: document this parameter
      * @return true if this pattern matches; false otherwise
      */
     public boolean matches(Location location, boolean clear, int xz, int y) {
@@ -37,9 +38,10 @@ public class BlockPattern {
 
     /**
      * Test whether this pattern matches a block.
-     * @param location the base location
-     * @param xz TODO: document this parameter
-     * @param y TODO: document this parameter
+     *
+     * @param location  the base location
+     * @param xz        TODO: document this parameter
+     * @param y         TODO: document this parameter
      * @param alignment TODO: document this parameter
      * @return true if this pattern matches; false otherwise
      */
@@ -68,6 +70,7 @@ public class BlockPattern {
 
         /**
          * Creates an alignment.
+         *
          * @param x the x offset
          * @param z the z offset
          */
@@ -86,10 +89,11 @@ public class BlockPattern {
 
         /**
          * Creates a PatternItem that fixes a specific block.
+         *
          * @param type the block type to match
          * @param data the block data value to match
-         * @param xz TODO: document this parameter
-         * @param y TODO: document this parameter
+         * @param xz   TODO: document this parameter
+         * @param y    TODO: document this parameter
          */
         public PatternItem(Material type, byte data, int xz, int y) {
             this.type = type;

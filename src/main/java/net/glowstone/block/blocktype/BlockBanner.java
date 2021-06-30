@@ -22,15 +22,18 @@ import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.material.Banner;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockBanner extends BlockType {
 
     public BlockBanner() {
-        setDrops(new ItemStack(Material.BANNER));
+        // TODO: 1.13 banner types
+        setDrops(new ItemStack(Material.LEGACY_BANNER));
     }
 
     /**
      * Converts banner patterns to NBT tags.
+     *
      * @param banner a list of banner patterns
      * @return the patterns as NBT tags
      */
@@ -47,6 +50,7 @@ public class BlockBanner extends BlockType {
 
     /**
      * Converts NBT tags to banner patterns.
+     *
      * @param tag a list of banner patterns as NBT tags
      * @return the patterns as Pattern instances
      */
@@ -61,10 +65,11 @@ public class BlockBanner extends BlockType {
         return banner;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         GlowBanner state = (GlowBanner) block.getState();
-        ItemStack drop = new ItemStack(Material.BANNER, 1);
+        ItemStack drop = new ItemStack(Material.LEGACY_BANNER, 1);
         BannerMeta meta = (BannerMeta) drop.getItemMeta();
         meta.setPatterns(state.getPatterns());
         drop.setItemMeta(meta);
@@ -80,7 +85,7 @@ public class BlockBanner extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (!(data instanceof Banner)) {
@@ -97,7 +102,7 @@ public class BlockBanner extends BlockType {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         GlowBanner banner = (GlowBanner) block.getState();
         banner.setBaseColor(DyeColor.getByDyeData((byte) holding.getDurability()));
         BannerMeta meta = (BannerMeta) holding.getItemMeta();

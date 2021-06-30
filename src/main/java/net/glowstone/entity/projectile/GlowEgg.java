@@ -2,10 +2,10 @@ package net.glowstone.entity.projectile;
 
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEgg extends GlowProjectile implements Egg {
     private static final double VERTICAL_GRAVITY_ACCEL = -0.03;
@@ -94,8 +95,8 @@ public class GlowEgg extends GlowProjectile implements Egg {
         final ProjectileSource shooter = getShooter();
         if (shooter instanceof GlowPlayer) {
             PlayerEggThrowEvent event = EventFactory.getInstance().callEvent(
-                    new PlayerEggThrowEvent((GlowPlayer) shooter, this,
-                            hatching, amount, hatchingType));
+                new PlayerEggThrowEvent((GlowPlayer) shooter, this,
+                    hatching, amount, hatchingType));
 
             amount = event.getNumHatches();
             hatching = event.isHatching();
@@ -105,8 +106,8 @@ public class GlowEgg extends GlowProjectile implements Egg {
         if (hatching) {
             for (int i = 0; i < amount; i++) {
                 GlowEntity entity =
-                        (GlowEntity) location.getWorld().spawnEntity(
-                                location.clone().add(0, 0.3, 0), hatchingType);
+                    (GlowEntity) location.getWorld().spawnEntity(
+                        location.clone().add(0, 0.3, 0), hatchingType);
                 if (entity instanceof GlowAgeable) {
                     ((GlowAgeable) entity).setBaby();
                 }
@@ -116,6 +117,17 @@ public class GlowEgg extends GlowProjectile implements Egg {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.EGG;
+        return EntityNetworkUtil.getObjectId(EntityType.EGG);
+    }
+
+    @Override
+    public @NotNull ItemStack getItem() {
+        return new ItemStack(Material.EGG);
+    }
+
+    @Override
+    public void setItem(@NotNull ItemStack itemStack) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

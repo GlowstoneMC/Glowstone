@@ -25,7 +25,7 @@ public class WeatherCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -45,11 +45,11 @@ public class WeatherCommand extends GlowVanillaCommand {
             }
             if (duration < 1) {
                 sender.sendMessage(ChatColor.RED + "The number you have entered (" + args[1]
-                        + ") is too small, it must be at least 1");
+                    + ") is too small, it must be at least 1");
                 return false;
             } else if (duration > 1000000) {
                 sender.sendMessage(ChatColor.RED + "The number you have entered (" + args[1]
-                        + ") is too big, it must be at most 1000000");
+                    + ") is too big, it must be at most 1000000");
                 return false;
             }
         }
@@ -74,10 +74,10 @@ public class WeatherCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length == 1) {
             return StringUtil
-                    .copyPartialMatches(args[0], WEATHER, new ArrayList<>(WEATHER.size()));
+                .copyPartialMatches(args[0], WEATHER, new ArrayList<>(WEATHER.size()));
         }
         return Collections.emptyList();
     }

@@ -32,7 +32,7 @@ public class BlockDoor extends BlockType {
 
     @Override
     public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType,
-        byte newData) {
+                               byte newData) {
         if (newType != Material.AIR) {
             return;
         }
@@ -56,7 +56,7 @@ public class BlockDoor extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         // place the door and calculate the facing
         super.placeBlock(player, state, face, holding, clickedLoc);
 
@@ -115,9 +115,9 @@ public class BlockDoor extends BlockType {
      */
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         // handles opening and closing the door
-        if (block.getType() == Material.IRON_DOOR_BLOCK) {
+        if (block.getType() == Material.IRON_DOOR) {
             return false;
         }
 

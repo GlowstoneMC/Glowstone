@@ -16,20 +16,20 @@ public final class VariableValueArray implements Cloneable {
      * Creates an instance.
      *
      * @param bitsPerValue the number of bits into which each value must fit
-     * @param capacity the number of entries
+     * @param capacity     the number of entries
      */
     public VariableValueArray(int bitsPerValue, int capacity) {
         if (capacity < 0) {
             throw new IllegalArgumentException(String
-                    .format("capacity (%s) must not be negative", capacity));
+                .format("capacity (%s) must not be negative", capacity));
         }
         if (bitsPerValue < 1) {
             throw new IllegalArgumentException(String
-                    .format("bitsPerValue (%s) must not be less than 1", bitsPerValue));
+                .format("bitsPerValue (%s) must not be less than 1", bitsPerValue));
         }
         if (bitsPerValue > 64) {
             throw new IllegalArgumentException(String
-                    .format("bitsPerValue (%s) must not be greater than 64", bitsPerValue));
+                .format("bitsPerValue (%s) must not be greater than 64", bitsPerValue));
         }
         backing = new long[(int) Math.ceil((bitsPerValue * capacity) / 64.0)];
         this.bitsPerValue = bitsPerValue;
@@ -50,6 +50,16 @@ public final class VariableValueArray implements Cloneable {
             number >>>= 1;
         } while (number != 0);
         return count;
+    }
+
+    /**
+     * Fills the backing array with pre-determined values.
+     *
+     * @param data the new backing array
+     */
+    public void fill(long[] data) {
+        // TODO: Preconditions
+        System.arraycopy(data, 0, backing, 0, backing.length);
     }
 
     public long getLargestPossibleValue() {
@@ -86,18 +96,18 @@ public final class VariableValueArray implements Cloneable {
      * @param index the entry to set
      * @param value the value to set it to
      * @throws IndexOutOfBoundsException if {@code index} is out of range
-     * @throws IllegalArgumentException if {@code value} is out of range
+     * @throws IllegalArgumentException  if {@code value} is out of range
      */
     public void set(int index, int value) {
         checkIndex(index);
 
         if (value < 0) {
             throw new IllegalArgumentException(String
-                    .format("value (%s) must not be negative", value));
+                .format("value (%s) must not be negative", value));
         }
         if (value > valueMask) {
             throw new IllegalArgumentException(String
-                    .format("value (%s) must not be greater than %s", value, valueMask));
+                .format("value (%s) must not be greater than %s", value, valueMask));
         }
 
         index *= bitsPerValue;
@@ -116,12 +126,12 @@ public final class VariableValueArray implements Cloneable {
     private void checkIndex(int index) {
         if (index < 0) {
             throw new IndexOutOfBoundsException(String
-                    .format("index (%s) must not be negative", index));
+                .format("index (%s) must not be negative", index));
         }
         if (index >= capacity) {
             throw new IndexOutOfBoundsException(String
-                    .format("index (%s) must not be greater than the capacity (%s)", index,
-                            capacity));
+                .format("index (%s) must not be greater than the capacity (%s)", index,
+                    capacity));
         }
     }
 
@@ -130,20 +140,20 @@ public final class VariableValueArray implements Cloneable {
      * value.
      *
      * @param newBitsPerValue The new value. Must be larger than the current value ( {@link
-     *         #getBitsPerValue()}).
+     *                        #getBitsPerValue()}).
      * @return A new VariableValueArray
      * @throws IllegalArgumentException If newBitsPerValue is less than or equal to the
-     *         current bits per value. Setting it to the same size would be a waste of resources,
-     *         and decreasing could lead to data loss.
+     *                                  current bits per value. Setting it to the same size would be a waste of resources,
+     *                                  and decreasing could lead to data loss.
      */
     public VariableValueArray increaseBitsPerValueTo(int newBitsPerValue) {
         if (newBitsPerValue < this.bitsPerValue) {
             throw new IllegalArgumentException(
-                    "Cannot decrease bits per value!  (was " + this.bitsPerValue + ", new size "
-                            + newBitsPerValue + ")");
+                "Cannot decrease bits per value!  (was " + this.bitsPerValue + ", new size "
+                    + newBitsPerValue + ")");
         } else if (newBitsPerValue == this.bitsPerValue) {
             throw new IllegalArgumentException(
-                    "Cannot resize to the same size!  (size was " + newBitsPerValue + ")");
+                "Cannot resize to the same size!  (size was " + newBitsPerValue + ")");
         }
 
         VariableValueArray returned = new VariableValueArray(newBitsPerValue, this.capacity);

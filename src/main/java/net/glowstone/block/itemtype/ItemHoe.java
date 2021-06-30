@@ -13,15 +13,15 @@ public class ItemHoe extends ItemTool {
 
     @Override
     public boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                    ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (target.getRelative(BlockFace.UP).getType() == Material.AIR) {
-            if (target.getType() == Material.GRASS
+            if (target.getType() == Material.GRASS_BLOCK
                 || target.getType() == Material.DIRT && target.getData() == 0) {
                 // grass or ordinary dirt: become soil
                 target.getWorld()
                     .playSound(target.getLocation().add(0.5D, 0.5D, 0.5D), Sound.BLOCK_GRAVEL_STEP,
                         1, 0.8F);
-                target.setType(Material.SOIL);
+                target.setType(Material.FARMLAND);
                 return true;
             } else if (target.getType() == Material.DIRT && target.getData() == 1) {
                 // coarse dirt: become regular dirt

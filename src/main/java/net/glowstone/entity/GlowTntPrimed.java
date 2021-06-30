@@ -26,16 +26,6 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
     private Entity source;
 
     /**
-     * Get the player that ignited the TNT.
-     *
-     * @return Player that ignited the TNT
-     */
-    public GlowPlayer getPlayer() {
-        Entity source = getSource();
-        return (source instanceof GlowPlayer) ? (GlowPlayer) source : null;
-    }
-
-    /**
      * Creates a primed TNT block, not associated with any igniting entity.
      *
      * @param location the location
@@ -48,7 +38,7 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
      * Creates a primed TNT block.
      *
      * @param location the location
-     * @param source the entity that ignited this; may be null
+     * @param source   the entity that ignited this; may be null
      */
     public GlowTntPrimed(Location location, Entity source) {
         super(location, Explosion.POWER_TNT);
@@ -67,6 +57,16 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
         }
         setVelocity(new Vector(x, 0.2, z));
         this.source = source;
+    }
+
+    /**
+     * Get the player that ignited the TNT.
+     *
+     * @return Player that ignited the TNT
+     */
+    public GlowPlayer getPlayer() {
+        Entity source = getSource();
+        return (source instanceof GlowPlayer) ? (GlowPlayer) source : null;
     }
 
     /**
@@ -99,13 +99,13 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
 
     private void explode() {
         ExplosionPrimeEvent event = EventFactory.getInstance()
-                .callEvent(new ExplosionPrimeEvent(this));
+            .callEvent(new ExplosionPrimeEvent(this));
 
         if (!event.isCancelled()) {
             Location location = getLocation();
             world.createExplosion(this,
-                    location.getX(), location.getY() + 0.06125, location.getZ(),
-                    event.getRadius(), event.getFire(), true);
+                location.getX(), location.getY() + 0.06125, location.getZ(),
+                event.getRadius(), event.getFire(), true);
         }
 
         remove();
@@ -114,7 +114,7 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
     @Override
     public List<Message> createSpawnMessage() {
         return Collections.singletonList(new SpawnObjectMessage(
-                entityId, getUniqueId(), 50, location));
+            entityId, getUniqueId(), 50, location));
     }
 
     @Override

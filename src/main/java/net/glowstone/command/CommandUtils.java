@@ -32,9 +32,9 @@ public class CommandUtils {
      * Parses a block state from a string.
      *
      * @param sender the target who should receive an error message if {@code state} is
-     *         invalid
-     * @param type the block type
-     * @param state a string specifying a block state
+     *               invalid
+     * @param type   the block type
+     * @param state  a string specifying a block state
      * @return the block state for {@code type} and {@code state}, or null if none match
      */
     public static BlockStateData readState(CommandSender sender, Material type, String state) {
@@ -59,7 +59,7 @@ public class CommandUtils {
      *
      * @param sender a command sender
      * @return the command sender's world if the sender is a block or entity, or the default world
-     *         otherwise
+     *     otherwise
      */
     public static GlowWorld getWorld(CommandSender sender) {
         if (sender instanceof ConsoleCommandSender) {
@@ -77,7 +77,7 @@ public class CommandUtils {
      *
      * @param sender a command sender
      * @return the sender's location if the sender is a block or entity, or the default world's
-     *         coordinate origin otherwise.
+     *     coordinate origin otherwise.
      */
     public static Location getLocation(CommandSender sender) {
         if (sender instanceof Entity) {
@@ -92,15 +92,15 @@ public class CommandUtils {
      * Parses coordinates that may be absolute or relative.
      *
      * @param sender the command sender
-     * @param x the x coordinate specifier
-     * @param y the y coordinate specifier
-     * @param z the z coordinate specifier
+     * @param x      the x coordinate specifier
+     * @param y      the y coordinate specifier
+     * @param z      the z coordinate specifier
      * @return the coordinates
      */
     public static Location getLocation(CommandSender sender, String x, String y, String z) {
         Location currentLocation;
         if (x.startsWith("~") || y.startsWith("~") || z
-                .startsWith("~")) { // The coordinates are relative
+            .startsWith("~")) { // The coordinates are relative
             currentLocation = getLocation(sender);
         } else { // Otherwise, the current location can be set to 0/0/0 (since it's absolute)
             currentLocation = new Location(getWorld(sender), 0, 0, 0);
@@ -115,17 +115,17 @@ public class CommandUtils {
      * <p>For instance, using axis values of ~10 ~ ~15 will return the location with the offset of
      * the given rotation values.
      *
-     * @param location the initial location
+     * @param location  the initial location
      * @param relativeX the relative x-axis (if there is no tilde [~], then the literal
-     *         value is used)
+     *                  value is used)
      * @param relativeY the relative y-axis (if there is no tilde [~], then the literal
-     *         value is used)
+     *                  value is used)
      * @param relativeZ the relative z-axis (if there is no tilde [~], then the literal
-     *         value is used)
+     *                  value is used)
      * @return the relative location
      */
     public static Location getLocation(Location location, String relativeX, String relativeY,
-            String relativeZ) {
+                                       String relativeZ) {
         double x;
         double y;
         double z;
@@ -166,15 +166,15 @@ public class CommandUtils {
      * <p>For instance, using rotations of ~10 ~15 will return the location with the offset of the
      * given rotation values.</p>
      *
-     * @param location the initial location
-     * @param yawRelative the relative yaw (if there is no tilde [~], then the literal value
-     *         is used)
+     * @param location      the initial location
+     * @param yawRelative   the relative yaw (if there is no tilde [~], then the literal value
+     *                      is used)
      * @param pitchRelative the relative pitch (if there is no tilde [~], then the literal
-     *         value is used)
+     *                      value is used)
      * @return the relative location
      */
     public static Location getRotation(Location location, String yawRelative,
-            String pitchRelative) {
+                                       String pitchRelative) {
         float yaw;
         if (yawRelative.startsWith("~")) {
             float diff = 0;
@@ -196,7 +196,7 @@ public class CommandUtils {
             pitch = Float.valueOf(pitchRelative);
         }
         return new Location(location.getWorld(), location.getX(), location.getY(), location.getZ(),
-                yaw, pitch);
+            yaw, pitch);
     }
 
     /**
@@ -217,8 +217,8 @@ public class CommandUtils {
      *
      * @param entity an entity
      * @return the first of the following that exists and is non-empty: {@code
-     *         entity.getCustomName()}, {@code entity.getName()}, {@code
-     *         entity.getType().getName()}
+     * entity.getCustomName()}, {@code entity.getName()}, {@code
+     * entity.getType().getName()}
      */
     public static String getName(Entity entity) {
         String customName = entity.getCustomName();
@@ -239,6 +239,7 @@ public class CommandUtils {
     /**
      * Returns the input unchanged if it already has a namespace prefix; otherwise, adds the
      * {@link org.bukkit.NamespacedKey#MINECRAFT} prefix.
+     *
      * @param input a namespaced-key name, or prefix of one, that may or may not be namespaced
      * @return the input, namespaced
      */

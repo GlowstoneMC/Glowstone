@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.Explosion;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -23,6 +24,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.util.BlockVector;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
 
@@ -47,7 +49,8 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
             new SpawnObjectMessage(entityId,
-                    getUniqueId(), SpawnObjectMessage.ENDER_CRYSTAL, location),
+                getUniqueId(), EntityNetworkUtil.getObjectId(EntityType.ENDER_CRYSTAL),
+                location),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
@@ -71,13 +74,13 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
             return false;
         }
 
-        damage(0, this, null);
+        damage(0, this, DamageCause.BLOCK_EXPLOSION);
 
         return true;
     }
 
     @Override
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
         if (source instanceof EnderDragon) {
             return;
         }

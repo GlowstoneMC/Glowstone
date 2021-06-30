@@ -27,6 +27,27 @@ public final class GlowMapRenderer extends MapRenderer {
         this.map = map;
     }
 
+    /**
+     * Based on https://minecraft.gamepedia.com/Slime#.22Slime_chunks.22 but simplified (doesn't
+     * instantiate a Random, and doesn't vary with the world seed. Designed to be reproducible, so
+     * that updating a map doesn't change the color unless the map contents have changed.
+     */
+    private static byte pseudoRandomShade(int worldX, int worldZ) {
+        return (byte) ((
+            ((worldX * worldX * 0x4c1906) + (worldX * 0x5ac0db) + ((worldZ * worldZ) * 0x4307a7)
+                + (worldZ * 0x5f24f))) % 4);
+    }
+
+    private static byte colorFor(Block block, int worldX, int worldZ) {
+        // TODO: Some blocks vary in map color based on block states (e.g. wood species)
+        ValueCollection materialValues;
+        materialValues = block instanceof GlowBlock ? ((GlowBlock) block).getMaterialValues()
+            : ((GlowServer) ServerProvider.getServer()).getMaterialValueManager()
+            .getValues(block.getType());
+        byte baseColor = materialValues.getBaseMapColor();
+        return (byte) (baseColor | pseudoRandomShade(worldX, worldZ));
+    }
+
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
         World world = map.getWorld();
@@ -41,7 +62,7 @@ public final class GlowMapRenderer extends MapRenderer {
                 int worldX = cornerX + (pixelX << scaleShift);
                 int worldZ = cornerZ + (pixelY << scaleShift);
                 if (((worldX - playerX) * (worldX - playerX)
-                        + (worldZ - playerZ) * (worldZ - playerZ)) < MAP_SIGHT_DISTANCE_SQUARED) {
+                    + (worldZ - playerZ) * (worldZ - playerZ)) < MAP_SIGHT_DISTANCE_SQUARED) {
                     // TODO: Should the highest block be skipped over if it's e.g. a flower or a
                     // technical block?
                     byte blockColor =
@@ -50,26 +71,5 @@ public final class GlowMapRenderer extends MapRenderer {
                 }
             }
         }
-    }
-
-    /**
-     * Based on https://minecraft.gamepedia.com/Slime#.22Slime_chunks.22 but simplified (doesn't
-     * instantiate a Random, and doesn't vary with the world seed. Designed to be reproducible, so
-     * that updating a map doesn't change the color unless the map contents have changed.
-     */
-    private static byte pseudoRandomShade(int worldX, int worldZ) {
-        return (byte) ((
-                ((worldX * worldX * 0x4c1906) + (worldX * 0x5ac0db) + ((worldZ * worldZ) * 0x4307a7)
-                + (worldZ * 0x5f24f))) % 4);
-    }
-
-    private static byte colorFor(Block block, int worldX, int worldZ) {
-        // TODO: Some blocks vary in map color based on block states (e.g. wood species)
-        ValueCollection materialValues;
-        materialValues = block instanceof GlowBlock ? ((GlowBlock) block).getMaterialValues()
-            : ((GlowServer) ServerProvider.getServer()).getMaterialValueManager()
-                .getValues(block.getType());
-        byte baseColor = materialValues.getBaseMapColor();
-        return (byte) (baseColor | pseudoRandomShade(worldX, worldZ));
     }
 }

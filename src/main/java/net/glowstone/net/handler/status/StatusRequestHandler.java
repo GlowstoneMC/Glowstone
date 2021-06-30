@@ -56,10 +56,10 @@ public final class StatusRequestHandler implements
         // create and call the event
         GlowServer server = session.getServer();
         StatusEvent event = new StatusEvent(
-                new GlowStatusClient(session), server.getMotd(),
-                server.getOnlinePlayers().size(), server.getMaxPlayers(),
-                GlowServer.GAME_VERSION, GlowServer.PROTOCOL_VERSION,
-                server.getServerIcon());
+            new GlowStatusClient(session), server.getMotd(),
+            server.getOnlinePlayers().size(), server.getMaxPlayers(),
+            GlowServer.GAME_VERSION, GlowServer.PROTOCOL_VERSION,
+            server.getServerIcon());
 
         event.serverType = server.getServerType();
         event.clientModsAllowed = server.getAllowClientMods();
@@ -92,7 +92,7 @@ public final class StatusRequestHandler implements
                 JSONObject p = new JSONObject();
                 p.put("name", Strings.nullToEmpty(profile.getName()));
                 p.put("id",
-                        UuidUtils.toString(MoreObjects.firstNonNull(profile.getId(), BLANK_UUID)));
+                    UuidUtils.toString(MoreObjects.firstNonNull(profile.getId(), BLANK_UUID)));
                 playersSample.add(p);
             }
             players.put("sample", playersSample);
@@ -130,8 +130,8 @@ public final class StatusRequestHandler implements
         private boolean clientModsAllowed;
 
         private StatusEvent(@Nonnull StatusClient client, String motd, int numPlayers,
-                int maxPlayers, @Nonnull String version, int protocolVersion,
-                @Nullable CachedServerIcon favicon) {
+                            int maxPlayers, @Nonnull String version, int protocolVersion,
+                            @Nullable CachedServerIcon favicon) {
             super(client, motd, numPlayers, maxPlayers, version, protocolVersion, favicon);
         }
 

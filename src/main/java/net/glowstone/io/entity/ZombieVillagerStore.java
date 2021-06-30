@@ -26,12 +26,12 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
         GlowZombieVillager entity = (GlowZombieVillager) zombie;
         super.load(entity, compound);
         entity.setVillagerProfession(compound.tryGetInt("Profession")
-                .filter(GlowVillager::isValidProfession)
-                .map(GlowVillager::getProfessionById)
-                .orElseGet(() -> getRandomProfession(ThreadLocalRandom.current())));
+            .filter(GlowVillager::isValidProfession)
+            .map(GlowVillager::getProfessionById)
+            .orElseGet(() -> getRandomProfession(ThreadLocalRandom.current())));
         entity.setConversionTime(compound.tryGetInt("ConversionTime").orElse(-1));
         compound.readUuid("ConversionPlayerMost", "ConversionPlayerLeast",
-                entity::setConversionPlayer);
+            entity::setConversionPlayerId);
     }
 
     @Override
@@ -41,13 +41,13 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
         super.save(entity, compound);
 
         final Villager.Profession profession = entity.getVillagerProfession();
-        if (profession != null && profession != Villager.Profession.HUSK) {
+        if (profession != null) {
             compound.putInt("Profession", profession.ordinal());
         }
 
         compound.putInt("ConversionTime", entity.getConversionTime());
 
-        final UUID conversionPlayer = entity.getConversionPlayer();
+        final UUID conversionPlayer = entity.getConversionPlayerId();
         if (conversionPlayer != null) {
             compound.putLong("ConversionPlayerMost", conversionPlayer.getMostSignificantBits());
             compound.putLong("ConversionPlayerLeast", conversionPlayer.getLeastSignificantBits());

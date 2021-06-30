@@ -13,7 +13,7 @@ public class TaskManager {
     private final GlowLivingEntity entity;
     private final Map<String, EntityTask> tasksByName = new ConcurrentHashMap<>();
     private final ClassToInstanceMap<EntityTask> tasksByClass = MutableClassToInstanceMap.create(
-            new ConcurrentHashMap<>());
+        new ConcurrentHashMap<>());
     private final Set<EntityTask> tasks = new ConcurrentSkipListSet<>();
 
     public TaskManager(GlowLivingEntity entity) {
@@ -36,7 +36,7 @@ public class TaskManager {
      *
      * @param clazz the class to look up
      * @return one of this manager's tasks that's an instance of that class and not a subclass, or
-     *         null if no such tasks are registered
+     * null if no such tasks are registered
      */
     public EntityTask getTask(Class<? extends EntityTask> clazz) {
         return tasksByClass.get(clazz);
@@ -47,7 +47,7 @@ public class TaskManager {
      *
      * @param name the task name to look up
      * @return a task with the given name, or null if none match or the matching task class doesn't
-     *         have a parameterless constructor
+     * have a parameterless constructor
      */
     public EntityTask getNewTask(String name) {
         // TODO: Refactor to use a constructor-reference Supplier<? extends EntityTask>
@@ -69,13 +69,14 @@ public class TaskManager {
     public void updateState() {
         cancelTasks();
         for (String task : EntityDirector
-                .getEntityMobStateTask(entity.getType(), entity.getState())) {
+            .getEntityMobStateTask(entity.getType(), entity.getState())) {
             addTask(task);
         }
     }
 
     /**
      * Cancels and unregisters the given task.
+     *
      * @param task the task to cancel
      */
     public void cancel(EntityTask task) {

@@ -6,26 +6,24 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.Dirt;
-import org.bukkit.material.Vine;
-import org.bukkit.material.types.DirtType;
 
 public class MegaJungleTree extends GenericTree {
 
     /**
      * Initializes this tree with a random height, preparing it to attempt to generate.
-     *  @param random the PRNG
+     *
+     * @param random   the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and
      */
     public MegaJungleTree(Random random, BlockStateDelegate delegate) {
         super(random, delegate);
         setHeight(random.nextInt(20) + random.nextInt(3) + 10);
-        setTypes(3, 3);
+        setTypes(Material.JUNGLE_LOG, Material.JUNGLE_LEAVES);
     }
 
     @Override
     public boolean canPlaceOn(BlockState soil) {
-        return soil.getType() == Material.GRASS || soil.getType() == Material.DIRT;
+        return soil.getType() == Material.GRASS_BLOCK || soil.getType() == Material.DIRT;
     }
 
     @Override
@@ -80,10 +78,9 @@ public class MegaJungleTree extends GenericTree {
                 // branches are always longer when facing south or east (positive X or positive Z)
                 x = (int) (Math.cos(d) * i + 1.5F);
                 z = (int) (Math.sin(d) * i + 1.5F);
-                delegate.setTypeAndRawData(world, blockX + x,
+                delegate.setType(world, blockX + x,
                         blockY + branchHeight - 3 + i / 2,
-                        blockZ + z, Material.LOG,
-                        logType);
+                        blockZ + z, logType);
             }
             // generates leaves for this branch
             for (int y = branchHeight - (random.nextInt(2) + 1); y <= branchHeight; y++) {
@@ -107,7 +104,7 @@ public class MegaJungleTree extends GenericTree {
     }
 
     protected void generateLeaves(int sourceX, int sourceY, int sourceZ, int radius, boolean odd,
-            World world) {
+                                  World world) {
         int n = 1;
         if (odd) {
             n = 0;
@@ -125,7 +122,7 @@ public class MegaJungleTree extends GenericTree {
 
                 if (sqX + sqZ <= sqR || sqXb + sqZb <= sqR || sqX + sqZb <= sqR
                         || sqXb + sqZ <= sqR) {
-                    replaceIfAirOrLeaves(x, sourceY, z, Material.LEAVES, leavesType, world);
+                    replaceIfAirOrLeaves(x, sourceY, z, leavesType, world);
                 }
             }
         }
@@ -137,47 +134,40 @@ public class MegaJungleTree extends GenericTree {
             Material type = world
                     .getBlockAt(blockX + 0, blockY + y, blockZ + 0)
                     .getType();
-            if (type == Material.AIR || type == Material.LEAVES) {
-                delegate.setTypeAndRawData(world, blockX + 0, blockY + y,
-                        blockZ, Material.LOG, logType);
+            if (type == Material.AIR || LEAF_TYPES.contains(type)) {
+                delegate.setType(world, blockX + 0, blockY + y,
+                        blockZ, logType);
             }
             type = world
                     .getBlockAt(blockX + 0, blockY + y, blockZ + 1)
                     .getType();
-            if (type == Material.AIR || type == Material.LEAVES) {
-                delegate.setTypeAndRawData(world, blockX + 0, blockY + y,
-                        blockZ + 1, Material.LOG, logType);
+            if (type == Material.AIR || LEAF_TYPES.contains(type)) {
+                delegate.setType(world, blockX + 0, blockY + y,
+                        blockZ + 1, logType);
             }
             type = world
                     .getBlockAt(blockX + 1, blockY + y, blockZ + 0)
                     .getType();
-            if (type == Material.AIR || type == Material.LEAVES) {
-                delegate.setTypeAndRawData(world, blockX + 1, blockY + y,
-                        blockZ, Material.LOG, logType);
+            if (type == Material.AIR || LEAF_TYPES.contains(type)) {
+                delegate.setType(world, blockX + 1, blockY + y,
+                        blockZ, logType);
             }
             type = world
                     .getBlockAt(blockX + 1, blockY + y, blockZ + 1)
                     .getType();
-            if (type == Material.AIR || type == Material.LEAVES) {
-                delegate.setTypeAndRawData(world, blockX + 1, blockY + y,
-                        blockZ + 1, Material.LOG, logType);
+            if (type == Material.AIR || LEAF_TYPES.contains(type)) {
+                delegate.setType(world, blockX + 1, blockY + y,
+                        blockZ + 1, logType);
             }
         }
     }
 
     protected void generateDirtBelowTrunk(World world, int blockX, int blockY, int blockZ) {
         // SELF, SOUTH, EAST, SOUTH EAST
-        Dirt dirt = new Dirt(DirtType.NORMAL);
-        delegate
-                .setTypeAndData(world, blockX + 0,
-                        blockY + -1, blockZ,
-                        Material.DIRT, dirt);
-        delegate.setTypeAndData(world, blockX + 0, blockY + -1,
-                blockZ + 1, Material.DIRT, dirt);
-        delegate.setTypeAndData(world, blockX + 1, blockY + -1,
-                blockZ, Material.DIRT, dirt);
-        delegate.setTypeAndData(world, blockX + 1, blockY + -1,
-                blockZ + 1, Material.DIRT, dirt);
+        delegate.setType(world, blockX + 0, blockY + -1, blockZ + 0, Material.DIRT);
+        delegate.setType(world, blockX + 0, blockY + -1, blockZ + 1, Material.DIRT);
+        delegate.setType(world, blockX + 1, blockY + -1, blockZ + 0, Material.DIRT);
+        delegate.setType(world, blockX + 1, blockY + -1, blockZ + 1, Material.DIRT);
     }
 
     private void addVinesOnTrunk(World world, int blockX, int blockY, int blockZ, Random random) {
@@ -210,12 +200,13 @@ public class MegaJungleTree extends GenericTree {
     }
 
     private void maybePlaceVine(World world, int absoluteX, int absoluteY,
-            int absoluteZ, BlockFace facingDirection, Random random) {
+                                int absoluteZ, BlockFace facingDirection, Random random) {
         if (random.nextInt(3) != 0
                 && blockTypeAt(absoluteX, absoluteY, absoluteZ, world)
                 == Material.AIR) {
-            delegate.setTypeAndData(world, absoluteX, absoluteY,
-                    absoluteZ, Material.VINE, new Vine(facingDirection));
+            // TODO: 1.13, set direction of vine
+            delegate.setType(world, absoluteX, absoluteY,
+                    absoluteZ, Material.VINE);
         }
     }
 

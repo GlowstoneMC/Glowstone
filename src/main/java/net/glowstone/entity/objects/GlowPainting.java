@@ -29,6 +29,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowPainting extends GlowHangingEntity implements Painting {
 
@@ -60,9 +61,9 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         TITLE_BY_ART.put(Art.WITHER, "Wither");
         TITLE_BY_ART.put(Art.FIGHTERS, "Fighters");
         TITLE_BY_ART.put(Art.POINTER, "Pointer");
-        TITLE_BY_ART.put(Art.BURNINGSKULL, "BurningSkull");
+        TITLE_BY_ART.put(Art.BURNING_SKULL, "BurningSkull");
         TITLE_BY_ART.put(Art.SKELETON, "Skeleton");
-        TITLE_BY_ART.put(Art.DONKEYKONG, "DonkeyKong");
+        TITLE_BY_ART.put(Art.DONKEY_KONG, "DonkeyKong");
         TITLE_BY_ART.put(Art.PIGSCENE, "PigScene");
 
         TITLE_BY_ART.forEach((art, title) -> ART_BY_TITLE.put(title, art));
@@ -97,6 +98,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         return TITLE_BY_ART.get(art);
     }
 
+    @NotNull
     @Override
     public EntityType getType() {
         return EntityType.PAINTING;
@@ -122,25 +124,22 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         int x = artCenter.getBlockX();
         int y = artCenter.getBlockY();
         int z = artCenter.getBlockZ();
-        String title = getArtTitle();
+        int artId = art.getId();
 
+        // TODO: replace art title with ID
         return Collections.singletonList(
-            new SpawnPaintingMessage(this.getEntityId(), this.getUniqueId(), title, x, y, z,
+            new SpawnPaintingMessage(this.getEntityId(), this.getUniqueId(), artId, x, y, z,
                 facing.ordinal())
         );
     }
 
     @Override
-    public boolean setArt(Art art) {
+    public boolean setArt(@NotNull Art art) {
         return this.setArt(art, false);
     }
 
     @Override
-    public boolean setArt(Art art, boolean force) {
-        if (art == null) {
-            return false;
-        }
-
+    public boolean setArt(@NotNull Art art, boolean force) {
         Art oldArt = this.art;
         setArtInternal(art);
 
@@ -164,7 +163,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(
             Collections.singletonList(this.getEntityId()));
         List<Message> spawnMessages = this.createSpawnMessage();
-        Message[] messages = new Message[]{destroyMessage, spawnMessages.get(0)};
+        Message[] messages = new Message[] {destroyMessage, spawnMessages.get(0)};
 
         getWorld()
             .getRawPlayers()
@@ -216,16 +215,12 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
     @Override
-    public void setFacingDirection(BlockFace blockFace) {
+    public void setFacingDirection(@NotNull BlockFace blockFace) {
         setFacingDirection(blockFace, false);
     }
 
     @Override
-    public boolean setFacingDirection(BlockFace blockFace, boolean force) {
-        if (blockFace == null) {
-            return false;
-        }
-
+    public boolean setFacingDirection(@NotNull BlockFace blockFace, boolean force) {
         HangingFace oldFace = facing;
         this.facing = HangingFace.getByBlockFace(blockFace);
 
@@ -245,7 +240,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
         if (ticksLived % (20 * 5) == 0 && isObstructed()) {
             if (EventFactory.getInstance()
-                    .callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
+                .callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
                 return;
             }
 

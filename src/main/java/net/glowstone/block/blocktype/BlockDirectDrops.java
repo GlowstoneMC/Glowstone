@@ -7,6 +7,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockDirectDrops extends BlockNeedsTool {
 
@@ -18,9 +19,10 @@ public class BlockDirectDrops extends BlockNeedsTool {
 
     /**
      * Creates a block type that drops an item directly when broken.
-     * @param dropType the type of item to drop when broken, or null to drop nothing
-     * @param data the damage or block-data value of the dropped item
-     * @param amount the amount to drop
+     *
+     * @param dropType   the type of item to drop when broken, or null to drop nothing
+     * @param data       the damage or block-data value of the dropped item
+     * @param amount     the amount to drop
      * @param neededTool the tool(s) that can break this block, or null if breakable without a tool
      */
     public BlockDirectDrops(Material dropType, int data, int amount, MaterialMatcher neededTool) {
@@ -32,6 +34,7 @@ public class BlockDirectDrops extends BlockNeedsTool {
 
     /**
      * Creates a block type that drops nothing when broken.
+     *
      * @param neededTool the tool(s) that can break this block
      */
     public BlockDirectDrops(MaterialMatcher neededTool) {
@@ -41,9 +44,10 @@ public class BlockDirectDrops extends BlockNeedsTool {
     /**
      * Creates a block type that drops an item directly when broken, and can be broken without a
      * tool.
+     *
      * @param dropType the type of item to drop when broken
-     * @param data the damage or block-data value of the dropped item
-     * @param amount the amount to drop
+     * @param data     the damage or block-data value of the dropped item
+     * @param amount   the amount to drop
      */
     public BlockDirectDrops(Material dropType, int data, int amount) {
         this(dropType, data, amount, null);
@@ -52,7 +56,8 @@ public class BlockDirectDrops extends BlockNeedsTool {
     /**
      * Creates a block type that directly drops 1 copy of an item with damage or block data 0 when
      * broken.
-     * @param dropType the type of item to drop when broken
+     *
+     * @param dropType   the type of item to drop when broken
      * @param neededTool the tool(s) that can break this block
      */
     public BlockDirectDrops(Material dropType, MaterialMatcher neededTool) {
@@ -62,8 +67,9 @@ public class BlockDirectDrops extends BlockNeedsTool {
     /**
      * Creates a block type that directly drops an item with damage or block data 0 when broken, and
      * can be broken without a tool.
+     *
      * @param dropType the type of item to drop when broken
-     * @param amount the amount to drop
+     * @param amount   the amount to drop
      */
     public BlockDirectDrops(Material dropType, int amount) {
         this(dropType, 0, amount, null);
@@ -73,19 +79,21 @@ public class BlockDirectDrops extends BlockNeedsTool {
     /**
      * Creates a block type that directly drops 1 copy of an item with damage or block data 0 when
      * broken, and can be broken without a tool.
+     *
      * @param dropType the type of item to drop when broken
      */
     public BlockDirectDrops(Material dropType) {
         this(dropType, 0, 1, null);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return Collections.unmodifiableList(Arrays.asList(getDrops(block)));
     }
 
     @Override
-    protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
+    public MaterialMatcher getNeededMiningTool(GlowBlock block) {
         return neededTool;
     }
 

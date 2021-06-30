@@ -42,7 +42,7 @@ class RabbitStore extends AgeableStore<GlowRabbit> {
     public void load(GlowRabbit entity, CompoundTag compound) {
         super.load(entity, compound);
         entity.setRabbitType(compound.tryGetInt("RabbitType").map(rabbitTypeMap::get)
-                .orElse(Type.BROWN));
+            .orElse(Type.BROWN));
     }
 
     @Override

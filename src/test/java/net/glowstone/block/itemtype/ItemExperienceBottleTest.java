@@ -5,6 +5,6 @@ import org.bukkit.entity.ThrownExpBottle;
 
 public class ItemExperienceBottleTest extends ItemProjectileTest<ThrownExpBottle> {
     public ItemExperienceBottleTest() {
-        super(new ItemExperienceBottle(), Material.EXP_BOTTLE, ThrownExpBottle.class);
+        super(new ItemExperienceBottle(), Material.EXPERIENCE_BOTTLE, ThrownExpBottle.class);
     }
 }

@@ -4,21 +4,26 @@ import com.flowpowered.network.Message;
 import io.netty.util.internal.ThreadLocalRandom;
 import java.util.Arrays;
 import java.util.List;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
     private static final double ENDER_PEARL_DAMAGE = 5.0;
@@ -37,7 +42,7 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
      * Creates a thrown ender pearl.
      *
      * @param location the position and facing of the thrower
-     * @param speed the initial speed
+     * @param speed    the initial speed
      */
     public GlowEnderPearl(Location location, float speed) {
         super(location);
@@ -72,7 +77,7 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
             // Give fall damage to the eneity that threw this ender pearl.
             if (source instanceof LivingEntity) {
                 ((LivingEntity) entity).damage(ENDER_PEARL_DAMAGE,
-                        EntityDamageEvent.DamageCause.FALL);
+                    EntityDamageEvent.DamageCause.FALL);
             }
         }
 
@@ -107,18 +112,30 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.THROWN_ENDERPEARL;
+        return EntityNetworkUtil.getObjectId(EntityType.ENDER_PEARL);
     }
 
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-                new SpawnObjectMessage(
-                        entityId, getUniqueId(), SpawnObjectMessage.THROWN_ENDERPEARL, location),
-                new EntityMetadataMessage(entityId, metadata.getEntryList()),
-                // These keep the client from assigning a random velocity
-                new EntityTeleportMessage(entityId, location),
-                new EntityVelocityMessage(entityId, getVelocity())
+            new SpawnObjectMessage(
+                entityId, getUniqueId(),
+                EntityNetworkUtil.getObjectId(EntityType.ENDER_PEARL), location),
+            new EntityMetadataMessage(entityId, metadata.getEntryList()),
+            // These keep the client from assigning a random velocity
+            new EntityTeleportMessage(entityId, location),
+            new EntityVelocityMessage(entityId, getVelocity())
         );
+    }
+
+    @Override
+    public @NotNull ItemStack getItem() {
+        return new ItemStack(Material.ENDER_PEARL);
+    }
+
+    @Override
+    public void setItem(@NotNull ItemStack itemStack) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

@@ -19,15 +19,15 @@ public class BlockLadder extends BlockClimbable {
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         return super.canPlaceAt(player, block, against)
-                || isTargetOccluding(block, BlockFace.SOUTH)
-                || isTargetOccluding(block, BlockFace.WEST)
-                || isTargetOccluding(block, BlockFace.NORTH)
-                || isTargetOccluding(block, BlockFace.EAST);
+            || isTargetOccluding(block, BlockFace.SOUTH)
+            || isTargetOccluding(block, BlockFace.WEST)
+            || isTargetOccluding(block, BlockFace.NORTH)
+            || isTargetOccluding(block, BlockFace.EAST);
     }
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData data = state.getData();

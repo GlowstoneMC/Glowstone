@@ -32,7 +32,7 @@ public class LootingUtil {
     /**
      * Evaluates a condition for an entity.
      *
-     * @param entity the entity
+     * @param entity    the entity
      * @param condition the condition string to evaluate
      * @return true if the condition is satisfied; false otherwise
      */

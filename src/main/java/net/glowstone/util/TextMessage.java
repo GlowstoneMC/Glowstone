@@ -178,7 +178,7 @@ public final class TextMessage {
 
     @SuppressWarnings("unchecked")
     private static void append(List<JSONObject> items, StringBuilder current, ChatColor color,
-            Set<ChatColor> formatting) {
+                               Set<ChatColor> formatting) {
         if (current.length() == 0) {
             return;
         }

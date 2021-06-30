@@ -20,7 +20,7 @@ public class ItemDye extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         MaterialData data = holding.getData();
         if (data instanceof Dye) {
             Dye dye = (Dye) data;
@@ -33,7 +33,7 @@ public class ItemDye extends ItemType {
                     if (growable.isFertilizable(target)) {
                         // spawn some green particles
                         target.getWorld()
-                            .playEffect(target.getLocation(), Effect.HAPPY_VILLAGER, 0);
+                            .playEffect(target.getLocation(), Effect.VILLAGER_PLANT_GROW, 0);
 
                         if (growable.canGrowWithChance(target)) {
                             growable.grow(player, target);
@@ -45,7 +45,8 @@ public class ItemDye extends ItemType {
                         }
                     }
                 }
-            } else if (dye.getColor() == DyeColor.BROWN && target.getType() == Material.LOG) {
+            } else if (dye.getColor() == DyeColor.BROWN
+                && target.getType() == Material.JUNGLE_LOG) {
                 ItemTable.instance().getBlock(Material.COCOA)
                     .rightClickBlock(player, target, face, holding, clickedLoc, hand);
             }

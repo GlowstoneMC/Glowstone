@@ -21,11 +21,11 @@ public class GlowChargeFadeMatcher extends ItemMatcher {
             }
 
             switch (item.getType()) {
-                case INK_SACK:
+                case INK_SAC:
                     Dye dye = (Dye) item.getData();
                     colors.add(dye.getColor().getFireworkColor());
                     break;
-                case FIREWORK_CHARGE:
+                case FIREWORK_STAR:
                     charge = item;
                     break;
                 default:

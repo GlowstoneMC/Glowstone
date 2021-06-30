@@ -28,7 +28,7 @@ public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
                 tag.putString(POTION, GlowMetaPotion.dataToString(potion));
             }
             tag.putCompoundList(CUSTOM_POTION_EFFECTS,
-                    ((TippedArrow) entity).getCustomEffects()
+                ((TippedArrow) entity).getCustomEffects()
                     .stream()
                     .map(GlowMetaPotion::toNbt)
                     .collect(Collectors.toList()));
@@ -43,9 +43,9 @@ public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
             tag.readInt(COLOR, rgb -> tippedArrow.setColor(Color.fromRGB(rgb)));
             // TODO: POTION
             tag.readCompoundList(CUSTOM_POTION_EFFECTS, list -> list
-                    .stream()
-                    .map(GlowMetaPotion::fromNbt)
-                    .forEach(effect -> tippedArrow.addCustomEffect(effect, false)));
+                .stream()
+                .map(GlowMetaPotion::fromNbt)
+                .forEach(effect -> tippedArrow.addCustomEffect(effect, false)));
         }
     }
 

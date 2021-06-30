@@ -19,7 +19,7 @@ public class SetIdleTimeoutCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -36,26 +36,26 @@ public class SetIdleTimeoutCommand extends GlowVanillaCommand {
             timeout = Integer.parseInt(stringTimeout);
         } catch (NumberFormatException ex) {
             commandMessages.getGeneric(GenericMessage.NAN)
-                    .sendInColor(ChatColor.RED, sender, stringTimeout);
+                .sendInColor(ChatColor.RED, sender, stringTimeout);
             return false;
         }
 
         if (timeout <= 0) {
             new LocalizedStringImpl("setidletimeout.too-low", commandMessages.getResourceBundle())
-                    .sendInColor(ChatColor.RED, sender, timeout);
+                .sendInColor(ChatColor.RED, sender, timeout);
             return false;
         }
 
         ServerProvider.getServer().setIdleTimeout(timeout);
         new LocalizedStringImpl("setidletimeout.done", commandMessages.getResourceBundle())
-                .send(sender, timeout);
+            .send(sender, timeout);
 
         return true;
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         return Collections.emptyList();
     }
 }

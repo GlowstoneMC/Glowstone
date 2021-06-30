@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockGravel extends BlockFalling {
 
@@ -14,6 +15,7 @@ public class BlockGravel extends BlockFalling {
         super(Material.GRAVEL);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(

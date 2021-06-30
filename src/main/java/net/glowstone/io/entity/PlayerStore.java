@@ -53,7 +53,7 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
             int y = tag.getInt("SpawnY");
             int z = tag.getInt("SpawnZ");
             entity.setBedSpawnLocation(new Location(entity.getWorld(), x, y, z),
-                    tag.getBoolean("SpawnForced", false));
+                tag.getBoolean("SpawnForced", false));
         }
 
         // abilities
@@ -134,5 +134,11 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
         bukkit.putLong("lastPlayed", entity.getJoinTime());
         bukkit.putString("lastKnownName", entity.getName());
         tag.putCompound("bukkit", bukkit);
+
+        // Paper
+        CompoundTag paper = new CompoundTag();
+        paper.putLong("LastSeen", entity.getLastSeen());
+        paper.putLong("LastLogin", entity.getLastLogin());
+        tag.putCompound("Paper", paper);
     }
 }

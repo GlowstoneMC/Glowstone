@@ -43,7 +43,7 @@ public class ItemPainting extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         Location center = target.getRelative(face).getLocation();
         GlowPainting painting = new GlowPainting(center, face);
 

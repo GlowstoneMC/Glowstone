@@ -4,13 +4,19 @@ import com.flowpowered.network.Message;
 import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
+
+    @Getter
+    @Setter
+    private double absorptionAmount;
 
     @Getter
     private EnderDragon parent;
@@ -41,7 +47,7 @@ public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
     }
 
     @Override
-    public void damage(double amount, Entity source, EntityDamageEvent.DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull EntityDamageEvent.DamageCause cause) {
         parent.damage(amount, source, cause);
     }
 

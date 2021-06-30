@@ -18,20 +18,20 @@ import org.bukkit.entity.Rabbit;
 
 public class GlowRabbit extends GlowAnimal implements Rabbit {
 
-    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT_ITEM,
-            Material.GOLDEN_CARROT,
-            Material.YELLOW_FLOWER);
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT,
+        Material.GOLDEN_CARROT,
+        Material.DANDELION);
 
     private static final BiMap<Type, Integer> rabbitTypeIntegerMap = ImmutableBiMap
-            .<Type, Integer>builder()
-            .put(Type.BROWN, 0)
-            .put(Type.WHITE, 1)
-            .put(Type.BLACK, 2)
-            .put(Type.BLACK_AND_WHITE, 3)
-            .put(Type.GOLD, 4)
-            .put(Type.SALT_AND_PEPPER, 5)
-            .put(Type.THE_KILLER_BUNNY, 99)
-            .build();
+        .<Type, Integer>builder()
+        .put(Type.BROWN, 0)
+        .put(Type.WHITE, 1)
+        .put(Type.BLACK, 2)
+        .put(Type.BLACK_AND_WHITE, 3)
+        .put(Type.GOLD, 4)
+        .put(Type.SALT_AND_PEPPER, 5)
+        .put(Type.THE_KILLER_BUNNY, 99)
+        .build();
 
     @Getter
     private Type rabbitType;

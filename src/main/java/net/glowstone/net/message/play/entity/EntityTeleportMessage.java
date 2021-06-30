@@ -24,6 +24,6 @@ public final class EntityTeleportMessage implements Message {
 
     public EntityTeleportMessage(int id, Location location) {
         this(id, location.getX(), location.getY(), location.getZ(), Position.getIntYaw(location),
-                Position.getIntPitch(location));
+            Position.getIntPitch(location));
     }
 }

@@ -7,6 +7,7 @@ package net.glowstone.util;
 public interface FloatConsumer {
     /**
      * Applies this function.
+     *
      * @param arg the argument to accept
      */
     void accept(float arg);

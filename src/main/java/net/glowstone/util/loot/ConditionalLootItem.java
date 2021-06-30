@@ -15,6 +15,7 @@ public class ConditionalLootItem {
 
     /**
      * Parses a conditional loot item from its JSONObject form.
+     *
      * @param object a JSON object describing the loot item
      */
     public ConditionalLootItem(JSONObject object) {

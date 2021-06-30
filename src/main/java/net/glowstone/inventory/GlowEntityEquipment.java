@@ -8,6 +8,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowEntityEquipment implements EntityEquipment {
 
@@ -35,7 +37,8 @@ public class GlowEntityEquipment implements EntityEquipment {
         return slots[slot.ordinal()];
     }
 
-    private float getDropChance(EquipmentSlot slot) {
+    @Override
+    public float getDropChance(EquipmentSlot slot) {
         Entry slotEntry = getSlotEntry(slot);
         return slotEntry == null ? 1F : slotEntry.dropChance;
     }
@@ -51,7 +54,14 @@ public class GlowEntityEquipment implements EntityEquipment {
         slots[slot.ordinal()] = entry;
     }
 
-    private void setDropChance(EquipmentSlot slot, float chance) {
+    @Override
+    public void setItem(@NotNull EquipmentSlot slot, @Nullable ItemStack item, boolean silent) {
+        // TODO: silent; whether or not the equip sound should be silenced
+        setItem(slot, item);
+    }
+
+    @Override
+    public void setDropChance(EquipmentSlot slot, float chance) {
         Entry slotEntry = getSlotEntry(slot);
         if (slotEntry == null) {
             return;
@@ -71,6 +81,11 @@ public class GlowEntityEquipment implements EntityEquipment {
     }
 
     @Override
+    public void setItemInMainHand(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.HAND, itemStack, silent);
+    }
+
+    @Override
     public ItemStack getItemInOffHand() {
         return getItem(EquipmentSlot.OFF_HAND);
     }
@@ -78,6 +93,11 @@ public class GlowEntityEquipment implements EntityEquipment {
     @Override
     public void setItemInOffHand(ItemStack itemStack) {
         setItem(EquipmentSlot.OFF_HAND, itemStack);
+    }
+
+    @Override
+    public void setItemInOffHand(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.OFF_HAND, itemStack, silent);
     }
 
     @Override
@@ -101,6 +121,11 @@ public class GlowEntityEquipment implements EntityEquipment {
     }
 
     @Override
+    public void setHelmet(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.HEAD, itemStack, silent);
+    }
+
+    @Override
     public ItemStack getChestplate() {
         return getItem(EquipmentSlot.CHEST);
     }
@@ -108,6 +133,11 @@ public class GlowEntityEquipment implements EntityEquipment {
     @Override
     public void setChestplate(ItemStack itemStack) {
         setItem(EquipmentSlot.CHEST, itemStack);
+    }
+
+    @Override
+    public void setChestplate(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.CHEST, itemStack, silent);
     }
 
     @Override
@@ -121,6 +151,11 @@ public class GlowEntityEquipment implements EntityEquipment {
     }
 
     @Override
+    public void setLeggings(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.LEGS, itemStack, silent);
+    }
+
+    @Override
     public ItemStack getBoots() {
         return getItem(EquipmentSlot.FEET);
     }
@@ -128,6 +163,11 @@ public class GlowEntityEquipment implements EntityEquipment {
     @Override
     public void setBoots(ItemStack itemStack) {
         setItem(EquipmentSlot.FEET, itemStack);
+    }
+
+    @Override
+    public void setBoots(@Nullable ItemStack itemStack, boolean silent) {
+        setItem(EquipmentSlot.FEET, itemStack, silent);
     }
 
     @Override

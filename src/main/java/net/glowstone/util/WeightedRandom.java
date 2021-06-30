@@ -7,9 +7,9 @@ public final class WeightedRandom {
     /**
      * Selects a random item from a weighted distribution.
      *
-     * @param random the PRNG to use
+     * @param random        the PRNG to use
      * @param possibilities the distribution to sample from
-     * @param <T> the type of each of the {@code possibilities}
+     * @param <T>           the type of each of the {@code possibilities}
      * @return a random item
      */
     public static <T extends Choice> T getRandom(Random random, Iterable<T> possibilities) {

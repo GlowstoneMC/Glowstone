@@ -23,27 +23,27 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         values = new EnumMap<>(Material.class);
 
         YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(new InputStreamReader(
-                getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
+            getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
 
         defaultValue = new BuiltinValueCollection(
-                builtinValues.getConfigurationSection("default")); // NON-NLS
+            builtinValues.getConfigurationSection("default")); // NON-NLS
         registerBuiltins(builtinValues);
     }
 
     private void registerBuiltins(ConfigurationSection mainSection) {
         ConfigurationSection valuesSection
-                = mainSection.getConfigurationSection("values"); // NON-NLS
+            = mainSection.getConfigurationSection("values"); // NON-NLS
         Set<String> materials = valuesSection.getKeys(false);
         for (String strMaterial : materials) {
             Material material = Material.matchMaterial(strMaterial);
             if (material == null) {
                 throw new RuntimeException(
-                        "Invalid builtin/materialValues.yml: Couldn't find material: "
+                    "Invalid builtin/materialValues.yml: Couldn't find material: "
                         + strMaterial);
             }
             ConfigurationSection materialSection
-                    = valuesSection.getConfigurationSection(strMaterial);
-            values.put(material, new BuiltinValueCollection(materialSection));
+                = valuesSection.getConfigurationSection(strMaterial);
+            values.put(material, new BuiltinValueCollection(material, materialSection));
         }
     }
 
@@ -58,8 +58,14 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
     private final class BuiltinValueCollection implements ValueCollection {
 
         private final ConfigurationSection section;
+        private Material material;
 
         BuiltinValueCollection(ConfigurationSection section) {
+            this.section = section;
+        }
+
+        BuiltinValueCollection(Material material, ConfigurationSection section) {
+            this.material = material;
             this.section = section;
         }
 
@@ -73,8 +79,11 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
 
         @Override
         public float getHardness() {
-            float hardness = ((Number) get("hardness")).floatValue();
-            return hardness == -1 ? Float.MAX_VALUE : hardness;
+            if (material == null) {
+                float hardness = ((Number) get("hardness")).floatValue();
+                return hardness == -1 ? Float.MAX_VALUE : hardness;
+            }
+            return material.getHardness();
         }
 
         @Override
@@ -85,7 +94,10 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
 
         @Override
         public float getBlastResistance() {
-            return ((Number) get("blastResistance")).floatValue();
+            if (material == null) {
+                return ((Number) get("blastResistance")).floatValue();
+            }
+            return material.getBlastResistance();
         }
 
         @Override

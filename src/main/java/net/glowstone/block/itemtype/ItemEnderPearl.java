@@ -21,7 +21,7 @@ public class ItemEnderPearl extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         throwEnderPearl(player, holding);
     }
 
@@ -43,7 +43,7 @@ public class ItemEnderPearl extends ItemType {
         Location throwLoc = player.getLocation();
         throwLoc.setY(throwLoc.getY() + 1.5);
         player.launchProjectile(EnderPearl.class);
-        player.playSound(player.getLocation(), Sound.ENTITY_ENDERPEARL_THROW, 3, 1);
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_PEARL_THROW, 3, 1);
         player.setEnderPearlCooldown(ENDER_PEARL_COOLDOWN_TICKS);
     }
 }

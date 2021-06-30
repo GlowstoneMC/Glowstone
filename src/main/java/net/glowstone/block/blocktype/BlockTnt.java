@@ -17,9 +17,9 @@ public class BlockTnt extends BlockType {
     /**
      * Convert a TNT block into a primed TNT entity with the player who ignited the TNT.
      *
-     * @param tntBlock The block to ignite.
+     * @param tntBlock           The block to ignite.
      * @param ignitedByExplosion True if another explosion caused this ignition.
-     * @param player The player who ignited the TNT.
+     * @param player             The player who ignited the TNT.
      */
     public static void igniteBlock(
         Block tntBlock, boolean ignitedByExplosion, GlowPlayer player) {
@@ -35,7 +35,7 @@ public class BlockTnt extends BlockType {
     /**
      * Convert a TNT block into a primed TNT entity.
      *
-     * @param tntBlock The block to ignite.
+     * @param tntBlock           The block to ignite.
      * @param ignitedByExplosion True if another explosion caused this ignition.
      */
     public static void igniteBlock(Block tntBlock, boolean ignitedByExplosion) {
@@ -44,13 +44,13 @@ public class BlockTnt extends BlockType {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
-        Material oldType, byte oldData, Material newType, byte newData) {
+                                   Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 

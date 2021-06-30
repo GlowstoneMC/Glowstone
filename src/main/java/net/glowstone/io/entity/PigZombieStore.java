@@ -9,7 +9,7 @@ import org.bukkit.entity.EntityType;
 class PigZombieStore extends ZombieStore<GlowPigZombie> {
 
     public PigZombieStore() {
-        super(GlowPigZombie.class, EntityType.PIG_ZOMBIE, GlowPigZombie::new);
+        super(GlowPigZombie.class, EntityType.ZOMBIFIED_PIGLIN, GlowPigZombie::new);
     }
 
     @Override

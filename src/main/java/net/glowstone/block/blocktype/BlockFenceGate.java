@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Gate;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockFenceGate extends BlockOpenable {
 
@@ -42,7 +43,7 @@ public class BlockFenceGate extends BlockOpenable {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData materialData = state.getData();
@@ -58,7 +59,7 @@ public class BlockFenceGate extends BlockOpenable {
 
     @Override
     protected void onOpened(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc,
-        GlowBlockState state, MaterialData materialData) {
+                            GlowBlockState state, MaterialData materialData) {
         if (materialData instanceof Gate) {
             Gate gate = (Gate) materialData;
             gate.setFacingDirection(
@@ -68,6 +69,7 @@ public class BlockFenceGate extends BlockOpenable {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Arrays.asList(new ItemStack(block.getType()));

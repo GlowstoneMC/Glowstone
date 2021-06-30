@@ -24,17 +24,17 @@ import org.bukkit.material.Dye;
 
 public class GlowWolf extends GlowTameable implements Wolf {
 
-    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.RAW_BEEF,
-            Material.COOKED_BEEF,
-            Material.RABBIT,
-            Material.COOKED_RABBIT,
-            Material.MUTTON,
-            Material.COOKED_MUTTON,
-            Material.PORK,
-            Material.GRILLED_PORK,
-            Material.RAW_CHICKEN,
-            Material.COOKED_CHICKEN,
-            Material.ROTTEN_FLESH);
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.BEEF,
+        Material.COOKED_BEEF,
+        Material.RABBIT,
+        Material.COOKED_RABBIT,
+        Material.MUTTON,
+        Material.COOKED_MUTTON,
+        Material.PORKCHOP,
+        Material.COOKED_PORKCHOP,
+        Material.CHICKEN,
+        Material.COOKED_CHICKEN,
+        Material.ROTTEN_FLESH);
 
     private static final DyeColor DEFAULT_COLLAR_COLOR = DyeColor.RED;
 
@@ -52,13 +52,13 @@ public class GlowWolf extends GlowTameable implements Wolf {
     @Override
     public boolean isAngry() {
         return metadata.getBit(MetadataIndex.TAMEABLEAANIMAL_STATUS,
-                MetadataIndex.TameableFlags.WOLF_IS_ANGRY);
+            MetadataIndex.TameableFlags.WOLF_IS_ANGRY);
     }
 
     @Override
     public void setAngry(boolean angry) {
         metadata.setBit(MetadataIndex.TAMEABLEAANIMAL_STATUS,
-                MetadataIndex.TameableFlags.WOLF_IS_ANGRY, angry);
+            MetadataIndex.TameableFlags.WOLF_IS_ANGRY, angry);
     }
 
     @Override
@@ -117,11 +117,11 @@ public class GlowWolf extends GlowTameable implements Wolf {
                 return false;
             }
             ItemStack hand = InventoryUtil.itemOrEmpty(
-                    player.getInventory().getItem(message.getHandSlot()));
+                player.getInventory().getItem(message.getHandSlot()));
             if (!isTamed() && hand.getType() == Material.BONE) {
                 // One in 3 chances of taming
                 if (ThreadLocalRandom.current().nextInt(3) == 0
-                        && fireEntityTameEvent(player)) {
+                    && fireEntityTameEvent(player)) {
                     setCollarColor(DyeColor.RED);
                     setTamed(true);
                     setOwner(player);
@@ -134,7 +134,7 @@ public class GlowWolf extends GlowTameable implements Wolf {
                 return true;
             }
             if (isTamed() && Objects.equals(getOwnerUniqueId(), player.getUniqueId())) {
-                if (hand.getType() == Material.INK_SACK) {
+                if (hand.getType() == Material.INK_SAC) {
                     Dye dye = (Dye) hand.getData();
                     DyeColor color = dye.getColor();
                     setCollarColor(color);

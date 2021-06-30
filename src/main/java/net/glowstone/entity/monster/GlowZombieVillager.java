@@ -2,15 +2,20 @@ package net.glowstone.entity.monster;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.ZombieVillager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
 
@@ -19,7 +24,7 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
      */
     @Getter
     @Setter
-    private UUID conversionPlayer;
+    private UUID conversionPlayerId;
     /**
      * The conversion time of this Zombie Villager, in ticks.
      *
@@ -43,7 +48,7 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     @Override
     public Villager.Profession getVillagerProfession() {
         int profession = metadata.containsKey(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION)
-                ? metadata.getInt(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) : 0;
+            ? metadata.getInt(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) : 0;
         return Villager.Profession.values()[profession];
     }
 
@@ -51,6 +56,17 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     public void setVillagerProfession(Villager.Profession profession) {
         checkNotNull(profession);
         metadata.set(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION, profession.ordinal());
+    }
+
+    @Override
+    public Villager.Type getVillagerType() {
+        return Villager.Type.PLAINS;
+    }
+
+    @Override
+    public void setVillagerType(@NotNull Villager.Type type) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -76,5 +92,16 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     public void setConversionTime(int conversionTime) {
         this.conversionTime = Math.max(-1, conversionTime);
         metadata.set(MetadataIndex.ZOMBIE_VILLAGER_IS_CONVERTING, this.conversionTime != -1);
+    }
+
+    @Override
+    public @Nullable OfflinePlayer getConversionPlayer() {
+        return Bukkit.getOfflinePlayer(conversionPlayerId);
+    }
+
+    @Override
+    public void setConversionPlayer(@Nullable OfflinePlayer offlinePlayer) {
+        conversionPlayerId =
+            Optional.ofNullable(offlinePlayer).map(OfflinePlayer::getUniqueId).get();
     }
 }

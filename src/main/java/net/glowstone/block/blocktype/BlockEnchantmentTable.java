@@ -14,7 +14,7 @@ public class BlockEnchantmentTable extends BlockNeedsTool {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         return player.openEnchanting(block.getLocation(), false) != null;
     }
 
@@ -24,7 +24,7 @@ public class BlockEnchantmentTable extends BlockNeedsTool {
     }
 
     @Override
-    protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
+    public MaterialMatcher getNeededMiningTool(GlowBlock block) {
         return ToolType.PICKAXE;
     }
 }

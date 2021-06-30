@@ -21,7 +21,7 @@ public class ItemFlintAndSteel extends ItemTool {
 
     @Override
     public boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                    ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (target.getType() == Material.OBSIDIAN) {
             fireNetherPortal(target, face);
             return true;
@@ -42,19 +42,19 @@ public class ItemFlintAndSteel extends ItemTool {
             target = target.getRelative(face);
             int limit = 0;
             while (target.getType() == Material.AIR && limit < 23) {
-                target.setType(Material.PORTAL);
+                target.setType(Material.NETHER_PORTAL);
                 target = target.getRelative(face);
                 limit++;
             }
         }
     }
 
-    private void fireTnt(GlowBlock tnt,GlowPlayer player) {
+    private void fireTnt(GlowBlock tnt, GlowPlayer player) {
         BlockTnt.igniteBlock(tnt, false, player);
     }
 
     private boolean setBlockOnFire(GlowPlayer player, GlowBlock clicked, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                   ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         GlowBlock fireBlock = clicked.getRelative(face);
         if (fireBlock.getType() != Material.AIR) {
             return true;

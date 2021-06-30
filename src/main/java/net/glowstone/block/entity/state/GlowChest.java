@@ -69,4 +69,14 @@ public class GlowChest extends GlowContainer implements Chest {
 
         return result;
     }
+
+    @Override
+    public void open() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException();
+    }
 }

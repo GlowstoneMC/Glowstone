@@ -22,10 +22,11 @@ public class MelonDecorator extends BlockPopulator {
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
             if (world.getBlockAt(x, y, z).getType() == Material.AIR
-                    && world.getBlockAt(x, y - 1, z).getType() == Material.GRASS) {
+                    && world.getBlockAt(x, y - 1, z).getType() == Material.GRASS_BLOCK) {
                 BlockState state = world.getBlockAt(x, y, z).getState();
-                state.setType(Material.MELON_BLOCK);
-                state.setData(new MaterialData(Material.MELON_BLOCK));
+                state.setType(Material.MELON);
+                // TODO: 1.13 block data
+                state.setData(new MaterialData(Material.MELON));
                 state.update(true);
             }
         }

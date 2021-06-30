@@ -23,7 +23,7 @@ public class KillCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
+                           CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
@@ -32,22 +32,22 @@ public class KillCommand extends GlowVanillaCommand {
                 Entity entity = (Entity) sender;
                 if (entity.isDead()) {
                     new LocalizedStringImpl("kill.self-dead", commandMessages.getResourceBundle())
-                            .send(entity);
+                        .send(entity);
                 } else if (entity instanceof LivingEntity) {
                     LivingEntity living = (LivingEntity) entity;
                     living.damage(Double.MAX_VALUE, EntityDamageEvent.DamageCause.SUICIDE);
                     new LocalizedStringImpl("kill.done", commandMessages.getResourceBundle())
-                            .send(sender, CommandUtils.getName(entity));
+                        .send(sender, CommandUtils.getName(entity));
                 } else {
                     entity.remove();
                     new LocalizedStringImpl("kill.done", commandMessages.getResourceBundle())
-                            .send(sender, CommandUtils.getName(entity));
+                        .send(sender, CommandUtils.getName(entity));
                 }
                 return true;
             } else {
                 new LocalizedStringImpl("kill.self-not-entity",
-                        commandMessages.getResourceBundle())
-                        .sendInColor(ChatColor.RED, sender);
+                    commandMessages.getResourceBundle())
+                    .sendInColor(ChatColor.RED, sender);
                 return false;
             }
         }
@@ -59,11 +59,11 @@ public class KillCommand extends GlowVanillaCommand {
                 Entity[] matched = target.getMatched(location);
                 if (matched.length == 0) {
                     commandMessages.getGeneric(GenericMessage.NO_MATCHES)
-                            .sendInColor(ChatColor.RED, sender, name);
+                        .sendInColor(ChatColor.RED, sender, name);
                     return false;
                 }
                 LocalizedStringImpl killDoneMessage = new LocalizedStringImpl("kill.done",
-                        commandMessages.getResourceBundle());
+                    commandMessages.getResourceBundle());
                 for (Entity entity : matched) {
                     if (entity instanceof LivingEntity) {
                         LivingEntity living = (LivingEntity) entity;
@@ -78,12 +78,12 @@ public class KillCommand extends GlowVanillaCommand {
                 Player player = Bukkit.getPlayerExact(name);
                 if (player == null) {
                     commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
-                            .sendInColor(ChatColor.RED, sender, name);
+                        .sendInColor(ChatColor.RED, sender, name);
                     return false;
                 } else {
                     player.damage(Double.MAX_VALUE, EntityDamageEvent.DamageCause.VOID);
                     new LocalizedStringImpl("kill.done", commandMessages.getResourceBundle())
-                            .send(sender, player.getName());
+                        .send(sender, player.getName());
                     return true;
                 }
             }
@@ -94,7 +94,7 @@ public class KillCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         if (args.length > 1) {
             return Collections.emptyList();
         }

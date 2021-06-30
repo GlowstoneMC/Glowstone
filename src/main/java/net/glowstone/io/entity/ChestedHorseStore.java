@@ -12,7 +12,7 @@ import org.bukkit.inventory.AbstractHorseInventory;
 public class ChestedHorseStore<T extends GlowChestedHorse> extends AbstractHorseStore<T> {
 
     public ChestedHorseStore(Class<T> clazz, EntityType type,
-        Function<Location, ? extends T> creator) {
+                             Function<Location, ? extends T> creator) {
         super(clazz, type, creator);
     }
 

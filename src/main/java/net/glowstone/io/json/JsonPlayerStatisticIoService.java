@@ -18,8 +18,8 @@ import org.json.simple.parser.ParseException;
 
 public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
 
-    private GlowServer server;
-    private File statsDir;
+    private final GlowServer server;
+    private final File statsDir;
 
     public JsonPlayerStatisticIoService(GlowServer server, File statsDir) {
         this.server = server;
@@ -65,12 +65,12 @@ public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
                         }
                     } else {
                         ConsoleMessages.Warn.Io.JSON_STAT_UNKNOWN.log(
-                                entry.getKey(), entry.getValue(),
-                                entry.getValue().getClass().getSimpleName());
+                            entry.getKey(), entry.getValue(),
+                            entry.getValue().getClass().getSimpleName());
                     }
                     if (longValue != null) {
                         player.getStatisticMap().getValues()
-                                .put(entry.getKey(), longValue.intValue());
+                            .put(entry.getKey(), longValue.intValue());
                     }
                 }
             } catch (ParseException | IOException e) {

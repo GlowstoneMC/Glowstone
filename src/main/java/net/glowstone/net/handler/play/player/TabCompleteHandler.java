@@ -3,6 +3,7 @@ package net.glowstone.net.handler.play.player;
 import com.flowpowered.network.MessageHandler;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
@@ -21,7 +22,7 @@ public final class TabCompleteHandler implements MessageHandler<GlowSession, Tab
         List<String> completions = new ArrayList<>();
 
         // complete command or username
-        if (!buffer.isEmpty() && buffer.charAt(0) == '/' || message.isAssumeCommand()) {
+        if (!buffer.isEmpty() && buffer.charAt(0) == '/') {
             List<String> items;
             if (!buffer.isEmpty() && buffer.charAt(0) == '/') {
                 items = session.getServer().getCommandMap()
@@ -53,7 +54,12 @@ public final class TabCompleteHandler implements MessageHandler<GlowSession, Tab
 
         // call event and send response
         EventFactory.getInstance()
-                .callEvent(new PlayerChatTabCompleteEvent(sender, buffer, completions));
-        session.send(new TabCompleteResponseMessage(completions));
+            .callEvent(new PlayerChatTabCompleteEvent(sender, buffer, completions));
+        // TODO: 1.13, properly implement tab-completion
+        session.send(
+            new TabCompleteResponseMessage(0, 0, 0,
+                completions.stream()
+                    .map(str -> new TabCompleteResponseMessage.Completion(str, null))
+                    .collect(Collectors.toList())));
     }
 }

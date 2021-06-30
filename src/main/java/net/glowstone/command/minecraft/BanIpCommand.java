@@ -22,7 +22,7 @@ public class BanIpCommand extends GlowVanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args,
-            CommandMessages messages) {
+                           CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }

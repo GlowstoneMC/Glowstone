@@ -1,5 +1,6 @@
 package net.glowstone.net;
 
+import com.destroystokyo.paper.ParticleBuilder;
 import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
@@ -11,11 +12,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
+import net.glowstone.constants.GlowParticle;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.util.GlowUnsafeValues;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
@@ -23,7 +26,10 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
 import net.glowstone.util.nbt.NbtReadLimiter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.block.BlockState;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -105,7 +111,7 @@ public final class GlowBufUtils {
     /**
      * Write a list of mob metadata entries to the buffer.
      *
-     * @param buf The buffer.
+     * @param buf     The buffer.
      * @param entries The metadata.
      * @throws IOException if the buffer could not be written to
      */
@@ -129,57 +135,68 @@ public final class GlowBufUtils {
                 }
             }
 
-            switch (index.getType()) {
-                case BYTE:
-                    buf.writeByte((Byte) value);
-                    break;
-                case INT:
-                    ByteBufUtils.writeVarInt(buf, (Integer) value);
-                    break;
-                case FLOAT:
-                    buf.writeFloat((Float) value);
-                    break;
-                case STRING:
-                    ByteBufUtils.writeUTF8(buf, (String) value);
-                    break;
-                case CHAT:
-                    writeChat(buf, (TextMessage) value);
-                    break;
-                case ITEM:
-                    writeSlot(buf, (ItemStack) value);
-                    break;
-                case BOOLEAN:
-                    buf.writeBoolean((Boolean) value);
-                    break;
-                case VECTOR:
-                    EulerAngle angle = (EulerAngle) value;
-                    buf.writeFloat((float) Math.toDegrees(angle.getX()));
-                    buf.writeFloat((float) Math.toDegrees(angle.getY()));
-                    buf.writeFloat((float) Math.toDegrees(angle.getZ()));
-                    break;
-                case POSITION:
-                case OPTPOSITION:
-                    BlockVector vector = (BlockVector) value;
-                    buf.writeLong(Position.getPosition(vector));
-                    break;
-                case DIRECTION:
-                    ByteBufUtils.writeVarInt(buf, (Integer) value);
-                    break;
-                case OPTUUID:
-                    writeUuid(buf, (UUID) value);
-                    break;
-                case BLOCKID:
-                    ByteBufUtils.writeVarInt(buf, (Integer) value);
-                    break;
-                case NBTTAG:
-                    writeCompound(buf, (CompoundTag) value);
-                    break;
-                default:
-                    // do nothing
-            }
+            writeValue(buf, value, index.getType());
         }
 
         buf.writeByte(0xff);
+    }
+
+    public static void writeValue(ByteBuf buf, Object value, MetadataType type)
+        throws IOException {
+        switch (type) {
+            case BYTE:
+                buf.writeByte((Byte) value);
+                break;
+            case INT:
+                ByteBufUtils.writeVarInt(buf, (Integer) value);
+                break;
+            case FLOAT:
+                buf.writeFloat((Float) value);
+                break;
+            case STRING:
+                ByteBufUtils.writeUTF8(buf, (String) value);
+                break;
+            case CHAT:
+                writeChat(buf, (TextMessage) value);
+                break;
+            case OPTCHAT:
+                writeChat(buf, (TextMessage) value);
+                break;
+            case ITEM:
+                writeSlot(buf, (ItemStack) value);
+                break;
+            case BOOLEAN:
+                buf.writeBoolean((Boolean) value);
+                break;
+            case VECTOR:
+                EulerAngle angle = (EulerAngle) value;
+                buf.writeFloat((float) Math.toDegrees(angle.getX()));
+                buf.writeFloat((float) Math.toDegrees(angle.getY()));
+                buf.writeFloat((float) Math.toDegrees(angle.getZ()));
+                break;
+            case POSITION:
+            case OPTPOSITION:
+                BlockVector vector = (BlockVector) value;
+                buf.writeLong(Position.getPosition(vector));
+                break;
+            case DIRECTION:
+                ByteBufUtils.writeVarInt(buf, (Integer) value);
+                break;
+            case OPTUUID:
+                writeUuid(buf, (UUID) value);
+                break;
+            case BLOCKID:
+                ByteBufUtils.writeVarInt(buf, (Integer) value);
+                break;
+            case NBTTAG:
+                writeCompound(buf, (CompoundTag) value);
+                break;
+            case PARTICLE:
+                writeParticle(buf, (ParticleBuilder) value);
+                break;
+            default:
+                // do nothing
+        }
     }
 
     /**
@@ -201,7 +218,7 @@ public final class GlowBufUtils {
         buf.readerIndex(idx);
         try (NbtInputStream str = new NbtInputStream(new ByteBufInputStream(buf), false)) {
             return str.readCompound(
-                    network ? new NbtReadLimiter(2097152L) : NbtReadLimiter.UNLIMITED);
+                network ? new NbtReadLimiter(2097152L) : NbtReadLimiter.UNLIMITED);
         } catch (IOException e) {
             return null;
         }
@@ -210,7 +227,7 @@ public final class GlowBufUtils {
     /**
      * Write an uncompressed compound NBT tag to the buffer.
      *
-     * @param buf The buffer.
+     * @param buf  The buffer.
      * @param data The tag to write, or null.
      */
     public static void writeCompound(ByteBuf buf, CompoundTag data) {
@@ -236,33 +253,34 @@ public final class GlowBufUtils {
      * @param buf The buffer.
      * @return The stack read, or null.
      */
-    public static ItemStack readSlot(ByteBuf buf) {
+    public static ItemStack readSlot(ByteBuf buf) throws IOException {
         return readSlot(buf, false);
     }
 
     /**
      * Read an item stack from the buffer.
      *
-     * @param buf The buffer.
+     * @param buf     The buffer.
      * @param network Mark network source.
      * @return The stack read, or null.
      */
-    public static ItemStack readSlot(ByteBuf buf, boolean network) {
-        short type = buf.readShort();
-        if (type == -1) {
+    public static ItemStack readSlot(ByteBuf buf, boolean network) throws IOException {
+        boolean present = buf.readBoolean();
+        if (!present) {
             return InventoryUtil.createEmptyStack();
         }
 
+        int type = ByteBufUtils.readVarInt(buf);
         int amount = buf.readUnsignedByte();
-        short durability = buf.readShort();
+        GlowUnsafeValues unsafeValues = (GlowUnsafeValues) Bukkit.getServer().getUnsafe();
 
-        Material material = Material.getMaterial(type);
+        Material material = unsafeValues.fromId(type);
         if (material == null) {
             return InventoryUtil.createEmptyStack();
         }
 
         CompoundTag tag = readCompound(buf, network);
-        ItemStack stack = new ItemStack(material, amount, durability);
+        ItemStack stack = new ItemStack(material, amount);
         stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag));
         return stack;
     }
@@ -270,16 +288,16 @@ public final class GlowBufUtils {
     /**
      * Write an item stack to the buffer.
      *
-     * @param buf The buffer.
+     * @param buf   The buffer.
      * @param stack The stack to write, or null.
      */
     public static void writeSlot(ByteBuf buf, ItemStack stack) {
         if (InventoryUtil.isEmpty(stack)) {
-            buf.writeShort(-1);
+            buf.writeBoolean(false);
         } else {
-            buf.writeShort(stack.getTypeId());
+            buf.writeBoolean(true);
+            ByteBufUtils.writeVarInt(buf, stack.getType().getId());
             buf.writeByte(stack.getAmount());
-            buf.writeShort(stack.getDurability());
             if (stack.hasItemMeta()) {
                 CompoundTag tag = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
                 writeCompound(buf, tag);
@@ -307,7 +325,7 @@ public final class GlowBufUtils {
     /**
      * Write an encoded block vector (position) to the buffer.
      *
-     * @param buf The buffer.
+     * @param buf    The buffer.
      * @param vector The vector to write.
      */
     public static void writeBlockPosition(ByteBuf buf, Vector vector) {
@@ -318,9 +336,9 @@ public final class GlowBufUtils {
      * Write an encoded block vector (position) to the buffer.
      *
      * @param buf The buffer.
-     * @param x The x value.
-     * @param y The y value.
-     * @param z The z value.
+     * @param x   The x value.
+     * @param y   The y value.
+     * @param z   The z value.
      */
     public static void writeBlockPosition(ByteBuf buf, long x, long y, long z) {
         buf.writeLong((x & 0x3ffffff) << 38 | (y & 0xfff) << 26 | z & 0x3ffffff);
@@ -339,7 +357,7 @@ public final class GlowBufUtils {
     /**
      * Write a UUID encoded as two longs to the buffer.
      *
-     * @param buf The buffer.
+     * @param buf  The buffer.
      * @param uuid The UUID to write.
      */
     public static void writeUuid(ByteBuf buf, UUID uuid) {
@@ -361,7 +379,7 @@ public final class GlowBufUtils {
     /**
      * Write an encoded chat message to the buffer.
      *
-     * @param buf The buffer.
+     * @param buf  The buffer.
      * @param text The chat message to write.
      * @throws IOException on write failure.
      */
@@ -375,8 +393,40 @@ public final class GlowBufUtils {
     }
 
     public static void writeHand(ByteBuf buf, EquipmentSlot hand) {
-        Preconditions.checkArgument(hand == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND, "hand can be only OFF_HAND or HAND");
+        Preconditions.checkArgument(hand == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND,
+            "hand can be only OFF_HAND or HAND");
         ByteBufUtils.writeVarInt(buf, hand == EquipmentSlot.OFF_HAND ? 1 : 0);
     }
 
+    /**
+     * Write a Particle to the buffer.
+     *
+     * @param buf      The buffer
+     * @param particle The Particle to write.
+     * @throws IOException on write failure.
+     */
+    public static void writeParticle(ByteBuf buf, ParticleBuilder particle) throws IOException {
+        int particleId = GlowParticle.getId(particle.particle());
+        Object data = particle.data();
+
+        ByteBufUtils.writeVarInt(buf, particleId);
+        Class<?> dataType = particle.particle().getDataType();
+        if (data != null && !particle.particle().getDataType().equals(Void.class)
+            && particle.particle().getDataType().isInstance(data)) {
+            if (dataType.equals(Particle.DustOptions.class)) {
+                Particle.DustOptions options = (Particle.DustOptions) data;
+                buf.writeFloat(options.getColor().getRed() / 255.0F);
+                buf.writeFloat(options.getColor().getGreen() / 255.0F);
+                buf.writeFloat(options.getColor().getBlue() / 255.0F);
+                buf.writeFloat(options.getSize());
+            } else if (dataType.equals(ItemStack.class)) {
+                ItemStack stack = (ItemStack) data;
+                writeSlot(buf, stack);
+            } else if (dataType.equals(BlockState.class)) {
+                BlockState state = (BlockState) data;
+                // todo: convert state to int
+                ByteBufUtils.writeVarInt(buf, 0);
+            }
+        }
+    }
 }

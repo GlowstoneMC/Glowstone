@@ -10,6 +10,8 @@ import net.glowstone.block.entity.BannerEntity;
 import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowBanner extends GlowBlockState implements Banner {
 
@@ -92,5 +94,10 @@ public class GlowBanner extends GlowBlockState implements Banner {
     @Override
     public boolean isPlaced() {
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
+        throw new UnsupportedOperationException();
     }
 }

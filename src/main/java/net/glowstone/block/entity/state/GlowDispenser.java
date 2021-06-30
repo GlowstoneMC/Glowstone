@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.MaterialUtil;
 import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.dispenser.ArmorDispenseBehavior;
 import net.glowstone.dispenser.BucketDispenseBehavior;
@@ -40,7 +41,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
 
     @Getter
     private static final DispenseBehaviorRegistry dispenseBehaviorRegistry =
-            new DispenseBehaviorRegistry();
+        new DispenseBehaviorRegistry();
 
     public GlowDispenser(GlowBlock block) {
         super(block);
@@ -63,10 +64,10 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         registry.putBehavior(Material.LEATHER_LEGGINGS, armorDispenseBehavior);
         registry.putBehavior(Material.LEATHER_CHESTPLATE, armorDispenseBehavior);
         registry.putBehavior(Material.LEATHER_HELMET, armorDispenseBehavior);
-        registry.putBehavior(Material.GOLD_BOOTS, armorDispenseBehavior);
-        registry.putBehavior(Material.GOLD_LEGGINGS, armorDispenseBehavior);
-        registry.putBehavior(Material.GOLD_CHESTPLATE, armorDispenseBehavior);
-        registry.putBehavior(Material.GOLD_HELMET, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLDEN_BOOTS, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLDEN_LEGGINGS, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLDEN_CHESTPLATE, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLDEN_HELMET, armorDispenseBehavior);
         registry.putBehavior(Material.IRON_BOOTS, armorDispenseBehavior);
         registry.putBehavior(Material.IRON_LEGGINGS, armorDispenseBehavior);
         registry.putBehavior(Material.IRON_CHESTPLATE, armorDispenseBehavior);
@@ -79,40 +80,42 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         registry.putBehavior(Material.DIAMOND_LEGGINGS, armorDispenseBehavior);
         registry.putBehavior(Material.DIAMOND_CHESTPLATE, armorDispenseBehavior);
         registry.putBehavior(Material.DIAMOND_HELMET, armorDispenseBehavior);
-        registry.putBehavior(Material.SKULL_ITEM, armorDispenseBehavior);
+        for (Material headType : MaterialUtil.STANDING_HEADS) {
+            registry.putBehavior(headType, armorDispenseBehavior);
+        }
         registry.putBehavior(Material.PUMPKIN, armorDispenseBehavior);
 
         registry.putBehavior(Material.EGG, new ProjectileDispenseBehavior(GlowEgg::new));
-        registry.putBehavior(Material.SNOW_BALL, new ProjectileDispenseBehavior(GlowSnowball::new));
+        registry.putBehavior(Material.SNOWBALL, new ProjectileDispenseBehavior(GlowSnowball::new));
         registry.putBehavior(Material.ARROW, new ProjectileDispenseBehavior(GlowArrow::new));
-        registry.putBehavior(Material.EXP_BOTTLE,
-                new ProjectileDispenseBehavior(GlowThrownExpBottle::new));
+        registry.putBehavior(Material.EXPERIENCE_BOTTLE,
+            new ProjectileDispenseBehavior(GlowThrownExpBottle::new));
         registry.putBehavior(Material.SPECTRAL_ARROW,
-                new ProjectileDispenseBehavior(GlowSpectralArrow::new));
+            new ProjectileDispenseBehavior(GlowSpectralArrow::new));
         registry.putBehavior(Material.TIPPED_ARROW,
-                new ProjectileDispenseBehavior(((location, itemStack) -> {
-                    GlowTippedArrow tippedArrow = new GlowTippedArrow(location);
-                    tippedArrow.copyFrom((PotionMeta) itemStack.getItemMeta());
-                    return tippedArrow;
-                })));
-        registry.putBehavior(Material.FIREBALL, new ProjectileDispenseBehavior(location -> {
+            new ProjectileDispenseBehavior(((location, itemStack) -> {
+                GlowTippedArrow tippedArrow = new GlowTippedArrow(location);
+                tippedArrow.copyFrom((PotionMeta) itemStack.getItemMeta());
+                return tippedArrow;
+            })));
+        registry.putBehavior(Material.FIRE_CHARGE, new ProjectileDispenseBehavior(location -> {
             Fireball fireball = new GlowFireball(location);
             fireball.setYield(0);
             fireball.setIsIncendiary(true);
             return fireball;
         }));
         registry.putBehavior(Material.SPLASH_POTION,
-                new ProjectileDispenseBehavior((location, itemStack) -> {
-                    SplashPotion potion = new GlowSplashPotion(location);
-                    potion.setItem(itemStack);
-                    return potion;
-                }));
+            new ProjectileDispenseBehavior((location, itemStack) -> {
+                SplashPotion potion = new GlowSplashPotion(location);
+                potion.setItem(itemStack);
+                return potion;
+            }));
         registry.putBehavior(Material.LINGERING_POTION,
-                new ProjectileDispenseBehavior((location, itemStack) -> {
-                    SplashPotion potion = new GlowLingeringPotion(location);
-                    potion.setItem(itemStack);
-                    return potion;
-                }));
+            new ProjectileDispenseBehavior((location, itemStack) -> {
+                SplashPotion potion = new GlowLingeringPotion(location);
+                potion.setItem(itemStack);
+                return potion;
+            }));
         // TODO: Firework rockets
     }
 
@@ -162,7 +165,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
      *
      * @param toPlace the item stack
      * @return the portion of the item stack that didn't fit in the dispenser, or null if it all
-     *         fit
+     * fit
      */
     public ItemStack placeInDispenser(ItemStack toPlace) {
         Inventory inv = getInventory();
@@ -196,7 +199,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
 
     @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile,
-            Vector velocity) {
+                                                     Vector velocity) {
         // todo: projectile launching
         return null;
     }

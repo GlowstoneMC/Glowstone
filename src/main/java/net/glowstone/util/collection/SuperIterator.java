@@ -20,9 +20,9 @@ public class SuperIterator<E> implements Iterator<E> {
 
     public SuperIterator(List<List<E>> nestedList) {
         this(nestedList.stream()
-                .map((Function<List<E>, Iterable<E>>) e -> e)
-                .collect(Collectors.toList())
-                .iterator()
+            .map((Function<List<E>, Iterable<E>>) e -> e)
+            .collect(Collectors.toList())
+            .iterator()
         );
     }
 

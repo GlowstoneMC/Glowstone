@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockPurpurPillar extends BlockNeedsTool {
 
@@ -20,7 +21,7 @@ public class BlockPurpurPillar extends BlockNeedsTool {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         byte data = 0;
@@ -44,13 +45,14 @@ public class BlockPurpurPillar extends BlockNeedsTool {
         state.setRawData(data);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return Collections.singletonList(new ItemStack(Material.PURPUR_PILLAR));
     }
 
     @Override
-    protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
+    public MaterialMatcher getNeededMiningTool(GlowBlock block) {
         return ToolType.PICKAXE;
     }
 }

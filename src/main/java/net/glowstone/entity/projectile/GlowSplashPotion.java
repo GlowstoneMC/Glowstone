@@ -7,10 +7,11 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.util.EntityUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.SplashPotion;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -49,26 +50,26 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
         double y = location.getY();
         Map<LivingEntity, Double> affectedIntensities = new HashMap<>();
         world.getNearbyEntities(location, MAX_DISTANCE, MAX_VERTICAL_DISTANCE, MAX_DISTANCE)
-                .stream()
-                .filter(LivingEntity.class::isInstance)
-                .forEach(entity -> {
-                    Location entityLoc = entity.getLocation();
-                    double distFractionSquared = entityLoc.distanceSquared(location)
-                            / MAX_DISTANCE_SQUARED;
-                    if (distFractionSquared < 1) {
-                        // intensity is 1 - (distance / max distance)
-                        affectedIntensities.put((LivingEntity) entity,
-                                1 - Math.sqrt(distFractionSquared));
-                    }
-                });
+            .stream()
+            .filter(LivingEntity.class::isInstance)
+            .forEach(entity -> {
+                Location entityLoc = entity.getLocation();
+                double distFractionSquared = entityLoc.distanceSquared(location)
+                    / MAX_DISTANCE_SQUARED;
+                if (distFractionSquared < 1) {
+                    // intensity is 1 - (distance / max distance)
+                    affectedIntensities.put((LivingEntity) entity,
+                        1 - Math.sqrt(distFractionSquared));
+                }
+            });
         PotionSplashEvent event = EventFactory.getInstance().callEvent(
-                new PotionSplashEvent(this, affectedIntensities));
+            new PotionSplashEvent(this, affectedIntensities));
         if (!event.isCancelled()) {
             for (LivingEntity splashed : event.getAffectedEntities()) {
                 for (PotionEffect effect : effects) {
                     double intensity = event.getIntensity(splashed);
                     EntityUtils.applyPotionEffectWithIntensity(
-                            effect, splashed, intensity, intensity);
+                        effect, splashed, intensity, intensity);
                 }
             }
         }
@@ -77,7 +78,7 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.SPLASH_POTION;
+        return EntityNetworkUtil.getObjectId(EntityType.SPLASH_POTION);
     }
 
     @Override
@@ -87,6 +88,6 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
         }
         ItemMeta meta = item.getItemMeta();
         return meta instanceof PotionMeta ? ((PotionMeta) meta).getCustomEffects()
-                : Collections.emptyList();
+            : Collections.emptyList();
     }
 }

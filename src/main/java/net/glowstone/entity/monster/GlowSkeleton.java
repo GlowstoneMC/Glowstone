@@ -1,5 +1,6 @@
 package net.glowstone.entity.monster;
 
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -7,6 +8,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Skeleton;
 
 public class GlowSkeleton extends GlowMonster implements Skeleton {
+
+    @Setter
+    private boolean shouldBurnInDay;
 
     public GlowSkeleton(Location loc) {
         this(loc, EntityType.SKELETON, 20);
@@ -56,5 +60,10 @@ public class GlowSkeleton extends GlowMonster implements Skeleton {
     @Override
     public void setChargingAttack(boolean raiseHands) {
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean shouldBurnInDay() {
+        return shouldBurnInDay;
     }
 }

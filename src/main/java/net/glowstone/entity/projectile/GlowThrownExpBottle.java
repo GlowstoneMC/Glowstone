@@ -2,15 +2,18 @@ package net.glowstone.entity.projectile;
 
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.objects.GlowExperienceOrb;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.ThrownExpBottle;
 import org.bukkit.event.entity.ExpBottleEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBottle {
 
@@ -31,7 +34,7 @@ public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBott
     private void spawnOrb() {
         int xp = ThreadLocalRandom.current().nextInt(9) + 3;
         ExpBottleEvent event = EventFactory.getInstance()
-                .callEvent(new ExpBottleEvent(this, xp));
+            .callEvent(new ExpBottleEvent(this, xp));
         xp = event.getExperience();
         ExperienceOrb orb = (ExperienceOrb) world.spawnEntity(location, EntityType.EXPERIENCE_ORB);
         orb.setExperience(xp);
@@ -43,6 +46,17 @@ public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBott
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.EXPERIENCE_BOTTLE;
+        return EntityNetworkUtil.getObjectId(EntityType.THROWN_EXP_BOTTLE);
+    }
+
+    @Override
+    public @NotNull ItemStack getItem() {
+        return new ItemStack(Material.EXPERIENCE_BOTTLE);
+    }
+
+    @Override
+    public void setItem(@NotNull ItemStack itemStack) {
+        // TODO: 1.16
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

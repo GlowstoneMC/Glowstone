@@ -19,11 +19,10 @@ public class ReflectionProcessor {
      *
      * <p>To reference a static method/field call, specifying the full package is required.
      *
-     * @param line the reflection line.
+     * @param line    the reflection line.
      * @param context the context(s) of the reflection line
-     * @see
-     * <a href="https://github.com/momothereal/OneLineReflection/blob/master/README.md">OneLineReflection
-     *         README</a>
+     * @see <a href="https://github.com/momothereal/OneLineReflection/blob/master/README.md">OneLineReflection
+     * README</a>
      */
     public ReflectionProcessor(String line, Object... context) {
         this.line = line;
@@ -45,12 +44,12 @@ public class ReflectionProcessor {
                 // Context #1
                 cxt = context[0];
             } else if (section.length() > 0 && section.charAt(0) == '$' && section
-                    .substring(1, section.length()).matches("[0-9]+")) {
+                .substring(1, section.length()).matches("[0-9]+")) {
                 // Context #X
                 int index = Integer.valueOf(section.replace("$", "")) - 1;
                 cxt = context[index];
             } else if (section.length() > 0 && section.charAt(0) == '\"' && section.length() > 0
-                    && section.charAt(section.length() - 1) == '\"') {
+                && section.charAt(section.length() - 1) == '\"') {
                 // String literal
                 section = section.substring(1, section.length() - 1);
                 if (i == sections.length - 1) {
@@ -115,7 +114,7 @@ public class ReflectionProcessor {
      * Returns the returned value of an invoked method in a contextual object.
      *
      * @param context the object
-     * @param name the name of the method
+     * @param name    the name of the method
      * @return the invokation's return value
      */
     private Object invokeMethod(Object context, String name, String... parameters) {
@@ -193,7 +192,7 @@ public class ReflectionProcessor {
      * Returns the value of a field in a contextual object.
      *
      * @param context the object
-     * @param name the name of the field
+     * @param name    the name of the field
      * @return the field's value in context
      */
     private Object invokeField(Object context, String name) {
@@ -210,7 +209,7 @@ public class ReflectionProcessor {
                 if (isEnum) {
                     try {
                         return getMethod("valueOf", (Class) context, String.class)
-                                .invoke(null, name);
+                            .invoke(null, name);
                     } catch (Exception expected) {
                     }
                 }
@@ -240,7 +239,7 @@ public class ReflectionProcessor {
      * Gets the parameters inside a method parentheses enclosure.
      *
      * @param section the method and its parameters, which are enclosed in parentheses and
-     *         separated with commas (,)
+     *                separated with commas (,)
      * @return the parameters
      */
     private String[] getMethodParams(String section) {

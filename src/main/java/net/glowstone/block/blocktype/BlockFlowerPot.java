@@ -12,17 +12,17 @@ import net.glowstone.block.entity.FlowerPotEntity;
 import net.glowstone.block.entity.state.GlowFlowerPot;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.FlowerPot;
-import org.bukkit.material.LongGrass;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockFlowerPot extends BlockType {
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         List<ItemStack> drops = new LinkedList<>(Arrays.asList(new ItemStack(Material.FLOWER_POT)));
@@ -45,7 +45,7 @@ public class BlockFlowerPot extends BlockType {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();
 
@@ -73,16 +73,15 @@ public class BlockFlowerPot extends BlockType {
 
         switch (contents.getItemType()) {
             case DEAD_BUSH:
-            case RED_ROSE:
-            case YELLOW_FLOWER:
+            case AZURE_BLUET:
+            case DANDELION:
             case RED_MUSHROOM:
             case BROWN_MUSHROOM:
             case CACTUS:
-            case SAPLING:
+                // TODO: sapling types
+            case LEGACY_SAPLING:
+            case LARGE_FERN:
                 return true;
-            case LONG_GRASS:
-                // The only allowed tall grass type is the fern.
-                return ((LongGrass) contents).getSpecies() == GrassSpecies.FERN_LIKE;
             default:
                 return false;
         }

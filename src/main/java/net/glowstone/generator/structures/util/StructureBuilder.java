@@ -6,9 +6,12 @@ import java.util.Random;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import net.glowstone.GlowServer;
+import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.util.BlockStateDelegate;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -92,11 +95,12 @@ public class StructureBuilder {
      */
     public void setBlock(Vector pos, Material type, int data) {
         Vector vec = translate(pos);
+        BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
         if (boundingBox.isVectorInside(vec)) {
             delegate
-                    .setTypeAndRawData(world, vec.getBlockX(), vec.getBlockY(), vec
+                    .setTypeAndData(world, vec.getBlockX(), vec.getBlockY(), vec
                                     .getBlockZ(), type,
-                            data);
+                            blockDataManager.createBlockData(type));
         }
     }
 
@@ -109,9 +113,11 @@ public class StructureBuilder {
      */
     public void setBlock(Vector pos, Material type, MaterialData data) {
         Vector vec = translate(pos);
+        BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
         if (boundingBox.isVectorInside(vec)) {
+            // TODO: 1.13 use actual data
             delegate.setTypeAndData(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ(), type,
-                    data);
+                blockDataManager.createBlockData(type));
         }
     }
 
@@ -138,11 +144,13 @@ public class StructureBuilder {
      */
     public void setBlockDownward(Vector pos, Material type, int data) {
         Vector vec = translate(pos);
+        BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
         if (boundingBox.isVectorInside(vec)) {
             int y = vec.getBlockY();
             while (!world.getBlockAt(vec.getBlockX(), y, vec.getBlockZ()).getType().isSolid()
                     && y > 1) {
-                delegate.setTypeAndRawData(world, vec.getBlockX(), y, vec.getBlockZ(), type, data);
+                // TODO: 1.13 use actual data
+                delegate.setTypeAndData(world, vec.getBlockX(), y, vec.getBlockZ(), type, blockDataManager.createBlockData(type));
                 y--;
             }
         }
@@ -159,12 +167,13 @@ public class StructureBuilder {
      */
     public void setBlockDownward(Vector pos, Material type, MaterialData data) {
         Vector vec = translate(pos);
+        BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
         if (boundingBox.isVectorInside(vec)) {
             int x = vec.getBlockX();
             int y = vec.getBlockY();
             int z = vec.getBlockZ();
             while (!world.getBlockAt(x, y, z).getType().isSolid() && y > 1) {
-                delegate.setTypeAndData(world, x, y, z, type, data);
+                delegate.setTypeAndData(world, x, y, z, type, blockDataManager.createBlockData(type));
                 y--;
             }
         }
@@ -444,8 +453,7 @@ public class StructureBuilder {
             BlockState state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ())
                     .getState();
             delegate.backupBlockState(state.getBlock());
-
-            state.setType(Material.MOB_SPAWNER);
+            state.setType(Material.SPAWNER);
             state.update(true);
 
             state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()).getState();

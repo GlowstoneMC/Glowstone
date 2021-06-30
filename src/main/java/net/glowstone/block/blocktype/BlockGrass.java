@@ -60,11 +60,11 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                         Material flower = flowers[ThreadLocalRandom.current()
                             .nextInt(flowers.length)].getType();
                         if (ItemTable.instance().getBlock(flower)
-                                .canPlaceAt(null, b, BlockFace.DOWN)) {
+                            .canPlaceAt(null, b, BlockFace.DOWN)) {
                             blockState.setType(flower);
                         }
                     } else {
-                        Material tallGrass = Material.LONG_GRASS;
+                        Material tallGrass = Material.TALL_GRASS;
                         if (ItemTable.instance().getBlock(tallGrass)
                             .canPlaceAt(null, b, BlockFace.DOWN)) {
                             // grow tall grass if possible
@@ -85,7 +85,7 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                     y += ThreadLocalRandom.current().nextInt(3) * ThreadLocalRandom.current()
                         .nextInt(3) / 2;
                     z += ThreadLocalRandom.current().nextInt(3) - 1;
-                    if (world.getBlockAt(x, y, z).getType() == Material.GRASS) {
+                    if (world.getBlockAt(x, y, z).getType() == Material.GRASS_BLOCK) {
                         j++;
                         continue;
                     }
@@ -124,12 +124,12 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                 GlowBlock targetBlock = world.getBlockAt(x, y, z);
                 GlowBlock targetAbove = targetBlock.getRelative(BlockFace.UP);
                 if (targetBlock.getChunk().isLoaded() && targetAbove.getChunk().isLoaded()
-                        && targetBlock.getType() == Material.DIRT
-                        && targetBlock.getData() == 0 // only spread on normal dirt
-                        && targetAbove.getMaterialValues().getLightOpacity() <= 2
-                        && targetAbove.getLightLevel() >= 4) {
+                    && targetBlock.getType() == Material.DIRT
+                    && targetBlock.getData() == 0 // only spread on normal dirt
+                    && targetAbove.getMaterialValues().getLightOpacity() <= 2
+                    && targetAbove.getLightLevel() >= 4) {
                     GlowBlockState state = targetBlock.getState();
-                    state.setType(Material.GRASS);
+                    state.setType(Material.GRASS_BLOCK);
                     state.setRawData((byte) 0);
                     BlockSpreadEvent spreadEvent = new BlockSpreadEvent(targetBlock, block, state);
                     EventFactory.getInstance().callEvent(spreadEvent);

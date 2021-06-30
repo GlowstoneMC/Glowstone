@@ -17,11 +17,13 @@ import org.bukkit.util.Vector;
 public class BlockRedstoneTorch extends BlockNeedsAttached {
 
     public BlockRedstoneTorch() {
-        setDrops(new ItemStack(Material.REDSTONE_TORCH_ON));
+        // TODO: block data ON
+        setDrops(new ItemStack(Material.REDSTONE_TORCH));
     }
 
     /**
      * Calculates the face on which a redstone torch is attached to the adjacent block.
+     *
      * @param block a redstone torch block
      * @return the block face
      */
@@ -36,19 +38,19 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
-        Material oldType, byte oldData, Material newType, byte newData) {
+                                   Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof RedstoneTorch) {
@@ -69,7 +71,7 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
         boolean powered = me.getRelative(getAttachedFace(me)).isBlockPowered();
 
         // If below is powered, are we turned off?
-        if (powered != (me.getType() == Material.REDSTONE_TORCH_OFF)) {
+        if (powered != (me.getType() == Material.REDSTONE_TORCH)) { // TODO: block data OFF
 
             // Are we burnt out?
             if (!powered && me.getCounter() > 8) {
@@ -83,13 +85,14 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
             }
 
             // If below is powered or burnt out, are we turned off?
-            if (powered != (me.getType() == Material.REDSTONE_TORCH_OFF)) {
+            if (powered != (me.getType() == Material.REDSTONE_TORCH)) { // TODO: block data OFF
                 if (!powered) {
                     me.count(60);
                 }
 
                 me.setTypeIdAndData(
-                    (powered ? Material.REDSTONE_TORCH_OFF : Material.REDSTONE_TORCH_ON).getId(),
+                    (powered ? Material.REDSTONE_TORCH : Material.REDSTONE_TORCH).getId(),
+                    // TODO: block data OFF : ON
                     me.getData(), true);
                 extraUpdate(me);
             }

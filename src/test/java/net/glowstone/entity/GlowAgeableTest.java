@@ -164,7 +164,7 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
         assertEquals(0, entity.computeGrowthAmount(null));
         assertEquals(0, entity.computeGrowthAmount(Material.WHEAT));
         assertEquals(0, entity.computeGrowthAmount(Material.HAY_BLOCK));
-        assertEquals(0, entity.computeGrowthAmount(Material.CARROT_ITEM));
+        assertEquals(0, entity.computeGrowthAmount(Material.CARROT));
     }
 
     @Test
@@ -173,14 +173,14 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
         assertEquals(0, entity.computeGrowthAmount(null));
         assertEquals(0, entity.computeGrowthAmount(Material.WHEAT));
         assertEquals(0, entity.computeGrowthAmount(Material.HAY_BLOCK));
-        assertEquals(0, entity.computeGrowthAmount(Material.CARROT_ITEM));
+        assertEquals(0, entity.computeGrowthAmount(Material.CARROT));
     }
 
     @Test
     public void testEntityInteractGrowsBaby() {
         entity.setBaby();
         T mockedEntity = spy(entity);
-        inventory.setItemInMainHand(new ItemStack(Material.RAW_FISH, 60));
+        inventory.setItemInMainHand(new ItemStack(Material.SALMON, 60));
         InteractEntityMessage message = new InteractEntityMessage(0, InteractEntityMessage.Action.INTERACT.ordinal(), 0);
 
         Mockito.when(mockedEntity.computeGrowthAmount(any())).thenReturn(100);

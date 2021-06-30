@@ -14,7 +14,8 @@ public class InfestedStoneDecorator extends BlockDecorator {
     private final OreType oreType;
 
     public InfestedStoneDecorator() {
-        oreType = new OreType(Material.MONSTER_EGGS, new MonsterEggs(), 0, 64, 8);
+        // TODO: 1.13: per entity spawn eggs
+        oreType = new OreType(Material.LEGACY_MONSTER_EGGS, new MonsterEggs(), 0, 64, 8);
     }
 
     @Override

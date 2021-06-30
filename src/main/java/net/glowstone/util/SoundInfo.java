@@ -13,11 +13,28 @@ import org.bukkit.entity.Player;
 @RequiredArgsConstructor
 public class SoundInfo {
 
-    /** The Bukkit sound enum constant. */
+    public static final SoundInfo DEFAULT_BREAK_SOUND =
+        new SoundInfo(Sound.BLOCK_WOOD_BREAK, 1F, 0.75F);
+    public static final SoundInfo DEFAULT_STEP_SOUND =
+        new SoundInfo(Sound.BLOCK_WOOD_STEP, 1F, 0.75F);
+    public static final SoundInfo DEFAULT_PLACE_SOUND =
+        new SoundInfo(Sound.BLOCK_WOOD_PLACE, 1F, 0.75F);
+    public static final SoundInfo DEFAULT_HIT_SOUND =
+        new SoundInfo(Sound.BLOCK_WOOD_HIT, 1F, 0.75F);
+    public static final SoundInfo DEFAULT_FALL_SOUND =
+        new SoundInfo(Sound.BLOCK_WOOD_FALL, 1F, 0.75F);
+
+    /**
+     * The Bukkit sound enum constant.
+     */
     private final Sound sound;
-    /** The volume. */
+    /**
+     * The volume.
+     */
     private final float volume;
-    /** The pitch multiplier. */
+    /**
+     * The pitch multiplier.
+     */
     private final float pitch;
 
     /**
@@ -41,7 +58,7 @@ public class SoundInfo {
     /**
      * Plays the sound to the given player at the given location.
      *
-     * @param player Player to which to play the sound
+     * @param player   Player to which to play the sound
      * @param location Location at which to play the sound
      */
     public void playTo(Player player, Location location) {

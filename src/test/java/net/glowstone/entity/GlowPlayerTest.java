@@ -75,7 +75,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     private static final List<ItemStack> BREAKING_TOOLS = ImmutableList.of(
         new ItemStack(Material.DIAMOND_AXE),
         new ItemStack(Material.DIAMOND_PICKAXE),
-        new ItemStack(Material.DIAMOND_SPADE),
+        new ItemStack(Material.DIAMOND_SHOVEL),
         new ItemStack(Material.DIAMOND_SWORD),
         new ItemStack(Material.SHEARS));
 
@@ -199,7 +199,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testDigDirtWoodenShovel() {
-        entity.setItemInHand(new ItemStack(Material.WOOD_SPADE));
+        entity.setItemInHand(new ItemStack(Material.WOODEN_SHOVEL));
         when(block.getType()).thenReturn(Material.DIRT);
         assertDiggingTimeEquals(8);
     }
@@ -209,7 +209,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         for (ItemStack tool : BREAKING_TOOLS) {
             entity.setItemInHand(tool.clone());
             when(block.getType()).thenReturn(Material.DIRT);
-            assertDiggingTimeEquals(tool.getType() == Material.DIAMOND_SPADE ? 2 : 15);
+            assertDiggingTimeEquals(tool.getType() == Material.DIAMOND_SHOVEL ? 2 : 15);
         }
     }
 
@@ -221,7 +221,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testDigStoneWoodenPickaxe() {
-        entity.setItemInHand(new ItemStack(Material.WOOD_PICKAXE));
+        entity.setItemInHand(new ItemStack(Material.WOODEN_PICKAXE));
         when(block.getType()).thenReturn(Material.STONE);
         assertDiggingTimeEquals(23);
     }

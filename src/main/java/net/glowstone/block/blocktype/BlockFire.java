@@ -21,6 +21,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockFire extends BlockNeedsAttached {
 
@@ -29,7 +30,7 @@ public class BlockFire extends BlockNeedsAttached {
     private static final int TICK_RATE = 20;
     private static final int MAX_FIRE_AGE = 15;
     private static final LinkedHashMap<BlockFace, Integer> BURNRESISTANCE_MAP
-            = new LinkedHashMap<>();
+        = new LinkedHashMap<>();
 
     static {
         BURNRESISTANCE_MAP.put(BlockFace.EAST, 300);
@@ -47,12 +48,13 @@ public class BlockFire extends BlockNeedsAttached {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         state.setRawData((byte) 0);
         state.getBlock().getWorld().requestPulse(state.getBlock());
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Collections.emptyList();
@@ -60,7 +62,7 @@ public class BlockFire extends BlockNeedsAttached {
 
     @Override
     protected BlockFace getAttachedFace(GlowBlock me) {
-        for (BlockFace face : new BlockFace[]{BlockFace.DOWN, BlockFace.UP, BlockFace.EAST,
+        for (BlockFace face : new BlockFace[] {BlockFace.DOWN, BlockFace.UP, BlockFace.EAST,
             BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH}) {
             if (!me.getRelative(face).isEmpty()) {
                 return face;
@@ -85,7 +87,7 @@ public class BlockFire extends BlockNeedsAttached {
         boolean isInfiniteFire = false;
         switch (type) {
             case NETHERRACK:
-            case MAGMA:
+            case MAGMA_BLOCK:
                 isInfiniteFire = true;
                 break;
             case BEDROCK:
@@ -174,16 +176,16 @@ public class BlockFire extends BlockNeedsAttached {
                         resistance /= 2;
                     }
                     if ((world.hasStorm() && isRainingAround(propagationBlock))
-                            || resistance <= 0
-                            || ThreadLocalRandom.current().nextInt(
-                                    y > 1 ? 100 + 100 * (y - 1) : 100)
-                            > resistance) {
+                        || resistance <= 0
+                        || ThreadLocalRandom.current().nextInt(
+                        y > 1 ? 100 + 100 * (y - 1) : 100)
+                        > resistance) {
                         continue;
                     }
                     BlockIgniteEvent igniteEvent = new BlockIgniteEvent(
                         propagationBlock, IgniteCause.SPREAD, block);
                     EventFactory.getInstance()
-                            .callEvent(igniteEvent);
+                        .callEvent(igniteEvent);
                     if (igniteEvent.isCancelled()) {
                         continue;
                     }
