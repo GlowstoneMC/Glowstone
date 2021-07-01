@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches-ignore: [dev, "1.12"]
+    branches-ignore: [dev, '1.12']
   pull_request:
 
 jobs:
