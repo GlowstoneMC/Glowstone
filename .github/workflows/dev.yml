@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [8, 11]
+        java: [8, 11, 16]
     name: Dev Build (Java ${{ matrix.java }})
     steps:
     - uses: actions/checkout@v2
@@ -36,14 +36,14 @@ jobs:
       run: mvn -T 1C -B dependency:go-offline
     - name: Publish to Maven
       if: ${{ matrix.java == 8 }}
-      run: mvn -T 1C -B source:jar javadoc:jar deploy -Pbuild-extras
+      run: mvn -Dmaven.test.skip=true -T 1C -B source:jar javadoc:jar deploy -Pbuild-extras
       env:
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         JAVA_TOOL_OPTIONS: -Xmx2G
     - name: Build with Maven
-      if: ${{ matrix.java == 11 }}
-      run: mvn -T 1C -B package -Pbuild-extras
+      if: ${{ matrix.java != 8 }}
+      run: mvn -Dmaven.test.skip=true -T 1C -B package -Pbuild-extras
       env:
         JAVA_TOOL_OPTIONS: -Xmx2G
     - name: GitHub Artifact
