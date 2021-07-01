@@ -14,11 +14,12 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <api.version>1.16.5-R0.1-SNAPSHOT</api.version>
+    <linkstone.version>1.0.0-SNAPSHOT</linkstone.version>
     <minecraft.version>1.16.5</minecraft.version>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <kotlin.version>1.3.61</kotlin.version>
+    <kotlin.version>1.5.20</kotlin.version>
     <lombok.version>1.18.16</lombok.version>
     <powermock.version>2.0.5</powermock.version>
     <junit.jupiter.version>5.7.0</junit.jupiter.version>
@@ -60,6 +61,16 @@
     </dependency>
     <dependency>
       <groupId>net.glowstone</groupId>
+      <artifactId>linkstone-annotations</artifactId>
+      <version>${linkstone.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.glowstone</groupId>
+      <artifactId>linkstone-runtime</artifactId>
+      <version>${linkstone.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.glowstone</groupId>
       <artifactId>glowkit</artifactId>
       <version>${api.version}</version>
       <scope>compile</scope>
@@ -80,9 +91,9 @@
       <version>2.14.6</version>
     </dependency>
     <dependency>
-      <groupId>it.unimi.dsi</groupId>
-      <artifactId>fastutil</artifactId>
-      <version>8.3.1</version>
+      <groupId>co.aikar</groupId>
+      <artifactId>fastutil-lite</artifactId>
+      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -93,7 +104,7 @@
     <dependency>
       <groupId>com.flowpowered</groupId>
       <artifactId>flow-network</artifactId>
-      <version>1.2.8-SNAPSHOT</version>
+      <version>1.2.10-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.eatthepath</groupId>

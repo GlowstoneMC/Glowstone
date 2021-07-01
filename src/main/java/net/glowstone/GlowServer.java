@@ -137,6 +137,10 @@ import net.glowstone.io.PlayerStatisticIoService;
 import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.io.WorldStorageProviderFactory;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
+import net.glowstone.linkstone.runtime.Boxes;
+import net.glowstone.linkstone.runtime.FieldSet;
+import net.glowstone.linkstone.runtime.LinkstoneRuntimeData;
+import net.glowstone.linkstone.runtime.inithook.ClassInitHook;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.GlowSession;
@@ -168,6 +172,9 @@ import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.library.Library;
 import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager;
+import net.glowstone.util.linkstone.LinkstoneClassInitObserver;
+import net.glowstone.util.linkstone.LinkstonePluginLoader;
+import net.glowstone.util.linkstone.LinkstonePluginScanner;
 import net.glowstone.util.loot.LootingManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -233,7 +240,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.SimpleServicesManager;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.CachedServerIcon;
@@ -244,6 +250,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * The core class of the Glowstone server.
+ *
  *
  * @author Graham Edgecombe
  */
@@ -507,6 +514,8 @@ public class GlowServer implements Server {
         whitelist = new UuidListFile(config.getFile("whitelist.json"));
         nameBans = new GlowBanList(this, Type.NAME);
         ipBans = new GlowBanList(this, Type.IP);
+
+        ClassInitHook.register(new LinkstoneClassInitObserver());
 
         loadConfig();
         bossBars = new ConcurrentHashMap<>();
@@ -1284,9 +1293,17 @@ public class GlowServer implements Server {
         pluginTypeDetector = new GlowPluginTypeDetector(folder);
         pluginTypeDetector.scan();
 
+        // scan plugins for @Field and @Box annotated fields
+        FieldSet annotatedFields = new FieldSet();
+        Boxes boxes = new Boxes();
+        LinkstoneRuntimeData.setFields(annotatedFields);
+        LinkstoneRuntimeData.setBoxes(boxes);
+        new LinkstonePluginScanner(annotatedFields, boxes)
+                .scanPlugins(pluginTypeDetector.bukkitPlugins);
+
         // clear plugins and prepare to load (Bukkit)
         pluginManager.clearPlugins();
-        pluginManager.registerInterface(JavaPluginLoader.class);
+        pluginManager.registerInterface(LinkstonePluginLoader.class);
         Plugin[] plugins = pluginManager
                 .loadPlugins(folder, pluginTypeDetector.bukkitPlugins);
 
