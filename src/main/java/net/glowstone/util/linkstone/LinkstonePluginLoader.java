@@ -28,15 +28,14 @@ public class LinkstonePluginLoader extends JavaPluginLoader {
         LinkstoneRuntimeData.setPluginClassLoader(new ClassLoader() {
             @Override
             protected Class<?> findClass(String name) throws ClassNotFoundException {
-                return getClassByName(name);
+                return loadClass(name);
             }
         });
     }
 
     @Override
-    protected PluginClassLoader newPluginLoader(JavaPluginLoader loader, ClassLoader parent,
-            PluginDescriptionFile description, File dataFolder, File file) throws Exception {
-        return new PluginClassLoader(loader, parent, description, dataFolder, file) {
+    protected PluginClassLoader newPluginLoader(JavaPluginLoader loader, ClassLoader parent, PluginDescriptionFile description, File dataFolder, File file, ClassLoader libraryLoader) throws Exception {
+        return new PluginClassLoader(loader, parent, description, dataFolder, file, libraryLoader) {
             @Override
             protected byte[] transformBytecode(byte[] bytecode) {
                 if (LinkstoneRuntimeData.getFields().isEmpty()
