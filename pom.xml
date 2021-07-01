@@ -6,7 +6,7 @@
   <groupId>net.glowstone</groupId>
   <artifactId>glowstone</artifactId>
   <packaging>jar</packaging>
-  <version>2021.6.0</version>
+  <version>2021.6.0-SNAPSHOT</version>
   <name>Glowstone</name>
   <url>https://www.glowstone.net</url>
   <description>A fast, customizable and compatible open source Minecraft server.</description>
@@ -81,9 +81,9 @@
       <version>2.14.6</version>
     </dependency>
     <dependency>
-      <groupId>it.unimi.dsi</groupId>
-      <artifactId>fastutil</artifactId>
-      <version>8.3.1</version>
+      <groupId>co.aikar</groupId>
+      <artifactId>fastutil-lite</artifactId>
+      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -94,7 +94,7 @@
     <dependency>
       <groupId>com.flowpowered</groupId>
       <artifactId>flow-network</artifactId>
-      <version>1.2.8-SNAPSHOT</version>
+      <version>1.2.10-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.eatthepath</groupId>

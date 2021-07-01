@@ -2,7 +2,7 @@ name: Dev Build
 
 on:
   push:
-    branches: [dev]
+    branches: [dev, "1.12"]
     paths: 
       - .github/workflows/**
       - etc/checkstyle.xml
@@ -53,7 +53,7 @@ jobs:
         name: glowstone
         path: target/glowstone.jar
     - name: Setup SSH
-      if: ${{ matrix.java == 8 }}
+      if: ${{ matrix.java == 8 && github.ref == "refs/heads/1.12" }}
       run: |
         mkdir -p ~/.ssh
         cat << EOF > ~/.ssh/config
@@ -67,7 +67,7 @@ jobs:
       env:
         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
     - name: Deploy to Test Server
-      if: ${{ matrix.java == 8 }}
+      if: ${{ matrix.java == 8 && github.ref == "refs/heads/1.12" }}
       run: |
         sshpass -e scp target/glowstone.jar glowstone@$SSH_ADDRESS:
         sshpass -e ssh glowstone@$SSH_ADDRESS sudo systemctl restart glowstone
