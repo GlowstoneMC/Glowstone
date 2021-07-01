@@ -3,6 +3,7 @@ package net.glowstone.util;
 import io.papermc.paper.inventory.ItemRarity;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -84,36 +85,64 @@ public final class GlowUnsafeValues implements UnsafeValues {
     @Override
     public Material toLegacy(Material material) {
         // TODO: 1.13
+        GlowServer.logger.log(
+                Level.WARNING,
+                "Attempted to convert " + material + " from legacy. Not supported, ignoring.",
+                new UnsupportedOperationException());
         return null;
     }
 
     @Override
     public Material fromLegacy(Material material) {
         // TODO: 1.13
+        GlowServer.logger.log(
+                Level.WARNING,
+                "Attempted to convert " + material + " from legacy. Not supported, ignoring.",
+                new UnsupportedOperationException());
         return null;
     }
 
     @Override
-    public Material fromLegacy(MaterialData materialData) {
+    public Material fromLegacy(MaterialData material) {
         // TODO: 1.13
+        GlowServer.logger.log(
+                Level.WARNING,
+                "Attempted to convert " + material + " from legacy. Not supported, ignoring.",
+                new UnsupportedOperationException());
         return null;
     }
 
     @Override
     public Material fromLegacy(MaterialData material, boolean itemPriority) {
         // TODO: 1.13
+        GlowServer.logger.log(
+                Level.WARNING,
+                "Attempted to convert " + material + " from legacy. Not supported, ignoring.",
+                new UnsupportedOperationException());
         return null;
     }
 
     @Override
-    public BlockData fromLegacy(Material material, byte b) {
+    public BlockData fromLegacy(Material material, byte data) {
         // TODO: 1.13
+        GlowServer.logger.log(
+                Level.WARNING,
+                "Attempted to convert " + material + ":" + data + " from legacy. Not supported, ignoring.",
+                new UnsupportedOperationException());
         return null;
     }
 
     @Override
-    public Material getMaterial(String s, int i) {
-        throw new UnsupportedOperationException();
+    public Material getMaterial(String material, int version) {
+        if (version == getDataVersion()) {
+            Material type = Material.getMaterial(material);
+            if (type == null) {
+                throw new RuntimeException("Couldn't find material: " + material);
+            }
+            return type;
+        }
+        // TODO: 1.13 support legacy materials
+        throw new UnsupportedOperationException("Legacy material versions not supported!");
     }
 
     /**

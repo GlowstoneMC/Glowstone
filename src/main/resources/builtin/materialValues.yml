@@ -202,7 +202,7 @@ values:
     tool: PICKAXE
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  SIGN:
+  LEGACY_SIGN:
     tool: AXE
     lightOpacity: 0
     pistonPushBehavior: DONT_MOVE
@@ -229,7 +229,7 @@ values:
     hardness: 2
     lightOpacity: 0
     blastResistance: 30
-  WALL_SIGN:
+  LEGACY_WALL_SIGN:
     tool: AXE
     hardness: 1
     lightOpacity: 0
@@ -261,7 +261,7 @@ values:
     pistonPullBehavior: DONT_MOVE
   REDSTONE_ORE:
     tool: IRON_PICKAXE
-  REDSTONE_TORCH_OFF:
+  REDSTONE_TORCH:
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
@@ -344,7 +344,7 @@ values:
     tool: AXE
   MUSHROOM_STEM:
     tool: AXE
-  IRON_FENCE:
+  IRON_BARS:
     tool: PICKAXE
     lightOpacity: 0
   GLASS_PANE:
@@ -461,11 +461,11 @@ values:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
-  BIRCH_WOOD_STAIRS:
+  BIRCH_STAIRS:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
-  JUNGLE_WOOD_STAIRS:
+  JUNGLE_STAIRS:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
@@ -546,15 +546,6 @@ values:
     pistonPullBehavior: DONT_MOVE
   LEGACY_STAINED_GLASS_PANE:
     lightOpacity: 0
-  LEGACY_LEAVES_2:
-    lightOpacity: 1
-    flameResistance: 30
-    fireResistance: 60
-    pistonPushBehavior: BREAK
-    pistonPullBehavior: DONT_MOVE
-  LOG_2:
-    flameResistance: 5
-    fireResistance: 5
   ACACIA_STAIRS:
     lightOpacity: 0
     flameResistance: 5
@@ -699,7 +690,7 @@ values:
   GRAY_GLAZED_TERRACOTTA:
     pistonPushBehavior: MOVE
     pistonPullBehavior: DONT_MOVE
-  SILVER_GLAZED_TERRACOTTA:
+  LIGHT_GRAY_GLAZED_TERRACOTTA:
     pistonPushBehavior: MOVE
     pistonPullBehavior: DONT_MOVE
   CYAN_GLAZED_TERRACOTTA:
@@ -753,7 +744,7 @@ values:
   GRAY_SHULKER_BOX:
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  SILVER_SHULKER_BOX:
+  LIGHT_GRAY_SHULKER_BOX:
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   CYAN_SHULKER_BOX:

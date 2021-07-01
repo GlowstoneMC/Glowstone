@@ -12,10 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.glowstone.block.MaterialUtil;
+import net.glowstone.constants.ItemIds;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.GlowCraftingInventory;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.InventoryUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -485,7 +487,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         // shaped
         for (Map<?, ?> data : config.getMapList("shaped")) { // NON-NLS
             Map<String, Object> _recipe = (Map<String, Object>) data.get("result");
-            _recipe.put("v", 1); //Not legacy.
+            _recipe.put("v", Bukkit.getUnsafe().getDataVersion()); // TODO: 1.13 hack patch it in
 
             ItemStack resultStack = ItemStack.deserialize(_recipe);
 
@@ -497,7 +499,7 @@ public final class CraftingManager implements Iterable<Recipe> {
             Map<String, Map<String, Object>> ingredients = (Map<String, Map<String, Object>>) data
                     .get("ingredients"); // NON-NLS
             for (Entry<String, Map<String, Object>> entry : ingredients.entrySet()) {
-                entry.getValue().put("v",1); //Not legacy.
+                entry.getValue().put("v", Bukkit.getUnsafe().getDataVersion()); // TODO: 1.13 hack patch it in
 
                 ItemStack stack = ItemStack.deserialize(entry.getValue());
                 recipe.setIngredient(entry.getKey().charAt(0), stack);
@@ -509,7 +511,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         // shapeless
         for (Map<?, ?> data : config.getMapList("shapeless")) { // NON-NLS
 
-            ((Map<String, Object>) data.get("result")).put("v", 1); //Non-legacy. (1.13)
+            ((Map<String, Object>) data.get("result")).put("v", Bukkit.getUnsafe().getDataVersion()); // TODO: 1.13 hack patch it in
 
             ItemStack resultStack =
                     ItemStack.deserialize((Map<String, Object>) data.get("result")); // NON-NLS
@@ -520,7 +522,7 @@ public final class CraftingManager implements Iterable<Recipe> {
             List<Map<String, Object>> ingreds
                     = (List<Map<String, Object>>) data.get("ingredients"); // NON-NLS
             for (Map<String, Object> entry : ingreds) {
-                entry.put("v", 1); //Non-legacy Materials
+                entry.put("v", Bukkit.getUnsafe().getDataVersion()); // TODO: 1.13 hack patch it in
 
                 recipe.addIngredient(ItemStack.deserialize(entry));
             }
@@ -531,18 +533,16 @@ public final class CraftingManager implements Iterable<Recipe> {
         // furnace
         for (Map<?, ?> data : config.getMapList("furnace")) { // NON-NLS
 
-            ((Map<String, Object>) data.get("input")).put("v", 1); //Non-legacy.
-            ((Map<String, Object>) data.get("result")).put("v", 1); //Non-legacy.
+            ((Map<String, Object>) data.get("input")).put("v", Bukkit.getUnsafe().getDataVersion()); // TODO: 1.13 hack patch it in
+            ((Map<String, Object>) data.get("result")).put("v", Bukkit.getUnsafe().getDataVersion()); // TODO: 1.13 hack patch it in
 
             ItemStack inputStack
-                    = ItemStack.deserialize((Map<String, Object>) data.get("input")); // NON-NLS;
+                    = ItemStack.deserialize((Map<String, Object>) data.get("input")); // NON-NLS
             ItemStack resultStack
-                    = ItemStack.deserialize((Map<String, Object>) data.get("result")); // NON-NLS;
+                    = ItemStack.deserialize((Map<String, Object>) data.get("result")); // NON-NLS
 
             NamespacedKey key = readKey(data, resultStack);
-            //float xp = ((Number) data.get("xp")).floatValue(); // NON-NLS
-            //TODO: make this actually do something.
-            float xp = 0;
+            float xp = ((Number) data.get("xp")).floatValue(); // NON-NLS
             FurnaceRecipe recipe = new FurnaceRecipe(key, resultStack, inputStack.getType(), xp, 200);
             furnaceRecipes.add(recipe);
 
@@ -555,11 +555,11 @@ public final class CraftingManager implements Iterable<Recipe> {
             String keyRaw = (String) data.get("key"); // NON-NLS
             key = NbtSerialization.namespacedKeyFromString(keyRaw);
         } else {
-            //String keyed = ItemIds.getKeyName(result.getType());
-            //key = NamespacedKey.minecraft(keyed);
-            Material mat = result.getType();
-
-            return mat.getKey();
+            Material type = result.getType();
+            if (!type.isLegacy()) {
+                return type.getKey();
+            }
+            key = NamespacedKey.minecraft(ItemIds.getKeyName(type));
         }
         return key;
     }

@@ -25,7 +25,6 @@ rewards:
       chance: 2.4
       item: 
         type: FISHING_ROD
-        damage: 32  # TODO: Randomize
     - 
       chance: 12
       item: 
@@ -70,7 +69,6 @@ rewards:
       chance: 16.67
       item: 
         type: BOW
-        damage: 192  # TODO: Randomize
       enchantment_level_min: 22
       enchantment_level_max: 30
     - 
@@ -83,7 +81,6 @@ rewards:
       chance: 16.67
       item: 
         type: FISHING_ROD
-        damage: 32  # TODO: Randomize
       enchantment_level_min: 22
       enchantment_level_max: 30
     - 
