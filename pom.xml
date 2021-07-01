@@ -460,7 +460,7 @@
           <plugin>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok-maven-plugin</artifactId>
-            <version>1.18.16.0</version>
+            <version>1.18.20.0</version>
             <executions>
               <execution>
                 <id>delombok</id>
