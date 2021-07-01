@@ -42,7 +42,7 @@ jobs:
         MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         JAVA_TOOL_OPTIONS: -Xmx2G
     - name: Build with Maven
-      if: ${{ matrix.java != 8 || && github.ref != 'refs/heads/1.12' }}
+      if: ${{ matrix.java != 8 || github.ref != 'refs/heads/1.12' }}
       run: mvn -Dmaven.test.skip=true -T 1C -B package -Pbuild-extras
       env:
         JAVA_TOOL_OPTIONS: -Xmx2G
