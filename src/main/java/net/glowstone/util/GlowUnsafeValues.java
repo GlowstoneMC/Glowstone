@@ -9,6 +9,7 @@ import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Statistic;
@@ -74,7 +75,7 @@ public final class GlowUnsafeValues implements UnsafeValues {
 
     @Override
     public LegacyComponentSerializer legacyComponentSerializer() {
-        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+        return LegacyComponentSerializer.builder().build();
     }
 
     @Override
