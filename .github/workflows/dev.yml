@@ -47,9 +47,9 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.GH_TOKEN }}
       with:
-        source_file: 'target/apidocs'
+        source_file: 'target/apidocs/.'
         destination_repo: 'GlowstoneMC/glowstonemc.github.io'
-        destination_folder: 'content/jd/glowstone/1.12' # TODO: detect version?
+        destination_folder: 'content/jd/glowstone/1.12/' # TODO: detect version?
         user_email: 'mastercoms@tuta.io'
         user_name: 'mastercoms'
         commit_message: Update Javadocs for Glowstone commit ${{ github.sha }}
