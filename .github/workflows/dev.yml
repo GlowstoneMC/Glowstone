@@ -35,7 +35,6 @@ jobs:
     - name: Cache Maven
       run: mvn -T 1C -B dependency:go-offline
     - name: Publish to Maven
-      if: ${{ github.ref == 'refs/heads/1.12' }}
       run: mvn -Dmaven.test.skip=true -T 1C -B source:jar javadoc:jar deploy -Pbuild-extras
       env:
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
@@ -52,11 +51,6 @@ jobs:
         user_email: 'mastercoms@tuta.io'
         user_name: 'mastercoms'
         commit_message: Update Javadocs for Glowstone commit ${{ github.sha }}
-    - name: Build with Maven
-      if: ${{ github.ref != 'refs/heads/1.12' }}
-      run: mvn -Dmaven.test.skip=true -T 1C -B package -Pbuild-extras
-      env:
-        JAVA_TOOL_OPTIONS: -Xmx2G
     - name: GitHub Artifact
       uses: actions/upload-artifact@v2
       with:
