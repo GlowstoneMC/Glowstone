@@ -44,6 +44,8 @@ jobs:
     - name: Push Javadocs to Pages
       uses: dmnemec/copy_file_to_another_repo_action@v1.1.1
       if: ${{ matrix.java == 8 }}
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.GH_TOKEN }}
       with:
         source_file: 'target/apidocs'
         destination_repo: 'GlowstoneMC/glowstonemc.github.io'
