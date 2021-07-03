@@ -890,7 +890,12 @@ public class GlowChunk implements Chunk {
 
         public static Key of(int x, int z) {
             long id = mapCode(x, z);
-            return keys.computeIfAbsent(id, l -> new Key(x, z));
+            Key v;
+            if ((v = keys.get(id)) == null) {
+                v = new Key(x, z);
+                keys.put(id, v);
+            }
+            return v;
         }
 
         public static Key to(Chunk chunk) {
