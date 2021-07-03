@@ -53,7 +53,7 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
             int compressedLength = deflater.deflate(
                     compressedData.array(),
                     compressedData.arrayOffset() + compressedData.writerIndex(),
-                    compressedData.writableBytes());
+                    compressedData.writableBytes(), Deflater.SYNC_FLUSH);
 
             deflater.reset();
             sourceData.release();
