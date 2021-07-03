@@ -406,7 +406,7 @@ public class GlowWorld implements World {
         waterAnimalSpawnLimit = server.getWaterAnimalSpawnLimit();
         ambientSpawnLimit = server.getAmbientSpawnLimit();
         keepSpawnLoaded = server.keepSpawnLoaded();
-        populateAnchoredChunks = server.populateAnchoredChunks();
+        populateAnchoredChunks = server.populateAnchoredChunks() && !server.isGenerationDisabled();
         difficulty = server.getDifficulty();
         maxHeight = server.getMaxBuildHeight();
         seaLevel = GlowServer.getWorldConfig().getInt(WorldConfig.Key.SEA_LEVEL);

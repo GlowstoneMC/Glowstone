@@ -207,6 +207,9 @@ public final class ChunkManager {
      * Populate a single chunk if needed.
      */
     private void populateChunk(int x, int z, boolean force) {
+        if (world.getServer().isGenerationDisabled()) {
+            return;
+        }
         GlowChunk chunk = getChunk(x, z);
         // cancel out if it's already populated
         if (chunk.isPopulated()) {
