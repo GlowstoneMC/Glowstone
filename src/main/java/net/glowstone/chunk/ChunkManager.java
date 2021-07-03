@@ -92,14 +92,13 @@ public final class ChunkManager {
      */
     public GlowChunk getChunk(int x, int z) {
         Key key = GlowChunk.Key.of(x, z);
-        if (chunks.containsKey(key)) {
-            return chunks.get(key);
-        } else {
+        GlowChunk chunk = chunks.get(key);
+        if (chunk == null) {
             // only create chunk if it's not in the map already
-            GlowChunk chunk = new GlowChunk(world, x, z);
+            chunk = new GlowChunk(world, x, z);
             chunks.put(key, chunk);
-            return chunk;
         }
+        return chunk;
     }
 
     /**
