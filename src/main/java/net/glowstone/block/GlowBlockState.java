@@ -90,8 +90,17 @@ public class GlowBlockState implements BlockState {
 
     @Override
     public final boolean setTypeId(int type) {
+        if (this.typeId == type) {
+            return false;
+        }
+        Material oldType = Material.getMaterial(typeId);
+        Material newType = Material.getMaterial(type);
         this.typeId = type;
-        makeData((byte) 0);
+        if (oldType.getData().equals(newType.getData())) {
+            setRawData((byte) 0);
+        } else {
+            makeData((byte) 0);
+        }
         return true;
     }
 
