@@ -1,12 +1,13 @@
 package net.glowstone.chunk;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -80,7 +81,7 @@ public class GlowChunk implements Chunk {
     /**
      * The block entities that reside in this chunk.
      */
-    private final HashMap<Integer, BlockEntity> blockEntities = new HashMap<>();
+    private final Int2ObjectOpenHashMap<BlockEntity> blockEntities = new Int2ObjectOpenHashMap<>(32, 0.5f);
     /**
      * The entities that reside in this chunk.
      */
@@ -803,6 +804,10 @@ public class GlowChunk implements Chunk {
      * @return The {@link ChunkDataMessage}.
      */
     public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk) {
+        return toMessage(skylight, entireChunk, null);
+    }
+
+    public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk, ByteBufAllocator alloc) {
         load();
         int sectionBitmask = 0;
 
@@ -823,7 +828,7 @@ public class GlowChunk implements Chunk {
             }
         }
 
-        ByteBuf buf = Unpooled.buffer();
+        ByteBuf buf = alloc == null ? Unpooled.buffer() : alloc.buffer();
 
         if (sections != null) {
             // get the list of sections
