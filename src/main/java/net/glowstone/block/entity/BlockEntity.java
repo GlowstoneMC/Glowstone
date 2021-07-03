@@ -132,4 +132,11 @@ public abstract class BlockEntity {
     public void update(GlowPlayer player) {
         // nothing by default
     }
+
+    /**
+     * Generic pulse for this block entity.
+     */
+    public void pulse() {
+        // nothing by default
+    }
 }

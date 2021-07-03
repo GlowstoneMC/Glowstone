@@ -190,22 +190,24 @@ public final class GlowScheduler implements BukkitScheduler {
         // Process player packets
         sessionRegistry.pulse();
 
-        // Run the relevant tasks.
-        for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext(); ) {
-            GlowTask task = it.next();
-            switch (task.shouldExecute()) {
-                case RUN:
-                    if (task.isSync()) {
-                        task.run();
-                    } else {
-                        asyncTaskExecutor.submit(task);
-                    }
-                    break;
-                case STOP:
-                    it.remove();
-                    break;
-                default:
-                    // do nothing
+        if (!tasks.isEmpty()) {
+            // Run the relevant tasks.
+            for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext(); ) {
+                GlowTask task = it.next();
+                switch (task.shouldExecute()) {
+                    case RUN:
+                        if (task.isSync()) {
+                            task.run();
+                        } else {
+                            asyncTaskExecutor.submit(task);
+                        }
+                        break;
+                    case STOP:
+                        it.remove();
+                        break;
+                    default:
+                        // do nothing
+                }
             }
         }
         try {

@@ -39,26 +39,33 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
         ByteBuf prefixBuf = ctx.alloc().buffer(5);
         ByteBuf contentsBuf;
 
-        if (msg.readableBytes() >= threshold) {
+        int length = msg.readableBytes();
+        if (length >= threshold) {
             // message should be compressed
             int index = msg.readerIndex();
-            int length = msg.readableBytes();
 
-            byte[] sourceData = new byte[length];
+            ByteBuf sourceData = ctx.alloc().heapBuffer(length);
             msg.readBytes(sourceData);
-            deflater.setInput(sourceData);
+            deflater.setInput(sourceData.array(), sourceData.arrayOffset() + sourceData.readerIndex(), length);
             deflater.finish();
 
-            byte[] compressedData = new byte[length];
-            int compressedLength = deflater.deflate(compressedData);
+            ByteBuf compressedData = ctx.alloc().heapBuffer(length);
+            int compressedLength = deflater.deflate(
+                    compressedData.array(),
+                    compressedData.arrayOffset() + compressedData.writerIndex(),
+                    compressedData.writableBytes(), Deflater.SYNC_FLUSH);
+
             deflater.reset();
+            sourceData.release();
 
             if (compressedLength == 0) {
                 // compression failed in some weird way
+                compressedData.release();
                 throw new EncoderException("Failed to compress message of size " + length);
             } else if (compressedLength >= length) {
                 // compression increased the size. threshold is probably too low
                 // send as an uncompressed packet
+                compressedData.release();
                 ByteBufUtils.writeVarInt(prefixBuf, 0);
                 msg.readerIndex(index);
                 msg.retain();
@@ -66,7 +73,11 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
             } else {
                 // all is well
                 ByteBufUtils.writeVarInt(prefixBuf, length);
-                contentsBuf = Unpooled.wrappedBuffer(compressedData, 0, compressedLength);
+                contentsBuf = Unpooled.wrappedBuffer(
+                        compressedData.array(),
+                        compressedData.arrayOffset() + compressedData.readerIndex(),
+                        compressedLength);
+                compressedData.release();
             }
         } else {
             // message should be sent through

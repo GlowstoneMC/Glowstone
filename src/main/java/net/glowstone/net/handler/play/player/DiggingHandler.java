@@ -109,7 +109,6 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 // Update client with block
                 // (FINISH_DIGGING is client's guess based on wall-clock time, not ticks, and is
                 // untrusted)
-                player.sendBlockChange(block.getLocation(), material, block.getData());
                 break;
             case DiggingMessage.STATE_DROP_ITEM:
                 player.dropItemInHand(false);

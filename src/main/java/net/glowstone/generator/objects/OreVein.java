@@ -3,7 +3,7 @@ package net.glowstone.generator.objects;
 import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.BlockState;
+import org.bukkit.block.Block;
 import org.bukkit.material.MaterialData;
 
 public class OreVein implements TerrainObject {
@@ -58,12 +58,10 @@ public class OreVein implements TerrainObject {
                          z++) {
                         double squaredNormalizedZ
                                 = normalizedSquaredCoordinate(originZ, radiusH, z);
+                        Block block = world.getBlockAt(x, y, z);
                         if (squaredNormalizedX + squaredNormalizedY + squaredNormalizedZ < 1
-                                && world.getBlockAt(x, y, z).getType() == targetType) {
-                            BlockState state = world.getBlockAt(x, y, z).getState();
-                            state.setType(type);
-                            state.setData(data);
-                            state.update(true);
+                                && block.getType() == targetType) {
+                            block.setTypeIdAndData(type.getId(), data.getData(), false);
                             succeeded = true;
                         }
                     }

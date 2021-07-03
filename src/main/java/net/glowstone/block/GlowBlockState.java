@@ -86,9 +86,17 @@ public class GlowBlockState implements BlockState {
     }
 
     @Override
-    public final void setType(Material type) {
+    public final void setType(@NotNull Material type) {
+        if (this.type == type) {
+            return;
+        }
+        Material old = this.type;
         this.type = type;
-        makeData((byte) 0);
+        if (old.getData().equals(type.getData())) {
+            setRawData((byte) 0);
+        } else {
+            makeData((byte) 0);
+        }
     }
 
     @Override
