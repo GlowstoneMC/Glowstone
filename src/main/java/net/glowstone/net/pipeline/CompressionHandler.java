@@ -6,13 +6,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
-import io.netty.handler.codec.MessageToMessageCodec;
-import io.netty.handler.codec.compression.JZlibEncoder;
-import io.netty.handler.codec.compression.JdkZlibEncoder;
-import io.netty.handler.codec.compression.ZlibEncoder;
-import net.glowstone.GlowServer;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
