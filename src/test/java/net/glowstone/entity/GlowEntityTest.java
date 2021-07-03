@@ -6,6 +6,7 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.when;
 
 import com.flowpowered.network.Message;
@@ -117,6 +118,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         when(world.getChunkAt(any(Location.class))).thenReturn(chunk);
         when(world.getChunkAt(any(Block.class))).thenReturn(chunk);
         when(world.getChunkAt(anyInt(),anyInt())).thenReturn(chunk);
+        when(world.getChunk(notNull())).thenReturn(chunk);
         when(world.getGameRuleMap()).thenReturn(new GameRuleManager());
         when(server.getItemFactory()).thenReturn(itemFactory);
         entityManager = Mockito.spy(new EntityManager());

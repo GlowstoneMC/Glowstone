@@ -26,6 +26,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.nbt.CompoundTag;
@@ -117,6 +118,11 @@ public class GlowChunk implements Chunk {
     @Getter
     @Setter
     private long inhabitedTime;
+
+    /**
+     * A list of BlockChangeMessages to be sent to all players in this chunk.
+     */
+    private final List<BlockChangeMessage> blockChanges = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Creates a new chunk with a specified X and Z coordinate.
@@ -773,6 +779,23 @@ public class GlowChunk implements Chunk {
     }
 
     /**
+     * Queues block change notification to all players in this chunk
+     *
+     * @param message The block change message to broadcast
+     */
+    public void broadcastBlockChange(BlockChangeMessage message) {
+        blockChanges.add(message);
+    }
+
+    public List<BlockChangeMessage> getBlockChanges() {
+        return new ArrayList<>(blockChanges);
+    }
+
+    void clearBlockChanges() {
+        blockChanges.clear();
+    }
+
+    /**
      * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream this entire
      * chunk to them.
      *
@@ -898,6 +921,15 @@ public class GlowChunk implements Chunk {
             Key v;
             if ((v = keys.get(id)) == null) {
                 v = new Key(x, z);
+                keys.put(id, v);
+            }
+            return v;
+        }
+
+        public static Key of(long id) {
+            Key v;
+            if ((v = keys.get(id)) == null) {
+                v = new Key((int) id, (int) (id >> 32));
                 keys.put(id, v);
             }
             return v;

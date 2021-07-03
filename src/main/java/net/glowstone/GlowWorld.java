@@ -489,6 +489,7 @@ public class GlowWorld implements World {
         // document it here.
 
         pulsePlayers(players);
+        chunkManager.clearChunkBlockChanges();
         resetEntities(allEntities);
         worldBorder.pulse();
 
@@ -669,8 +670,7 @@ public class GlowWorld implements World {
     }
 
     public void broadcastBlockChangeInRange(GlowChunk.Key chunkKey, BlockChangeMessage message) {
-        getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey))
-            .forEach(player -> player.sendBlockChangeForce(message));
+        getChunk(chunkKey).broadcastBlockChange(message);
     }
 
     private void maybeStrikeLightningInChunk(int cx, int cz) {
@@ -1248,6 +1248,11 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public GlowChunk getChunkAt(long chunkKey) {
+        return getChunk(GlowChunk.Key.of(chunkKey));
+    }
+
+    @Override
     public Chunk getChunkAt(Location location) {
         return getChunkAt(location.getBlockX() >> 4, location.getBlockZ() >> 4);
     }
@@ -1260,6 +1265,10 @@ public class GlowWorld implements World {
     @Override
     public Chunk getChunkAt(Block block) {
         return getChunkAt(block.getX() >> 4, block.getZ() >> 4);
+    }
+
+    public GlowChunk getChunk(GlowChunk.Key key) {
+        return chunkManager.getChunk(key);
     }
 
     @Override

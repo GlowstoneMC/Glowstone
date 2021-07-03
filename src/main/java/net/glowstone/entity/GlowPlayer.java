@@ -1010,14 +1010,38 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * Process and send pending BlockChangeMessages.
      */
     private void processBlockChanges() {
+        for (Key key : knownChunks) {
+            GlowChunk chunk = world.getChunk(key);
+            if (chunk == null) {
+                return;
+            }
+            List<BlockChangeMessage> messages = chunk.getBlockChanges();
+            int size = messages.size();
+            if (size == 1) {
+                session.send(messages.get(0));
+            } else if (size > 1) {
+                session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), messages));
+            }
+        }
+        processPersonalBlockChanges();
+        // now send post-block-change messages
+        List<Message> postMessages = new ArrayList<>(afterBlockChanges);
+        afterBlockChanges.clear();
+        postMessages.forEach(session::send);
+    }
+
+    /**
+     * Process and send packets sent specifically to us.
+     */
+    private void processPersonalBlockChanges() {
+        if (blockChanges.isEmpty()) {
+            return;
+        }
         // separate messages by chunk
         // inner map is used to only send one entry for same coordinates
         Map<Key, Map<BlockVector, BlockChangeMessage>> chunks = new HashMap<>();
-        while (true) {
-            BlockChangeMessage message = blockChanges.poll();
-            if (message == null) {
-                break;
-            }
+        BlockChangeMessage message;
+        while ((message = blockChanges.poll()) != null) {
             Key key = GlowChunk.Key.of(message.getX() >> 4, message.getZ() >> 4);
             if (canSeeChunk(key)) {
                 Map<BlockVector, BlockChangeMessage> map = chunks
@@ -1037,10 +1061,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), value));
             }
         }
-        // now send post-block-change messages
-        List<Message> postMessages = new ArrayList<>(afterBlockChanges);
-        afterBlockChanges.clear();
-        postMessages.forEach(session::send);
     }
 
     /**
@@ -1114,7 +1134,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         boolean skylight = world.getEnvironment() == Environment.NORMAL;
         ByteBufAllocator alloc = session.getChannel() == null ? null : session.getChannel().alloc();
 
-        newChunks.stream().map(key -> world.getChunkAt(key.getX(), key.getZ()).toMessage(skylight, true, alloc))
+        newChunks.stream().map(key -> world.getChunk(key).toMessage(skylight, true, alloc))
                 .forEach(session::send);
 
         // send visible block entity data
@@ -3542,8 +3562,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void pulseDigging() {
-        ++diggingTicks;
-        if (diggingTicks <= totalDiggingTicks) {
+        if (++diggingTicks <= totalDiggingTicks) {
             // diggingTicks starts at 1 and progresses to totalDiggingTicks, but animation stages
             // are 0 through 9, so subtract 1 from the current tick
             int stage = (int) (10.0 * ((double) (diggingTicks - 1)) / totalDiggingTicks);
@@ -3620,11 +3639,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // Break the block
         digging.breakNaturally(tool);
         // Send block status to clients
-        Location dugLocation = digging.getLocation();
-        // OK to use sequential stream here, because sendBlockChange is async
-        world.getRawPlayers().stream()
-                .filter(player -> player.canSeeChunk(GlowChunk.Key.to(dugLocation.getChunk())))
-                .forEach(player -> player.sendBlockChange(dugLocation, Material.AIR, (byte) 0));
+        int blockX = digging.getX();
+        int blockY = digging.getY();
+        int blockZ = digging.getZ();
+        // Tell the whole chunk
+        world.broadcastBlockChangeInRange(
+                Key.of(blockX >> 4, blockZ >> 4),
+                new BlockChangeMessage(blockX, blockY, blockZ, Material.AIR.getId(), 0));
         setDigging(null);
     }
 

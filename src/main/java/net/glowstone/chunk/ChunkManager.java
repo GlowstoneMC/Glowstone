@@ -3,6 +3,7 @@ package net.glowstone.chunk;
 import com.google.common.collect.ConcurrentHashMultiset;
 import com.google.common.collect.Multiset;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -92,10 +93,20 @@ public final class ChunkManager {
      */
     public GlowChunk getChunk(int x, int z) {
         Key key = GlowChunk.Key.of(x, z);
+        return getChunk(key);
+    }
+
+    /**
+     * Gets a chunk object from its key, which might not yet be loaded.
+     *
+     * @param key The x, y key of the chunk.
+     * @return The chunk.
+     */
+    public GlowChunk getChunk(GlowChunk.Key key) {
         GlowChunk chunk = chunks.get(key);
         if (chunk == null) {
             // only create chunk if it's not in the map already
-            chunk = new GlowChunk(world, x, z);
+            chunk = new GlowChunk(world, key.getX(), key.getZ());
             chunks.put(key, chunk);
         }
         return chunk;
@@ -421,6 +432,13 @@ public final class ChunkManager {
 
     public int[] getBiomeGrid(int x, int z, int sizeX, int sizeZ) {
         return biomeGrid[0].generateValues(x, z, sizeX, sizeZ);
+    }
+
+    public void clearChunkBlockChanges() {
+        Collection<GlowChunk> chunkList = chunks.values();
+        for (GlowChunk chunk : chunkList) {
+            chunk.clearBlockChanges();
+        }
     }
 
     /**
