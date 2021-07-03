@@ -11,6 +11,7 @@ import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -1111,8 +1112,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         });
 
         boolean skylight = world.getEnvironment() == Environment.NORMAL;
+        ByteBufAllocator alloc = session.getChannel().alloc();
 
-        newChunks.stream().map(key -> world.getChunkAt(key.getX(), key.getZ()).toMessage(skylight))
+        newChunks.stream().map(key -> world.getChunkAt(key.getX(), key.getZ()).toMessage(skylight, true, alloc))
                 .forEach(session::send);
 
         // send visible block entity data
