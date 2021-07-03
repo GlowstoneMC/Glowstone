@@ -97,7 +97,7 @@ public class Lake implements TerrainObject {
                             type = Material.ICE;
                         }
                     }
-                    block.setType(type);
+                    block.setType(type, false);
                 }
             }
         }
@@ -113,7 +113,7 @@ public class Lake implements TerrainObject {
                     if (block.getType() == Material.DIRT
                             && !blockAbove.getType().isOccluding()
                             && blockAbove.getLightLevel() > 0) {
-                        block.setType(mycelBiome ? Material.MYCEL : Material.GRASS);
+                        block.setType(mycelBiome ? Material.MYCEL : Material.GRASS, false);
                     }
                 }
             }
