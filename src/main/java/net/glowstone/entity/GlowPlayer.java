@@ -1112,7 +1112,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         });
 
         boolean skylight = world.getEnvironment() == Environment.NORMAL;
-        ByteBufAllocator alloc = session.getChannel().alloc();
+        ByteBufAllocator alloc = session.getChannel() == null ? null : session.getChannel().alloc();
 
         newChunks.stream().map(key -> world.getChunkAt(key.getX(), key.getZ()).toMessage(skylight, true, alloc))
                 .forEach(session::send);
