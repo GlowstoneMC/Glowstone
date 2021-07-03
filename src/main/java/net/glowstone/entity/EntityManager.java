@@ -5,6 +5,8 @@ import static com.google.common.collect.Multimaps.newSetMultimap;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,8 +39,7 @@ public class EntityManager implements Iterable<GlowEntity> {
      * A map of entity types to a set containing all entities of that type.
      */
     private final Multimap<Class<? extends GlowEntity>, GlowEntity> groupedEntities
-            = newSetMultimap(new ConcurrentHashMap<>(),
-                    Sets::newConcurrentHashSet);
+            = Multimaps.synchronizedMultimap(MultimapBuilder.hashKeys().hashSetValues().build());
 
     /**
      * Returns all entities with the specified type.
@@ -49,7 +50,7 @@ public class EntityManager implements Iterable<GlowEntity> {
      */
     @SuppressWarnings("unchecked")
     public <T extends GlowEntity> Collection<T> getAll(Class<T> type) {
-        if (GlowEntity.class.isAssignableFrom(type)) {
+        if (GlowEntity.class.isAssignableFrom(type) && groupedEntities.containsKey(type)) {
             return (Collection<T>) groupedEntities.get(type);
         } else {
             return Collections.emptyList();
