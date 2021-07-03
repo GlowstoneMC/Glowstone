@@ -4,6 +4,7 @@ import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 
 public class OreVein implements TerrainObject {
@@ -61,7 +62,10 @@ public class OreVein implements TerrainObject {
                         Block block = world.getBlockAt(x, y, z);
                         if (squaredNormalizedX + squaredNormalizedY + squaredNormalizedZ < 1
                                 && block.getType() == targetType) {
-                            block.setTypeIdAndData(type.getId(), data.getData(), false);
+                            BlockState state = block.getState();
+                            state.setType(type);
+                            state.setData(data);
+                            state.update(true, false);
                             succeeded = true;
                         }
                     }
