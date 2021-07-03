@@ -122,7 +122,7 @@ public class GlowChunk implements Chunk {
     /**
      * A list of BlockChangeMessages to be sent to all players in this chunk.
      */
-    private final List<BlockChangeMessage> blockChanges = Collections.synchronizedList(new ArrayList<>());
+    private final List<BlockChangeMessage> blockChanges = new ArrayList<>();
 
     /**
      * Creates a new chunk with a specified X and Z coordinate.
