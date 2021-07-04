@@ -153,6 +153,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         entity.setDigging(null);
         entity.setLevel(1);
         when(session.getPlayer()).thenReturn(entity);
+        when(session.getChannel()).thenReturn(null);
         when(world.getRawPlayers()).thenReturn(Collections.singletonList(entity));
         EventFactory.setInstance(eventFactory);
         when(eventFactory.callEvent(any(Event.class))).thenAnswer(returnsFirstArg());

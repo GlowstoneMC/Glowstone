@@ -1,13 +1,14 @@
 package net.glowstone.chunk;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -28,6 +29,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.nbt.CompoundTag;
@@ -90,7 +92,7 @@ public class GlowChunk implements Chunk {
     /**
      * The block entities that reside in this chunk.
      */
-    private final HashMap<Integer, BlockEntity> blockEntities = new HashMap<>();
+    private final Int2ObjectOpenHashMap<BlockEntity> blockEntities = new Int2ObjectOpenHashMap<>(32, 0.5f);
     /**
      * The entities that reside in this chunk.
      */
@@ -126,6 +128,11 @@ public class GlowChunk implements Chunk {
     @Getter
     @Setter
     private long inhabitedTime;
+
+    /**
+     * A list of BlockChangeMessages to be sent to all players in this chunk.
+     */
+    private final List<BlockChangeMessage> blockChanges = new ArrayList<>();
 
     /**
      * Creates a new chunk with a specified X and Z coordinate.
@@ -914,6 +921,23 @@ public class GlowChunk implements Chunk {
     }
 
     /**
+     * Queues block change notification to all players in this chunk
+     *
+     * @param message The block change message to broadcast
+     */
+    public void broadcastBlockChange(BlockChangeMessage message) {
+        blockChanges.add(message);
+    }
+
+    public List<BlockChangeMessage> getBlockChanges() {
+        return new ArrayList<>(blockChanges);
+    }
+
+    void clearBlockChanges() {
+        blockChanges.clear();
+    }
+
+    /**
      * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream this entire
      * chunk to them.
      *
@@ -945,6 +969,10 @@ public class GlowChunk implements Chunk {
      * @return The {@link ChunkDataMessage}.
      */
     public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk) {
+        return toMessage(skylight, entireChunk, null);
+    }
+
+    public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk, ByteBufAllocator alloc) {
         load();
         int sectionBitmask = 0;
 
@@ -965,7 +993,7 @@ public class GlowChunk implements Chunk {
             }
         }
 
-        ByteBuf buf = Unpooled.buffer();
+        ByteBuf buf = alloc == null ? Unpooled.buffer() : alloc.buffer();
 
         if (sections != null) {
             // get the list of sections
@@ -1042,7 +1070,21 @@ public class GlowChunk implements Chunk {
 
         public static Key of(int x, int z) {
             long id = mapCode(x, z);
-            return keys.computeIfAbsent(id, l -> new Key(x, z));
+            Key v;
+            if ((v = keys.get(id)) == null) {
+                v = new Key(x, z);
+                keys.put(id, v);
+            }
+            return v;
+        }
+
+        public static Key of(long id) {
+            Key v;
+            if ((v = keys.get(id)) == null) {
+                v = new Key((int) id, (int) (id >> 32));
+                keys.put(id, v);
+            }
+            return v;
         }
 
         public static Key to(Chunk chunk) {
