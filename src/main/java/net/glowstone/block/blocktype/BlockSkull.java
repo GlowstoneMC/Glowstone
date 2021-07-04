@@ -1,10 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import static org.bukkit.Material.SKULL;
-import static org.bukkit.Material.SOUL_SAND;
-
-import java.util.Arrays;
-import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
@@ -22,6 +17,12 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Skull;
 import org.bukkit.util.Vector;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.bukkit.Material.SKULL;
+import static org.bukkit.Material.SOUL_SAND;
 
 public class BlockSkull extends BlockType {
 

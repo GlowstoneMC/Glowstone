@@ -1,11 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import static net.glowstone.TestUtils.checkInventory;
-import static net.glowstone.TestUtils.itemTypeMatcher;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.powermock.api.mockito.PowerMockito.when;
-
 import net.glowstone.command.CommandTestWithFakePlayers;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.GlowPlayerInventory;
@@ -15,6 +9,12 @@ import org.bukkit.inventory.ItemStack;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import static net.glowstone.TestUtils.checkInventory;
+import static net.glowstone.TestUtils.itemTypeMatcher;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 public class ClearCommandTest extends CommandTestWithFakePlayers<ClearCommand> {
     private GlowPlayerInventory inventory;

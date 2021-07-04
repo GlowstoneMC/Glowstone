@@ -1,6 +1,5 @@
 package net.glowstone.entity.meta;
 
-import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.util.TextMessage;
@@ -8,6 +7,8 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.EulerAngle;
+
+import java.util.UUID;
 
 /**
  * The types of values that entity metadata can contain.

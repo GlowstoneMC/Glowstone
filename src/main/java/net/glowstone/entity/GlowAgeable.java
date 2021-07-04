@@ -1,7 +1,6 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -21,6 +20,8 @@ import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 /**
  * Represents a creature that ages, such as a sheep.

@@ -1,7 +1,8 @@
 package net.glowstone.entity.passive;
 
-import java.util.function.Function;
 import org.bukkit.Location;
+
+import java.util.function.Function;
 
 public abstract class GlowChestedHorseTest<T extends GlowChestedHorse> extends GlowAbstractHorseTest<T> {
     protected GlowChestedHorseTest(

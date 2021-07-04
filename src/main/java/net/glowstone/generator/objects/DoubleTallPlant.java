@@ -1,6 +1,5 @@
 package net.glowstone.generator.objects;
 
-import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -8,6 +7,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.types.DoublePlantSpecies;
+
+import java.util.Random;
 
 public class DoubleTallPlant implements TerrainObject {
 

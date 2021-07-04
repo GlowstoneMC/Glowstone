@@ -1,6 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Random;
 import net.glowstone.generator.structures.GlowDungeon;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.BlockStateDelegate;
@@ -10,6 +9,8 @@ import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.util.Vector;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
+
+import java.util.Random;
 
 /**
  * A BlockPopulator that places dungeons around the map.

@@ -4,9 +4,6 @@ import com.flowpowered.network.MessageHandler;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.inventory.GlowAnvilInventory;
 import net.glowstone.inventory.GlowBeaconInventory;
@@ -19,6 +16,10 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 
 public final class PluginMessageHandler implements MessageHandler<GlowSession, PluginMessage> {
 

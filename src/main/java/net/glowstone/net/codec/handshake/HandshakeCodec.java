@@ -3,8 +3,9 @@ package net.glowstone.net.codec.handshake;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.message.handshake.HandshakeMessage;
+
+import java.io.IOException;
 
 public final class HandshakeCodec implements Codec<HandshakeMessage> {
 

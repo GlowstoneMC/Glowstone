@@ -1,8 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -20,6 +17,10 @@ import org.bukkit.material.Diode;
 import org.bukkit.material.Lever;
 import org.bukkit.material.Stairs;
 import org.bukkit.material.Step;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A redstone wire block.

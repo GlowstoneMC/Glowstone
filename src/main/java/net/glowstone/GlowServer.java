@@ -1,7 +1,5 @@
 package net.glowstone;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
@@ -15,42 +13,6 @@ import com.tobedevoured.naether.NaetherException;
 import com.tobedevoured.naether.api.Naether;
 import com.tobedevoured.naether.impl.NaetherImpl;
 import com.tobedevoured.naether.util.RepoBuilder;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.security.KeyPair;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
@@ -226,9 +188,47 @@ import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
 import org.jetbrains.annotations.NonNls;
 
+import javax.annotation.Nullable;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.security.KeyPair;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * The core class of the Glowstone server.
- *
  *
  * @author Graham Edgecombe
  */
@@ -548,13 +548,13 @@ public class GlowServer implements Server {
                 return null;
             } else if ("--version".equals(opt) || "-v".equals(opt)) {
                 System.out.println(ConsoleMessages.Info.Version.GLOWSTONE.get(
-                    GlowServer.class.getPackage().getImplementationVersion()
+                        GlowServer.class.getPackage().getImplementationVersion()
                 ));
                 System.out.println(ConsoleMessages.Info.Version.BUKKIT.get(
-                    GlowServer.class.getPackage().getSpecificationVersion()
+                        GlowServer.class.getPackage().getSpecificationVersion()
                 ));
                 System.out.println(ConsoleMessages.Info.Version.MINECRAFT_CLIENT.get(
-                    GAME_VERSION, PROTOCOL_VERSION
+                        GAME_VERSION, PROTOCOL_VERSION
                 ));
                 return null;
             } else if ("--generate-config".equals(opt)) {
@@ -673,7 +673,7 @@ public class GlowServer implements Server {
                         if (device.getType() == CLDevice.Type.GPU) {
                             int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
                             ConsoleMessages.Info.Opencl.FOUND_DEVICE.log(
-                                device, flops
+                                    device, flops
                             );
                             if (device.getVendor().contains("Intel")) { // NON-NLS
                                 if (flops > maxIntelFlops) {
@@ -685,7 +685,7 @@ public class GlowServer implements Server {
                                             .compareTo(platform.getVersion()) < 0) {
                                         maxIntelFlops = flops;
                                         ConsoleMessages.Info.Opencl
-                                            .BEST_VERSION_TIEBREAKER.log(platform);
+                                                .BEST_VERSION_TIEBREAKER.log(platform);
                                         bestIntelPlatform = platform;
                                     }
                                 }
@@ -699,7 +699,7 @@ public class GlowServer implements Server {
                                             .compareTo(platform.getVersion()) < 0) {
                                         maxGpuFlops = flops;
                                         ConsoleMessages.Info.Opencl
-                                            .BEST_VERSION_TIEBREAKER.log(platform);
+                                                .BEST_VERSION_TIEBREAKER.log(platform);
                                         bestPlatform = platform;
                                     }
                                 }
@@ -716,7 +716,7 @@ public class GlowServer implements Server {
                                         .compareTo(platform.getVersion()) < 0) {
                                     maxCpuFlops = flops;
                                     ConsoleMessages.Info.Opencl.BEST_VERSION_TIEBREAKER
-                                        .log(platform);
+                                            .log(platform);
                                     bestCpuPlatform = platform;
                                 }
                             }
@@ -747,7 +747,7 @@ public class GlowServer implements Server {
                 isGraphicsComputeAvailable = false;
                 ConsoleMessages.Info.Opencl.NO_DEVICE.log();
                 ConsoleMessages.Info.Opencl.REQUIRED_VERSION.log(
-                    openClMajor, openClMinor
+                        openClMajor, openClMinor
                 );
                 ConsoleMessages.Info.Opencl.REQUIRED_EXTENSIONS.log();
             } else {
@@ -842,7 +842,7 @@ public class GlowServer implements Server {
                 Files.walkFileTree(srcPath, new FileVisitor<Path>() {
                     @Override
                     public FileVisitResult preVisitDirectory(Path dir,
-                            BasicFileAttributes attrs) throws IOException {
+                                                             BasicFileAttributes attrs) throws IOException {
                         Path target = destPath.resolve(srcPath.relativize(dir));
                         if (!Files.exists(target)) {
                             Files.createDirectory(target);
@@ -852,7 +852,7 @@ public class GlowServer implements Server {
 
                     @Override
                     public FileVisitResult visitFile(Path file,
-                            BasicFileAttributes attrs) throws IOException {
+                                                     BasicFileAttributes attrs) throws IOException {
                         Files.copy(file, destPath.resolve(srcPath
                                 .relativize(file)), StandardCopyOption.COPY_ATTRIBUTES);
                         return FileVisitResult.CONTINUE;
@@ -860,16 +860,16 @@ public class GlowServer implements Server {
 
                     @Override
                     public FileVisitResult visitFileFailed(Path file,
-                            IOException exc) throws IOException {
+                                                           IOException exc) throws IOException {
                         ConsoleMessages.Error.Import.WITH_MESSAGE.log(
-                            exc, srcPath.relativize(file)
+                                exc, srcPath.relativize(file)
                         );
                         return FileVisitResult.CONTINUE;
                     }
 
                     @Override
                     public FileVisitResult postVisitDirectory(Path dir,
-                            IOException exc) throws IOException {
+                                                              IOException exc) throws IOException {
                         return FileVisitResult.CONTINUE;
                     }
                 });
@@ -1071,22 +1071,22 @@ public class GlowServer implements Server {
         Map<LibraryKey, Library> bundleLibs = bundle.libraries;
 
         ListMultimap<LibraryKey, Library> configLibs = config.getMapList(Key.LIBRARIES_LIST)
-            .stream()
-            .map(Library::fromConfigMap)
-            .filter(library -> {
-                if (bundleLibs.containsKey(library.getLibraryKey())) {
-                    logger.log(Level.WARNING, String.format(
-                        "Library '%s' is already defined as part of bundle '%s'. This entry within"
-                            + " the 'libraries' config section will be ignored.",
-                        library.getLibraryKey().toString(),
-                        bundleString
-                    ));
-                    return false;
-                }
-                return true;
-            })
-            .collect(Multimaps.toMultimap(Library::getLibraryKey, Function.identity(),
-                MultimapBuilder.hashKeys().arrayListValues()::build));
+                .stream()
+                .map(Library::fromConfigMap)
+                .filter(library -> {
+                    if (bundleLibs.containsKey(library.getLibraryKey())) {
+                        logger.log(Level.WARNING, String.format(
+                                "Library '%s' is already defined as part of bundle '%s'. This entry within"
+                                        + " the 'libraries' config section will be ignored.",
+                                library.getLibraryKey().toString(),
+                                bundleString
+                        ));
+                        return false;
+                    }
+                    return true;
+                })
+                .collect(Multimaps.toMultimap(Library::getLibraryKey, Function.identity(),
+                        MultimapBuilder.hashKeys().arrayListValues()::build));
 
         Set<String> conflicts = new HashSet<>();
         Set<String> duplicateLibs = new HashSet<>();
@@ -1103,17 +1103,17 @@ public class GlowServer implements Server {
                     conflicts.add(entry.getKey().toString());
                 } else if (!library.isExcludeDependencies()) {
                     Naether naether = clients.computeIfAbsent(
-                        library.getRepository(),
-                        k -> createNaetherWithRepository(k, libraryFolder)
+                            library.getRepository(),
+                            k -> createNaetherWithRepository(k, libraryFolder)
                     );
                     if (naether != null) {
                         naether.addDependency(
-                            String.format(
-                                "%s:%s:jar:%s", // NON-NLS
-                                library.getGroupId(),
-                                library.getArtifactId(),
-                                library.getVersion()
-                            )
+                                String.format(
+                                        "%s:%s:jar:%s", // NON-NLS
+                                        library.getGroupId(),
+                                        library.getArtifactId(),
+                                        library.getVersion()
+                                )
                         );
                     }
                 }
@@ -1123,19 +1123,19 @@ public class GlowServer implements Server {
         if (!conflicts.isEmpty() || !duplicateLibs.isEmpty()) {
             if (!conflicts.isEmpty()) {
                 String joinedConflicts = conflicts.stream()
-                    .collect(Collectors.joining("', '", "['", "']"));
+                        .collect(Collectors.joining("', '", "['", "']"));
                 logger.log(Level.SEVERE, String.format(
-                    "Libraries %s conflict with libraries built into this JAR file. Please fix"
-                        + " this issue and restart the server.",
-                    joinedConflicts
+                        "Libraries %s conflict with libraries built into this JAR file. Please fix"
+                                + " this issue and restart the server.",
+                        joinedConflicts
                 ));
             }
             if (!duplicateLibs.isEmpty()) {
                 String joinedDuplicates = duplicateLibs.stream()
-                    .collect(Collectors.joining("', '", "['", "']"));
+                        .collect(Collectors.joining("', '", "['", "']"));
                 logger.log(Level.SEVERE, String.format(
-                    "Libraries %s are defined multiple times in the 'libraries' config section.",
-                    joinedDuplicates
+                        "Libraries %s are defined multiple times in the 'libraries' config section.",
+                        joinedDuplicates
                 ));
             }
             System.exit(1);
@@ -1147,13 +1147,13 @@ public class GlowServer implements Server {
                     try {
                         entry.getValue().resolveDependencies(false);
                         return entry.getValue().getDependenciesNotation().stream()
-                            .map(dependency -> {
-                                // same format as above, {groupId}:{artifactId}:jar:{version}
-                                String[] expanded = dependency.split(":");
-                                // TODO: populate the checksum fields if possible
-                                return new Library(expanded[0], expanded[1], expanded[3],
-                                    entry.getKey());
-                            });
+                                .map(dependency -> {
+                                    // same format as above, {groupId}:{artifactId}:jar:{version}
+                                    String[] expanded = dependency.split(":");
+                                    // TODO: populate the checksum fields if possible
+                                    return new Library(expanded[0], expanded[1], expanded[3],
+                                            entry.getKey());
+                                });
                     } catch (NaetherException e) {
                         logger.log(Level.WARNING, "Unable to resolve library dependencies. Falling"
                                 + " back to explicitly defined dependencies only.", e);
@@ -1164,14 +1164,14 @@ public class GlowServer implements Server {
                         && !serverContainsLibrary(library)
                         && !blacklistedRuntimeLibs.contains(library.getLibraryKey()))
                 .collect(Collectors.toMap(
-                    Library::getLibraryKey,
-                    Function.identity(),
-                    (library1, library2) -> library1.compareTo(library2) > 0
-                        ? library1 : library2
+                        Library::getLibraryKey,
+                        Function.identity(),
+                        (library1, library2) -> library1.compareTo(library2) > 0
+                                ? library1 : library2
                 ));
 
         Set<Library> libraries = new HashSet<>(
-            bundleLibs.size() + configLibs.size() + dependencyLibs.size()
+                bundleLibs.size() + configLibs.size() + dependencyLibs.size()
         );
         libraries.addAll(bundleLibs.values());
         libraries.addAll(configLibs.values());
@@ -1269,7 +1269,7 @@ public class GlowServer implements Server {
                 plugin.onLoad();
             } catch (Exception ex) {
                 ConsoleMessages.Error.Plugin.LOADING.log(
-                    ex, plugin.getDescription().getFullName()
+                        ex, plugin.getDescription().getFullName()
                 );
             }
         }
@@ -1355,7 +1355,7 @@ public class GlowServer implements Server {
                         pluginManager.addPermission(perm);
                     } catch (IllegalArgumentException ex) {
                         ConsoleMessages.Warn.Plugin.PERMISSION_DUPLICATE.log(
-                            ex, plugin.getDescription().getFullName(), perm.getName()
+                                ex, plugin.getDescription().getFullName(), perm.getName()
                         );
                     }
                 }
@@ -1364,7 +1364,7 @@ public class GlowServer implements Server {
                     pluginManager.enablePlugin(plugin);
                 } catch (Throwable ex) {
                     ConsoleMessages.Error.Plugin.LOADING.log(
-                        ex, plugin.getDescription().getFullName()
+                            ex, plugin.getDescription().getFullName()
                     );
                 }
             }
@@ -1407,7 +1407,7 @@ public class GlowServer implements Server {
                     pluginManager.addPermission(perm);
                 } catch (IllegalArgumentException ex) {
                     ConsoleMessages.Warn.Permission.DUPLICATE.log(
-                        ex, perm.getName()
+                            ex, perm.getName()
                     );
                 }
             }
@@ -1494,7 +1494,7 @@ public class GlowServer implements Server {
      * @return a resulting {@link AdvancementsMessage} packet
      */
     public AdvancementsMessage createAdvancementsMessage(boolean clear, List<NamespacedKey> remove,
-            Player player) {
+                                                         Player player) {
         return createAdvancementsMessage(advancements, clear, remove, player);
     }
 
@@ -1861,8 +1861,8 @@ public class GlowServer implements Server {
     /**
      * Creates a player profile.
      *
-     * @param name The player's name.
-     * @param uuid The player's UUID; may be null.
+     * @param name        The player's name.
+     * @param uuid        The player's UUID; may be null.
      * @param asyncLookup If true and {@code uuid} is null, the UUID is looked up asynchronously.
      * @return The player's profile.
      */
@@ -1917,7 +1917,7 @@ public class GlowServer implements Server {
 
     @Override
     public boolean dispatchCommand(CommandSender sender,
-            String commandLine) throws CommandException {
+                                   String commandLine) throws CommandException {
         if (commandMap.dispatch(sender, commandLine)) {
             return true;
         }
@@ -2149,7 +2149,7 @@ public class GlowServer implements Server {
             }
         }
         BroadcastMessageEvent event = EventFactory.getInstance()
-            .callEvent(new BroadcastMessageEvent(message, sent));
+                .callEvent(new BroadcastMessageEvent(message, sent));
         if (event.isCancelled()) {
             return 0;
         }
@@ -2789,8 +2789,7 @@ public class GlowServer implements Server {
     /**
      * Gets whether the server is OpenCL-capable and allowed to use graphics compute functionality.
      *
-     * @return true if the server is capable and allowed to use graphics compute functionality,
-     *     false otherwise.
+     * @return true if the server is capable and allowed to use graphics compute functionality, false otherwise.
      */
     public boolean doesUseGraphicsCompute() {
         return isGraphicsComputeAvailable && config.getBoolean(Key.GRAPHICS_COMPUTE);

@@ -1,5 +1,10 @@
 package net.glowstone.generator.biomegrid;
 
+import net.glowstone.constants.GlowBiome;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.bukkit.block.Biome.BIRCH_FOREST;
 import static org.bukkit.block.Biome.BIRCH_FOREST_HILLS;
 import static org.bukkit.block.Biome.DEEP_OCEAN;
@@ -27,10 +32,6 @@ import static org.bukkit.block.Biome.TAIGA;
 import static org.bukkit.block.Biome.TAIGA_COLD;
 import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
 import static org.bukkit.block.Biome.TAIGA_HILLS;
-
-import java.util.HashMap;
-import java.util.Map;
-import net.glowstone.constants.GlowBiome;
 
 public class BiomeVariationMapLayer extends MapLayer {
 

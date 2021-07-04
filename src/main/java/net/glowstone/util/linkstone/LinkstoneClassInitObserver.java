@@ -1,9 +1,5 @@
 package net.glowstone.util.linkstone;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.WeakHashMap;
 import net.glowstone.linkstone.annotations.LBox;
 import net.glowstone.linkstone.annotations.LField;
 import net.glowstone.linkstone.runtime.inithook.ClassInitHook;
@@ -16,6 +12,11 @@ import net.glowstone.linkstone.runtime.reflectionredirect.field.RedirectFieldAcc
 import net.glowstone.linkstone.runtime.reflectionredirect.method.BoxingMethodAccessor;
 import net.glowstone.linkstone.runtime.reflectionredirect.method.LMethodAccessor;
 import net.glowstone.linkstone.runtime.reflectionredirect.method.MethodAccessorUtility;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Utility that redirects reflective uses of annotated fields to their getters and setters.

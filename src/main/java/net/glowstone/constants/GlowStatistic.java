@@ -1,5 +1,17 @@
 package net.glowstone.constants;
 
+import org.bukkit.Material;
+import org.bukkit.Statistic;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Monster;
+import org.jetbrains.annotations.NonNls;
+
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -13,17 +25,6 @@ import static org.bukkit.Statistic.PICKUP;
 import static org.bukkit.Statistic.PLAY_ONE_TICK;
 import static org.bukkit.Statistic.USE_ITEM;
 import static org.bukkit.Statistic.values;
-
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import org.bukkit.Material;
-import org.bukkit.Statistic;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Monster;
-import org.jetbrains.annotations.NonNls;
 
 /**
  * Name mappings for statistics.

@@ -1,10 +1,6 @@
 package net.glowstone.net;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
@@ -13,6 +9,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Container for proxy (e.g. BungeeCord) player data spoofing.

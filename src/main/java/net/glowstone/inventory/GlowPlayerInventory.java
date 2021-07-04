@@ -1,7 +1,5 @@
 package net.glowstone.inventory;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
@@ -22,6 +20,8 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * An Inventory representing the items a player is holding.

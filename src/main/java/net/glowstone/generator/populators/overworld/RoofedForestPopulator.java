@@ -1,8 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.BirchTree;
 import net.glowstone.generator.objects.trees.BrownMushroomTree;
@@ -10,6 +7,10 @@ import net.glowstone.generator.objects.trees.DarkOakTree;
 import net.glowstone.generator.objects.trees.GenericTree;
 import net.glowstone.generator.objects.trees.RedMushroomTree;
 import org.bukkit.block.Biome;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class RoofedForestPopulator extends ForestPopulator {
 

@@ -49,7 +49,7 @@ public class ItemFlintAndSteel extends ItemTool {
         }
     }
 
-    private void fireTnt(GlowBlock tnt,GlowPlayer player) {
+    private void fireTnt(GlowBlock tnt, GlowPlayer player) {
         BlockTnt.igniteBlock(tnt, false, player);
     }
 

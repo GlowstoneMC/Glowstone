@@ -1,5 +1,10 @@
 package net.glowstone.constants;
 
+import com.google.common.collect.ImmutableMap;
+import org.bukkit.Achievement;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.Nullable;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.bukkit.Achievement.ACQUIRE_IRON;
 import static org.bukkit.Achievement.BAKE_CAKE;
@@ -36,11 +41,6 @@ import static org.bukkit.Achievement.SNIPE_SKELETON;
 import static org.bukkit.Achievement.SPAWN_WITHER;
 import static org.bukkit.Achievement.THE_END;
 import static org.bukkit.Achievement.values;
-
-import com.google.common.collect.ImmutableMap;
-import org.bukkit.Achievement;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Name mappings for Bukkit Achievements.

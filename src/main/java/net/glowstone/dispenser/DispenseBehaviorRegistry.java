@@ -1,8 +1,9 @@
 package net.glowstone.dispenser;
 
+import org.bukkit.Material;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.bukkit.Material;
 
 public class DispenseBehaviorRegistry {
 

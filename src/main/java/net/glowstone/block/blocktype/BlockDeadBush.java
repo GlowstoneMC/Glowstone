@@ -1,14 +1,15 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockDeadBush extends BlockNeedsAttached {
 
@@ -43,6 +44,6 @@ public class BlockDeadBush extends BlockNeedsAttached {
         // Dead bush drops 0-2 sticks when broken without shears
         ThreadLocalRandom random = ThreadLocalRandom.current();
         return Collections.unmodifiableList(Arrays.asList(
-            new ItemStack(Material.STICK,random.nextInt(3))));
+            new ItemStack(Material.STICK, random.nextInt(3))));
     }
 }

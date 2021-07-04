@@ -1,5 +1,10 @@
 package net.glowstone.constants;
 
+import net.glowstone.i18n.ConsoleMessages;
+import org.bukkit.block.Biome;
+
+import java.util.Arrays;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.bukkit.block.Biome.BEACHES;
 import static org.bukkit.block.Biome.BIRCH_FOREST;
@@ -64,10 +69,6 @@ import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
 import static org.bukkit.block.Biome.TAIGA_HILLS;
 import static org.bukkit.block.Biome.VOID;
 import static org.bukkit.block.Biome.values;
-
-import java.util.Arrays;
-import net.glowstone.i18n.ConsoleMessages;
-import org.bukkit.block.Biome;
 
 /**
  * Mappings for Biome id values.

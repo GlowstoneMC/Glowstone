@@ -1,7 +1,8 @@
 package net.glowstone.io;
 
-import java.util.List;
 import net.glowstone.data.CommandFunction;
+
+import java.util.List;
 
 public interface FunctionIoService {
 

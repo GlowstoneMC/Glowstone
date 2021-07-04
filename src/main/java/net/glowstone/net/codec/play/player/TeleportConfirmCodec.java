@@ -3,8 +3,9 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.message.play.player.TeleportConfirmMessage;
+
+import java.io.IOException;
 
 public class TeleportConfirmCodec implements Codec<TeleportConfirmMessage> {
 

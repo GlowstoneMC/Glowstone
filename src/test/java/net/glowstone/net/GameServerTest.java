@@ -1,7 +1,17 @@
 package net.glowstone.net;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
+import net.glowstone.GlowServer;
+import net.glowstone.net.protocol.HandshakeProtocol;
+import net.glowstone.net.protocol.LoginProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
+import net.glowstone.net.protocol.ProtocolProvider;
+import net.glowstone.net.protocol.StatusProtocol;
+import net.glowstone.util.config.ServerConfig;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
+import org.mockito.Mock;
 
 import java.net.ConnectException;
 import java.net.InetAddress;
@@ -16,19 +26,9 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import net.glowstone.GlowServer;
-import net.glowstone.net.protocol.HandshakeProtocol;
-import net.glowstone.net.protocol.LoginProtocol;
-import net.glowstone.net.protocol.PlayProtocol;
-import net.glowstone.net.protocol.ProtocolProvider;
-import net.glowstone.net.protocol.StatusProtocol;
-import net.glowstone.util.config.ServerConfig;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Answers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class GameServerTest {
 

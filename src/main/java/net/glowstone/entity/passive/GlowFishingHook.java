@@ -1,13 +1,7 @@
 package net.glowstone.entity.passive;
 
-import static org.bukkit.event.player.PlayerFishEvent.State.CAUGHT_FISH;
-
 import com.flowpowered.network.Message;
 import com.google.common.base.Objects;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiomeClimate;
@@ -34,6 +28,13 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static org.bukkit.event.player.PlayerFishEvent.State.CAUGHT_FISH;
 
 public class GlowFishingHook extends GlowProjectile implements FishHook {
     public static final Message[] EMPTY_MESSAGE_ARRAY = new Message[0];

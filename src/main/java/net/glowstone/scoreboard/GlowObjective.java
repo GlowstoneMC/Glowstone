@@ -1,11 +1,5 @@
 package net.glowstone.scoreboard;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Set;
 import lombok.Getter;
 import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
 import org.bukkit.OfflinePlayer;
@@ -13,6 +7,13 @@ import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Scoreboard objective and associated data.

@@ -1,10 +1,11 @@
 package net.glowstone.generator.objects;
 
-import java.util.Arrays;
-import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+
+import java.util.Arrays;
+import java.util.Random;
 
 public class IceSpike implements TerrainObject {
 

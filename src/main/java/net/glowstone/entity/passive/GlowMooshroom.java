@@ -1,13 +1,14 @@
 package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
-import java.util.Set;
 import net.glowstone.entity.GlowAnimal;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.MushroomCow;
+
+import java.util.Set;
 
 public class GlowMooshroom extends GlowAnimal implements MushroomCow {
 

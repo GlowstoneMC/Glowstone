@@ -1,10 +1,10 @@
 package net.glowstone.constants;
 
-import static org.junit.Assert.assertThat;
-
 import org.bukkit.scoreboard.DisplaySlot;
 import org.hamcrest.number.OrderingComparison;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests for the {@link GlowDisplaySlot} class.

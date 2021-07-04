@@ -1,14 +1,15 @@
 package net.glowstone.inventory;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.Map;
 import lombok.Getter;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+
+import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowMetaLeatherArmor extends GlowMetaItem implements LeatherArmorMeta {
 

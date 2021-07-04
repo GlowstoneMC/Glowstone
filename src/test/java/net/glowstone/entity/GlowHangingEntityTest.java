@@ -1,7 +1,8 @@
 package net.glowstone.entity;
 
-import java.util.function.Function;
 import org.bukkit.Location;
+
+import java.util.function.Function;
 
 public abstract class GlowHangingEntityTest<T extends GlowHangingEntity> extends GlowEntityTest<T> {
     protected GlowHangingEntityTest(

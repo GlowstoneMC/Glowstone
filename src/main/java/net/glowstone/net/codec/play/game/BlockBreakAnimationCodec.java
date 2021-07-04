@@ -3,10 +3,11 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.BlockBreakAnimationMessage;
 import org.bukkit.util.BlockVector;
+
+import java.io.IOException;
 
 public class BlockBreakAnimationCodec implements Codec<BlockBreakAnimationMessage> {
 

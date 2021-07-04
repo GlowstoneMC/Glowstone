@@ -1,5 +1,43 @@
 package net.glowstone.generator;
 
+import com.jogamp.opencl.CLBuffer;
+import com.jogamp.opencl.CLKernel;
+import com.jogamp.opencl.CLMemory;
+import com.jogamp.opencl.CLProgram;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
+import net.glowstone.ServerProvider;
+import net.glowstone.constants.GlowBiome;
+import net.glowstone.generator.ground.DirtAndStonePatchGroundGenerator;
+import net.glowstone.generator.ground.DirtPatchGroundGenerator;
+import net.glowstone.generator.ground.GravelPatchGroundGenerator;
+import net.glowstone.generator.ground.GroundGenerator;
+import net.glowstone.generator.ground.MesaGroundGenerator;
+import net.glowstone.generator.ground.MesaGroundGenerator.MesaType;
+import net.glowstone.generator.ground.MycelGroundGenerator;
+import net.glowstone.generator.ground.RockyGroundGenerator;
+import net.glowstone.generator.ground.SandyGroundGenerator;
+import net.glowstone.generator.ground.SnowyGroundGenerator;
+import net.glowstone.generator.ground.StonePatchGroundGenerator;
+import net.glowstone.generator.populators.OverworldPopulator;
+import net.glowstone.generator.populators.StructurePopulator;
+import net.glowstone.generator.populators.overworld.SnowPopulator;
+import net.glowstone.util.OpenCompute;
+import net.glowstone.util.noise.PerlinOctaveGenerator;
+import net.glowstone.util.noise.SimplexOctaveGenerator;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.WorldType;
+import org.bukkit.block.Biome;
+import org.bukkit.util.noise.OctaveGenerator;
+
+import java.nio.FloatBuffer;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Random;
+
 import static net.glowstone.GlowServer.getWorldConfig;
 import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_BIG_HILLS;
 import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_BIG_HILLS2;
@@ -114,43 +152,6 @@ import static org.bukkit.block.Biome.TAIGA;
 import static org.bukkit.block.Biome.TAIGA_COLD;
 import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
 import static org.bukkit.block.Biome.TAIGA_HILLS;
-
-import com.jogamp.opencl.CLBuffer;
-import com.jogamp.opencl.CLKernel;
-import com.jogamp.opencl.CLMemory;
-import com.jogamp.opencl.CLProgram;
-import java.nio.FloatBuffer;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Random;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
-import net.glowstone.ServerProvider;
-import net.glowstone.constants.GlowBiome;
-import net.glowstone.generator.ground.DirtAndStonePatchGroundGenerator;
-import net.glowstone.generator.ground.DirtPatchGroundGenerator;
-import net.glowstone.generator.ground.GravelPatchGroundGenerator;
-import net.glowstone.generator.ground.GroundGenerator;
-import net.glowstone.generator.ground.MesaGroundGenerator;
-import net.glowstone.generator.ground.MesaGroundGenerator.MesaType;
-import net.glowstone.generator.ground.MycelGroundGenerator;
-import net.glowstone.generator.ground.RockyGroundGenerator;
-import net.glowstone.generator.ground.SandyGroundGenerator;
-import net.glowstone.generator.ground.SnowyGroundGenerator;
-import net.glowstone.generator.ground.StonePatchGroundGenerator;
-import net.glowstone.generator.populators.OverworldPopulator;
-import net.glowstone.generator.populators.StructurePopulator;
-import net.glowstone.generator.populators.overworld.SnowPopulator;
-import net.glowstone.util.OpenCompute;
-import net.glowstone.util.noise.PerlinOctaveGenerator;
-import net.glowstone.util.noise.SimplexOctaveGenerator;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.WorldType;
-import org.bukkit.block.Biome;
-import org.bukkit.util.noise.OctaveGenerator;
 
 public class OverworldGenerator extends GlowChunkGenerator {
 

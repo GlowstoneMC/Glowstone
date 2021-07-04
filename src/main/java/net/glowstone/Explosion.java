@@ -1,13 +1,5 @@
 package net.glowstone;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.entity.GlowEntity;
@@ -33,6 +25,15 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public final class Explosion {
 
@@ -121,6 +122,7 @@ public final class Explosion {
 
     /**
      * Explodes, firing a {@link EntityExplodeEvent}, as long as its power is non-negligible.
+     *
      * @return false if the explosion was canceled by a plugin; true otherwise
      */
     public boolean explodeWithEvent() {

@@ -1,12 +1,13 @@
 package net.glowstone.inventory.crafting;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.material.Dye;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GlowChargeFadeMatcher extends ItemMatcher {
 

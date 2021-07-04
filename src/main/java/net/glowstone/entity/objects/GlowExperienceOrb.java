@@ -2,10 +2,6 @@ package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
@@ -19,6 +15,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
 

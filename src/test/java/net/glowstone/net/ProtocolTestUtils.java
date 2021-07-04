@@ -1,13 +1,14 @@
 package net.glowstone.net;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Utilities for helping with the protocol test.

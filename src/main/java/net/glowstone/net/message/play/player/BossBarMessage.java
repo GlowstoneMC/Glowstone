@@ -1,12 +1,13 @@
 package net.glowstone.net.message.play.player;
 
 import com.flowpowered.network.Message;
-import java.util.UUID;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.util.TextMessage;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
+
+import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor

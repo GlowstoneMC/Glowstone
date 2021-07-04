@@ -1,9 +1,6 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -29,6 +26,10 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
 
 // TODO: Implement movement and collision detection.
 public abstract class GlowMinecart extends GlowVehicle implements Minecart {

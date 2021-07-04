@@ -1,11 +1,12 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
-import java.util.List;
 import net.glowstone.ServerProvider;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+
+import java.util.Collections;
+import java.util.List;
 
 public class SetIdleTimeoutCommand extends GlowVanillaCommand {
 

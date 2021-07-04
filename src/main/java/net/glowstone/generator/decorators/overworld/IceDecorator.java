@@ -1,12 +1,13 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.Random;
 import net.glowstone.generator.objects.BlockPatch;
 import net.glowstone.generator.objects.IceSpike;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.Random;
 
 public class IceDecorator extends BlockPopulator {
 

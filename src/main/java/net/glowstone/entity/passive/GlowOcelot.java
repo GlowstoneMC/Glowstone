@@ -1,7 +1,6 @@
 package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
-import java.util.Set;
 import lombok.Getter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
@@ -10,6 +9,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ocelot;
+
+import java.util.Set;
 
 public class GlowOcelot extends GlowTameable implements Ocelot {
 

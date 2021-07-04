@@ -1,9 +1,5 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.function.BiFunction;
 import lombok.Data;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.trees.GenericTree;
@@ -11,6 +7,11 @@ import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.function.BiFunction;
 
 public class TreeDecorator extends BlockDecorator {
 

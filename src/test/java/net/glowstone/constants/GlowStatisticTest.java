@@ -1,13 +1,13 @@
 package net.glowstone.constants;
 
-import static org.junit.Assert.assertEquals;
-
 import net.glowstone.testutils.ServerShim;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class GlowStatisticTest {
 

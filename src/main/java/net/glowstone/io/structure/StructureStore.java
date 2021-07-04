@@ -1,8 +1,5 @@
 package net.glowstone.io.structure;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import lombok.Data;
 import net.glowstone.GlowWorld;
 import net.glowstone.generator.structures.GlowStructure;
@@ -11,6 +8,10 @@ import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NonNls;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * The base for structure store classes.

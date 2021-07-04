@@ -1,9 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
@@ -14,6 +10,11 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class FunctionCommand extends GlowVanillaCommand {
 

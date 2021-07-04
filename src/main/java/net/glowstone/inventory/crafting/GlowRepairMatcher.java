@@ -1,10 +1,11 @@
 package net.glowstone.inventory.crafting;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GlowRepairMatcher extends ItemMatcher {
 

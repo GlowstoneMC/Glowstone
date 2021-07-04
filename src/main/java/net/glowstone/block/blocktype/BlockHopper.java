@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.HashMap;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
@@ -26,6 +25,8 @@ import org.bukkit.material.Sign;
 import org.bukkit.material.Step;
 import org.bukkit.material.WoodenStep;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
 
 public class BlockHopper extends BlockContainer {
 

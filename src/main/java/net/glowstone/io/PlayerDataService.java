@@ -1,11 +1,12 @@
 package net.glowstone.io;
 
-import java.util.Collection;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+
+import java.util.Collection;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Provider of I/O for player data.

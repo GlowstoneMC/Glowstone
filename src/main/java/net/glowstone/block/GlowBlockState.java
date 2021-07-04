@@ -1,6 +1,5 @@
 package net.glowstone.block;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.GlowWorld;
@@ -12,6 +11,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+
+import java.util.List;
 
 /**
  * Represents a state a block could be in as well as any block entities.

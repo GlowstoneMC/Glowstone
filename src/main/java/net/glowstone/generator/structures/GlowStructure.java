@@ -1,11 +1,6 @@
 package net.glowstone.generator.structures;
 
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -14,6 +9,12 @@ import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 @RequiredArgsConstructor
 public abstract class GlowStructure implements TerrainObject {

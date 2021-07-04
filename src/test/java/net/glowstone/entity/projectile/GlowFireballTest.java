@@ -1,7 +1,8 @@
 package net.glowstone.entity.projectile;
 
-import java.util.function.Function;
 import org.bukkit.Location;
+
+import java.util.function.Function;
 
 public class GlowFireballTest extends GlowProjectileTest<GlowFireball> {
     protected GlowFireballTest(

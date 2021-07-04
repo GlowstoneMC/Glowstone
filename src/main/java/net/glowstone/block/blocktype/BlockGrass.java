@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -17,6 +16,8 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.LongGrass;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockGrass extends BlockType implements IBlockGrowable {
 

@@ -1,8 +1,9 @@
 package net.glowstone.net.message.play.player;
 
 import com.flowpowered.network.Message;
-import java.util.List;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public final class TabCompleteResponseMessage implements Message {

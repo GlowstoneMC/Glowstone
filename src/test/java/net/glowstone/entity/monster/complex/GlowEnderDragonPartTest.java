@@ -1,16 +1,17 @@
 package net.glowstone.entity.monster.complex;
 
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
-import java.util.Collections;
 import net.glowstone.entity.GlowEntityTest;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.junit.Before;
+
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 public class GlowEnderDragonPartTest extends GlowEntityTest<GlowEnderDragonPart> {
     public GlowEnderDragonPartTest() {

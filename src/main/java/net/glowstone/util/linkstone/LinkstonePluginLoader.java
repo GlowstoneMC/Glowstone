@@ -1,6 +1,5 @@
 package net.glowstone.util.linkstone;
 
-import java.io.File;
 import net.glowstone.linkstone.runtime.LinkstoneRuntimeData;
 import net.glowstone.linkstone.runtime.boxing.BoxPatchVisitor;
 import net.glowstone.linkstone.runtime.direct.DirectFieldAccessReplaceVisitor;
@@ -15,6 +14,8 @@ import org.bukkit.plugin.java.PluginClassLoader;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+
+import java.io.File;
 
 public class LinkstonePluginLoader extends JavaPluginLoader {
     /**

@@ -1,8 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -20,6 +17,10 @@ import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.material.Dirt;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.types.DirtType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable {
 

@@ -1,5 +1,12 @@
 package net.glowstone.generator.biomegrid;
 
+import net.glowstone.constants.GlowBiome;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import static org.bukkit.block.Biome.DEEP_OCEAN;
 import static org.bukkit.block.Biome.FROZEN_RIVER;
 import static org.bukkit.block.Biome.ICE_FLATS;
@@ -7,12 +14,6 @@ import static org.bukkit.block.Biome.MUSHROOM_ISLAND;
 import static org.bukkit.block.Biome.MUSHROOM_ISLAND_SHORE;
 import static org.bukkit.block.Biome.OCEAN;
 import static org.bukkit.block.Biome.RIVER;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import net.glowstone.constants.GlowBiome;
 
 public class RiverMapLayer extends MapLayer {
 

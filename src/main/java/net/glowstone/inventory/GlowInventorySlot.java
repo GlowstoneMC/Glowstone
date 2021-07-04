@@ -1,7 +1,5 @@
 package net.glowstone.inventory;
 
-import java.util.Arrays;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.constants.ItemIds;
@@ -9,6 +7,9 @@ import net.glowstone.util.InventoryUtil;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class GlowInventorySlot {
 

@@ -1,6 +1,5 @@
 package net.glowstone.generator.objects.trees;
 
-import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,6 +8,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
 import org.bukkit.material.Vine;
+
+import java.util.Random;
 
 public class CocoaTree extends JungleTree {
 

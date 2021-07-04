@@ -1,9 +1,5 @@
 package net.glowstone.io.nbt;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
@@ -14,6 +10,11 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Utility methods for transforming various objects to and from NBT. All strings in this class are

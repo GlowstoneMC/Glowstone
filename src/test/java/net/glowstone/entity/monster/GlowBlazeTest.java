@@ -1,9 +1,9 @@
 package net.glowstone.entity.monster;
 
+import org.junit.Test;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.Test;
 
 public class GlowBlazeTest extends GlowMonsterTest<GlowBlaze> {
 

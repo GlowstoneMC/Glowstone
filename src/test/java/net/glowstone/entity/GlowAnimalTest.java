@@ -1,15 +1,16 @@
 package net.glowstone.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.EnumSet;
-import java.util.function.Function;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
+
+import java.util.EnumSet;
+import java.util.function.Function;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTest<T> {
     protected GlowAnimalTest(

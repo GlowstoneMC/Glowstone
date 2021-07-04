@@ -1,15 +1,15 @@
 package net.glowstone.command.minecraft;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
 import net.glowstone.command.CommandTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 public class StopCommandTest extends CommandTest<StopCommand> {
     private GlowServer server;

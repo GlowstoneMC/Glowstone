@@ -1,5 +1,13 @@
 package net.glowstone.generator.biomegrid;
 
+import net.glowstone.constants.GlowBiome;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import static org.bukkit.block.Biome.DESERT;
 import static org.bukkit.block.Biome.EXTREME_HILLS_WITH_TREES;
 import static org.bukkit.block.Biome.ICE_FLATS;
@@ -13,13 +21,6 @@ import static org.bukkit.block.Biome.REDWOOD_TAIGA;
 import static org.bukkit.block.Biome.SWAMPLAND;
 import static org.bukkit.block.Biome.TAIGA;
 import static org.bukkit.block.Biome.TAIGA_COLD;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import net.glowstone.constants.GlowBiome;
 
 public class BiomeEdgeMapLayer extends MapLayer {
 

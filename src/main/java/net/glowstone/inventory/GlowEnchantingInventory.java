@@ -1,7 +1,5 @@
 package net.glowstone.inventory;
 
-import static net.glowstone.util.Position.copyPosition;
-
 import lombok.Getter;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
@@ -10,6 +8,8 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.ItemStack;
+
+import static net.glowstone.util.Position.copyPosition;
 
 public class GlowEnchantingInventory extends GlowInventory implements EnchantingInventory {
 

@@ -1,7 +1,5 @@
 package net.glowstone.block.entity.state;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
@@ -16,6 +14,8 @@ import org.bukkit.Note;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.NoteBlock;
 import org.bukkit.event.block.NotePlayEvent;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 

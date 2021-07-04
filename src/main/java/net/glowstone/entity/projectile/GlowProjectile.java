@@ -1,8 +1,6 @@
 package net.glowstone.entity.projectile;
 
 import com.flowpowered.network.Message;
-import java.util.Arrays;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -19,6 +17,9 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A projectile. Subclasses must call {@link #setBoundingBox(double, double)} if they are to collide

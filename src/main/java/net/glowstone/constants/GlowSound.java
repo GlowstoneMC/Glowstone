@@ -1,10 +1,11 @@
 package net.glowstone.constants;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.HashMap;
-import java.util.Map;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GlowSound {
 

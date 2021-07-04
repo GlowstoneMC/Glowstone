@@ -1,5 +1,13 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.i18n.LocalizedStringImpl;
+import org.bukkit.BanEntry;
+import org.bukkit.BanList;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NonNls;
+
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,13 +16,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Stream;
-import net.glowstone.i18n.LocalizedStringImpl;
-import org.bukkit.BanEntry;
-import org.bukkit.BanList;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.util.StringUtil;
-import org.jetbrains.annotations.NonNls;
 
 public class BanListCommand extends GlowVanillaCommand {
 

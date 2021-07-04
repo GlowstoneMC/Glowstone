@@ -1,12 +1,13 @@
 package net.glowstone.io.entity;
 
-import java.util.function.Function;
 import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+
+import java.util.function.Function;
 
 public class MinecartStore extends EntityStore<GlowMinecart> {
 

@@ -1,7 +1,6 @@
 package net.glowstone.block.blocktype;
 
 import com.google.common.collect.Sets;
-import java.util.Set;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -13,6 +12,8 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sponge;
 import org.bukkit.material.types.SpongeType;
 import org.bukkit.util.Vector;
+
+import java.util.Set;
 
 public class BlockSponge extends BlockType {
 

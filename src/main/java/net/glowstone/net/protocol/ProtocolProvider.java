@@ -1,12 +1,13 @@
 package net.glowstone.net.protocol;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.net.config.DnsEndpoint;
 import net.glowstone.net.http.HttpClient;
 import net.glowstone.util.config.ServerConfig;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Enumeration of the different Minecraft protocol states.

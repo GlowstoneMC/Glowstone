@@ -1,9 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
 import net.glowstone.i18n.ConsoleMessages;
@@ -13,6 +9,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class DeopCommand extends GlowVanillaCommand {
 

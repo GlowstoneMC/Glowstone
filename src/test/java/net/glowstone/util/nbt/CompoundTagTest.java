@@ -1,8 +1,8 @@
 package net.glowstone.util.nbt;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class CompoundTagTest {
 

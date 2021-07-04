@@ -1,9 +1,10 @@
 package net.glowstone.generator.objects;
 
-import java.util.Random;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
+
+import java.util.Random;
 
 public class OreType {
 

@@ -1,8 +1,9 @@
 package net.glowstone.util.loot;
 
-import java.util.Optional;
 import lombok.Data;
 import net.glowstone.util.ReflectionProcessor;
+
+import java.util.Optional;
 
 @Data
 public class ReflectiveValue<T> {

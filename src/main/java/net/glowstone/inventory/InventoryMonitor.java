@@ -1,13 +1,14 @@
 package net.glowstone.inventory;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 import lombok.Getter;
 import net.glowstone.constants.ItemIds;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Tracker for when items in an inventory are changed.

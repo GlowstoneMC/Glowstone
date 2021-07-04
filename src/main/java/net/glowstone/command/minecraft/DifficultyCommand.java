@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.command.LocalizedEnumNames;
@@ -8,6 +7,8 @@ import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class DifficultyCommand extends GlowVanillaCommand {
 

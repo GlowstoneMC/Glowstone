@@ -1,7 +1,5 @@
 package net.glowstone.block.entity.state;
 
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.DispenserEntity;
@@ -35,6 +33,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.util.Vector;
+
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowDispenser extends GlowContainer implements Dispenser, BlockProjectileSource {
 

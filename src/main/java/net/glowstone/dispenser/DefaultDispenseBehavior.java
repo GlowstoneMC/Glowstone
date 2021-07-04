@@ -1,6 +1,5 @@
 package net.glowstone.dispenser;
 
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockDispenser;
@@ -11,6 +10,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DefaultDispenseBehavior implements DispenseBehavior {
 

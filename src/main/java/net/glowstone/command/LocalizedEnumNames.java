@@ -6,6 +6,15 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import lombok.Getter;
+import net.glowstone.command.minecraft.GlowVanillaCommand;
+import net.glowstone.i18n.ConsoleMessages;
+import net.glowstone.i18n.LocalizedStringImpl;
+import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,14 +25,6 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import lombok.Getter;
-import net.glowstone.command.minecraft.GlowVanillaCommand;
-import net.glowstone.i18n.ConsoleMessages;
-import net.glowstone.i18n.LocalizedStringImpl;
-import org.bukkit.util.StringUtil;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * This is used to map an enum or multiton type to and from the localized names of its instances,

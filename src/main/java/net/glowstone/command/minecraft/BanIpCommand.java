@@ -1,14 +1,15 @@
 package net.glowstone.command.minecraft;
 
 import com.google.common.net.InetAddresses;
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class BanIpCommand extends GlowVanillaCommand {
 

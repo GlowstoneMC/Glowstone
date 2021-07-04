@@ -3,8 +3,9 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
+
+import java.io.IOException;
 
 public final class EntityVelocityCodec implements Codec<EntityVelocityMessage> {
 

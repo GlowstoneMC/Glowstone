@@ -1,6 +1,7 @@
 package net.glowstone.util;
 
 import com.eatthepath.uuid.FastUUID;
+
 import java.util.UUID;
 
 /**

@@ -1,7 +1,6 @@
 package net.glowstone.entity.monster;
 
 import com.flowpowered.network.Message;
-import java.util.List;
 import net.glowstone.entity.ai.EntityDirector;
 import net.glowstone.entity.ai.HostileMobState;
 import net.glowstone.entity.ai.MobState;
@@ -12,6 +11,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Zombie;
+
+import java.util.List;
 
 public class GlowZombie extends GlowMonster implements Zombie {
 

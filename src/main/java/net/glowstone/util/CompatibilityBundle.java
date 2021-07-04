@@ -2,12 +2,13 @@ package net.glowstone.util;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Stream;
 import net.glowstone.util.library.Library;
 import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager;
+
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Compatibility bundles are bundles of libraries that other servers include in their servers

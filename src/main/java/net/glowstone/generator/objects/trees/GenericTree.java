@@ -1,9 +1,6 @@
 package net.glowstone.generator.objects.trees;
 
 import io.netty.util.internal.ThreadLocalRandom;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Random;
 import net.glowstone.generator.objects.TerrainObject;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Location;
@@ -12,6 +9,10 @@ import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.Dirt;
 import org.bukkit.material.types.DirtType;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Random;
 
 /** Oak tree, and superclass for other types. */
 public class GenericTree implements TerrainObject {

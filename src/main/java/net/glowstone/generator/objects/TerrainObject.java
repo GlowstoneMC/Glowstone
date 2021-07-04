@@ -1,8 +1,6 @@
 package net.glowstone.generator.objects;
 
 import com.google.common.collect.ImmutableSortedSet;
-import java.util.Random;
-import java.util.SortedSet;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -10,6 +8,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.types.DoublePlantSpecies;
+
+import java.util.Random;
+import java.util.SortedSet;
 
 // TODO: Use this interface to reduce duplicate code in BlockPopulator subclasses.
 // TODO: Refactor GenericTree to implement this class.

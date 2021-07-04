@@ -1,6 +1,5 @@
 package net.glowstone.generator.decorators.nether;
 
-import java.util.Random;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.scheduler.PulseTask;
@@ -10,6 +9,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+
+import java.util.Random;
 
 public class LavaDecorator extends BlockDecorator {
 

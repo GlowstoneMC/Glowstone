@@ -1,9 +1,10 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Arrays;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
 
 public class MeCommand extends GlowVanillaCommand {
 

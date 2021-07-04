@@ -3,12 +3,13 @@ package net.glowstone.advancement;
 import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Data;
 import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class GlowAdvancement implements Advancement {

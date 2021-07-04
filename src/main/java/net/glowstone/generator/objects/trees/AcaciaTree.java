@@ -1,12 +1,13 @@
 package net.glowstone.generator.objects.trees;
 
-import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.Dirt;
 import org.bukkit.material.types.DirtType;
+
+import java.util.Random;
 
 public class AcaciaTree extends GenericTree {
 

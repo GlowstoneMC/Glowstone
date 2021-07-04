@@ -1,9 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
 import net.glowstone.generator.objects.OreType;
 import net.glowstone.generator.objects.OreVein;
 import org.bukkit.Chunk;
@@ -12,6 +8,11 @@ import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.material.Stone;
 import org.bukkit.material.types.StoneType;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 
 /**
  * Populates the world with ores. To get the complete set, we must also use

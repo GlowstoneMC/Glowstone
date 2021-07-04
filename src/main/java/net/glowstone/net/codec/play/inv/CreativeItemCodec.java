@@ -2,10 +2,11 @@ package net.glowstone.net.codec.play.inv;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.inv.CreativeItemMessage;
 import org.bukkit.inventory.ItemStack;
+
+import java.io.IOException;
 
 public final class CreativeItemCodec implements Codec<CreativeItemMessage> {
 

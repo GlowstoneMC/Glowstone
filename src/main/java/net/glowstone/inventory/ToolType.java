@@ -1,10 +1,11 @@
 package net.glowstone.inventory;
 
-import java.util.EnumMap;
-import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * A {@link MaterialMatcher} implementation for basic tool types.

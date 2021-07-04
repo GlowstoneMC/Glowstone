@@ -1,26 +1,6 @@
 package net.glowstone.block.itemtype;
 
-import static net.glowstone.TestUtils.checkInventory;
-import static org.bukkit.Material.ARROW;
-import static org.bukkit.Material.BOW;
-import static org.bukkit.Material.SPECTRAL_ARROW;
-import static org.bukkit.Material.TIPPED_ARROW;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.RETURNS_SMART_NULLS;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.google.common.collect.ImmutableSortedSet;
-import java.util.Set;
-import java.util.function.Predicate;
 import net.glowstone.TestUtils;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.projectile.GlowArrow;
@@ -45,6 +25,27 @@ import org.bukkit.util.Vector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import java.util.Set;
+import java.util.function.Predicate;
+
+import static net.glowstone.TestUtils.checkInventory;
+import static org.bukkit.Material.ARROW;
+import static org.bukkit.Material.BOW;
+import static org.bukkit.Material.SPECTRAL_ARROW;
+import static org.bukkit.Material.TIPPED_ARROW;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.RETURNS_SMART_NULLS;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ItemBowTest extends ItemTypeTest {
     public static final Vector POSITIVE_X_DIRECTION = new Vector(1, 0, 0);

@@ -3,11 +3,12 @@ package net.glowstone.net.codec.play.scoreboard;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import java.util.List;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage.Action;
 import org.bukkit.ChatColor;
+
+import java.io.IOException;
+import java.util.List;
 
 public final class ScoreboardTeamCodec implements Codec<ScoreboardTeamMessage> {
 

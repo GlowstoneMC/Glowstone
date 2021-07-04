@@ -2,8 +2,6 @@ package net.glowstone.entity.projectile;
 
 import com.flowpowered.network.Message;
 import io.netty.util.internal.ThreadLocalRandom;
-import java.util.Arrays;
-import java.util.List;
 import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
@@ -19,6 +17,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
     private static final double ENDER_PEARL_DAMAGE = 5.0;

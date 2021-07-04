@@ -1,7 +1,5 @@
 package net.glowstone.dispenser;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -13,6 +11,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * A {@link DispenseBehavior} that launches a projectile.

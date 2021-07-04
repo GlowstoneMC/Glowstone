@@ -1,8 +1,5 @@
 package net.glowstone.block;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 import net.glowstone.block.blocktype.BlockAnvil;
 import net.glowstone.block.blocktype.BlockBanner;
 import net.glowstone.block.blocktype.BlockBeacon;
@@ -146,6 +143,10 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.TreeSpecies;
+
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The lookup table for block and item types.

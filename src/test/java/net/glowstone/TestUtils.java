@@ -1,12 +1,13 @@
 package net.glowstone;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collection;
-import java.util.function.Predicate;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Collection;
+import java.util.function.Predicate;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Static methods used in multiple packages, but only by tests.

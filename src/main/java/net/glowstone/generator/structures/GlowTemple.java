@@ -1,11 +1,12 @@
 package net.glowstone.generator.structures;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Desert temple, jungle temple, or witch hut.

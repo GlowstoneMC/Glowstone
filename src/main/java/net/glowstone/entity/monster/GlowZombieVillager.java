@@ -1,8 +1,5 @@
 package net.glowstone.entity.monster;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -11,6 +8,10 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.ZombieVillager;
+
+import java.util.UUID;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
 

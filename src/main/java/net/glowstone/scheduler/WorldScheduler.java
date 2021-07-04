@@ -2,6 +2,10 @@ package net.glowstone.scheduler;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import lombok.Getter;
+import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -9,9 +13,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Phaser;
 import java.util.logging.Level;
-import lombok.Getter;
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
 
 /**
  * Manager for world thread pool.

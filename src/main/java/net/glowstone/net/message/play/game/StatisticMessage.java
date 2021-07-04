@@ -1,8 +1,9 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.network.Message;
-import java.util.Map;
 import lombok.Data;
+
+import java.util.Map;
 
 @Data
 public final class StatisticMessage implements Message {

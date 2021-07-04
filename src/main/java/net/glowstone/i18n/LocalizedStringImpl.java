@@ -1,12 +1,13 @@
 package net.glowstone.i18n;
 
-import java.text.Format;
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NonNls;
+
+import java.text.Format;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 public class LocalizedStringImpl implements LocalizedString {
     private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings"); // NON-NLS

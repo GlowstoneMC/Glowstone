@@ -1,13 +1,14 @@
 package net.glowstone.inventory;
 
 import com.google.common.collect.Sets;
-import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.block.Beacon;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.BeaconInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Set;
 
 public class GlowBeaconInventory extends GlowInventory implements BeaconInventory {
 

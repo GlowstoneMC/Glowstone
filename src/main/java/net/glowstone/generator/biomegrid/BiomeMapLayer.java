@@ -1,5 +1,7 @@
 package net.glowstone.generator.biomegrid;
 
+import net.glowstone.constants.GlowBiome;
+
 import static org.bukkit.block.Biome.BIRCH_FOREST;
 import static org.bukkit.block.Biome.DESERT;
 import static org.bukkit.block.Biome.EXTREME_HILLS;
@@ -15,8 +17,6 @@ import static org.bukkit.block.Biome.SAVANNA;
 import static org.bukkit.block.Biome.SWAMPLAND;
 import static org.bukkit.block.Biome.TAIGA;
 import static org.bukkit.block.Biome.TAIGA_COLD;
-
-import net.glowstone.constants.GlowBiome;
 
 public class BiomeMapLayer extends MapLayer {
 

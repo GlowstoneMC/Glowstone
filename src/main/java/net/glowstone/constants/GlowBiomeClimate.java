@@ -1,5 +1,14 @@
 package net.glowstone.constants;
 
+import lombok.Data;
+import net.glowstone.util.noise.SimplexOctaveGenerator;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Random;
+
 import static org.bukkit.block.Biome.BEACHES;
 import static org.bukkit.block.Biome.BIRCH_FOREST;
 import static org.bukkit.block.Biome.BIRCH_FOREST_HILLS;
@@ -59,14 +68,6 @@ import static org.bukkit.block.Biome.TAIGA_COLD;
 import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
 import static org.bukkit.block.Biome.TAIGA_HILLS;
 import static org.bukkit.block.Biome.values;
-
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Random;
-import lombok.Data;
-import net.glowstone.util.noise.SimplexOctaveGenerator;
-import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 
 public class GlowBiomeClimate {
 

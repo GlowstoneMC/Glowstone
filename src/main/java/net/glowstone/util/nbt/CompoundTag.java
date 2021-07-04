@@ -1,6 +1,14 @@
 package net.glowstone.util.nbt;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import lombok.Getter;
+import net.glowstone.constants.ItemIds;
+import net.glowstone.io.nbt.NbtSerialization;
+import net.glowstone.util.DynamicallyTypedMapWithDoubles;
+import net.glowstone.util.FloatConsumer;
+import net.glowstone.util.ShortConsumer;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,15 +24,8 @@ import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import net.glowstone.constants.ItemIds;
-import net.glowstone.io.nbt.NbtSerialization;
-import net.glowstone.util.DynamicallyTypedMapWithDoubles;
-import net.glowstone.util.FloatConsumer;
-import net.glowstone.util.ShortConsumer;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NonNls;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The {@code TAG_Compound} tag.

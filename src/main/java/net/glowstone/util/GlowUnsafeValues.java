@@ -1,7 +1,5 @@
 package net.glowstone.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.Achievement;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -10,6 +8,9 @@ import org.bukkit.UnsafeValues;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of Bukkit's internal-use UnsafeValues.

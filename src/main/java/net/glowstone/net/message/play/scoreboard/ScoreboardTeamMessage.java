@@ -1,10 +1,11 @@
 package net.glowstone.net.message.play.scoreboard;
 
 import com.flowpowered.network.Message;
-import java.util.List;
 import lombok.Data;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Team;
+
+import java.util.List;
 
 @Data
 public final class ScoreboardTeamMessage implements Message {

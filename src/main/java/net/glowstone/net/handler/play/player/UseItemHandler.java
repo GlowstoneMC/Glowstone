@@ -2,8 +2,6 @@ package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
 import com.google.common.collect.ImmutableSortedSet;
-import java.util.List;
-import java.util.SortedSet;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
@@ -21,6 +19,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.List;
+import java.util.SortedSet;
 
 public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessage> {
 

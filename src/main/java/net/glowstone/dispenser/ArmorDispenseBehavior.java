@@ -1,7 +1,5 @@
 package net.glowstone.dispenser;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockDispenser;
 import net.glowstone.inventory.GlowInventory;
@@ -11,6 +9,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
 

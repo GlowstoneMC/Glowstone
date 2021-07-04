@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
@@ -17,6 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Chest;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class BlockChest extends BlockContainer {
 

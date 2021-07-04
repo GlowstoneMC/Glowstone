@@ -1,12 +1,13 @@
 package net.glowstone.io.structure;
 
+import net.glowstone.GlowWorld;
+import net.glowstone.generator.structures.GlowStructure;
+import net.glowstone.util.nbt.CompoundTag;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import net.glowstone.GlowWorld;
-import net.glowstone.generator.structures.GlowStructure;
-import net.glowstone.util.nbt.CompoundTag;
 
 /**
  * The class responsible for mapping structure types to their storage methods and reading and

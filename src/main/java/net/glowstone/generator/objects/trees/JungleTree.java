@@ -1,7 +1,8 @@
 package net.glowstone.generator.objects.trees;
 
-import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
+
+import java.util.Random;
 
 public class JungleTree extends GenericTree {
 

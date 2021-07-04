@@ -1,7 +1,5 @@
 package net.glowstone.inventory.crafting;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Color;
@@ -9,6 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.Dye;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GlowArmorDyeMatcher extends ItemMatcher {
 

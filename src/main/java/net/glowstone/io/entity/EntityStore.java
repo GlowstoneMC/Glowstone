@@ -1,8 +1,5 @@
 package net.glowstone.io.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.entity.GlowEntity;
@@ -14,6 +11,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NonNls;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * The base for entity store classes.

@@ -1,19 +1,5 @@
 package net.glowstone.entity.meta;
 
-import static net.glowstone.entity.meta.MetadataType.BLOCKID;
-import static net.glowstone.entity.meta.MetadataType.BOOLEAN;
-import static net.glowstone.entity.meta.MetadataType.BYTE;
-import static net.glowstone.entity.meta.MetadataType.CHAT;
-import static net.glowstone.entity.meta.MetadataType.DIRECTION;
-import static net.glowstone.entity.meta.MetadataType.FLOAT;
-import static net.glowstone.entity.meta.MetadataType.INT;
-import static net.glowstone.entity.meta.MetadataType.ITEM;
-import static net.glowstone.entity.meta.MetadataType.NBTTAG;
-import static net.glowstone.entity.meta.MetadataType.OPTPOSITION;
-import static net.glowstone.entity.meta.MetadataType.OPTUUID;
-import static net.glowstone.entity.meta.MetadataType.STRING;
-import static net.glowstone.entity.meta.MetadataType.VECTOR;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.entity.passive.GlowParrot;
@@ -68,6 +54,20 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
 import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.entity.minecart.PoweredMinecart;
+
+import static net.glowstone.entity.meta.MetadataType.BLOCKID;
+import static net.glowstone.entity.meta.MetadataType.BOOLEAN;
+import static net.glowstone.entity.meta.MetadataType.BYTE;
+import static net.glowstone.entity.meta.MetadataType.CHAT;
+import static net.glowstone.entity.meta.MetadataType.DIRECTION;
+import static net.glowstone.entity.meta.MetadataType.FLOAT;
+import static net.glowstone.entity.meta.MetadataType.INT;
+import static net.glowstone.entity.meta.MetadataType.ITEM;
+import static net.glowstone.entity.meta.MetadataType.NBTTAG;
+import static net.glowstone.entity.meta.MetadataType.OPTPOSITION;
+import static net.glowstone.entity.meta.MetadataType.OPTUUID;
+import static net.glowstone.entity.meta.MetadataType.STRING;
+import static net.glowstone.entity.meta.MetadataType.VECTOR;
 
 /**
  * Index constants for entity metadata.

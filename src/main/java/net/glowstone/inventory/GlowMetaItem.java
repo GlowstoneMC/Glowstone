@@ -1,6 +1,14 @@
 package net.glowstone.inventory;
 
 import com.google.common.base.Strings;
+import lombok.Getter;
+import lombok.Setter;
+import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -10,13 +18,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.Setter;
-import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.

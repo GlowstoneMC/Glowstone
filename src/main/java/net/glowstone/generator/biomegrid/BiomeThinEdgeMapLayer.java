@@ -1,5 +1,15 @@
 package net.glowstone.generator.biomegrid;
 
+import net.glowstone.constants.GlowBiome;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import static org.bukkit.block.Biome.DEEP_OCEAN;
 import static org.bukkit.block.Biome.DESERT;
 import static org.bukkit.block.Biome.FOREST;
@@ -16,15 +26,6 @@ import static org.bukkit.block.Biome.MUTATED_MESA_CLEAR_ROCK;
 import static org.bukkit.block.Biome.MUTATED_MESA_ROCK;
 import static org.bukkit.block.Biome.OCEAN;
 import static org.bukkit.block.Biome.TAIGA;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import net.glowstone.constants.GlowBiome;
 
 public class BiomeThinEdgeMapLayer extends MapLayer {
 

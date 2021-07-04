@@ -1,5 +1,12 @@
 package net.glowstone.generator.biomegrid;
 
+import net.glowstone.constants.GlowBiome;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import static org.bukkit.block.Biome.BEACHES;
 import static org.bukkit.block.Biome.COLD_BEACH;
 import static org.bukkit.block.Biome.DEEP_OCEAN;
@@ -24,12 +31,6 @@ import static org.bukkit.block.Biome.STONE_BEACH;
 import static org.bukkit.block.Biome.SWAMPLAND;
 import static org.bukkit.block.Biome.TAIGA_COLD;
 import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import net.glowstone.constants.GlowBiome;
 
 public class ShoreMapLayer extends MapLayer {
 

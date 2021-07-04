@@ -1,6 +1,5 @@
 package net.glowstone.entity.projectile;
 
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.objects.GlowExperienceOrb;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
@@ -11,6 +10,8 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.ThrownExpBottle;
 import org.bukkit.event.entity.ExpBottleEvent;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBottle {
 

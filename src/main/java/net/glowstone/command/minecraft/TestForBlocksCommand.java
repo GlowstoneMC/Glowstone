@@ -1,10 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import static net.glowstone.util.RectangularRegion.IterationDirection.FORWARDS;
-
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.ResourceBundle;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowWorld;
@@ -17,6 +12,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.ResourceBundle;
+
+import static net.glowstone.util.RectangularRegion.IterationDirection.FORWARDS;
 
 public class TestForBlocksCommand extends GlowVanillaCommand {
     @RequiredArgsConstructor

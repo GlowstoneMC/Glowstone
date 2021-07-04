@@ -1,8 +1,6 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
-import java.util.LinkedList;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
@@ -12,6 +10,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.EvokerFangs;
 import org.bukkit.entity.LivingEntity;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class GlowEvokerFangs extends GlowEntity implements EvokerFangs {
 

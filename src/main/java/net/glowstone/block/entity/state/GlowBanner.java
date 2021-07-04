@@ -1,8 +1,5 @@
 package net.glowstone.block.entity.state;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.List;
 import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -10,6 +7,10 @@ import net.glowstone.block.entity.BannerEntity;
 import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
+
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowBanner extends GlowBlockState implements Banner {
 

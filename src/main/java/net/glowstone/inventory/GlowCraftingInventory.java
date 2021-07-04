@@ -1,6 +1,5 @@
 package net.glowstone.inventory;
 
-import java.util.Arrays;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
 import net.glowstone.entity.GlowPlayer;
@@ -13,6 +12,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+
+import java.util.Arrays;
 
 /**
  * Represents a crafting grid inventory, both workbench and per-player.

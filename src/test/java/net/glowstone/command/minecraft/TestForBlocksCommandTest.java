@@ -1,11 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandTest;
 import net.glowstone.testutils.InMemoryBlockStorage;
@@ -16,6 +10,12 @@ import org.bukkit.entity.Player;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 public class TestForBlocksCommandTest extends CommandTest<TestForBlocksCommand> {
     private InMemoryBlockStorage blockStorage;

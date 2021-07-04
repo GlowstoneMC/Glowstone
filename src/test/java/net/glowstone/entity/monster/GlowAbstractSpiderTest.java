@@ -1,8 +1,9 @@
 package net.glowstone.entity.monster;
 
-import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.entity.Spider;
+
+import java.util.function.Function;
 
 /**
  * Necessary because GlowCaveSpider doesn't extend GlowSpider, but both have similar expected

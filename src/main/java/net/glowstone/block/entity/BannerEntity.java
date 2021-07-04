@@ -1,7 +1,5 @@
 package net.glowstone.block.entity;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
@@ -13,6 +11,9 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.DyeColor;
 import org.bukkit.block.banner.Pattern;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BannerEntity extends BlockEntity {
 

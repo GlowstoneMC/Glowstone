@@ -1,9 +1,10 @@
 package net.glowstone.generator.ground;
 
-import java.util.Random;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
+
+import java.util.Random;
 
 public class GravelPatchGroundGenerator extends GroundGenerator {
 

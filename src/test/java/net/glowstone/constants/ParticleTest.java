@@ -1,14 +1,15 @@
 package net.glowstone.constants;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.util.stream.Stream;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link GlowParticle}.

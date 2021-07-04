@@ -1,8 +1,6 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
-import java.util.LinkedList;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
@@ -12,6 +10,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents a creature entity such as a pig.

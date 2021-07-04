@@ -1,7 +1,5 @@
 package net.glowstone.generator.decorators.nether;
 
-import java.util.Arrays;
-import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -9,6 +7,9 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
+
+import java.util.Arrays;
+import java.util.Random;
 
 public class MushroomDecorator extends BlockDecorator {
 

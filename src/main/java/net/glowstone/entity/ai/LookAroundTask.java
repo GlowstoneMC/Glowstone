@@ -1,8 +1,9 @@
 package net.glowstone.entity.ai;
 
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.util.TickUtil;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LookAroundTask extends EntityTask {
 

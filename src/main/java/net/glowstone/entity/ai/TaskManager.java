@@ -2,11 +2,12 @@ package net.glowstone.entity.ai;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
+import net.glowstone.entity.GlowLivingEntity;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
-import net.glowstone.entity.GlowLivingEntity;
 
 public class TaskManager {
 

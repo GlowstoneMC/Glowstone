@@ -1,8 +1,6 @@
 package net.glowstone.net;
 
 import com.flowpowered.network.Message;
-import java.util.Arrays;
-import java.util.UUID;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.entity.AnimateEntityMessage;
 import net.glowstone.net.message.play.entity.AttachEntityMessage;
@@ -83,6 +81,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
+
+import java.util.Arrays;
+import java.util.UUID;
 
 /**
  * Test cases for {@link PlayProtocol}.

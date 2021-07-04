@@ -1,9 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
 import net.glowstone.generator.objects.DoubleTallPlant;
 import net.glowstone.generator.objects.Flower;
 import net.glowstone.generator.objects.FlowerType;
@@ -16,6 +12,11 @@ import org.bukkit.block.Biome;
 import org.bukkit.material.LongGrass;
 import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.util.noise.OctaveGenerator;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 
 public class PlainsPopulator extends BiomePopulator {
 
