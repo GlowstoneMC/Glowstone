@@ -3,7 +3,7 @@
 ![Bountysource](https://img.shields.io/bountysource/team/glowstonemc/activity?label=Glowstone%20on%20bountysource)
 ![Dev Build](https://github.com/GlowstoneMC/Glowstone/workflows/Dev%20Build/badge.svg)
 
-<img align="right" alt="Glowstone logo" width="100" src="../etc/logo/logo.png">
+<p align="center"><img alt="Glowstone logo" width="150" src="../etc/logo/logo.png"></p>
 
 # Glowstone
 
