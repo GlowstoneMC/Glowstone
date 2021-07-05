@@ -114,9 +114,10 @@ For documentation on the Glowkit API (an updated Bukkit for Glowstone, based on 
 
 First of all, thank you for your interest in advancing Glowstone! We always love to see new developers work on the project!
 
-[Here](https://github.com/orgs/GlowstoneMC/projects/7) you can find a list of all the remaining features to complete and their associated bounties!
+[Here](https://github.com/orgs/GlowstoneMC/projects/7) is a list of all the remaining features to complete the 1.17 release,
+or you can always browse our issues page and get started.
 
-You can find all of our resources on how to get started on our [wiki](https://github.com/GlowstoneMC/Glowstone/wiki#contributing).
+You can find all the details on how to get started in the [wiki](https://github.com/GlowstoneMC/Glowstone/wiki#contributing).
 
 ## Sponsors
 
