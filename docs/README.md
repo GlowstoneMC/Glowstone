@@ -1,15 +1,13 @@
+<p align="center"><img alt="Glowstone logo" width="200" src="../etc/logo/logo.png"></p>
+
+<p align="center">
 ![Built with Love](https://forthebadge.com/images/badges/built-with-love.svg)
 [![Join the Discord chat](https://img.shields.io/badge/Discord-glowstone-5865f2.svg?style=flat-square&logo=discord)](https://discord.gg/TFJqhsC)
 ![Bountysource](https://img.shields.io/bountysource/team/glowstonemc/activity?label=Glowstone%20on%20bountysource)
 ![Dev Build](https://github.com/GlowstoneMC/Glowstone/workflows/Dev%20Build/badge.svg)
+</p>
 
-<p align="center"><img alt="Glowstone logo" width="150" src="../etc/logo/logo.png"></p>
-
-# Glowstone
-
-A fast, customizable and compatible open source server for Minecraft: Java Edition.
-
-## Introduction
+## About Glowstone
 
 Glowstone is a lightweight, from scratch, open source
 [Minecraft](https://minecraft.net) server written in Java that supports plugins
