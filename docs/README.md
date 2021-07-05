@@ -129,6 +129,7 @@ Sponsor Glowstone [on Bountysource](https://www.bountysource.com/teams/glowstone
 
 ## Credits
 
+ * [All our awesome contributors](https://github.com/GlowstoneMC/Glowstone/graphs/contributors)
  * [The Minecraft Coalition](https://wiki.vg/) and [`#mcdevs`](https://github.com/mcdevs) -
    protocol and file formats research.
  * [The Bukkit team](https://bukkit.org) for their outstandingly well-designed
