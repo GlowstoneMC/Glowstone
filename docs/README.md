@@ -1,5 +1,6 @@
 ![Built with Love](https://forthebadge.com/images/badges/built-with-love.svg)
 [![Join the Discord chat](https://img.shields.io/badge/Discord-glowstone-5865f2.svg?style=flat-square&logo=discord)](https://discord.gg/TFJqhsC)
+![Bountysource](https://img.shields.io/bountysource/team/glowstonemc/activity?label=Glowstone%20on%20bountysource)
 ![Dev Build](https://github.com/GlowstoneMC/Glowstone/workflows/Dev%20Build/badge.svg)
 
 <img align="right" alt="Glowstone logo" width="100" src="../etc/logo/logo.png">
