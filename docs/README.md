@@ -1,10 +1,10 @@
 <p align="center"><img alt="Glowstone logo" width="200" src="../etc/logo/logo.png"></p>
 
 <p align="center">
-![Built with Love](https://forthebadge.com/images/badges/built-with-love.svg)
-[![Join the Discord chat](https://img.shields.io/badge/Discord-glowstone-5865f2.svg?style=flat-square&logo=discord)](https://discord.gg/TFJqhsC)
-![Bountysource](https://img.shields.io/bountysource/team/glowstonemc/activity?label=Glowstone%20on%20bountysource)
-![Dev Build](https://github.com/GlowstoneMC/Glowstone/workflows/Dev%20Build/badge.svg)
+<a href="#"><img src="https://forthebadge.com/images/badges/built-with-love.svg" alt="Built with Love"></a>
+<a href="https://discord.gg/TFJqhsC"><img src="https://img.shields.io/badge/Discord-glowstone-5865f2.svg?style=flat-square&logo=discord" alt="Discord"></a>
+<a href="https://www.bountysource.com/teams/glowstonemc"><img src="https://img.shields.io/bountysource/team/glowstonemc/activity?label=Glowstone%20on%20bountysource" alt="Bountysource"></a>
+<a href="#"><img src="https://github.com/GlowstoneMC/Glowstone/workflows/Dev%20Build/badge.svg" alt="Devbuild"></a>
 </p>
 
 ## About Glowstone
