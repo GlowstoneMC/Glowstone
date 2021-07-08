@@ -476,7 +476,7 @@ public class GlowWorld implements World {
         // pulse players last so they actually see that other entities have
         // moved. unfortunately pretty hacky. not a problem for players b/c
         // their position is modified by session ticking.
-        for (GlowEntity entity : allEntities) {
+        for (GlowEntity entity : entityManager) {
             if (entity instanceof GlowPlayer) {
                 players.add((GlowPlayer) entity);
                 updateActiveChunkCollection(entity);
@@ -614,7 +614,9 @@ public class GlowWorld implements World {
     }
 
     private void pulsePlayers(List<GlowPlayer> players) {
-        players.stream().filter(Objects::nonNull).forEach(GlowEntity::pulse);
+        for (GlowPlayer player : players) {
+            player.pulse();
+        }
     }
 
     private void handleSleepAndWake(List<GlowPlayer> players) {
