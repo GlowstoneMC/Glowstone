@@ -565,7 +565,10 @@ public abstract class GlowEntity implements Entity {
      */
     public void pulse() {
         ticksLived++;
-        if (!getLocation().getChunk().isLoaded()) {
+
+        Chunk chunk = getChunk();
+
+        if (!chunk.isLoaded()) {
             return;
         }
 
@@ -582,8 +585,7 @@ public abstract class GlowEntity implements Entity {
             }
         }
 
-        if (this instanceof GlowLivingEntity && !isDead() && ((GlowLivingEntity) this).hasAI()
-            && this.getLocation().getChunk().isLoaded()) {
+        if (this instanceof GlowLivingEntity && !isDead() && ((GlowLivingEntity) this).hasAI()) {
             GlowLivingEntity entity = (GlowLivingEntity) this;
             entity.getTaskManager().pulse();
         }
@@ -1017,7 +1019,7 @@ public abstract class GlowEntity implements Entity {
     }
 
     protected void pulsePhysics() {
-        // The pending locaiton and the block at that location
+        // The pending location and the block at that location
         Location pendingLocation = location.clone().add(velocity);
         Block pendingBlock = pendingLocation.getBlock();
 
