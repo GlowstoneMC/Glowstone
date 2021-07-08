@@ -106,12 +106,18 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
         return t;
     }
 
+    /**
+     * Tests for the given bit mask in a bit field.
+     *
+     * @param index the field to test
+     * @param bit a mask of the bits to test
+     */
     public boolean getBit(MetadataIndex index, int bit) {
-        return (getNumber(index).intValue() & bit) != 0;
+        return (getByte(index) & bit) != 0;
     }
 
     /**
-     * Sets or clears bits in an integer field.
+     * Sets or clears bits in a bit field.
      *
      * @param index the field to update
      * @param bit a mask of the bits to set or clear
@@ -119,9 +125,9 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
      */
     public void setBit(MetadataIndex index, int bit, boolean status) {
         if (status) {
-            set(index, getNumber(index).intValue() | bit);
+            set(index, getByte(index) | bit);
         } else {
-            set(index, getNumber(index).intValue() & ~bit);
+            set(index, getByte(index) & ~bit);
         }
     }
 
@@ -133,10 +139,10 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
      * @throws IllegalArgumentException if the value doesn't exist or isn't numeric
      */
     public Number getNumber(MetadataIndex index) {
-        if (!containsKey(index)) {
+        Object o = get(index);
+        if (o == null) {
             return 0;
         }
-        Object o = get(index);
         if (!(o instanceof Number)) {
             throw new IllegalArgumentException(
                 "Index " + index + " is of non-number type " + index.getType());
