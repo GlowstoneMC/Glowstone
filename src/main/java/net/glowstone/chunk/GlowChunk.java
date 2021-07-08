@@ -27,7 +27,6 @@ import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;

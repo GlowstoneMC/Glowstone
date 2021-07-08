@@ -11,7 +11,7 @@ import org.bukkit.map.MapFont;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import java.awt.Image;
+import java.awt.*;
 
 /**
  * Represents a canvas for drawing to a map. Each canvas is associated with a specific

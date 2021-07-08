@@ -1,12 +1,14 @@
 package net.glowstone.chunk;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ConcurrentHashMultiset;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Multiset;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.constants.GlowBiome;
-import net.glowstone.entity.GlowEntity;
 import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.GlowChunkGenerator;
 import net.glowstone.generator.biomegrid.MapLayer;
@@ -22,8 +24,13 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.material.MaterialData;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
