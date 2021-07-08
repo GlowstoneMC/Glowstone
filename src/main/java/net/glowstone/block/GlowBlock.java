@@ -96,12 +96,12 @@ public class GlowBlock implements Block {
     ////////////////////////////////////////////////////////////////////////////
     // Basics
     @Override
-    public GlowChunk getChunk() {
+    public @NotNull GlowChunk getChunk() {
         return (GlowChunk) world.getChunkAt(this);
     }
 
     @Override
-    public Location getLocation() {
+    public @NotNull Location getLocation() {
         return new Location(getWorld(), x, y, z);
     }
 
@@ -122,7 +122,7 @@ public class GlowBlock implements Block {
     }
 
     @Override
-    public GlowBlockState getState() {
+    public @NotNull GlowBlockState getState() {
         BlockEntity entity = getBlockEntity();
         if (entity != null) {
             GlowBlockState state = entity.getState();
@@ -134,17 +134,17 @@ public class GlowBlock implements Block {
     }
 
     @Override
-    public GlowBlockState getState(boolean useSnapshot) {
+    public @NotNull GlowBlockState getState(boolean useSnapshot) {
         return getState(); // TODO: disable use of snapshot
     }
 
     @Override
-    public Biome getBiome() {
+    public @NotNull Biome getBiome() {
         return getWorld().getBiome(x, z);
     }
 
     @Override
-    public void setBiome(Biome bio) {
+    public void setBiome(@NotNull Biome bio) {
         getWorld().setBiome(x, z, bio);
     }
 
@@ -161,7 +161,7 @@ public class GlowBlock implements Block {
     ////////////////////////////////////////////////////////////////////////////
     // getFace & getRelative
     @Override
-    public BlockFace getFace(Block block) {
+    public BlockFace getFace(@NotNull Block block) {
         for (BlockFace face : BlockFace.values()) {
             if (x + face.getModX() == block.getX() && y + face.getModY() == block.getY()
                 && z + face.getModZ() == block.getZ()) {
@@ -172,25 +172,28 @@ public class GlowBlock implements Block {
     }
 
     @Override
-    public GlowBlock getRelative(int modX, int modY, int modZ) {
+    public @NotNull GlowBlock getRelative(int modX, int modY, int modZ) {
         return getWorld().getBlockAt(x + modX, y + modY, z + modZ);
     }
 
     @Override
-    public GlowBlock getRelative(BlockFace face) {
+    public @NotNull GlowBlock getRelative(BlockFace face) {
         return getRelative(face.getModX(), face.getModY(), face.getModZ());
     }
 
     @Override
-    public GlowBlock getRelative(BlockFace face, int distance) {
+    public @NotNull GlowBlock getRelative(BlockFace face, int distance) {
         return getRelative(
-            face.getModX() * distance, face.getModY() * distance, face.getModZ() * distance);
+            face.getModX() * distance,
+            face.getModY() * distance,
+            face.getModZ() * distance
+        );
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Type and typeid getters/setters
     @Override
-    public Material getType() {
+    public @NotNull Material getType() {
         return world.getBlockTypeAt(x, y, z);
     }
 
@@ -348,7 +351,7 @@ public class GlowBlock implements Block {
     }
 
     @Override
-    public BlockData getBlockData() {
+    public @NotNull BlockData getBlockData() {
         return null; // TODO
     }
 
@@ -494,7 +497,7 @@ public class GlowBlock implements Block {
     }
 
     @Override
-    public PistonMoveReaction getPistonMoveReaction() {
+    public @NotNull PistonMoveReaction getPistonMoveReaction() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -648,7 +651,7 @@ public class GlowBlock implements Block {
     }
 
     @Override
-    public void removeMetadata(String metadataKey, Plugin owningPlugin) {
+    public void removeMetadata(@NotNull String metadataKey, @NotNull Plugin owningPlugin) {
         metadata.removeMetadata(this, metadataKey, owningPlugin);
     }
 
@@ -774,7 +777,7 @@ public class GlowBlock implements Block {
         MetadataStore<Block> {
 
         @Override
-        protected String disambiguate(Block subject, String metadataKey) {
+        protected @NotNull String disambiguate(Block subject, @NotNull String metadataKey) {
             return subject.getWorld() + "," + subject.getX() + "," + subject.getY() + "," + subject
                 .getZ() + ":" + metadataKey;
         }
