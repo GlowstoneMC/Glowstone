@@ -1012,11 +1012,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     private void processBlockChanges() {
         for (Key key : knownChunks) {
-            GlowChunk chunk = world.getChunk(key);
-            if (chunk == null) {
-                return;
-            }
-            List<BlockChangeMessage> messages = chunk.getBlockChanges();
+            List<BlockChangeMessage> messages = world.getChunkManager().getBlockChanges(key);
             int size = messages.size();
             if (size == 1) {
                 session.send(messages.get(0));
@@ -1127,7 +1123,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         // first step: force population then acquire lock on each chunk
         newChunks.forEach(newChunk -> {
-            world.getChunkManager().forcePopulation(newChunk.getX(), newChunk.getZ());
+            try {
+                world.getChunkManager().forcePopulation(newChunk.getX(), newChunk.getZ());
+            } catch (IllegalArgumentException e) {
+                // The show must go on, so catch it here!
+                logger.log(Level.SEVERE, "", e);
+            }
             knownChunks.add(newChunk);
             chunkLock.acquire(newChunk);
         });

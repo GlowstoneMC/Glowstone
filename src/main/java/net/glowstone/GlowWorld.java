@@ -673,7 +673,7 @@ public class GlowWorld implements World {
     }
 
     public void broadcastBlockChangeInRange(GlowChunk.Key chunkKey, BlockChangeMessage message) {
-        getChunk(chunkKey).broadcastBlockChange(message);
+        getChunkManager().broadcastBlockChange(chunkKey, message);
     }
 
     private void maybeStrikeLightningInChunk(int cx, int cz) {

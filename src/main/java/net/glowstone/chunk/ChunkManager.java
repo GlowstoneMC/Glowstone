@@ -1,17 +1,18 @@
 package net.glowstone.chunk;
 
-import com.google.common.collect.ConcurrentHashMultiset;
-import com.google.common.collect.Multiset;
+import com.google.common.collect.*;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.constants.GlowBiome;
+import net.glowstone.entity.GlowEntity;
 import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.GlowChunkGenerator;
 import net.glowstone.generator.biomegrid.MapLayer;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.ChunkIoService;
+import net.glowstone.net.message.play.game.BlockChangeMessage;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -21,12 +22,8 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.material.MaterialData;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -64,6 +61,8 @@ public final class ChunkManager {
      * A map of chunks currently loaded in memory.
      */
     private final ConcurrentMap<Key, GlowChunk> chunks = new ConcurrentHashMap<>();
+
+    private final Multimap<Key, BlockChangeMessage> blockUpdates = MultimapBuilder.hashKeys().hashSetValues().build();
 
     /**
      * A set of chunks which are being kept loaded by players or other factors.
@@ -435,11 +434,32 @@ public final class ChunkManager {
         return biomeGrid[0].generateValues(x, z, sizeX, sizeZ);
     }
 
+    /**
+     * Queues block change notification to all players in this chunk
+     *
+     * @param key The chunk's key
+     * @param message The block change message to broadcast
+     */
+    public void broadcastBlockChange(GlowChunk.Key key, BlockChangeMessage message) {
+        blockUpdates.put(key, message);
+    }
+
+    /**
+     * Queues block change notification to all players in this chunk
+     *
+     * @param key The chunk's key
+     * @param messages The block change messages to broadcast
+     */
+    public void broadcastBlockChanges(GlowChunk.Key key, Iterable<BlockChangeMessage> messages) {
+        blockUpdates.putAll(key, messages);
+    }
+
+    public List<BlockChangeMessage> getBlockChanges(GlowChunk.Key key) {
+        return new ArrayList<>(blockUpdates.get(key));
+    }
+
     public void clearChunkBlockChanges() {
-        Collection<GlowChunk> chunkList = chunks.values();
-        for (GlowChunk chunk : chunkList) {
-            chunk.clearBlockChanges();
-        }
+        blockUpdates.clear();
     }
 
     /**

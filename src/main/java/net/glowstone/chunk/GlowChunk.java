@@ -27,6 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -777,23 +778,6 @@ public class GlowChunk implements Chunk {
         }
 
         return (y * HEIGHT + z) * WIDTH + x;
-    }
-
-    /**
-     * Queues block change notification to all players in this chunk
-     *
-     * @param message The block change message to broadcast
-     */
-    public void broadcastBlockChange(BlockChangeMessage message) {
-        blockChanges.add(message);
-    }
-
-    public List<BlockChangeMessage> getBlockChanges() {
-        return new ArrayList<>(blockChanges);
-    }
-
-    void clearBlockChanges() {
-        blockChanges.clear();
     }
 
     /**
