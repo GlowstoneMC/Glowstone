@@ -42,30 +42,29 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
         session.setProtocol(protocol);
 
+        if (protocol != loginProtocol) {
+            return;
+        }
+
         if (session.getServer().getProxySupport()) {
             try {
                 session.setProxyData(new ProxyData(session, message.getAddress()));
             } catch (IllegalArgumentException ex) {
-                if (protocol == loginProtocol) {
-                    session.disconnect("Invalid proxy data provided.");
-                }
-                return; // silently ignore parse data in PING protocol
+                session.disconnect("Invalid proxy data provided.");
+                session.getServer().getLogger().log(Level.WARNING, "Session " + session + " sent invalid proxy data.", ex);
+                return;
             } catch (Exception ex) {
-                if (protocol == loginProtocol) {
-                    GlowServer.logger.log(Level.SEVERE,
-                            "Error parsing proxy data for " + session, ex);
-                    session.disconnect("Failed to parse proxy data.");
-                }
-                return; // silently ignore parse data in PING protocol
+                GlowServer.logger.log(Level.SEVERE,
+                        "Error parsing proxy data for " + session, ex);
+                session.disconnect("Failed to parse proxy data.");
+                return;
             }
         }
 
-        if (protocol == loginProtocol) {
-            if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {
-                session.disconnect("Outdated client! I'm running " + GlowServer.GAME_VERSION);
-            } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
-                session.disconnect("Outdated server! I'm running " + GlowServer.GAME_VERSION);
-            }
+        if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {
+            session.disconnect("Outdated client! I'm running " + GlowServer.GAME_VERSION);
+        } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
+            session.disconnect("Outdated server! I'm running " + GlowServer.GAME_VERSION);
         }
     }
 }

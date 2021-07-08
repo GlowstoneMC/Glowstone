@@ -45,10 +45,7 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
                     .nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
                 profile = new GlowPlayerProfile(name, uuid, true);
             } else {
-                profile = proxy.getProfile();
-                if (profile == null) {
-                    profile = proxy.getProfile(name);
-                }
+                profile = proxy.getProfile(name);
             }
 
             AsyncPlayerPreLoginEvent event = EventFactory.getInstance()
