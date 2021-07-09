@@ -92,7 +92,8 @@ public class GlowChunk implements Chunk {
     /**
      * The block entities that reside in this chunk.
      */
-    private final Int2ObjectOpenHashMap<BlockEntity> blockEntities = new Int2ObjectOpenHashMap<>(32, 0.5f);
+    private final Int2ObjectOpenHashMap<BlockEntity> blockEntities =
+        new Int2ObjectOpenHashMap<>(32, 0.5f);
     /**
      * The entities that reside in this chunk.
      */
@@ -154,7 +155,7 @@ public class GlowChunk implements Chunk {
     }
 
     @Override
-    public GlowBlock getBlock(int x, int y, int z) {
+    public @NotNull GlowBlock getBlock(int x, int y, int z) {
         return new GlowBlock(this, this.x << 4 | x & 0xf, y & 0xff, this.z << 4 | z & 0xf);
     }
 
@@ -266,13 +267,16 @@ public class GlowChunk implements Chunk {
     }
 
     @Override
-    public GlowChunkSnapshot getChunkSnapshot() {
+    public @NotNull GlowChunkSnapshot getChunkSnapshot() {
         return getChunkSnapshot(true, false, false);
     }
 
     @Override
-    public GlowChunkSnapshot getChunkSnapshot(boolean includeMaxBlockY, boolean includeBiome,
-                                              boolean includeBiomeTempRain) {
+    public @NotNull GlowChunkSnapshot getChunkSnapshot(
+        boolean includeMaxBlockY,
+        boolean includeBiome,
+        boolean includeBiomeTempRain
+    ) {
         return new GlowChunkSnapshot(x, z, world, sections,
             includeMaxBlockY ? heightMap.clone() : null, includeBiome ? biomes.clone() : null,
             includeBiomeTempRain, isSlimeChunk());
@@ -539,8 +543,8 @@ public class GlowChunk implements Chunk {
 
     public BlockData getBlockData(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? Bukkit.getServer().createBlockData(Material.AIR) :
-            section.getBlockData(x, y, z);
+        return section != null ? section.getBlockData(x, y, z) :
+            Bukkit.getServer().createBlockData(Material.VOID_AIR);
     }
 
     /**
@@ -825,11 +829,7 @@ public class GlowChunk implements Chunk {
         }
 
         final double moonPhase = world.getMoonPhaseFraction();
-        if (moonPhase / 4 > totalTimeFactor) {
-            chunkFactor += totalTimeFactor;
-        } else {
-            chunkFactor += moonPhase / 4;
-        }
+        chunkFactor += Math.min(moonPhase / 4, totalTimeFactor);
 
         if (worldDifficulty == Difficulty.EASY) {
             chunkFactor /= 2;
@@ -972,7 +972,8 @@ public class GlowChunk implements Chunk {
         return toMessage(skylight, entireChunk, null);
     }
 
-    public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk, ByteBufAllocator alloc) {
+    public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk,
+                                      ByteBufAllocator alloc) {
         load();
         int sectionBitmask = 0;
 
