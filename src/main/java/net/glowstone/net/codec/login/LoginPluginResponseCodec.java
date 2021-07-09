@@ -2,9 +2,10 @@ package net.glowstone.net.codec.login;
 
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
-import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.message.login.LoginPluginResponseMessage;
+import io.netty.buffer.ByteBuf;
+
+import java.io.IOException;
 
 public class LoginPluginResponseCodec implements Codec<LoginPluginResponseMessage> {
     @Override
