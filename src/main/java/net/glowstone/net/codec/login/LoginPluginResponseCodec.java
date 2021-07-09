@@ -2,8 +2,8 @@ package net.glowstone.net.codec.login;
 
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
-import net.glowstone.net.message.login.LoginPluginResponseMessage;
 import io.netty.buffer.ByteBuf;
+import net.glowstone.net.message.login.LoginPluginResponseMessage;
 
 import java.io.IOException;
 
