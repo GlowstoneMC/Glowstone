@@ -2225,6 +2225,9 @@ public class GlowServer implements Server {
      * @param player The player who is being sent their abilities.
      */
     public void sendPlayerAbilities(GlowPlayer player) {
+        if (!player.hasJoined()) {
+            return;
+        }
         boolean creative = player.getGameMode() == GameMode.CREATIVE;
         int flags = (creative ? 8 : 0) | (player.getAllowFlight() ? 4 : 0)
                 | (player.isFlying() ? 2 : 0) | (creative ? 1 : 0);

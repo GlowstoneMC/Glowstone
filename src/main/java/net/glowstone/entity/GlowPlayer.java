@@ -56,6 +56,7 @@ import net.glowstone.net.message.play.entity.SetPassengerMessage;
 import net.glowstone.net.message.play.game.BlockBreakAnimationMessage;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.game.ChatMessage;
+import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.net.message.play.game.ExperienceMessage;
 import net.glowstone.net.message.play.game.HealthMessage;
 import net.glowstone.net.message.play.game.JoinGameMessage;
@@ -82,6 +83,7 @@ import net.glowstone.net.message.play.game.UserListHeaderFooterMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
 import net.glowstone.net.message.play.inv.CloseWindowMessage;
+import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.net.message.play.inv.OpenWindowMessage;
 import net.glowstone.net.message.play.inv.SetWindowContentsMessage;
 import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
@@ -660,6 +662,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return new Location(world, blockX + 0.5, y, blockZ + 0.5);
     }
 
+    public boolean hasJoined() {
+        return joinTime != 0;
+    }
+
     /**
      * Loads the player's state and sends the messages that are necessary on login.
      *
@@ -676,8 +682,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (server.isHardcore()) {
             gameMode |= 0x8;
         }
-
-        setGameModeDefaults();
 
         session.send(new JoinGameMessage(getEntityId(), gameMode, world.getEnvironment().getId(), world
                 .getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, world
@@ -706,7 +710,22 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // send initial location
         session.send(new PositionRotationMessage(location));
 
-        session.send(((GlowWorldBorder) world.getWorldBorder()).createMessage());
+        // send initial velocity
+        session.send(new EntityVelocityMessage(getEntityId(), velocity));
+
+        // send initial health
+        sendHealth();
+
+        // send gamemode defaults
+        setGameModeDefaults();
+
+        // send held item
+        getSession().send(new HeldItemMessage(getInventory().getHeldItemSlot()));
+
+        // send xp bar
+        sendExperience();
+
+        session.send(world.getWorldBorder().createMessage());
         sendTime();
         setCompassTarget(world.getSpawnLocation()); // set our compass target
 
@@ -1136,8 +1155,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         boolean skylight = world.getEnvironment() == Environment.NORMAL;
         ByteBufAllocator alloc = session.getChannel() == null ? null : session.getChannel().alloc();
 
-        newChunks.stream().map(key -> world.getChunk(key).toMessage(skylight, true, alloc))
-                .forEach(session::send);
+        for (GlowChunk.Key key : newChunks) {
+            GlowChunk chunk = world.getChunk(key);
+            ChunkDataMessage message = chunk.toMessage(skylight, true, alloc);
+            if (message.getData() == null) {
+                // allocator failed
+                break;
+            }
+            session.sendAndRelease(message, message.getData());
+        }
 
         // send visible block entity data
         newChunks.stream().flatMap(key -> world.getChunkAt(key.getX(),
@@ -1380,7 +1406,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (!event.isCancelled()) {
             velocity = event.getVelocity();
             super.setVelocity(velocity);
-            session.send(new EntityVelocityMessage(getEntityId(), velocity));
+            if (hasJoined()) {
+                session.send(new EntityVelocityMessage(getEntityId(), velocity));
+            }
         }
     }
 
@@ -1803,6 +1831,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void sendExperience() {
+        if (!hasJoined()) {
+            return;
+        }
         session.send(new ExperienceMessage(getExp(), getLevel(), getTotalExperience()));
     }
 
@@ -1949,6 +1980,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void sendHealth() {
+        if (!hasJoined()) {
+            return;
+        }
         float finalHealth = (float) (getHealth() / getMaxHealth() * getHealthScale());
         session.send(new HealthMessage(finalHealth, getFoodLevel(), getSaturation()));
     }

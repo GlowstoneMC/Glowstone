@@ -57,6 +57,7 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
         }
 
         // abilities
+        // TODO: queue these up together?
         tag.readCompound("abilities", abilities -> {
             abilities.readFloat("walkSpeed", speed -> entity.setWalkSpeed(speed * 2f));
             abilities.readFloat("flySpeed", speed -> entity.setFlySpeed(speed * 2f));

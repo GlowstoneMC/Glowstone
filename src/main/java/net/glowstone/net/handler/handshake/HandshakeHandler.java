@@ -42,6 +42,12 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
         session.setProtocol(protocol);
 
+        if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {
+            session.disconnect("Outdated client! I'm running " + GlowServer.GAME_VERSION);
+        } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
+            session.disconnect("Outdated server! I'm running " + GlowServer.GAME_VERSION);
+        }
+
         if (protocol != loginProtocol) {
             return;
         }
@@ -52,19 +58,11 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
             } catch (IllegalArgumentException ex) {
                 session.disconnect("Invalid proxy data provided.");
                 session.getServer().getLogger().log(Level.WARNING, "Session " + session + " sent invalid proxy data.", ex);
-                return;
             } catch (Exception ex) {
                 GlowServer.logger.log(Level.SEVERE,
                         "Error parsing proxy data for " + session, ex);
                 session.disconnect("Failed to parse proxy data.");
-                return;
             }
-        }
-
-        if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {
-            session.disconnect("Outdated client! I'm running " + GlowServer.GAME_VERSION);
-        } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
-            session.disconnect("Outdated server! I'm running " + GlowServer.GAME_VERSION);
         }
     }
 }

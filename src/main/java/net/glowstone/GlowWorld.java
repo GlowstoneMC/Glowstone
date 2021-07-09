@@ -37,6 +37,7 @@ import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
+import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
@@ -1388,7 +1389,8 @@ public class GlowWorld implements World {
 
         for (GlowPlayer player : getRawPlayers()) {
             if (player.canSeeChunk(key)) {
-                player.getSession().send(getChunkAt(x, z).toMessage());
+                ChunkDataMessage message = getChunkAt(x, z).toMessage();
+                player.getSession().sendAndRelease(message, message.getData());
                 result = true;
             }
         }

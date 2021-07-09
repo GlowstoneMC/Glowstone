@@ -23,12 +23,8 @@ public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
         buf.writeBoolean(message.isContinuous());
         ByteBufUtils.writeVarInt(buf, message.getPrimaryMask());
         ByteBuf data = message.getData();
-        try {
-            ByteBufUtils.writeVarInt(buf, data.writerIndex());
-            buf.writeBytes(data);
-        } finally {
-            data.release();
-        }
+        ByteBufUtils.writeVarInt(buf, data.writerIndex());
+        buf.writeBytes(data);
         ByteBufUtils.writeVarInt(buf, message.getBlockEntities().size());
         for (CompoundTag tag : message.getBlockEntities()) {
             GlowBufUtils.writeCompound(buf, tag);

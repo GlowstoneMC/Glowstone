@@ -317,6 +317,10 @@ public class GlowSession extends BasicSession {
             // discard messages sent if we're closed, since this happens a lot
             return null;
         }
+        // Useful for debugging packet sends
+        // TODO: config option?
+        // Throwable trace = new Throwable();
+        // return super.sendWithFuture(message).addListener(f -> GlowServer.logger.log(Level.INFO, "Sent packet " + message.toString() + " to " + this, trace));
         return super.sendWithFuture(message);
     }
 

@@ -371,7 +371,10 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         setRawHeldItemSlot(slot);
 
         if (getHolder() instanceof GlowPlayer) {
-            ((GlowPlayer) getHolder()).getSession().send(new HeldItemMessage(slot));
+            GlowPlayer player = (GlowPlayer) getHolder();
+            if (player.hasJoined()) {
+                player.getSession().send(new HeldItemMessage(slot));
+            }
         }
     }
 

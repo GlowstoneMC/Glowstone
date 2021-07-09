@@ -27,13 +27,24 @@ public abstract class GlowProtocol extends AbstractProtocol {
      * Creates an instance.
      *
      * @param name the name of the protocol
+     * @param highestInboundOpcode the highest opcode the inbound protocol will use
+     * @param highOutboundOpcode the highest opcode the outbound protocol will use
+     */
+    public GlowProtocol(String name, int highestInboundOpcode, int highOutboundOpcode) {
+        super(name);
+        inboundCodecs = new CodecLookupService(highestInboundOpcode + 1);
+        outboundCodecs = new CodecLookupService(highOutboundOpcode + 1);
+        handlers = new HandlerLookupService();
+    }
+
+    /**
+     * Creates an instance.
+     *
+     * @param name the name of the protocol
      * @param highestOpcode the highest opcode this protocol will use
      */
     public GlowProtocol(String name, int highestOpcode) {
-        super(name);
-        inboundCodecs = new CodecLookupService(highestOpcode + 1);
-        outboundCodecs = new CodecLookupService(highestOpcode + 1);
-        handlers = new HandlerLookupService();
+        this(name, highestOpcode, highestOpcode);
     }
 
     protected <M extends Message, C extends Codec<? super M>,

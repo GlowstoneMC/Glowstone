@@ -3,8 +3,9 @@ package net.glowstone.net.codec.login;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.message.login.LoginPluginRequestMessage;
+
+import java.io.IOException;
 
 public class LoginPluginRequestCodec implements Codec<LoginPluginRequestMessage> {
     @Override
@@ -20,8 +21,8 @@ public class LoginPluginRequestCodec implements Codec<LoginPluginRequestMessage>
     public LoginPluginRequestMessage decode(ByteBuf buf) throws IOException {
         int transactionId = ByteBufUtils.readVarInt(buf);
         String channel = ByteBufUtils.readUTF8(buf);
-        int remainingBytes = buf.readableBytes();
-        ByteBuf data = buf.readBytes(remainingBytes);
+        byte[] data = new byte[buf.readableBytes()];
+        buf.readBytes(data);
 
         return new LoginPluginRequestMessage(transactionId, channel, data);
     }
