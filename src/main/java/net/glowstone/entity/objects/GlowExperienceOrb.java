@@ -1,5 +1,6 @@
 package net.glowstone.entity.objects;
 
+import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnXpOrbMessage;
@@ -74,16 +76,22 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     @Override
     public void pulse() {
         super.pulse();
+        // todo: drag self towards player
+
         if (tickSkipped) {
             // find player to give experience
-            // todo: drag self towards player
             Optional<Player> player = getWorld().getPlayers().stream()
                 .filter(p -> p.getLocation().distanceSquared(location) <= 1)
                 .findAny();
             if (player.isPresent()) {
-                player.get().giveExp(experience);
-                world.playSound(location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
-                remove();
+                PlayerPickupExperienceEvent event =
+                    new PlayerPickupExperienceEvent(player.get(), this);
+                event = EventFactory.getInstance().callEvent(event);
+                if (!event.isCancelled()) {
+                    player.get().giveExp(experience);
+                    world.playSound(location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
+                    remove();
+                }
                 return;
             }
         }
@@ -116,7 +124,7 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     }
 
     @Override
-    public EntityType getType() {
+    public @NotNull EntityType getType() {
         return EntityType.EXPERIENCE_ORB;
     }
 }
