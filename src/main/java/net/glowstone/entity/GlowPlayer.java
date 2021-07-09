@@ -1158,13 +1158,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         for (GlowChunk.Key key : newChunks) {
             GlowChunk chunk = world.getChunk(key);
             ChunkDataMessage message = chunk.toMessage(skylight, true, alloc);
-            // TODO: figure out why this is failing
-            /*if (message.getData() == null) {
+            if (message == null || message.getData() == null) {
                 // allocator failed
                 break;
             }
-            session.sendAndRelease(message, message.getData());*/
-            session.send(message);
+            session.sendAndRelease(message, message.getData());
         }
 
         // send visible block entity data
