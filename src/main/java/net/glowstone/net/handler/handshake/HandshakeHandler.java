@@ -57,7 +57,6 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
                 session.setProxyData(new ProxyData(session, message.getAddress()));
             } catch (IllegalArgumentException ex) {
                 session.disconnect("Invalid proxy data provided.");
-                session.getServer().getLogger().log(Level.WARNING, "Session " + session + " sent invalid proxy data.", ex);
             } catch (Exception ex) {
                 GlowServer.logger.log(Level.SEVERE,
                         "Error parsing proxy data for " + session, ex);
