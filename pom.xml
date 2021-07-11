@@ -87,6 +87,11 @@
       <version>${redstone.transformer.version}</version>
     </dependency>
     <dependency>
+      <groupId>net.glowstone</groupId>
+      <artifactId>data-pack-generated</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>org.fusesource.jansi</groupId>
       <artifactId>jansi</artifactId>
       <version>1.17.1</version>
