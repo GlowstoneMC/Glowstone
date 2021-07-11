@@ -9,8 +9,8 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.GlowTags;
 import net.glowstone.block.ItemTable;
-import net.glowstone.block.MaterialUtil;
 import net.glowstone.block.blocktype.BlockContainer;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.itemtype.ItemTimedUsage;
@@ -63,7 +63,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 Action action = Action.LEFT_CLICK_BLOCK;
                 Block eventBlock = block;
                 if (player.getLocation().distanceSquared(block.getLocation()) > 36
-                    || MaterialUtil.AIR_VARIANTS.contains(material)) {
+                        || GlowTags.AIR_VARIANTS.isTagged(material)) {
                     action = Action.LEFT_CLICK_AIR;
                     eventBlock = null;
                 }
@@ -156,7 +156,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             }
 
             MaterialData data = block.getState().getData();
-            if (MaterialUtil.DOUBLE_PLANTS.contains(material)) {
+            if (GlowTags.BISECTED_BLOCKS.isTagged(material)) {
                 if (block.getRelative(BlockFace.DOWN).getType() == material) {
                     block = block.getRelative(BlockFace.DOWN);
                 }
@@ -196,7 +196,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         } else if (revert) {
             // replace the block that wasn't really dug
             BlockPlacementHandler.revert(player, block);
-        } else if (!MaterialUtil.AIR_VARIANTS.contains(material)) {
+        } else if (!GlowTags.AIR_VARIANTS.isTagged(material)) {
             BlockType blockType = ItemTable.instance().getBlock(material);
             blockType.leftClickBlock(player, block, holding);
         }

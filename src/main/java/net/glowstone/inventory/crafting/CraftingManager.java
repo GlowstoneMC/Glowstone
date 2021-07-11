@@ -1,5 +1,6 @@
 package net.glowstone.inventory.crafting;
 
+import com.destroystokyo.paper.MaterialTags;
 import com.google.common.collect.Iterators;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import net.glowstone.block.MaterialUtil;
+import net.glowstone.block.GlowTags;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.GlowCraftingInventory;
@@ -20,6 +21,7 @@ import net.glowstone.util.InventoryUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.FurnaceRecipe;
@@ -418,10 +420,10 @@ public final class CraftingManager implements Iterable<Recipe> {
         dynamicRecipes.add(new DynamicRecipe(new GlowMapCopyMatcher()));
         dynamicRecipes.add(new DynamicRecipe(new GlowMapZoomMatcher()));
 
-        putAllAsFuels(MaterialUtil.BANNERS, 300);
+        putAllAsFuels(Tag.BANNERS, 300);
         furnaceFuels.put(Material.BLAZE_ROD, 2400);
         furnaceFuels.put(Material.COAL_BLOCK, 16000);
-        putAllAsFuels(MaterialUtil.BOATS, 400);
+        putAllAsFuels(Tag.ITEMS_BOATS, 400);
         furnaceFuels.put(Material.OAK_BOAT, 400);
         furnaceFuels.put(Material.ACACIA_BOAT, 400);
         furnaceFuels.put(Material.BIRCH_BOAT, 400);
@@ -431,13 +433,13 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.BOOKSHELF, 300);
         furnaceFuels.put(Material.BOW, 300);
         furnaceFuels.put(Material.BOWL, 100);
-        putAllAsFuels(MaterialUtil.CARPETS, 67);
+        putAllAsFuels(Tag.CARPETS, 67);
         furnaceFuels.put(Material.COAL, 1600);
         furnaceFuels.put(Material.CHEST, 300);
         furnaceFuels.put(Material.CRAFTING_TABLE, 300);
         furnaceFuels.put(Material.DAYLIGHT_DETECTOR, 300);
-        putAllAsFuels(MaterialUtil.WOODEN_FENCES, 300);
-        putAllAsFuels(MaterialUtil.WOODEN_GATES, 300);
+        putAllAsFuels(Tag.WOODEN_FENCES, 300);
+        putAllAsFuels(MaterialTags.WOODEN_GATES, 300);
         furnaceFuels.put(Material.FISHING_ROD, 300);
         furnaceFuels.put(Material.JUKEBOX, 300);
         furnaceFuels.put(Material.LADDER, 300);
@@ -445,24 +447,28 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.BROWN_MUSHROOM_BLOCK, 300);
         furnaceFuels.put(Material.RED_MUSHROOM_BLOCK, 300);
         furnaceFuels.put(Material.NOTE_BLOCK, 300);
-        putAllAsFuels(MaterialUtil.SAPLINGS, 100);
-        putAllAsFuels(MaterialUtil.SIGNS, 200);
+        putAllAsFuels(Tag.SAPLINGS, 100);
+        putAllAsFuels(MaterialTags.SIGNS, 200);
         furnaceFuels.put(Material.STICK, 100);
-        putAllAsFuels(MaterialUtil.TRAPDOORS, 300);
+        putAllAsFuels(Tag.TRAPDOORS, 300);
         furnaceFuels.put(Material.TRAPPED_CHEST, 300);
-        putAllAsFuels(MaterialUtil.LOGS, 300);
-        putAllAsFuels(MaterialUtil.WOODS, 300);
-        putAllAsFuels(MaterialUtil.PLANKS, 300);
-        putAllAsFuels(MaterialUtil.WOODEN_BUTTONS, 300);
-        putAllAsFuels(MaterialUtil.WOODEN_PRESSURE_PLATES, 300);
-        putAllAsFuels(MaterialUtil.WOODEN_STAIRS, 300);
+        putAllAsFuels(Tag.LOGS, 300);
+        putAllAsFuels(GlowTags.WOODS, 300);
+        putAllAsFuels(Tag.PLANKS, 300);
+        putAllAsFuels(Tag.WOODEN_BUTTONS, 300);
+        putAllAsFuels(Tag.WOODEN_PRESSURE_PLATES, 300);
+        putAllAsFuels(Tag.WOODEN_STAIRS, 300);
         furnaceFuels.put(Material.WOODEN_AXE, 200);
         furnaceFuels.put(Material.WOODEN_HOE, 200);
         furnaceFuels.put(Material.WOODEN_PICKAXE, 200);
         furnaceFuels.put(Material.WOODEN_SHOVEL, 200);
         furnaceFuels.put(Material.WOODEN_SWORD, 200);
-        putAllAsFuels(MaterialUtil.WOODEN_SLABS, 300);
-        putAllAsFuels(MaterialUtil.WOOLS, 100);
+        putAllAsFuels(Tag.WOODEN_SLABS, 300);
+        putAllAsFuels(Tag.WOOL, 100);
+    }
+
+    private void putAllAsFuels(Tag<Material> tag, int duration) {
+        putAllAsFuels(tag.getValues(), duration);
     }
 
     private void putAllAsFuels(Iterable<Material> materials, int duration) {
