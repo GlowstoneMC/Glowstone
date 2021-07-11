@@ -1,0 +1,4 @@
+[core]
+	whitespace = indent-with-non-tab,tab-in-indent,tabwidth=4
+	autocrlf = false
+	safecrlf = false
