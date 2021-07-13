@@ -4,8 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.flowpowered.network.Message;
-import net.glowstone.datapack.vanilla.VanillaRecipeManager;
-import net.glowstone.datapack.vanilla.VanillaTagManager;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.ListMultimap;
@@ -122,6 +120,8 @@ import net.glowstone.datapack.FuelManager;
 import net.glowstone.datapack.RecipeManager;
 import net.glowstone.datapack.TagManager;
 import net.glowstone.datapack.vanilla.VanillaFuelManager;
+import net.glowstone.datapack.vanilla.VanillaRecipeManager;
+import net.glowstone.datapack.vanilla.VanillaTagManager;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.FishingRewardManager;
 import net.glowstone.entity.GlowPlayer;
