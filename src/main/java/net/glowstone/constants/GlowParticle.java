@@ -109,8 +109,10 @@ public class GlowParticle {
                 return ArrayUtils.EMPTY_INTEGER_OBJECT_ARRAY;
             }
 
-            BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
-            StatefulBlockData blockData = blockDataManager.convertToStatefulBlockData((BlockData) o);
+            BlockDataManager blockDataManager =
+                ((GlowServer) Bukkit.getServer()).getBlockDataManager();
+            StatefulBlockData blockData =
+                blockDataManager.convertToStatefulBlockData((BlockData) o);
             int id = blockDataManager.convertToBlockId(blockData);
             return new Integer[]{id};
         });

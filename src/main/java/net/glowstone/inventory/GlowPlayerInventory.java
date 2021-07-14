@@ -202,7 +202,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public ItemStack getItem(EquipmentSlot slot) {
+    public @NotNull ItemStack getItem(EquipmentSlot slot) {
         switch (slot) {
             case HAND:
                 return getItemInMainHand();
@@ -370,7 +370,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public ItemStack getItemInMainHand() {
+    public @NotNull ItemStack getItemInMainHand() {
         return getItem(heldItemSlot).clone();
     }
 
@@ -385,7 +385,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public ItemStack getItemInOffHand() {
+    public @NotNull ItemStack getItemInOffHand() {
         return getItem(OFF_HAND_SLOT).clone();
     }
 
@@ -401,7 +401,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     @Deprecated
-    public ItemStack getItemInHand() {
+    public @NotNull ItemStack getItemInHand() {
         return getItemInMainHand();
     }
 
