@@ -20,11 +20,13 @@ import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.block.data.states.StatefulBlockData;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.chunk.GlowChunk;
+import net.glowstone.datapack.tags.ExtraMaterialTags;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -266,7 +268,7 @@ public class GlowBlock implements Block {
 
     @Override
     public boolean isEmpty() {
-        return MaterialUtil.AIR_VARIANTS.contains(getType());
+        return ExtraMaterialTags.AIR_VARIANTS.isTagged(getType());
     }
 
     @Override
@@ -390,7 +392,7 @@ public class GlowBlock implements Block {
             return true;
         }
 
-        if (MaterialUtil.BUTTONS.contains(getType())
+        if (Tag.BUTTONS.isTagged(getType())
             && ((Button) getState().getData()).isPowered()) {
             return true;
         }
