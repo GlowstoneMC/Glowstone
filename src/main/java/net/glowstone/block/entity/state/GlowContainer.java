@@ -42,12 +42,6 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
     }
 
     @Override
-    public void setLootTable(@Nullable LootTable table, long seed) {
-        setSeed(seed);
-        setLootTable(table);
-    }
-
-    @Override
     public void setLock(@Nullable String lock) {
         this.lock = Optional.ofNullable(lock).orElse("");
     }
@@ -55,6 +49,12 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
     @Override
     public void setLootTable(@Nullable LootTable table) {
         lootTable.set(table);
+    }
+
+    @Override
+    public void setLootTable(@Nullable LootTable table, long seed) {
+        setSeed(seed);
+        setLootTable(table);
     }
 
     @Override
