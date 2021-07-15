@@ -1,8 +1,11 @@
 [versions]
-linkstone = "1.0.0-SNAPSHOT"
-checkstyle = "8.30"
 glowstone = "1.16.5-R0.1-SNAPSHOT"
 block-data-generated = "1.0.0-SNAPSHOT"
+redstone-trasformer = "1.0.0-SNAPSHOT"
+
+
+linkstone = "1.0.0-SNAPSHOT"
+checkstyle = "8.30"
 jansi = "1.17.1"
 jline = "2.14.6"
 fastutil = "1.0"
@@ -30,6 +33,7 @@ linkstone-runtime = { module = "net.glowstone:linkstone-runtime", version.ref = 
 
 glowstone-glowkit = { module = "net.glowstone:glowkit", version.ref = "glowstone" }
 glowstone-blockdata = { module = "net.glowstone:block-data-generated", version.ref = "block-data-generated" }
+glowstone-datapack = { module = "net.glowstone:data-pack-generated", version.ref = "redstone-trasformer" }
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
@@ -58,13 +62,14 @@ powermock-core = { module = "org.powermock:powermock-core", version.ref = "power
 powermock-module-junit4 = { module = "org.powermock:powermock-module-junit4", version.ref = "powermock" }
 powermock-api-mockito2 = { module = "org.powermock:powermock-api-mockito2", version.ref = "powermock" }
 
-lombok = {module = "org.projectlombok:lombok",version.ref="lombok"}
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 
-jetbrains-annotations = {module="org.jetbrains:annotations", version.ref="jetbrains-annotations"}
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 
 [bundles]
+glowstone = ["glowstone-glowkit", "glowstone-blockdata", "glowstone-datapack"]
+
 linkstone = ["linkstone-annotations", "linkstone-runtime"]
-glowstone = ["glowstone-glowkit", "glowstone-blockdata"]
 kotlin = ["kotlin-stdlib", "kotlin-reflect"]
 junit = ["junit-core", "junit-vintage-engine", "junit-jupiter-api", "junit-jupiter-params", "junit-jupiter-engine"]
 powermock = ["powermock-core", "powermock-module-junit4", "powermock-api-mockito2"]
