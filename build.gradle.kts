@@ -3,6 +3,7 @@ import java.util.*
 
 plugins {
     java
+    id("io.freefair.lombok") version "6.0.0-m2"
 
     `maven-publish`
     checkstyle
@@ -42,11 +43,6 @@ dependencies {
     testImplementation(libs.hamcrest)
     testImplementation(libs.bundles.powermock)
 
-    compileOnly(libs.lombok)
-    annotationProcessor(libs.lombok)
-    testCompileOnly(libs.lombok)
-    testAnnotationProcessor(libs.lombok)
-
     compileOnly(libs.jetbrains.annotations)
 }
 
@@ -54,6 +50,13 @@ group = "net.glowstone"
 version = "2021.7.1-SNAPSHOT"
 description = "A fast, customizable and compatible open source Minecraft server."
 
+lombok {
+    setVersion(libs.versions.lombok.get())
+}
+
+tasks.javadoc {
+    exclude("**/*.xml")
+}
 
 publishing {
     publications {
