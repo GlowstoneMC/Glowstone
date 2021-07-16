@@ -3,6 +3,9 @@ import java.util.*
 
 plugins {
     java
+    kotlin("jvm") version "1.5.21"
+    kotlin("plugin.lombok") version "1.5.21"
+    id("io.freefair.lombok") version "5.3.0"
 
     `maven-publish`
     checkstyle
