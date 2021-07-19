@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        java: [ 11, 16 ]
+        java: [ 16 ]
 
     name: CI (Java ${{ matrix.java }})
 
