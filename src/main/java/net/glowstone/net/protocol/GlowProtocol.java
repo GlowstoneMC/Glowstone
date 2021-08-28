@@ -27,7 +27,8 @@ public abstract class GlowProtocol extends AbstractProtocol {
      * Creates an instance.
      *
      * @param name          the name of the protocol
-     * @param highestOpcode the highest opcode this protocol will use
+     * @param highestInboundOpcode the highest opcode the inbound protocol will use
+     * @param highOutboundOpcode the highest opcode the outbound protocol will use
      */
     public GlowProtocol(String name, int highestInboundOpcode, int highOutboundOpcode) {
         super(name);
