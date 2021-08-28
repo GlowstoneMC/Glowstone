@@ -6,12 +6,15 @@ import io.netty.buffer.ByteBuf;
 import net.glowstone.net.message.login.LoginStartMessage;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public final class LoginStartCodec implements Codec<LoginStartMessage> {
 
     @Override
     public LoginStartMessage decode(ByteBuf buffer) throws IOException {
-        return new LoginStartMessage(ByteBufUtils.readUTF8(buffer));
+        String input = ByteBufUtils.readUTF8(buffer);
+        return new LoginStartMessage(URLEncoder.encode(input, StandardCharsets.UTF_8.toString()));
     }
 
     @Override
