@@ -14,12 +14,21 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public final class LoginStartHandler implements MessageHandler<GlowSession, LoginStartMessage> {
+
+    private static final Pattern usernamePattern = Pattern.compile("[a-zA-Z0-9_]+");
 
     @Override
     public void handle(GlowSession session, LoginStartMessage message) {
         String name = message.getUsername();
+
+        int length = name.length();
+        if (length > 16 || !usernamePattern.matcher(name).find()) {
+            session.disconnect("Invalid username provided.", true);
+        }
+
         GlowServer server = session.getServer();
 
         if (server.getOnlineMode()) {
