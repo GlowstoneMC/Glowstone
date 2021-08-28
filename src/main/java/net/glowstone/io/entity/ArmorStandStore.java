@@ -1,13 +1,14 @@
 package net.glowstone.io.entity;
 
-import java.util.Arrays;
-import java.util.List;
 import net.glowstone.entity.objects.GlowArmorStand;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.util.EulerAngle;
 import org.jetbrains.annotations.NonNls;
+
+import java.util.Arrays;
+import java.util.List;
 
 class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
 

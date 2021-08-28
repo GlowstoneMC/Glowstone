@@ -1,5 +1,12 @@
 package net.glowstone.util;
 
+import com.google.common.collect.ImmutableList;
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
+import org.bukkit.util.BlockVector;
+
+import java.util.List;
+
 import static org.bukkit.block.BlockFace.EAST;
 import static org.bukkit.block.BlockFace.EAST_NORTH_EAST;
 import static org.bukkit.block.BlockFace.EAST_SOUTH_EAST;
@@ -16,12 +23,6 @@ import static org.bukkit.block.BlockFace.SOUTH_WEST;
 import static org.bukkit.block.BlockFace.WEST;
 import static org.bukkit.block.BlockFace.WEST_NORTH_WEST;
 import static org.bukkit.block.BlockFace.WEST_SOUTH_WEST;
-
-import com.google.common.collect.ImmutableList;
-import java.util.List;
-import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
-import org.bukkit.util.BlockVector;
 
 /**
  * A static class housing position-related utilities and constants.

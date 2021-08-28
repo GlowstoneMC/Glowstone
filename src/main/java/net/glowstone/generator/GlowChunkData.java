@@ -123,7 +123,7 @@ public class GlowChunkData implements ChunkData {
     }
 
     @Override
-    public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, @NotNull BlockData blockData) {
+    public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, @NotNull BlockData blockData) {
         // TODO: 1.13
         throw new NotImplementedException();
     }

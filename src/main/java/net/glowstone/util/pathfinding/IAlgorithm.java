@@ -1,14 +1,15 @@
 package net.glowstone.util.pathfinding;
 
 import com.google.common.collect.Sets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import net.glowstone.block.GlowBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The base interface for all Pathfinding algorithms to implement from.
@@ -38,7 +39,7 @@ public interface IAlgorithm {
      *                         a {@link Double cost} as the value.
      * @param blockedMaterials A set of materials that should be ignored.
      * @return A map of locations and their costs, after removing ignored materials, that neighbor
-     * the specified block.
+     *     the specified block.
      */
     default Map<Vector, Double> getNeighbors(final Location location,
                                              final Map<Material, Double> materialWeights,

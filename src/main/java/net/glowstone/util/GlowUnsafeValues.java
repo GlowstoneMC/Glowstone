@@ -1,9 +1,6 @@
 package net.glowstone.util;
 
 import io.papermc.paper.inventory.ItemRarity;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -22,6 +19,10 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Implementation of Bukkit's internal-use UnsafeValues.

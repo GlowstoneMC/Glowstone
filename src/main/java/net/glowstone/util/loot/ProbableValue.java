@@ -1,13 +1,14 @@
 package net.glowstone.util.loot;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import lombok.Data;
 import org.jetbrains.annotations.NonNls;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Probability distribution with a list of possible values.

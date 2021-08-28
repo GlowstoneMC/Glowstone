@@ -1,6 +1,5 @@
 package net.glowstone.block.entity.state;
 
-import java.util.Collection;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
@@ -13,6 +12,8 @@ import org.bukkit.block.Jukebox;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
 
 public class GlowJukebox extends GlowBlockState implements Jukebox {
 

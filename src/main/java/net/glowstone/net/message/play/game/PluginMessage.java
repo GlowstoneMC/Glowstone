@@ -4,11 +4,12 @@ import com.flowpowered.network.Message;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import java.io.IOException;
-import java.util.logging.Level;
 import lombok.Data;
 import net.glowstone.GlowServer;
 import org.jetbrains.annotations.NonNls;
+
+import java.io.IOException;
+import java.util.logging.Level;
 
 @Data
 public final class PluginMessage implements Message {

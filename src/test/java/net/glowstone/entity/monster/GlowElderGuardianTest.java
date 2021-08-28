@@ -1,14 +1,15 @@
 package net.glowstone.entity.monster;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-
-import java.util.UUID;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.World;
 import org.junit.Assert;
 import org.mockito.Mockito;
+
+import java.util.UUID;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
 
 public class GlowElderGuardianTest extends GlowGuardianTest {
     @Override

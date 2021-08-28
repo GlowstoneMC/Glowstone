@@ -1,10 +1,11 @@
 package net.glowstone.generator.decorators.theend;
 
-import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.ObsidianPillar;
 import org.bukkit.Chunk;
 import org.bukkit.World;
+
+import java.util.Random;
 
 public class ObsidianPillarDecorator extends BlockDecorator {
 

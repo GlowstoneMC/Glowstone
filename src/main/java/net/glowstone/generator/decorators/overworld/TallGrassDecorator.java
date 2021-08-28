@@ -1,12 +1,13 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.TallGrass;
 import org.bukkit.Chunk;
 import org.bukkit.GrassSpecies;
 import org.bukkit.World;
 import org.bukkit.material.LongGrass;
+
+import java.util.Random;
 
 public class TallGrassDecorator extends BlockDecorator {
 

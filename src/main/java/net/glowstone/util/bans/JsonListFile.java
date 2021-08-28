@@ -1,5 +1,10 @@
 package net.glowstone.util.bans;
 
+import net.glowstone.GlowServer;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -11,10 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import net.glowstone.GlowServer;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 /**
  * Tools for storing lists of entries in JSON files.

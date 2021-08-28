@@ -1,6 +1,5 @@
 package net.glowstone.block.itemtype;
 
-import java.util.Set;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
@@ -13,6 +12,8 @@ import org.bukkit.entity.Boat;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.Set;
 
 public class ItemBoat extends ItemType {
 

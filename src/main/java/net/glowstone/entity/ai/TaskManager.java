@@ -2,11 +2,12 @@ package net.glowstone.entity.ai;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
+import net.glowstone.entity.GlowLivingEntity;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
-import net.glowstone.entity.GlowLivingEntity;
 
 public class TaskManager {
 
@@ -36,7 +37,7 @@ public class TaskManager {
      *
      * @param clazz the class to look up
      * @return one of this manager's tasks that's an instance of that class and not a subclass, or
-     * null if no such tasks are registered
+     *     null if no such tasks are registered
      */
     public EntityTask getTask(Class<? extends EntityTask> clazz) {
         return tasksByClass.get(clazz);
@@ -47,7 +48,7 @@ public class TaskManager {
      *
      * @param name the task name to look up
      * @return a task with the given name, or null if none match or the matching task class doesn't
-     * have a parameterless constructor
+     *     have a parameterless constructor
      */
     public EntityTask getNewTask(String name) {
         // TODO: Refactor to use a constructor-reference Supplier<? extends EntityTask>

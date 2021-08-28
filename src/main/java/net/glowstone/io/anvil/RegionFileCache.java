@@ -31,13 +31,14 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
+import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
+import net.glowstone.util.config.ServerConfig.Key;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
-import net.glowstone.GlowServer;
-import net.glowstone.ServerProvider;
-import net.glowstone.util.config.ServerConfig.Key;
 
 /**
  * A simple cache and wrapper for efficiently accessing multiple RegionFiles simultaneously.

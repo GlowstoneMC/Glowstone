@@ -1,6 +1,5 @@
 package net.glowstone.entity.passive;
 
-import java.util.UUID;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowAnimal;
@@ -14,6 +13,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityTameEvent;
+
+import java.util.UUID;
 
 public abstract class GlowTameable extends GlowAnimal implements Tameable {
 

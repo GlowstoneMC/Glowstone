@@ -1,13 +1,13 @@
 package net.glowstone.inventory;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import lombok.Getter;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowMerchantInventory extends GlowInventory implements MerchantInventory {
 

@@ -1,12 +1,13 @@
 package net.glowstone.command;
 
+import org.bukkit.GameMode;
+import org.junit.jupiter.api.Test;
+
+import java.util.Locale;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-
-import java.util.Locale;
-import org.bukkit.GameMode;
-import org.junit.jupiter.api.Test;
 
 public class GameModeUtilsTest {
 

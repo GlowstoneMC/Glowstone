@@ -2,8 +2,6 @@ package net.glowstone.entity.projectile;
 
 import com.flowpowered.network.Message;
 import io.netty.util.internal.ThreadLocalRandom;
-import java.util.Arrays;
-import java.util.List;
 import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
@@ -24,6 +22,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
     private static final double ENDER_PEARL_DAMAGE = 5.0;

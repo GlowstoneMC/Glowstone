@@ -1,6 +1,5 @@
 package net.glowstone.io.entity;
 
-import java.util.stream.Collectors;
 import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowTippedArrow;
 import net.glowstone.inventory.GlowMetaPotion;
@@ -9,6 +8,8 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.potion.PotionData;
+
+import java.util.stream.Collectors;
 
 public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
     private static final String COLOR = "Color";

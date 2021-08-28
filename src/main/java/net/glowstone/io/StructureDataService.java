@@ -1,7 +1,8 @@
 package net.glowstone.io;
 
-import java.util.Map;
 import net.glowstone.generator.structures.GlowStructure;
+
+import java.util.Map;
 
 /**
  * Provider of I/O for structures data.

@@ -1,7 +1,5 @@
 package net.glowstone.net.rcon;
 
-import java.util.Set;
-import java.util.UUID;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -13,6 +11,9 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
+import java.util.UUID;
 
 public class RconCommandSender implements RemoteConsoleCommandSender {
 

@@ -1,6 +1,5 @@
 package net.glowstone.map;
 
-import java.awt.Image;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +10,8 @@ import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MapFont;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+
+import java.awt.Image;
 
 /**
  * Represents a canvas for drawing to a map. Each canvas is associated with a specific

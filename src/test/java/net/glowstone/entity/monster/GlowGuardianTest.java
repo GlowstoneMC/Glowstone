@@ -1,10 +1,5 @@
 package net.glowstone.entity.monster;
 
-import static org.junit.Assert.assertFalse;
-import static org.mockito.ArgumentMatchers.eq;
-
-import java.util.UUID;
-import java.util.function.Function;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -12,6 +7,12 @@ import org.bukkit.World;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.UUID;
+import java.util.function.Function;
+
+import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.eq;
 
 public class GlowGuardianTest extends GlowMonsterTest<GlowGuardian> {
 

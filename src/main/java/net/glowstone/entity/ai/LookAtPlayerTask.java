@@ -1,13 +1,14 @@
 package net.glowstone.entity.ai;
 
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LookAtPlayerTask extends EntityTask {
 

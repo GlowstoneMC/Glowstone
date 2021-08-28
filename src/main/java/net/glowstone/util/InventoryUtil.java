@@ -1,12 +1,5 @@
 package net.glowstone.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-import javax.annotation.Nullable;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
@@ -18,6 +11,14 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class InventoryUtil {
 

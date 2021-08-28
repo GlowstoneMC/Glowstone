@@ -1,11 +1,12 @@
 package net.glowstone.generator.objects;
 
-import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
+
+import java.util.Random;
 
 public class ObsidianPillar implements TerrainObject {
 

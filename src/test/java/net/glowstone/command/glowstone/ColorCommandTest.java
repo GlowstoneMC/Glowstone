@@ -1,10 +1,10 @@
 package net.glowstone.command.glowstone;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import net.glowstone.command.CommandTest;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class ColorCommandTest extends CommandTest<ColorCommand> {
 

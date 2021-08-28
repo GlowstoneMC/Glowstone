@@ -1,19 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import static org.bukkit.Instrument.BANJO;
-import static org.bukkit.Instrument.BELL;
-import static org.bukkit.Instrument.BIT;
-import static org.bukkit.Instrument.CHIME;
-import static org.bukkit.Instrument.COW_BELL;
-import static org.bukkit.Instrument.DIDGERIDOO;
-import static org.bukkit.Instrument.FLUTE;
-import static org.bukkit.Instrument.GUITAR;
-import static org.bukkit.Instrument.IRON_XYLOPHONE;
-import static org.bukkit.Instrument.PIANO;
-import static org.bukkit.Instrument.PLING;
-import static org.bukkit.Instrument.SNARE_DRUM;
-import static org.bukkit.Instrument.XYLOPHONE;
-
 import com.destroystokyo.paper.MaterialTags;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
@@ -30,6 +16,20 @@ import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.event.block.NotePlayEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import static org.bukkit.Instrument.BANJO;
+import static org.bukkit.Instrument.BELL;
+import static org.bukkit.Instrument.BIT;
+import static org.bukkit.Instrument.CHIME;
+import static org.bukkit.Instrument.COW_BELL;
+import static org.bukkit.Instrument.DIDGERIDOO;
+import static org.bukkit.Instrument.FLUTE;
+import static org.bukkit.Instrument.GUITAR;
+import static org.bukkit.Instrument.IRON_XYLOPHONE;
+import static org.bukkit.Instrument.PIANO;
+import static org.bukkit.Instrument.PLING;
+import static org.bukkit.Instrument.SNARE_DRUM;
+import static org.bukkit.Instrument.XYLOPHONE;
 
 public class BlockNote extends BlockType {
 

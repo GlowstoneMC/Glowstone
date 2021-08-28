@@ -1,14 +1,7 @@
 package net.glowstone.scoreboard;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import net.glowstone.util.TextMessage;
@@ -22,6 +15,14 @@ import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Implementation for scoreboard teams.

@@ -1,6 +1,19 @@
 package net.glowstone.util.nbt;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import lombok.Getter;
+import net.glowstone.GlowServer;
+import net.glowstone.block.data.BlockDataManager;
+import net.glowstone.constants.ItemIds;
+import net.glowstone.io.nbt.NbtSerialization;
+import net.glowstone.util.DynamicallyTypedMapWithDoubles;
+import net.glowstone.util.FloatConsumer;
+import net.glowstone.util.ShortConsumer;
+import net.glowstone.util.UuidUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,20 +29,8 @@ import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import net.glowstone.GlowServer;
-import net.glowstone.block.data.BlockDataManager;
-import net.glowstone.constants.ItemIds;
-import net.glowstone.io.nbt.NbtSerialization;
-import net.glowstone.util.DynamicallyTypedMapWithDoubles;
-import net.glowstone.util.FloatConsumer;
-import net.glowstone.util.ShortConsumer;
-import net.glowstone.util.UuidUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NonNls;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The {@code TAG_Compound} tag.
@@ -478,7 +479,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      *
      * @param key the key to look up
      * @return an Optional with the value of that tag if it's present and is a long; an empty
-     * optional otherwise
+     *     Optional otherwise
      */
     public Optional<Long> tryGetLong(@NonNls String key) {
         return tryGetTag(key, LongTag.class);
@@ -652,8 +653,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * a valid material ID.
      *
      * @param key the key to look up
-     * @return the Material denoted by that key, if present and readable; an empty Optional
-     * otherwise
+     * @return the Material denoted by that key, if present and readable; an empty Optional otherwise
      */
     public Optional<Material> tryGetMaterial(@NonNls String key) {
         if (!containsKey(key)) {
@@ -707,7 +707,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      *
      * @param key the key to look up
      * @return an Optional with the value of that tag if it's present and is a string; an empty
-     * optional otherwise
+     *     optional otherwise
      */
     public Optional<String> tryGetString(@NonNls String key) {
         return tryGetTag(key, StringTag.class);
@@ -718,7 +718,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      *
      * @param key the key to look up
      * @return an Optional with the value of that tag if it's present and is an int; an empty
-     * optional otherwise
+     *     optional otherwise
      */
     public Optional<Integer> tryGetInt(@NonNls String key) {
         return tryGetTag(key, IntTag.class);
@@ -932,7 +932,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      *
      * @param key the key to look up
      * @return true if the subtag exists and is a {@link List} with elements of type
-     * {@link CompoundTag}; false otherwise
+     *     {@link CompoundTag}; false otherwise
      */
     public boolean isCompoundList(@NonNls String key) {
         return isList(key, TagType.COMPOUND);

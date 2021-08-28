@@ -1,6 +1,5 @@
 package net.glowstone.block.itemtype;
 
-import java.util.Optional;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -11,6 +10,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.Optional;
 
 public class ItemSign extends ItemType {
 

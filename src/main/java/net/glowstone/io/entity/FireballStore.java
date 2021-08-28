@@ -1,13 +1,14 @@
 package net.glowstone.io.entity;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
 import net.glowstone.entity.projectile.GlowFireball;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NonNls;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
 
 public class FireballStore<T extends GlowFireball> extends ProjectileStore<T> {
 

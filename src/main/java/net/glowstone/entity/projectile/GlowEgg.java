@@ -1,6 +1,5 @@
 package net.glowstone.entity.projectile;
 
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowAgeable;
@@ -20,6 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowEgg extends GlowProjectile implements Egg {
     private static final double VERTICAL_GRAVITY_ACCEL = -0.03;

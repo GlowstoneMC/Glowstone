@@ -4,14 +4,15 @@ import com.flowpowered.network.ConnectionManager;
 import com.flowpowered.network.session.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.concurrent.CountDownLatch;
 import net.glowstone.GlowServer;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.net.pipeline.GlowChannelInitializer;
 import net.glowstone.net.protocol.ProtocolProvider;
+
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.concurrent.CountDownLatch;
 
 
 public final class GameServer extends GlowSocketServer implements ConnectionManager {

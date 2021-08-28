@@ -1,11 +1,6 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowHangingEntity;
@@ -30,6 +25,12 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GlowPainting extends GlowHangingEntity implements Painting {
 

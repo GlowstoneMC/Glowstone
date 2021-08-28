@@ -5,12 +5,13 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.block.data.BlockData;
+
+import javax.annotation.Nullable;
 
 /**
  * A single cubic section of a chunk, with all data.
@@ -53,7 +54,7 @@ public final class ChunkSection {
      * The sky light array. This array is always set, even in dimensions without skylight.
      *
      * @return The sky light array. If the dimension of this chunk section's chunk's world is not
-     * the overworld, this array contains only maximum light levels.
+     *     the overworld, this array contains only maximum light levels.
      */
     @Getter
     private NibbleArray skyLight;

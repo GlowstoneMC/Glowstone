@@ -1,6 +1,5 @@
 package net.glowstone.entity.projectile;
 
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.objects.GlowExperienceOrb;
@@ -14,6 +13,8 @@ import org.bukkit.entity.ThrownExpBottle;
 import org.bukkit.event.entity.ExpBottleEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBottle {
 

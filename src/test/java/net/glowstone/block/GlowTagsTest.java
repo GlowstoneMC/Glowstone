@@ -1,12 +1,12 @@
 package net.glowstone.block;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.bukkit.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
-import org.bukkit.Tag;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GlowTagsTest {
     @Test

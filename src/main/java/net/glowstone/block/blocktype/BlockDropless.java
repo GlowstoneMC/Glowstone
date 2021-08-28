@@ -1,10 +1,11 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Collection;
-import java.util.Collections;
 import net.glowstone.block.GlowBlock;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Collections;
 
 public class BlockDropless extends BlockType {
 

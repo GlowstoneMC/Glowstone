@@ -1,9 +1,5 @@
 package net.glowstone.block.itemtype;
 
-import static org.mockito.Mockito.RETURNS_SMART_NULLS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.testutils.ServerShim;
@@ -12,6 +8,10 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
+
+import static org.mockito.Mockito.RETURNS_SMART_NULLS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Superclass for tests of {@link ItemType} subclasses. Provides a mock player with a real inventory

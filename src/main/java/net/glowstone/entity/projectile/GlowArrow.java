@@ -1,6 +1,5 @@
 package net.glowstone.entity.projectile;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.blocktype.BlockTnt;
@@ -24,6 +23,8 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class GlowArrow extends GlowProjectile implements Arrow {
 

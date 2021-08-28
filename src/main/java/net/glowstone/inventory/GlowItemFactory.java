@@ -1,7 +1,5 @@
 package net.glowstone.inventory;
 
-import java.util.Locale;
-import java.util.function.UnaryOperator;
 import net.glowstone.util.nbt.CompoundTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -17,6 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Locale;
+import java.util.function.UnaryOperator;
 
 /**
  * An implementation of {@link ItemFactory} responsible for creating ItemMetas.
@@ -146,7 +147,7 @@ public final class GlowItemFactory implements ItemFactory {
      *
      * @param meta an {@link ItemMeta}
      * @return a compound tag that can become the "tag" subtag of an item NBT tag, or null if
-     * {@code meta} matches an item with no "tag" subtag
+     *     {@code meta} matches an item with no "tag" subtag
      */
     public CompoundTag writeNbt(ItemMeta meta) {
         CompoundTag result = new CompoundTag();

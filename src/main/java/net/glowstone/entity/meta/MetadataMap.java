@@ -1,13 +1,6 @@
 package net.glowstone.entity.meta;
 
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -16,6 +9,14 @@ import net.glowstone.util.TextMessage;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A map for entity metadata.
@@ -106,12 +107,18 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
         return t;
     }
 
+    /**
+     * Tests for the given bit mask in a bit field.
+     *
+     * @param index the field to test
+     * @param bit a mask of the bits to test
+     */
     public boolean getBit(MetadataIndex index, int bit) {
-        return (getNumber(index).intValue() & bit) != 0;
+        return (getByte(index) & bit) != 0;
     }
 
     /**
-     * Sets or clears bits in an integer field.
+     * Sets or clears bits in a bit field.
      *
      * @param index  the field to update
      * @param bit    a mask of the bits to set or clear
@@ -119,9 +126,9 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
      */
     public void setBit(MetadataIndex index, int bit, boolean status) {
         if (status) {
-            set(index, getNumber(index).intValue() | bit);
+            set(index, getByte(index) | bit);
         } else {
-            set(index, getNumber(index).intValue() & ~bit);
+            set(index, getByte(index) & ~bit);
         }
     }
 
@@ -133,10 +140,10 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
      * @throws IllegalArgumentException if the value doesn't exist or isn't numeric
      */
     public Number getNumber(MetadataIndex index) {
-        if (!containsKey(index)) {
+        Object o = get(index);
+        if (o == null) {
             return 0;
         }
-        Object o = get(index);
         if (!(o instanceof Number)) {
             throw new IllegalArgumentException(
                 "Index " + index + " is of non-number type " + index.getType());

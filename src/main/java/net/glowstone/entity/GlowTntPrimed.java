@@ -1,9 +1,6 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -16,6 +13,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.util.Vector;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
 

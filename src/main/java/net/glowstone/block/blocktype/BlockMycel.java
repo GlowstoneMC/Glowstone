@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -10,6 +9,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockMycel extends BlockType {
 

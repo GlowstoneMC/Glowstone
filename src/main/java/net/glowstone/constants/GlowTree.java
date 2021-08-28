@@ -1,27 +1,6 @@
 package net.glowstone.constants;
 
-import static org.bukkit.TreeType.ACACIA;
-import static org.bukkit.TreeType.BIG_TREE;
-import static org.bukkit.TreeType.BIRCH;
-import static org.bukkit.TreeType.BROWN_MUSHROOM;
-import static org.bukkit.TreeType.COCOA_TREE;
-import static org.bukkit.TreeType.DARK_OAK;
-import static org.bukkit.TreeType.JUNGLE;
-import static org.bukkit.TreeType.JUNGLE_BUSH;
-import static org.bukkit.TreeType.MEGA_REDWOOD;
-import static org.bukkit.TreeType.REDWOOD;
-import static org.bukkit.TreeType.RED_MUSHROOM;
-import static org.bukkit.TreeType.SMALL_JUNGLE;
-import static org.bukkit.TreeType.SWAMP;
-import static org.bukkit.TreeType.TALL_BIRCH;
-import static org.bukkit.TreeType.TALL_REDWOOD;
-import static org.bukkit.TreeType.TREE;
-
 import com.google.common.collect.ImmutableMap;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.function.BiFunction;
 import net.glowstone.generator.objects.trees.AcaciaTree;
 import net.glowstone.generator.objects.trees.BigTree;
 import net.glowstone.generator.objects.trees.BirchTree;
@@ -40,6 +19,28 @@ import net.glowstone.generator.objects.trees.TallBirchTree;
 import net.glowstone.generator.objects.trees.TallRedwoodTree;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.TreeType;
+
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.function.BiFunction;
+
+import static org.bukkit.TreeType.ACACIA;
+import static org.bukkit.TreeType.BIG_TREE;
+import static org.bukkit.TreeType.BIRCH;
+import static org.bukkit.TreeType.BROWN_MUSHROOM;
+import static org.bukkit.TreeType.COCOA_TREE;
+import static org.bukkit.TreeType.DARK_OAK;
+import static org.bukkit.TreeType.JUNGLE;
+import static org.bukkit.TreeType.JUNGLE_BUSH;
+import static org.bukkit.TreeType.MEGA_REDWOOD;
+import static org.bukkit.TreeType.REDWOOD;
+import static org.bukkit.TreeType.RED_MUSHROOM;
+import static org.bukkit.TreeType.SMALL_JUNGLE;
+import static org.bukkit.TreeType.SWAMP;
+import static org.bukkit.TreeType.TALL_BIRCH;
+import static org.bukkit.TreeType.TALL_REDWOOD;
+import static org.bukkit.TreeType.TREE;
 
 public final class GlowTree {
 

@@ -21,14 +21,15 @@ import io.netty.resolver.dns.DnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsServerAddressStreamProviders;
 import io.netty.resolver.dns.SequentialDnsServerAddressStreamProvider;
 import io.netty.util.internal.SocketUtils;
+import lombok.AllArgsConstructor;
+import net.glowstone.net.Networking;
+import net.glowstone.net.config.DnsEndpoint;
+
+import javax.net.ssl.SSLException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import javax.net.ssl.SSLException;
-import lombok.AllArgsConstructor;
-import net.glowstone.net.Networking;
-import net.glowstone.net.config.DnsEndpoint;
 
 public class HttpClient {
     private final DnsAddressResolverGroup resolverGroup;

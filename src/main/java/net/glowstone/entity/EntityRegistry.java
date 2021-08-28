@@ -1,11 +1,6 @@
 package net.glowstone.entity;
 
 import com.google.common.collect.ImmutableBiMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.glowstone.entity.monster.GlowBlaze;
 import net.glowstone.entity.monster.GlowCaveSpider;
 import net.glowstone.entity.monster.GlowCreeper;
@@ -159,6 +154,12 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieHorse;
 import org.bukkit.entity.ZombieVillager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EntityRegistry {
 

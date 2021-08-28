@@ -1,13 +1,14 @@
 package net.glowstone.constants;
 
-import static org.bukkit.block.Biome.values;
-
-import java.util.EnumMap;
-import java.util.Random;
 import lombok.Data;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+
+import java.util.EnumMap;
+import java.util.Random;
+
+import static org.bukkit.block.Biome.values;
 
 // TODO: replce with Biome builder (including generation info, etc.)
 @Deprecated

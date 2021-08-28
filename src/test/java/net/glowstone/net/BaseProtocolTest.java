@@ -1,23 +1,24 @@
 package net.glowstone.net;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.Message;
 import com.flowpowered.network.service.CodecLookupService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.testutils.ServerShim;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Base tests for each {@link GlowProtocol}.

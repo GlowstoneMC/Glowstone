@@ -2,16 +2,17 @@ package net.glowstone.generator.objects.trees;
 
 import com.google.common.collect.Sets;
 import io.netty.util.internal.ThreadLocalRandom;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Random;
-import java.util.Set;
 import net.glowstone.generator.objects.TerrainObject;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * Oak tree, and superclass for other types.

@@ -3,13 +3,14 @@ package net.glowstone.net.rcon;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.event.server.RemoteServerCommandEvent;
+
+import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Handler for Rcon messages.

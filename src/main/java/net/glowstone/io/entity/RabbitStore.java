@@ -1,12 +1,13 @@
 package net.glowstone.io.entity;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.Map;
 import net.glowstone.entity.passive.GlowRabbit;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit.Type;
+
+import java.util.Map;
 
 class RabbitStore extends AgeableStore<GlowRabbit> {
 

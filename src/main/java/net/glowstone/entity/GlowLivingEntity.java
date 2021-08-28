@@ -1,24 +1,8 @@
 package net.glowstone.entity;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-
 import com.destroystokyo.paper.block.TargetBlockInfo;
 import com.destroystokyo.paper.entity.TargetEntityInfo;
 import com.flowpowered.network.Message;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -102,6 +86,23 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 /**
  * A GlowLivingEntity is a {@link Player} or {@link Monster}.
  *
@@ -179,7 +180,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     private int arrowsStuck = 0;
     /**
      * The number of arrows in an entity's body.
-     * <p>
+     * <br>
      * TODO: Investigate difference between this and `arrowsStuck`.
      */
     @Getter
@@ -1505,7 +1506,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         } else if (!InventoryUtil.isEmpty(handItem) && handItem.getType() == Material.LEAD) {
             if (!GlowLeashHitch.isAllowedLeashHolder(this.getType()) || this.isLeashed()
                 || EventFactory.getInstance().callEvent(
-                new PlayerLeashEntityEvent(this, player, player))
+                    new PlayerLeashEntityEvent(this, player, player))
                 .isCancelled()) {
                 return false;
             }

@@ -1,6 +1,5 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.structures.GlowDesertWell;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
@@ -9,6 +8,8 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
+
+import java.util.Random;
 
 public class DesertWellDecorator extends BlockDecorator {
 

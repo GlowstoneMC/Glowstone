@@ -2,11 +2,12 @@ package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UpdateSignMessage;
 import net.glowstone.util.TextMessage;
 import org.bukkit.util.BlockVector;
+
+import java.io.IOException;
 
 public final class UpdateSignCodec implements Codec<UpdateSignMessage> {
 

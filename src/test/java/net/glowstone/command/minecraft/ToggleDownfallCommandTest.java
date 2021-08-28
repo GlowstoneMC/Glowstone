@@ -1,10 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-
-import java.util.Collections;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandTest;
 import net.glowstone.command.CommandUtils;
@@ -17,6 +12,12 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.Collections;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CommandUtils.class})

@@ -1,8 +1,6 @@
 package net.glowstone.block.entity.state;
 
 import com.destroystokyo.paper.MaterialTags;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.DispenserEntity;
@@ -36,6 +34,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.util.Vector;
+
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowDispenser extends GlowContainer implements Dispenser, BlockProjectileSource {
 
@@ -164,8 +165,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
      * Puts as much as possible of an {@link ItemStack} in the dispenser, and returns the rest.
      *
      * @param toPlace the item stack
-     * @return the portion of the item stack that didn't fit in the dispenser, or null if it all
-     * fit
+     * @return the portion of the item stack that didn't fit in the dispenser, or null if it all fit
      */
     public ItemStack placeInDispenser(ItemStack toPlace) {
         Inventory inv = getInventory();

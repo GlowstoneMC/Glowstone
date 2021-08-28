@@ -1,8 +1,18 @@
 package net.glowstone.util.config;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static net.glowstone.util.config.ServerConfig.Validators.typeCheck;
+import lombok.Getter;
+import net.glowstone.GlowServer;
+import net.glowstone.util.CompatibilityBundle;
+import net.glowstone.util.DynamicallyTypedMap;
+import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
+import org.bukkit.WorldType;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.util.FileUtil;
+import org.jetbrains.annotations.NonNls;
+import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,19 +29,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Predicate;
 import java.util.logging.Level;
-import lombok.Getter;
-import net.glowstone.GlowServer;
-import net.glowstone.util.CompatibilityBundle;
-import net.glowstone.util.DynamicallyTypedMap;
-import org.bukkit.Difficulty;
-import org.bukkit.GameMode;
-import org.bukkit.WorldType;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.util.FileUtil;
-import org.jetbrains.annotations.NonNls;
-import org.yaml.snakeyaml.error.YAMLException;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static net.glowstone.util.config.ServerConfig.Validators.typeCheck;
 
 /**
  * Utilities for handling the server configuration files.

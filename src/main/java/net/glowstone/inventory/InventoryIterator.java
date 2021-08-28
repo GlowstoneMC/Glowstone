@@ -1,9 +1,10 @@
 package net.glowstone.inventory;
 
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 /**
  * ListIterator for the contents of an inventory.

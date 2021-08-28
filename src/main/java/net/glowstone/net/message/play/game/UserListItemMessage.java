@@ -1,12 +1,13 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.network.Message;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 import lombok.Data;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.TextMessage;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Documented at http://wiki.vg/Protocol#Player_List_Item

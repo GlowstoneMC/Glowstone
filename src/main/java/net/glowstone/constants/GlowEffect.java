@@ -1,11 +1,11 @@
 package net.glowstone.constants;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.potion.Potion;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Conversion of data classes to raw values for Effects.

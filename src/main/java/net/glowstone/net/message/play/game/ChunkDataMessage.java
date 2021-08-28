@@ -2,9 +2,10 @@ package net.glowstone.net.message.play.game;
 
 import com.flowpowered.network.Message;
 import io.netty.buffer.ByteBuf;
-import java.util.Collection;
 import lombok.Data;
 import net.glowstone.util.nbt.CompoundTag;
+
+import java.util.Collection;
 
 @Data
 public final class ChunkDataMessage implements Message {

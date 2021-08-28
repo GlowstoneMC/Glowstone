@@ -1,13 +1,14 @@
 package net.glowstone.entity.ai;
 
+import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NonNls;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.bukkit.entity.EntityType;
-import org.jetbrains.annotations.NonNls;
 
 public class EntityDirector {
 
@@ -31,8 +32,8 @@ public class EntityDirector {
     public static void registerEntityMobState(EntityType entity, MobState state,
                                               @NonNls String task) {
         Map<MobState, List<String>> states =
-            mobStates.computeIfAbsent(entity, entity_ -> new HashMap<>());
-        List<String> tasks = states.computeIfAbsent(state, state_ -> new ArrayList<>());
+            mobStates.computeIfAbsent(entity, e -> new HashMap<>());
+        List<String> tasks = states.computeIfAbsent(state, s -> new ArrayList<>());
         tasks.add(task);
     }
 

@@ -1,16 +1,17 @@
 package net.glowstone.command.minecraft;
 
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.UuidUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class ListCommand extends GlowVanillaCommand {
 

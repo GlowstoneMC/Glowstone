@@ -1,11 +1,12 @@
 package net.glowstone.inventory;
 
-import java.util.List;
 import net.glowstone.util.collection.SuperList;
 import net.glowstone.util.collection.SuperSet;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
+
+import java.util.List;
 
 /**
  * Inventory which delegate to other Inventory objects.

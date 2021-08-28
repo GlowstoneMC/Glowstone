@@ -1,7 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
-import java.util.List;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.i18n.LocalizedStringImpl;
@@ -13,6 +11,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+
+import java.util.Collections;
+import java.util.List;
 
 public class KillCommand extends GlowVanillaCommand {
 

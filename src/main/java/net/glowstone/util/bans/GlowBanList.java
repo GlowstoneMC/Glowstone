@@ -1,5 +1,9 @@
 package net.glowstone.util.bans;
 
+import net.glowstone.GlowServer;
+import org.bukkit.BanEntry;
+import org.bukkit.BanList;
+
 import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -11,9 +15,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import net.glowstone.GlowServer;
-import org.bukkit.BanEntry;
-import org.bukkit.BanList;
 
 /**
  * Ban list implementation.

@@ -1,11 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GameRules;
 import net.glowstone.generator.decorators.EntityDecorator;
@@ -34,6 +28,13 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class BiomePopulator extends BlockPopulator {
 

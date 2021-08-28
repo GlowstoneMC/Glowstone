@@ -3,9 +3,6 @@ package net.glowstone.entity.passive;
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
@@ -20,6 +17,10 @@ import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class GlowAbstractHorse extends GlowTameable implements AbstractHorse {
 

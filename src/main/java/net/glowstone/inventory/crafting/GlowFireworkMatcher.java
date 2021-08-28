@@ -1,12 +1,13 @@
 package net.glowstone.inventory.crafting;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class GlowFireworkMatcher extends ItemMatcher {
 

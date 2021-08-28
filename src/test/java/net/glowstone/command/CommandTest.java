@@ -1,16 +1,6 @@
 package net.glowstone.command;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.powermock.api.mockito.PowerMockito.when;
-
 import com.google.common.collect.ImmutableList;
-import java.util.ResourceBundle;
-import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.minecraft.GlowVanillaCommand;
@@ -28,6 +18,17 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import javax.annotation.Nullable;
+import java.util.ResourceBundle;
+import java.util.function.Supplier;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class, CommandUtils.class})

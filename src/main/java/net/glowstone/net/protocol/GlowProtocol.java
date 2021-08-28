@@ -12,9 +12,10 @@ import com.flowpowered.network.service.HandlerLookupService;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.glowstone.GlowServer;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import net.glowstone.GlowServer;
 
 public abstract class GlowProtocol extends AbstractProtocol {
 
@@ -28,11 +29,21 @@ public abstract class GlowProtocol extends AbstractProtocol {
      * @param name          the name of the protocol
      * @param highestOpcode the highest opcode this protocol will use
      */
-    public GlowProtocol(String name, int highestOpcode) {
+    public GlowProtocol(String name, int highestInboundOpcode, int highOutboundOpcode) {
         super(name);
-        inboundCodecs = new CodecLookupService(highestOpcode + 1);
-        outboundCodecs = new CodecLookupService(highestOpcode + 1);
+        inboundCodecs = new CodecLookupService(highestInboundOpcode + 1);
+        outboundCodecs = new CodecLookupService(highOutboundOpcode + 1);
         handlers = new HandlerLookupService();
+    }
+
+    /**
+     * Creates an instance.
+     *
+     * @param name the name of the protocol
+     * @param highestOpcode the highest opcode this protocol will use
+     */
+    public GlowProtocol(String name, int highestOpcode) {
+        this(name, highestOpcode, highestOpcode);
     }
 
     protected <M extends Message, C extends Codec<? super M>,

@@ -2,13 +2,14 @@ package net.glowstone.advancement;
 
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import java.util.Objects;
 import lombok.Data;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.util.TextMessage;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+
+import java.io.IOException;
+import java.util.Objects;
 
 
 @Data

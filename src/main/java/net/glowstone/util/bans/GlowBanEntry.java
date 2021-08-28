@@ -1,8 +1,5 @@
 package net.glowstone.util.bans;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.UuidUtils;
@@ -11,6 +8,10 @@ import org.bukkit.BanEntry;
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Implementation of BanEntry.

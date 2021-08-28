@@ -1,12 +1,13 @@
 package net.glowstone.command;
 
-import java.util.function.Supplier;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.powermock.api.mockito.PowerMockito;
+
+import java.util.function.Supplier;
 
 public abstract class CommandTestWithFakePlayers<T extends Command> extends CommandTest<T> {
     private final String[] names;

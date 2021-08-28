@@ -1,8 +1,6 @@
 package net.glowstone.net.handler.handshake;
 
 import com.flowpowered.network.MessageHandler;
-import java.net.InetSocketAddress;
-import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.ProxyData;
@@ -10,6 +8,9 @@ import net.glowstone.net.message.handshake.HandshakeMessage;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.StatusProtocol;
+
+import java.net.InetSocketAddress;
+import java.util.logging.Level;
 
 public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMessage> {
     private final StatusProtocol statusProtocol;
@@ -41,29 +42,26 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
         session.setProtocol(protocol);
 
+        if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {
+            session.disconnect("Outdated client! I'm running " + GlowServer.GAME_VERSION);
+        } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
+            session.disconnect("Outdated server! I'm running " + GlowServer.GAME_VERSION);
+        }
+
+        if (protocol != loginProtocol) {
+            return;
+        }
+
         if (session.getServer().getProxySupport()) {
             try {
                 session.setProxyData(new ProxyData(session, message.getAddress()));
             } catch (IllegalArgumentException ex) {
-                if (protocol == loginProtocol) {
-                    session.disconnect("Invalid proxy data provided.");
-                }
-                return; // silently ignore parse data in PING protocol
+                session.disconnect("Invalid proxy data provided.");
             } catch (Exception ex) {
-                if (protocol == loginProtocol) {
-                    GlowServer.logger.log(Level.SEVERE,
-                        "Error parsing proxy data for " + session, ex);
-                    session.disconnect("Failed to parse proxy data.");
-                }
+                GlowServer.logger.log(Level.SEVERE,
+                    "Error parsing proxy data for " + session, ex);
+                session.disconnect("Failed to parse proxy data.");
                 return; // silently ignore parse data in PING protocol
-            }
-        }
-
-        if (protocol == loginProtocol) {
-            if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {
-                session.disconnect("Outdated client! I'm running " + GlowServer.GAME_VERSION);
-            } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
-                session.disconnect("Outdated server! I'm running " + GlowServer.GAME_VERSION);
             }
         }
     }

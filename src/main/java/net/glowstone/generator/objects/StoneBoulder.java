@@ -1,13 +1,14 @@
 package net.glowstone.generator.objects;
 
 import com.google.common.collect.ImmutableSortedSet;
-import java.util.Random;
-import java.util.SortedSet;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
+
+import java.util.Random;
+import java.util.SortedSet;
 
 public class StoneBoulder implements TerrainObject {
 

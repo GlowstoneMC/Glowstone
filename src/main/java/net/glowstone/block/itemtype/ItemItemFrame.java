@@ -1,7 +1,6 @@
 package net.glowstone.block.itemtype;
 
 import com.flowpowered.network.Message;
-import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
@@ -11,6 +10,8 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.List;
 
 public class ItemItemFrame extends ItemType {
 

@@ -1,7 +1,8 @@
 package net.glowstone.entity.monster;
 
-import java.util.function.Function;
 import org.bukkit.Location;
+
+import java.util.function.Function;
 
 public class GlowZombieTest extends GlowMonsterTest<GlowZombie> {
     protected GlowZombieTest(

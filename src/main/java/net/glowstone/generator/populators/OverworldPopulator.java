@@ -1,8 +1,5 @@
 package net.glowstone.generator.populators;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Random;
 import net.glowstone.generator.populators.overworld.BadlandsPopulator;
 import net.glowstone.generator.populators.overworld.BiomePopulator;
 import net.glowstone.generator.populators.overworld.BirchForestPopulator;
@@ -33,6 +30,10 @@ import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Random;
 
 public class OverworldPopulator extends BlockPopulator {
 

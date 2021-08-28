@@ -1,11 +1,12 @@
 package net.glowstone.util.collection;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Generic super collection. This is an abstract collection which delegates (ie redirects

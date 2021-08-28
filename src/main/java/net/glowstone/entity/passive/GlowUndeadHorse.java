@@ -1,13 +1,14 @@
 package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
-import java.util.EnumSet;
-import java.util.Set;
 import net.glowstone.inventory.GlowHorseInventory;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 public class GlowUndeadHorse extends GlowAbstractHorse implements AbstractHorse {
 

@@ -1,9 +1,10 @@
 package net.glowstone.generator.populators.overworld;
 
+import org.bukkit.block.Biome;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import org.bukkit.block.Biome;
 
 public class ShatteredSavannaPopulator extends SavannaPopulator {
 

@@ -1,8 +1,6 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
-import java.util.Arrays;
-import java.util.List;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.EntityNetworkUtil;
@@ -26,6 +24,9 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class GlowBoat extends GlowVehicle implements Boat {
     private static final double VERTICAL_GRAVITY_ACCEL = -0.04;

@@ -1,10 +1,5 @@
 package net.glowstone.testutils;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-import java.util.Map;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -13,6 +8,12 @@ import net.glowstone.chunk.GlowChunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.mockito.Mockito;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 
 public class InMemoryBlockStorage {
     private Map<Location, GlowBlock> mockBlocks = new HashMap<>();

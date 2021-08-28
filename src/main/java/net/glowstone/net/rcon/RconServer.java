@@ -3,11 +3,12 @@ package net.glowstone.net.rcon;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
-import java.net.InetSocketAddress;
-import java.util.concurrent.CountDownLatch;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSocketServer;
 import net.glowstone.net.protocol.ProtocolProvider;
+
+import java.net.InetSocketAddress;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Implementation of a server for the remote console protocol.

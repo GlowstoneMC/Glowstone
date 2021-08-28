@@ -1,8 +1,6 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
-import java.util.Arrays;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -33,6 +31,9 @@ import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {

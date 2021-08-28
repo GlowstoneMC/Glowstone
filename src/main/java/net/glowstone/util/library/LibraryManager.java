@@ -1,11 +1,15 @@
 package net.glowstone.util.library;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.collect.Maps;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
+import lombok.Getter;
+import net.glowstone.GlowServer;
+import net.glowstone.util.ClassPathAgent;
+import net.glowstone.util.config.ServerConfig;
+
+import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,11 +25,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
-import javax.net.ssl.HttpsURLConnection;
-import lombok.Getter;
-import net.glowstone.GlowServer;
-import net.glowstone.util.ClassPathAgent;
-import net.glowstone.util.config.ServerConfig;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Simple library manager which downloads external dependencies.

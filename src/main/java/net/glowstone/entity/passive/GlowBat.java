@@ -1,8 +1,6 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
-import java.util.LinkedList;
-import java.util.List;
 import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowAmbient;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -14,6 +12,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class GlowBat extends GlowAmbient implements Bat {
 

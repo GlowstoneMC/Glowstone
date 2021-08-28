@@ -1,14 +1,15 @@
 package net.glowstone.inventory;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GlowMetaEnchantedBook extends GlowMetaItem implements EnchantmentStorageMeta {
 

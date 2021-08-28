@@ -1,13 +1,14 @@
 package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
-import java.util.Objects;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.SpectateMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
+
+import java.util.Objects;
 
 public final class SpectateHandler implements MessageHandler<GlowSession, SpectateMessage> {
 

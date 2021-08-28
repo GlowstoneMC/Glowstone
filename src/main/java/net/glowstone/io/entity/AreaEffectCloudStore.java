@@ -1,7 +1,5 @@
 package net.glowstone.io.entity;
 
-import java.util.UUID;
-import java.util.stream.Collectors;
 import net.glowstone.entity.GlowAreaEffectCloud;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.GlowMetaPotion;
@@ -13,6 +11,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionData;
 import org.bukkit.projectiles.ProjectileSource;
+
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
 

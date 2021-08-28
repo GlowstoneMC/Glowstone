@@ -3,9 +3,6 @@ package net.glowstone.command.minecraft;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.net.message.play.game.TitleMessage;
@@ -16,6 +13,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NonNls;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class TitleCommand extends GlowVanillaCommand {
 

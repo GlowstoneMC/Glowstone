@@ -1,9 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import static org.bukkit.Material.IRON_BLOCK;
-import static org.bukkit.Material.PUMPKIN;
-import static org.bukkit.Material.SNOW_BLOCK;
-
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -13,6 +9,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+
+import static org.bukkit.Material.IRON_BLOCK;
+import static org.bukkit.Material.PUMPKIN;
+import static org.bukkit.Material.SNOW_BLOCK;
 
 public class BlockPumpkin extends BlockPumpkinBase {
 

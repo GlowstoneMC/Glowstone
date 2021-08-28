@@ -4,14 +4,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-import java.nio.ByteBuffer;
-import java.security.GeneralSecurityException;
-import java.util.List;
+import net.glowstone.i18n.ConsoleMessages;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.ShortBufferException;
 import javax.crypto.spec.IvParameterSpec;
-import net.glowstone.i18n.ConsoleMessages;
+import java.nio.ByteBuffer;
+import java.security.GeneralSecurityException;
+import java.util.List;
 
 /**
  * Experimental pipeline component.

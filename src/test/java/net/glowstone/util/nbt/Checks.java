@@ -1,11 +1,12 @@
 package net.glowstone.util.nbt;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.util.List;
 import net.glowstone.util.IsFloatCloseTo;
 import org.hamcrest.number.IsCloseTo;
+
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Checks for the included example NBT files.

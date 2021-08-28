@@ -1,9 +1,10 @@
 package net.glowstone.util;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import lombok.Getter;
 
 import java.util.Arrays;
-import lombok.Getter;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * An array of nibbles (4-bit values) stored efficiently as a byte array of half the size.

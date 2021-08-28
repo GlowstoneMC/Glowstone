@@ -1,8 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
@@ -17,6 +14,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
 
 // FIXME: Ignores the 4th parameter, which is the item data tag
 public class GiveCommand extends GlowVanillaCommand {

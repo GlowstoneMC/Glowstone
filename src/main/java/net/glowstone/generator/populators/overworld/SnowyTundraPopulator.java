@@ -1,13 +1,14 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import net.glowstone.generator.decorators.EntityDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.RedwoodTree;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class SnowyTundraPopulator extends BiomePopulator {
 

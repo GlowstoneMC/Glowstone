@@ -1,10 +1,11 @@
 package net.glowstone.io.structure;
 
-import java.util.HashMap;
-import java.util.Map;
 import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.util.nbt.CompoundTag;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The class responsible for mapping structure piece types to their storage methods and reading and

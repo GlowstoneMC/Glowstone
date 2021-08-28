@@ -1,8 +1,6 @@
 package net.glowstone.entity.monster.complex;
 
 import com.flowpowered.network.Message;
-import java.util.Collections;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
@@ -11,6 +9,9 @@ import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.List;
 
 public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
 

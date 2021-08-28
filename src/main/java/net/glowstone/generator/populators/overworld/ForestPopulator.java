@@ -1,9 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.DoubleTallPlant;
 import net.glowstone.generator.objects.trees.BirchTree;
@@ -12,6 +8,11 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 
 public class ForestPopulator extends BiomePopulator {
 

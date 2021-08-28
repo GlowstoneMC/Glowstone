@@ -2,9 +2,6 @@ package net.glowstone.block.blocktype;
 
 import com.destroystokyo.paper.MaterialTags;
 import com.google.common.collect.ImmutableSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -29,6 +26,10 @@ import org.bukkit.material.Bed;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 
 public class BlockBed extends BlockType {
 

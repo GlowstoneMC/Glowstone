@@ -1,9 +1,5 @@
 package net.glowstone.entity.projectile;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -19,6 +15,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
     private static final double MAX_VERTICAL_DISTANCE = 2.125;

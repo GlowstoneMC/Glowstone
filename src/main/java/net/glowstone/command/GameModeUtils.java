@@ -1,11 +1,12 @@
 package net.glowstone.command;
 
 import com.google.common.base.Preconditions;
-import java.util.List;
-import java.util.Locale;
 import org.bukkit.GameMode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Utility class to create GameMode.

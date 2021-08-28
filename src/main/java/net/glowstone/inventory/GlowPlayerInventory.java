@@ -1,7 +1,5 @@
 package net.glowstone.inventory;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
@@ -24,6 +22,8 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * An Inventory representing the items a player is holding.
@@ -416,7 +416,10 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         setRawHeldItemSlot(slot);
 
         if (getHolder() instanceof GlowPlayer) {
-            ((GlowPlayer) getHolder()).getSession().send(new HeldItemMessage(slot));
+            GlowPlayer player = (GlowPlayer) getHolder();
+            if (player.hasJoined()) {
+                player.getSession().send(new HeldItemMessage(slot));
+            }
         }
     }
 

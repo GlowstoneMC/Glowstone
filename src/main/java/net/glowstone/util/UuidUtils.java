@@ -1,9 +1,10 @@
 package net.glowstone.util;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.eatthepath.uuid.FastUUID;
+
 import java.util.UUID;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Utility methods for dealing with UUIDs.

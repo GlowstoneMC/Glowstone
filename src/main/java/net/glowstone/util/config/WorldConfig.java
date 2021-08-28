@@ -1,18 +1,19 @@
 package net.glowstone.util.config;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.util.DynamicallyTypedMapWithDoubles;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.yaml.snakeyaml.error.YAMLException;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utilities for handling the server configuration files.

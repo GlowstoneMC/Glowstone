@@ -1,14 +1,15 @@
 package net.glowstone.generator.populators.common;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
 import net.glowstone.generator.objects.OreType;
 import net.glowstone.generator.objects.OreVein;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 
 public class BaseOrePopulator extends BlockPopulator {
     protected final Map<OreType, Integer> ores = new LinkedHashMap<>();

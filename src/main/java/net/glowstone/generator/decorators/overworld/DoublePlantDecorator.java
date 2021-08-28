@@ -1,14 +1,15 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 import lombok.Data;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.DoubleTallPlant;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class DoublePlantDecorator extends BlockDecorator {
 

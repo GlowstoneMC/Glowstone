@@ -1,8 +1,9 @@
 package net.glowstone.util.nbt;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
 
 /**
  * The {@code TAG_List} tag.

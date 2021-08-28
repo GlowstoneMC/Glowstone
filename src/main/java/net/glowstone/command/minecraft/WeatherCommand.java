@@ -1,15 +1,16 @@
 package net.glowstone.command.minecraft;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.util.TickUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class WeatherCommand extends GlowVanillaCommand {
 

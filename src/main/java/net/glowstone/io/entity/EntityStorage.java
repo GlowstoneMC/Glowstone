@@ -1,9 +1,8 @@
 package net.glowstone.io.entity;
 
-import java.util.HashMap;
-import java.util.Map;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.monster.GlowBlaze;
 import net.glowstone.entity.monster.GlowCaveSpider;
 import net.glowstone.entity.monster.GlowGiant;
@@ -43,6 +42,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NonNls;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The class responsible for mapping entity types to their storage methods and reading and writing
@@ -286,7 +288,11 @@ public final class EntityStorage {
         }
         Location location = NbtSerialization.listTagsToLocation(world, compound);
         if (location != null) {
-            entity.teleport(location);
+            if (entity instanceof GlowPlayer && !((GlowPlayer) entity).hasJoined()) {
+                entity.setRawLocation(location);
+            } else {
+                entity.teleport(location);
+            }
         }
 
         // read the rest of the entity's information

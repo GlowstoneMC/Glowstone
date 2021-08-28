@@ -1,12 +1,6 @@
 package net.glowstone.block.blocktype;
 
-import static org.bukkit.Material.SOUL_SAND;
-import static org.bukkit.Material.WITHER_SKELETON_SKULL;
-
 import com.google.common.collect.ImmutableMap;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.EnumMap;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
@@ -25,6 +19,13 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Skull;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumMap;
+
+import static org.bukkit.Material.SOUL_SAND;
+import static org.bukkit.Material.WITHER_SKELETON_SKULL;
 
 public class BlockSkull extends BlockType {
 

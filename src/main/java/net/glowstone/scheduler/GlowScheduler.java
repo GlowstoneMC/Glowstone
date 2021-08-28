@@ -2,6 +2,16 @@ package net.glowstone.scheduler;
 
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
+import net.glowstone.GlowServer;
+import net.glowstone.net.SessionRegistry;
+import org.bukkit.Server;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scheduler.BukkitWorker;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
@@ -24,15 +34,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.logging.Level;
-import net.glowstone.GlowServer;
-import net.glowstone.net.SessionRegistry;
-import org.bukkit.Server;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scheduler.BukkitWorker;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A scheduler for managing server ticks, Bukkit tasks, and other synchronization.
@@ -58,7 +59,7 @@ public final class GlowScheduler implements BukkitScheduler {
      */
     private final ExecutorService asyncTaskExecutor
             = new ThreadPoolExecutor(0, MAX_THREADS, 60L, TimeUnit.SECONDS,
-            new LinkedBlockingDeque<>(), GlowThreadFactory.INSTANCE);
+                new LinkedBlockingDeque<>(), GlowThreadFactory.INSTANCE);
     /**
      * A list of active tasks.
      */

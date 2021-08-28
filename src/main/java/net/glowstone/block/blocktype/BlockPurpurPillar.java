@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Collection;
-import java.util.Collections;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -12,6 +10,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Collections;
 
 public class BlockPurpurPillar extends BlockNeedsTool {
 

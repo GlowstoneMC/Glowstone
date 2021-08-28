@@ -1,7 +1,8 @@
 package net.glowstone.advancement;
 
-import java.util.Date;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 public class CriterionProgress {

@@ -1,5 +1,14 @@
 package net.glowstone.generator.biomegrid;
 
+import net.glowstone.constants.GlowBiome;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import static org.bukkit.block.Biome.BADLANDS;
 import static org.bukkit.block.Biome.BADLANDS_PLATEAU;
 import static org.bukkit.block.Biome.DESERT;
@@ -13,14 +22,6 @@ import static org.bukkit.block.Biome.SWAMP;
 import static org.bukkit.block.Biome.TAIGA;
 import static org.bukkit.block.Biome.WOODED_BADLANDS_PLATEAU;
 import static org.bukkit.block.Biome.WOODED_MOUNTAINS;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import net.glowstone.constants.GlowBiome;
 
 public class BiomeEdgeMapLayer extends MapLayer {
 

@@ -1,9 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.ArgumentMatchers.eq;
-
-import java.util.Collections;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
 import net.glowstone.command.CommandTest;
@@ -13,6 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+
+import java.util.Collections;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.eq;
 
 public class SetIdleTimeoutCommandTest extends CommandTest<SetIdleTimeoutCommand> {
 

@@ -1,12 +1,12 @@
 package net.glowstone.inventory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GlowInventoryTest {
 

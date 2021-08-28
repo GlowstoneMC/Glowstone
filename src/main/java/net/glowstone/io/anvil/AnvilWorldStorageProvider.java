@@ -1,6 +1,5 @@
 package net.glowstone.io.anvil;
 
-import java.io.File;
 import lombok.Getter;
 import net.glowstone.GlowWorld;
 import net.glowstone.io.FunctionIoService;
@@ -14,6 +13,8 @@ import net.glowstone.io.nbt.NbtPlayerDataService;
 import net.glowstone.io.nbt.NbtScoreboardIoService;
 import net.glowstone.io.nbt.NbtStructureDataService;
 import net.glowstone.io.nbt.NbtWorldMetadataService;
+
+import java.io.File;
 
 /**
  * A {@link WorldStorageProvider} for the Anvil map format.

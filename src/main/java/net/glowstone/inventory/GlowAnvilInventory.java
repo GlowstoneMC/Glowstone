@@ -1,6 +1,5 @@
 package net.glowstone.inventory;
 
-import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
@@ -15,6 +14,8 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Objects;
 
 public class GlowAnvilInventory extends GlowInventory implements AnvilInventory {
 

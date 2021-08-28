@@ -6,14 +6,15 @@ import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLKernel;
 import com.jogamp.opencl.CLPlatform;
 import com.jogamp.opencl.CLProgram;
+import lombok.Getter;
+import net.glowstone.GlowServer;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
-import lombok.Getter;
-import net.glowstone.GlowServer;
 
 public class OpenCompute {
 

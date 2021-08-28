@@ -1,8 +1,5 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
@@ -14,6 +11,10 @@ import org.bukkit.World;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class SurfaceCaveDecorator extends BlockDecorator {
 

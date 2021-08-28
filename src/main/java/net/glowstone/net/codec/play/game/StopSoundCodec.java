@@ -1,16 +1,17 @@
 package net.glowstone.net.codec.play.game;
 
+import com.flowpowered.network.Codec;
+import com.google.common.collect.ImmutableBiMap;
+import io.netty.buffer.ByteBuf;
+import net.glowstone.net.message.play.game.StopSoundMessage;
+import org.bukkit.SoundCategory;
+
+import java.io.IOException;
+
 import static com.flowpowered.network.util.ByteBufUtils.readUTF8;
 import static com.flowpowered.network.util.ByteBufUtils.readVarInt;
 import static com.flowpowered.network.util.ByteBufUtils.writeUTF8;
 import static com.flowpowered.network.util.ByteBufUtils.writeVarInt;
-
-import com.flowpowered.network.Codec;
-import com.google.common.collect.ImmutableBiMap;
-import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import net.glowstone.net.message.play.game.StopSoundMessage;
-import org.bukkit.SoundCategory;
 
 public final class StopSoundCodec implements Codec<StopSoundMessage> {
 

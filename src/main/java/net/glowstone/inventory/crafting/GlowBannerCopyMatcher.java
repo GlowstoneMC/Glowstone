@@ -1,9 +1,10 @@
 package net.glowstone.inventory.crafting;
 
-import java.util.ArrayList;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+
+import java.util.ArrayList;
 
 public class GlowBannerCopyMatcher extends ItemMatcher {
 

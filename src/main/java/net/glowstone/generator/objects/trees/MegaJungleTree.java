@@ -1,11 +1,12 @@
 package net.glowstone.generator.objects.trees;
 
-import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+
+import java.util.Random;
 
 public class MegaJungleTree extends GenericTree {
 

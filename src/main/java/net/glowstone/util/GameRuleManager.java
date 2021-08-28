@@ -1,5 +1,10 @@
 package net.glowstone.util;
 
+import org.jetbrains.annotations.NonNls;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static net.glowstone.constants.GameRules.ANNOUNCE_ADVANCEMENTS;
 import static net.glowstone.constants.GameRules.COMMAND_BLOCK_OUTPUT;
 import static net.glowstone.constants.GameRules.DO_DAYLIGHT_CYCLE;
@@ -19,10 +24,6 @@ import static net.glowstone.constants.GameRules.RANDOM_TICK_SPEED;
 import static net.glowstone.constants.GameRules.REDUCED_DEBUG_INFO;
 import static net.glowstone.constants.GameRules.SEND_COMMAND_FEEDBACK;
 import static net.glowstone.constants.GameRules.SHOW_DEATH_MESSAGES;
-
-import java.util.HashMap;
-import java.util.Map;
-import org.jetbrains.annotations.NonNls;
 
 /**
  * Container for the game rule map for worlds.

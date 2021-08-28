@@ -6,8 +6,9 @@ import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.LastHttpContent;
-import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
+
+import java.nio.charset.StandardCharsets;
 
 @RequiredArgsConstructor
 public class HttpHandler extends SimpleChannelInboundHandler<Object> {

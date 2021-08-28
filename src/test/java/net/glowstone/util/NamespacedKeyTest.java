@@ -1,10 +1,10 @@
 package net.glowstone.util;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
 import org.bukkit.NamespacedKey;
 import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class NamespacedKeyTest {
 

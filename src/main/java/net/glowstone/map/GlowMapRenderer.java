@@ -1,7 +1,5 @@
 package net.glowstone.map;
 
-import static net.glowstone.map.GlowMapCanvas.MAP_SIZE;
-
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
 import net.glowstone.block.GlowBlock;
@@ -13,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+
+import static net.glowstone.map.GlowMapCanvas.MAP_SIZE;
 
 /**
  * Glowstone's built-in map renderer.

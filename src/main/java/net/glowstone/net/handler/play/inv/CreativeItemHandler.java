@@ -1,7 +1,6 @@
 package net.glowstone.net.handler.play.inv;
 
 import com.flowpowered.network.MessageHandler;
-import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.GlowPlayer;
@@ -16,6 +15,8 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Objects;
 
 public final class CreativeItemHandler implements MessageHandler<GlowSession, CreativeItemMessage> {
 

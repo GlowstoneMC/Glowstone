@@ -1,6 +1,5 @@
 package net.glowstone.entity.monster;
 
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -13,6 +12,8 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Spellcaster;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowEvoker extends GlowSpellcaster implements Evoker {
 

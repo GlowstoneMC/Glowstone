@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -9,6 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockLava extends BlockLiquid {
 

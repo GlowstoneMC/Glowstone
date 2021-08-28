@@ -1,14 +1,15 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import net.glowstone.generator.decorators.overworld.DoublePlantDecorator.DoublePlantDecoration;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.AcaciaTree;
 import net.glowstone.generator.objects.trees.GenericTree;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class SavannaPopulator extends BiomePopulator {
 

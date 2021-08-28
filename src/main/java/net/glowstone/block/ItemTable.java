@@ -2,10 +2,6 @@ package net.glowstone.block;
 
 import com.destroystokyo.paper.MaterialTags;
 import com.google.common.collect.Sets;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
 import net.glowstone.GlowServer;
 import net.glowstone.block.blocktype.BlockAnvil;
 import net.glowstone.block.blocktype.BlockBeacon;
@@ -149,6 +145,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.Tag;
 import org.bukkit.TreeSpecies;
+
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * The lookup table for block and item types.

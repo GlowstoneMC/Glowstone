@@ -1,6 +1,5 @@
 package net.glowstone.inventory;
 
-import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
@@ -9,6 +8,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class GlowMetaSpawn extends GlowMetaItem implements SpawnEggMeta {
 

@@ -5,12 +5,13 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import java.net.InetSocketAddress;
-import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.net.protocol.ProtocolProvider;
+
+import java.net.InetSocketAddress;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
 
 public abstract class GlowSocketServer extends GlowNetworkServer {
 

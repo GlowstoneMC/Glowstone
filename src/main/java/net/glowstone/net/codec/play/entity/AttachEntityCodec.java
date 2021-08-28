@@ -2,8 +2,9 @@ package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.glowstone.net.message.play.entity.AttachEntityMessage;
+
+import java.io.IOException;
 
 public final class AttachEntityCodec implements Codec<AttachEntityMessage> {
 

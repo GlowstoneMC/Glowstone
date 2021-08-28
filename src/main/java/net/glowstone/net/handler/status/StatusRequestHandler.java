@@ -6,13 +6,6 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.flowpowered.network.MessageHandler;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
@@ -24,6 +17,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.CachedServerIcon;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class StatusRequestHandler implements
     MessageHandler<GlowSession, StatusRequestMessage> {

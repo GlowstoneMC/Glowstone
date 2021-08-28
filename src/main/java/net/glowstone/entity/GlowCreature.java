@@ -2,8 +2,6 @@ package net.glowstone.entity;
 
 import com.destroystokyo.paper.entity.Pathfinder;
 import com.flowpowered.network.Message;
-import java.util.LinkedList;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
@@ -16,6 +14,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents a creature entity such as a pig.

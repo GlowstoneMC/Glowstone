@@ -1,31 +1,8 @@
 package net.glowstone;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.destroystokyo.paper.HeightmapType;
 import com.flowpowered.network.Message;
 import io.papermc.paper.world.MoonPhase;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -62,6 +39,7 @@ import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
+import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
@@ -132,6 +110,29 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A class which represents the in-game world.
@@ -539,7 +540,7 @@ public class GlowWorld implements World {
         // pulse players last so they actually see that other entities have
         // moved. unfortunately pretty hacky. not a problem for players b/c
         // their position is modified by session ticking.
-        for (GlowEntity entity : allEntities) {
+        for (GlowEntity entity : entityManager) {
             if (entity instanceof GlowPlayer) {
                 players.add((GlowPlayer) entity);
                 updateActiveChunkCollection(entity);
@@ -677,7 +678,9 @@ public class GlowWorld implements World {
     }
 
     private void pulsePlayers(List<GlowPlayer> players) {
-        players.stream().filter(Objects::nonNull).forEach(GlowEntity::pulse);
+        for (GlowPlayer player : players) {
+            player.pulse();
+        }
     }
 
     private void handleSleepAndWake(List<GlowPlayer> players) {
@@ -734,7 +737,7 @@ public class GlowWorld implements World {
     }
 
     public void broadcastBlockChangeInRange(GlowChunk.Key chunkKey, BlockChangeMessage message) {
-        getChunk(chunkKey).broadcastBlockChange(message);
+        getChunkManager().broadcastBlockChange(chunkKey, message);
     }
 
     private void maybeStrikeLightningInChunk(int cx, int cz) {
@@ -1594,7 +1597,8 @@ public class GlowWorld implements World {
 
         for (GlowPlayer player : getRawPlayers()) {
             if (player.canSeeChunk(key)) {
-                player.getSession().send(getChunkAt(x, z).toMessage());
+                ChunkDataMessage message = getChunkAt(x, z).toMessage();
+                player.getSession().sendAndRelease(message, message.getData());
                 result = true;
             }
         }
@@ -1907,7 +1911,7 @@ public class GlowWorld implements World {
 
     @NotNull
     @Override
-    public <T extends AbstractArrow> T spawnArrow(@NotNull Location location, @NotNull Vector vector, float speed, float spread, @NotNull Class<T> aClass) {
+    public <T extends AbstractArrow> T spawnArrow(@NotNull Location location, @NotNull Vector vector, float speed, float spread, @NotNull Class<T> clazz) {
         // TODO: 1.16
         throw new NotImplementedException();
     }

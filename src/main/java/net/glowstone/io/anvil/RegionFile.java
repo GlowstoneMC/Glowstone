@@ -25,6 +25,11 @@
 
 package net.glowstone.io.anvil;
 
+import lombok.Getter;
+import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
+import net.glowstone.util.config.ServerConfig.Key;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -45,10 +50,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipException;
-import lombok.Getter;
-import net.glowstone.GlowServer;
-import net.glowstone.ServerProvider;
-import net.glowstone.util.config.ServerConfig.Key;
 
 /**
  * Interfaces with region files on the disk
@@ -284,8 +285,7 @@ public class RegionFile {
      *
      * @param x the chunk X coordinate within the region
      * @param z the chunk Z coordinate within the region
-     * @return a {@link DataOutputStream}, backed by memory, that can prepare the chunk for writing
-     * to disk.
+     * @return a {@link DataOutputStream}, backed by memory, that can prepare the chunk for writing to disk.
      */
     public DataOutputStream getChunkDataOutputStream(int x, int z) {
         checkBounds(x, z);

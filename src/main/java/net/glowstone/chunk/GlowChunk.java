@@ -5,18 +5,6 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +34,19 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * Represents a chunk of the map.
@@ -918,23 +919,6 @@ public class GlowChunk implements Chunk {
         }
 
         return (y * HEIGHT + z) * WIDTH + x;
-    }
-
-    /**
-     * Queues block change notification to all players in this chunk
-     *
-     * @param message The block change message to broadcast
-     */
-    public void broadcastBlockChange(BlockChangeMessage message) {
-        blockChanges.add(message);
-    }
-
-    public List<BlockChangeMessage> getBlockChanges() {
-        return new ArrayList<>(blockChanges);
-    }
-
-    void clearBlockChanges() {
-        blockChanges.clear();
     }
 
     /**

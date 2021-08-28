@@ -1,13 +1,14 @@
 package net.glowstone.io.entity;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class VillagerStore extends AgeableStore<GlowVillager> {
 

@@ -1,7 +1,5 @@
 package net.glowstone.inventory;
 
-import java.util.Arrays;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.constants.ItemIds;
@@ -10,6 +8,9 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class GlowInventorySlot {
 
@@ -45,7 +46,7 @@ public class GlowInventorySlot {
      *
      * @param len the length of the array
      * @return an array, each of whose elements is a new {@link SlotType#CONTAINER}
-     * {@link GlowInventorySlot}
+     *     {@link GlowInventorySlot}
      */
     public static GlowInventorySlot[] createArray(int len) {
         GlowInventorySlot[] result = new GlowInventorySlot[len];
@@ -60,7 +61,6 @@ public class GlowInventorySlot {
     public static List<GlowInventorySlot> createList(int len) {
         return Arrays.asList(createArray(len));
     }
-
 
     public @NotNull ItemStack getItem() {
         return InventoryUtil.itemOrEmpty(item);

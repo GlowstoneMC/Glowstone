@@ -1,15 +1,16 @@
 package net.glowstone.net.codec.play.game;
 
+import com.flowpowered.network.Codec;
+import io.netty.buffer.ByteBuf;
+import net.glowstone.net.message.play.game.RespawnMessage;
+import net.glowstone.util.nbt.CompoundTag;
+
+import java.io.IOException;
+
 import static com.flowpowered.network.util.ByteBufUtils.readUTF8;
 import static com.flowpowered.network.util.ByteBufUtils.writeUTF8;
 import static net.glowstone.net.GlowBufUtils.readCompound;
 import static net.glowstone.net.GlowBufUtils.writeCompound;
-
-import com.flowpowered.network.Codec;
-import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import net.glowstone.net.message.play.game.RespawnMessage;
-import net.glowstone.util.nbt.CompoundTag;
 
 public final class RespawnCodec implements Codec<RespawnMessage> {
 

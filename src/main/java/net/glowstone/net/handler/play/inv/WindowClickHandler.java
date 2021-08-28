@@ -1,14 +1,6 @@
 package net.glowstone.net.handler.play.inv;
 
-import static org.bukkit.event.inventory.InventoryAction.MOVE_TO_OTHER_INVENTORY;
-import static org.bukkit.event.inventory.InventoryAction.NOTHING;
-
 import com.flowpowered.network.MessageHandler;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
@@ -36,6 +28,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+
+import static org.bukkit.event.inventory.InventoryAction.MOVE_TO_OTHER_INVENTORY;
+import static org.bukkit.event.inventory.InventoryAction.NOTHING;
 
 public final class WindowClickHandler implements MessageHandler<GlowSession, WindowClickMessage> {
 

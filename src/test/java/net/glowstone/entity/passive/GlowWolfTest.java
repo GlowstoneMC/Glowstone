@@ -1,10 +1,11 @@
 package net.glowstone.entity.passive;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.EnumSet;
 import org.bukkit.Material;
 import org.junit.Test;
+
+import java.util.EnumSet;
+
+import static org.junit.Assert.assertEquals;
 
 public class GlowWolfTest extends GlowTameableTest<GlowWolf> {
     public GlowWolfTest() {

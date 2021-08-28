@@ -1,6 +1,5 @@
 package net.glowstone.block.entity.state;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
@@ -13,6 +12,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class GlowSign extends GlowBlockState implements Sign {
 

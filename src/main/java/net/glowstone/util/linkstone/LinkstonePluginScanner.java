@@ -1,11 +1,5 @@
 package net.glowstone.util.linkstone;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import net.glowstone.linkstone.annotations.LField;
 import net.glowstone.linkstone.runtime.Boxes;
 import net.glowstone.linkstone.runtime.FieldSet;
@@ -13,6 +7,13 @@ import net.glowstone.linkstone.runtime.collect.AnnotatedFieldCollectVisitor;
 import net.glowstone.linkstone.runtime.collect.BoxCollectVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class LinkstonePluginScanner {
     private final FieldSet fields;

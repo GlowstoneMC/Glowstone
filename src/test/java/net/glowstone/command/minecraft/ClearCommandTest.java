@@ -1,11 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import static net.glowstone.TestUtils.checkInventory;
-import static net.glowstone.TestUtils.itemTypeMatcher;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.powermock.api.mockito.PowerMockito.when;
-
 import net.glowstone.command.CommandTestWithFakePlayers;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.GlowPlayerInventory;
@@ -16,6 +10,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
 import org.mockito.Mockito;
+
+import static net.glowstone.TestUtils.checkInventory;
+import static net.glowstone.TestUtils.itemTypeMatcher;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 // TODO: damageable
 @Disabled

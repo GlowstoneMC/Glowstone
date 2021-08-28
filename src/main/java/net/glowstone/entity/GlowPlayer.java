@@ -1,8 +1,5 @@
 package net.glowstone.entity;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.destroystokyo.paper.ClientOption;
 import com.destroystokyo.paper.MaterialTags;
 import com.destroystokyo.paper.Title;
@@ -13,29 +10,6 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -81,6 +55,7 @@ import net.glowstone.net.message.play.entity.SetPassengerMessage;
 import net.glowstone.net.message.play.game.BlockBreakAnimationMessage;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.game.ChatMessage;
+import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.net.message.play.game.ExperienceMessage;
 import net.glowstone.net.message.play.game.HealthMessage;
 import net.glowstone.net.message.play.game.JoinGameMessage;
@@ -107,6 +82,7 @@ import net.glowstone.net.message.play.game.UserListHeaderFooterMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
 import net.glowstone.net.message.play.inv.CloseWindowMessage;
+import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.net.message.play.inv.OpenWindowMessage;
 import net.glowstone.net.message.play.inv.SetWindowContentsMessage;
 import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
@@ -209,6 +185,34 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
+
+import javax.annotation.Nullable;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static net.glowstone.GlowServer.logger;
 
 
 /**
@@ -659,6 +663,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return new Location(world, blockX + 0.5, y, blockZ + 0.5);
     }
 
+    public boolean hasJoined() {
+        return joinTime != 0;
+    }
+
     /**
      * Returns the current fishing hook.
      *
@@ -693,7 +701,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         reader.close();
 
         int gameMode = getGameMode().getValue();
-        setGameModeDefaults();
 
         session.send(new JoinGameMessage(
             getEntityId(),
@@ -734,7 +741,22 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // send initial location
         session.send(new PositionRotationMessage(location));
 
-        session.send(((GlowWorldBorder) world.getWorldBorder()).createMessage());
+        // send initial velocity
+        session.send(new EntityVelocityMessage(getEntityId(), velocity));
+
+        // send initial health
+        sendHealth();
+
+        // send gamemode defaults
+        setGameModeDefaults();
+
+        // send held item
+        getSession().send(new HeldItemMessage(getInventory().getHeldItemSlot()));
+
+        // send xp bar
+        sendExperience();
+
+        session.send(world.getWorldBorder().createMessage());
         sendTime();
         setCompassTarget(world.getSpawnLocation()); // set our compass target
 
@@ -1040,11 +1062,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     private void processBlockChanges() {
         for (Key key : knownChunks) {
-            GlowChunk chunk = world.getChunk(key);
-            if (chunk == null) {
-                return;
-            }
-            List<BlockChangeMessage> messages = chunk.getBlockChanges();
+            List<BlockChangeMessage> messages = world.getChunkManager().getBlockChanges(key);
             int size = messages.size();
             if (size == 1) {
                 session.send(messages.get(0));
@@ -1155,7 +1173,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         // first step: force population then acquire lock on each chunk
         newChunks.forEach(newChunk -> {
-            world.getChunkManager().forcePopulation(newChunk.getX(), newChunk.getZ());
+            try {
+                world.getChunkManager().forcePopulation(newChunk.getX(), newChunk.getZ());
+            } catch (IllegalArgumentException e) {
+                // The show must go on, so catch it here!
+                logger.log(Level.SEVERE, "", e);
+            }
             knownChunks.add(newChunk);
             chunkLock.acquire(newChunk);
         });
@@ -1163,8 +1186,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         boolean skylight = world.getEnvironment() == Environment.NORMAL;
         ByteBufAllocator alloc = session.getChannel() == null ? null : session.getChannel().alloc();
 
-        newChunks.stream().map(key -> world.getChunk(key).toMessage(skylight, true, alloc))
-                .forEach(session::send);
+        for (GlowChunk.Key key : newChunks) {
+            GlowChunk chunk = world.getChunk(key);
+            ChunkDataMessage message = chunk.toMessage(skylight, true, alloc);
+            if (message == null || message.getData() == null) {
+                // allocator failed
+                break;
+            }
+            session.sendAndRelease(message, message.getData());
+        }
 
         // send visible block entity data
         newChunks.stream().flatMap(key -> world.getChunkAt(key.getX(),
@@ -1413,7 +1443,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (!event.isCancelled()) {
             velocity = event.getVelocity();
             super.setVelocity(velocity);
-            session.send(new EntityVelocityMessage(getEntityId(), velocity));
+            if (hasJoined()) {
+                session.send(new EntityVelocityMessage(getEntityId(), velocity));
+            }
         }
     }
 
@@ -1914,6 +1946,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void sendExperience() {
+        if (!hasJoined()) {
+            return;
+        }
         session.send(new ExperienceMessage(getExp(), getLevel(), getTotalExperience()));
     }
 
@@ -2125,6 +2160,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void sendHealth() {
+        if (!hasJoined()) {
+            return;
+        }
         float finalHealth = (float) (getHealth() / getMaxHealth() * getHealthScale());
         session.send(new HealthMessage(finalHealth, getFoodLevel(), getSaturation()));
     }

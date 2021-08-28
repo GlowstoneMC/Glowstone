@@ -1,21 +1,5 @@
 package net.glowstone.util.mojangson;
 
-import static net.glowstone.util.mojangson.MojangsonToken.ARRAY_END;
-import static net.glowstone.util.mojangson.MojangsonToken.ARRAY_START;
-import static net.glowstone.util.mojangson.MojangsonToken.BYTE_SUFFIX;
-import static net.glowstone.util.mojangson.MojangsonToken.COMPOUND_END;
-import static net.glowstone.util.mojangson.MojangsonToken.COMPOUND_START;
-import static net.glowstone.util.mojangson.MojangsonToken.DOUBLE_SUFFIX;
-import static net.glowstone.util.mojangson.MojangsonToken.ELEMENT_PAIR_SEPERATOR;
-import static net.glowstone.util.mojangson.MojangsonToken.ELEMENT_SEPERATOR;
-import static net.glowstone.util.mojangson.MojangsonToken.FLOAT_SUFFIX;
-import static net.glowstone.util.mojangson.MojangsonToken.LONG_SUFFIX;
-import static net.glowstone.util.mojangson.MojangsonToken.SHORT_SUFFIX;
-import static net.glowstone.util.mojangson.MojangsonToken.STRING_QUOTES;
-import static net.glowstone.util.mojangson.MojangsonToken.WHITE_SPACE;
-
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.util.mojangson.ex.MojangsonParseException;
 import net.glowstone.util.nbt.ByteArrayTag;
 import net.glowstone.util.nbt.ByteTag;
@@ -31,6 +15,23 @@ import net.glowstone.util.nbt.ShortTag;
 import net.glowstone.util.nbt.StringTag;
 import net.glowstone.util.nbt.Tag;
 import net.glowstone.util.nbt.TagType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static net.glowstone.util.mojangson.MojangsonToken.ARRAY_END;
+import static net.glowstone.util.mojangson.MojangsonToken.ARRAY_START;
+import static net.glowstone.util.mojangson.MojangsonToken.BYTE_SUFFIX;
+import static net.glowstone.util.mojangson.MojangsonToken.COMPOUND_END;
+import static net.glowstone.util.mojangson.MojangsonToken.COMPOUND_START;
+import static net.glowstone.util.mojangson.MojangsonToken.DOUBLE_SUFFIX;
+import static net.glowstone.util.mojangson.MojangsonToken.ELEMENT_PAIR_SEPERATOR;
+import static net.glowstone.util.mojangson.MojangsonToken.ELEMENT_SEPERATOR;
+import static net.glowstone.util.mojangson.MojangsonToken.FLOAT_SUFFIX;
+import static net.glowstone.util.mojangson.MojangsonToken.LONG_SUFFIX;
+import static net.glowstone.util.mojangson.MojangsonToken.SHORT_SUFFIX;
+import static net.glowstone.util.mojangson.MojangsonToken.STRING_QUOTES;
+import static net.glowstone.util.mojangson.MojangsonToken.WHITE_SPACE;
 
 public class Mojangson {
 
@@ -331,7 +332,7 @@ public class Mojangson {
      *
      * @param mojangson The Mojangson string
      * @return a ByteArrayTag value if the array contains byte values, an IntArrayTag value if the
-     * array contains int values or a ListTag with the array's elements.
+     *     array contains int values or a ListTag with the array's elements.
      * @throws MojangsonParseException if the Mojangson string could not be parsed as an
      *                                 Array value.
      */

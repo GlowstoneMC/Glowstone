@@ -1,14 +1,15 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
 import net.glowstone.ServerProvider;
 import net.glowstone.command.GameModeUtils;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class DefaultGameModeCommand extends GlowVanillaCommand {
 

@@ -1,12 +1,12 @@
 package net.glowstone.entity.passive;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class GlowMuleTest extends GlowChestedHorseTest<GlowMule> {
     public GlowMuleTest() {

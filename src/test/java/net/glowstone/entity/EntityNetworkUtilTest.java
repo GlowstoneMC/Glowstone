@@ -1,11 +1,12 @@
 package net.glowstone.entity;
 
-import static org.junit.Assert.assertFalse;
-
 import com.google.common.collect.Sets;
-import java.util.Set;
 import org.bukkit.entity.EntityType;
 import org.junit.Test;
+
+import java.util.Set;
+
+import static org.junit.Assert.assertFalse;
 
 public class EntityNetworkUtilTest {
 

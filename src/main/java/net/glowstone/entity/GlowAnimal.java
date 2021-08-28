@@ -1,9 +1,6 @@
 package net.glowstone.entity;
 
 import com.google.common.collect.Sets;
-import java.util.EnumSet;
-import java.util.Set;
-import java.util.UUID;
 import net.glowstone.entity.ai.EntityDirector;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
@@ -18,6 +15,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.EnumSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Represents an Animal, such as a Cow.

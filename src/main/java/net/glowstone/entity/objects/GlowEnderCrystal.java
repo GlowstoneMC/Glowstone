@@ -1,8 +1,6 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
-import java.util.Arrays;
-import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.Explosion;
 import net.glowstone.entity.EntityNetworkUtil;
@@ -25,6 +23,9 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.util.BlockVector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
 

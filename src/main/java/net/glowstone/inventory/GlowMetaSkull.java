@@ -1,12 +1,6 @@
 package net.glowstone.inventory;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.destroystokyo.paper.profile.PlayerProfile;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicReference;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
@@ -18,6 +12,13 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 

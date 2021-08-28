@@ -1,12 +1,8 @@
 package net.glowstone.entity.passive;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Sets;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -15,6 +11,11 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
+
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowRabbit extends GlowAnimal implements Rabbit {
 

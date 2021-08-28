@@ -1,11 +1,11 @@
 package net.glowstone.util;
 
+import org.bukkit.SoundCategory;
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-
-import org.bukkit.SoundCategory;
-import org.junit.jupiter.api.Test;
 
 public class SoundUtilTest {
 

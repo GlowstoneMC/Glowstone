@@ -1,8 +1,9 @@
 package net.glowstone.entity.projectile;
 
-import java.util.function.Function;
 import net.glowstone.entity.GlowEntityTest;
 import org.bukkit.Location;
+
+import java.util.function.Function;
 
 public abstract class GlowProjectileTest<T extends GlowProjectile> extends GlowEntityTest<T> {
 

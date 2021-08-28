@@ -1,6 +1,5 @@
 package net.glowstone.block.entity.state;
 
-import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BeaconEntity;
 import net.glowstone.inventory.GlowBeaconInventory;
@@ -10,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.BeaconInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Collection;
 
 public class GlowBeacon extends GlowContainer implements Beacon {
 

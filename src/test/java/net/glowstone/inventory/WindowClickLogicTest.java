@@ -1,8 +1,5 @@
 package net.glowstone.inventory;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import net.glowstone.testutils.ServerShim;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -10,6 +7,9 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * An attempt at test casing the ridiculously complicated window click logic.

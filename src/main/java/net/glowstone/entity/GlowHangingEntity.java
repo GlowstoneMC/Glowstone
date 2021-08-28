@@ -1,12 +1,13 @@
 package net.glowstone.entity;
 
-import java.util.EnumMap;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Hanging;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public abstract class GlowHangingEntity extends GlowEntity implements Hanging {
 

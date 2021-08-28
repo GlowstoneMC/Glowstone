@@ -1,12 +1,13 @@
 package net.glowstone.inventory.crafting;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import lombok.Data;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.UnlockRecipesMessage;
 import net.glowstone.util.nbt.CompoundTag;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public final class PlayerRecipeMonitor {

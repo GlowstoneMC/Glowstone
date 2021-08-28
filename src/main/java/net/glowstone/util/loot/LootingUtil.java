@@ -1,11 +1,12 @@
 package net.glowstone.util.loot;
 
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.util.ReflectionProcessor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LootingUtil {
 

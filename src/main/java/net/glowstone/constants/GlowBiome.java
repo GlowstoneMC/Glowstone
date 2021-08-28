@@ -1,5 +1,23 @@
 package net.glowstone.constants;
 
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
+import com.google.common.collect.MutableClassToInstanceMap;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import net.glowstone.generator.ground.GroundGenerator;
+import net.glowstone.generator.ground.SnowyGroundGenerator;
+import net.glowstone.generator.populators.overworld.BiomePopulator;
+import net.glowstone.generator.populators.overworld.IceSpikesPopulator;
+import net.glowstone.generator.populators.overworld.SnowyTundraPopulator;
+import net.glowstone.generator.populators.overworld.TaigaPopulator;
+import net.glowstone.i18n.ConsoleMessages;
+import org.bukkit.block.Biome;
+
+import java.lang.reflect.Constructor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static net.glowstone.GlowServer.getWorldConfig;
 import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_BIG_HILLS;
@@ -50,23 +68,6 @@ import static org.bukkit.block.Biome.ICE_SPIKES;
 import static org.bukkit.block.Biome.SNOWY_TAIGA;
 import static org.bukkit.block.Biome.SNOWY_TAIGA_MOUNTAINS;
 import static org.bukkit.block.Biome.SNOWY_TUNDRA;
-
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
-import com.google.common.collect.MutableClassToInstanceMap;
-import java.lang.reflect.Constructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import net.glowstone.generator.ground.GroundGenerator;
-import net.glowstone.generator.ground.SnowyGroundGenerator;
-import net.glowstone.generator.populators.overworld.BiomePopulator;
-import net.glowstone.generator.populators.overworld.IceSpikesPopulator;
-import net.glowstone.generator.populators.overworld.SnowyTundraPopulator;
-import net.glowstone.generator.populators.overworld.TaigaPopulator;
-import net.glowstone.i18n.ConsoleMessages;
-import org.bukkit.block.Biome;
 
 /**
  * Mappings for Biome id values.

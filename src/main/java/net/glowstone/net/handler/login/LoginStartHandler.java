@@ -1,8 +1,6 @@
 package net.glowstone.net.handler.login;
 
 import com.flowpowered.network.MessageHandler;
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
@@ -13,6 +11,9 @@ import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.util.SecurityUtils;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
+
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 public final class LoginStartHandler implements MessageHandler<GlowSession, LoginStartMessage> {
 
@@ -44,10 +45,7 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
                     .nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
                 profile = new GlowPlayerProfile(name, uuid, true);
             } else {
-                profile = proxy.getProfile();
-                if (profile == null) {
-                    profile = proxy.getProfile(name);
-                }
+                profile = proxy.getProfile(name);
             }
 
             AsyncPlayerPreLoginEvent event = EventFactory.getInstance()

@@ -1,6 +1,5 @@
 package net.glowstone.generator.structures;
 
-import java.util.Random;
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.generator.structures.util.StructureBuilder;
@@ -13,6 +12,8 @@ import org.bukkit.material.Chest;
 import org.bukkit.material.Stairs;
 import org.bukkit.material.Step;
 import org.bukkit.util.Vector;
+
+import java.util.Random;
 
 public class GlowDesertTemple extends GlowTemplePiece {
 

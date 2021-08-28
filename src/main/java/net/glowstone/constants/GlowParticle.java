@@ -2,10 +2,6 @@ package net.glowstone.constants;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Floats;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Function;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.block.data.BlockDataManager;
@@ -19,6 +15,11 @@ import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Id mappings for particles.

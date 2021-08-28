@@ -1,13 +1,14 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
-import java.util.List;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Collections;
+import java.util.List;
 
 public class KickCommand extends GlowVanillaCommand {
 

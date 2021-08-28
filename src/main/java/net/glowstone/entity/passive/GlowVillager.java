@@ -1,16 +1,8 @@
 package net.glowstone.entity.passive;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.destroystokyo.paper.entity.villager.Reputation;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.GlowServer;
@@ -37,6 +29,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowVillager extends GlowAgeable implements Villager {
 

@@ -1,12 +1,13 @@
 package net.glowstone.generator.ground;
 
-import java.util.Arrays;
-import java.util.Random;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
+
+import java.util.Arrays;
+import java.util.Random;
 
 public class MesaGroundGenerator extends GroundGenerator {
     private final MesaType type;
