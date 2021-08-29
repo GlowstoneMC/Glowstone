@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 public final class LoginStartHandler implements MessageHandler<GlowSession, LoginStartMessage> {
 
-    private static final Pattern usernamePattern = Pattern.compile("[a-zA-Z0-9_]+");
+    private static final Pattern usernamePattern = Pattern.compile("^[a-zA-Z0-9_]+$");
 
     @Override
     public void handle(GlowSession session, LoginStartMessage message) {
