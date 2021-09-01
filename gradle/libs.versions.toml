@@ -62,8 +62,6 @@ powermock-core = { module = "org.powermock:powermock-core", version.ref = "power
 powermock-module-junit4 = { module = "org.powermock:powermock-module-junit4", version.ref = "powermock" }
 powermock-api-mockito2 = { module = "org.powermock:powermock-api-mockito2", version.ref = "powermock" }
 
-lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
-
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 
 [bundles]
