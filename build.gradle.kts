@@ -51,7 +51,7 @@ dependencies {
 }
 
 group = "net.glowstone"
-version = "2021.7.1-SNAPSHOT"
+version = "2021.9.1-SNAPSHOT"
 description = "A fast, customizable and compatible open source Minecraft server."
 
 
