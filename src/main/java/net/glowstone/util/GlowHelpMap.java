@@ -47,7 +47,7 @@ public final class GlowHelpMap implements HelpMap {
     private final Map<Class, HelpTopicFactory<Command>> topicFactoryMap = new HashMap<>();
     private final Set<String> ignoredPlugins = new HashSet<>();
 
-    private final Set<HelpTopic> indexTopics = new HashSet<>();
+    private final Set<HelpTopic> indexTopics = new TreeSet<>(TOPIC_COMPARE);
     private HelpTopic defaultTopic;
     private boolean commandsInIndex = true;
 
@@ -58,7 +58,7 @@ public final class GlowHelpMap implements HelpMap {
      */
     public GlowHelpMap(GlowServer server) {
         this.server = server;
-        helpTopics = new TreeMap<>(NAME_COMPARE);
+        helpTopics = new HashMap<>();
         defaultTopic
             = new IndexHelpTopic("Index", null, null, indexTopics, "Use /help [n] to get page"
             + " n of help.");
