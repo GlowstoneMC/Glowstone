@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -19,12 +19,12 @@ import java.util.zip.ZipFile;
 
 public class GlowPluginTypeDetector {
 
-    public List<File> bukkitPlugins = new ArrayList<>();
-    public List<File> spongePlugins = new ArrayList<>();
-    public List<File> canaryPlugins = new ArrayList<>();
-    public List<File> forgefPlugins = new ArrayList<>();
-    public List<File> forgenPlugins = new ArrayList<>();
-    public List<File> unrecognizedPlugins = new ArrayList<>();
+    public List<File> bukkitPlugins = new LinkedList<>();
+    public List<File> spongePlugins = new LinkedList<>();
+    public List<File> canaryPlugins = new LinkedList<>();
+    public List<File> forgefPlugins = new LinkedList<>();
+    public List<File> forgenPlugins = new LinkedList<>();
+    public List<File> unrecognizedPlugins = new LinkedList<>();
 
     private File directory;
 
