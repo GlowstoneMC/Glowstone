@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * An implementation of {@link HelpMap}.
@@ -48,7 +47,7 @@ public final class GlowHelpMap implements HelpMap {
     private final Map<Class, HelpTopicFactory<Command>> topicFactoryMap = new HashMap<>();
     private final Set<String> ignoredPlugins = new HashSet<>();
 
-    private final Set<HelpTopic> indexTopics = new TreeSet<>(TOPIC_COMPARE);
+    private final Set<HelpTopic> indexTopics = new HashSet<>();
     private HelpTopic defaultTopic;
     private boolean commandsInIndex = true;
 
