@@ -4,6 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -25,6 +27,8 @@ public class IceSpike implements TerrainObject {
         }
         boolean succeeded = false;
         int stemRadius = Math.max(0, Math.min(MAX_STEM_RADIUS, tipRadius - 1));
+        Set<Material> materialSet = new HashSet<>(Arrays.asList(MATERIALS));
+        
         for (int x = -stemRadius; x <= stemRadius; x++) {
             for (int z = -stemRadius; z <= stemRadius; z++) {
                 int stackHeight = MAX_STEM_HEIGHT;
@@ -33,7 +37,7 @@ public class IceSpike implements TerrainObject {
                 }
                 for (int y = tipOffset - 1; y >= -3; y--) {
                     Block block = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
-                    if (Arrays.asList(MATERIALS).contains(block.getType())
+                    if (materialSet.contains(block.getType())
                         || block.getType() == Material.PACKED_ICE) {
                         block.setType(Material.PACKED_ICE);
                         stackHeight--;
@@ -63,14 +67,14 @@ public class IceSpike implements TerrainObject {
                     // tip shape in top direction
                     Block block = world
                         .getBlockAt(sourceX + x, sourceY + tipOffset + y, sourceZ + z);
-                    if (Arrays.asList(MATERIALS).contains(block.getType())) {
+                    if (materialSet.contains(block.getType())) {
                         block.setType(Material.PACKED_ICE);
                         succeeded = true;
                     }
                     if (radius > 1 && y != 0) { // same shape in bottom direction
                         block = world
                             .getBlockAt(sourceX + x, sourceY + tipOffset - y, sourceZ + z);
-                        if (Arrays.asList(MATERIALS).contains(block.getType())) {
+                        if (materialSet.contains(block.getType())) {
                             block.setType(Material.PACKED_ICE);
                             succeeded = true;
                         }
