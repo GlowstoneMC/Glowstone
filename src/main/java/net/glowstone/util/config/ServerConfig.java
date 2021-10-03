@@ -673,7 +673,7 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
          * Checks if the value is a valid port number.
          */
         static final Predicate<Integer> PORT = typeCheck(Integer.class)
-            .and(POSITIVE).and((number) -> number < 49152);
+            .and(POSITIVE).and((number) -> number <= 65535);
         /**
          * Checks if the value is a valid {@link WorldType} name.
          */
