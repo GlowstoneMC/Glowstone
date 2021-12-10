@@ -10,6 +10,7 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -36,7 +37,7 @@ public class GlowBanner extends GlowBlockState implements Banner {
     }
 
     @Override
-    public void setPattern(int i, Pattern pattern) {
+    public void setPattern(int i, @NotNull Pattern pattern) {
         checkNotNull(pattern, "Pattern cannot be null");
         patterns.set(i, pattern);
     }
@@ -47,49 +48,49 @@ public class GlowBanner extends GlowBlockState implements Banner {
     }
 
     @Override
-    public void setBaseColor(DyeColor dyeColor) {
+    public void setBaseColor(@NotNull DyeColor dyeColor) {
         checkNotNull(baseColor, "Base cannot be null");
         baseColor = dyeColor;
     }
 
     @Override
-    public List<Pattern> getPatterns() {
+    public @NotNull List<Pattern> getPatterns() {
         // TODO: Defensive copy
-        return patterns;
+        return new ArrayList<>(patterns);
     }
 
     @Override
-    public void setPatterns(List<Pattern> patterns) {
+    public void setPatterns(@NotNull List<Pattern> patterns) {
         // TODO: Defensive copy
-        this.patterns = patterns;
+        this.patterns = new ArrayList<>(patterns);
     }
 
     @Override
-    public void addPattern(Pattern pattern) {
+    public void addPattern(@NotNull Pattern pattern) {
         checkNotNull(pattern, "Pattern cannot be null");
         patterns.add(pattern);
     }
 
     @Override
-    public Pattern getPattern(int i) {
+    public @NotNull Pattern getPattern(int i) {
         return patterns.get(i);
     }
 
     @Override
-    public Pattern removePattern(int i) {
+    public @NotNull Pattern removePattern(int i) {
         return patterns.remove(i);
     }
 
     @Override
     public boolean update(boolean force, boolean applyPhysics) {
-        boolean result = super.update(force, applyPhysics);
-        if (result) {
+        boolean successful = super.update(force, applyPhysics);
+        if (successful) {
             BannerEntity banner = getBlockEntity();
             banner.setBase(baseColor);
             banner.setPatterns(patterns);
             getBlockEntity().updateInRange();
         }
-        return result;
+        return successful;
     }
 
     @Override
