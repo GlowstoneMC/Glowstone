@@ -31,7 +31,7 @@ public class BannerEntity extends BlockEntity {
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
         tag.readCompoundList("Patterns",
-            patternTags -> patterns = BlockBanner.fromNbt(patternTags));
+                patternTags -> patterns = BlockBanner.fromNbt(patternTags));
         tag.readInt("Base", color -> base = DyeColor.getByDyeData((byte) color));
     }
 
@@ -55,13 +55,23 @@ public class BannerEntity extends BlockEntity {
         player.sendBlockEntityChange(getBlock().getLocation(), GlowBlockEntity.BANNER, nbt);
     }
 
+    /**
+     * Returns a copy of the list of patterns.
+     *
+     * @return a {@link List} containing the banner {@link Pattern}s.
+     */
     public List<Pattern> getPatterns() {
-        // TODO: Defensive copy?
-        return patterns;
+        // Defensive copy
+        return new ArrayList<>(patterns);
     }
 
+    /**
+     * Set a copy of the list as the banner patterns.
+     *
+     * @param patterns a {@link List} containing the new {@link Pattern}s.
+     */
     public void setPatterns(List<Pattern> patterns) {
-        // TODO: Defensive copy
-        this.patterns = patterns;
+        // Do a defensive copy
+        this.patterns = new ArrayList<>(patterns);
     }
 }
