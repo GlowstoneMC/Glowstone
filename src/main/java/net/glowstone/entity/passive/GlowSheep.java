@@ -188,10 +188,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
             }
 
             // Make the entity animate
-            EntityStatusMessage message = new EntityStatusMessage(getEntityId(), EntityEffect.SHEEP_EAT);
-            getWorld().getRawPlayers().stream()
-                    .filter(player -> player.canSeeEntity(this))
-                    .forEach(glowPlayer -> glowPlayer.getSession().send(message));
+            playEffect(EntityEffect.SHEEP_EAT);
 
             // After 40 ticks (the animation duration) make the wool regrow
             getServer().getScheduler().runTaskLater(null, () -> {
