@@ -414,7 +414,7 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
-    public Location getLocation() {
+    public @NotNull Location getLocation() {
         return location.clone();
     }
 
