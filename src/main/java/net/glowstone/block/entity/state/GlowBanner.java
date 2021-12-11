@@ -55,13 +55,13 @@ public class GlowBanner extends GlowBlockState implements Banner {
 
     @Override
     public @NotNull List<Pattern> getPatterns() {
-        // TODO: Defensive copy
+        // Defensive copy
         return new ArrayList<>(patterns);
     }
 
     @Override
     public void setPatterns(@NotNull List<Pattern> patterns) {
-        // TODO: Defensive copy
+        // Defensive copy
         this.patterns = new ArrayList<>(patterns);
     }
 
