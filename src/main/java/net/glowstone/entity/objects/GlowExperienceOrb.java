@@ -2,13 +2,13 @@ package net.glowstone.entity.objects;
 
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.flowpowered.network.Message;
-import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.entity.SpawnXpOrbMessage;
+import net.glowstone.util.EntityUtils;
 import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -17,16 +17,17 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
 
     private static final int LIFETIME = TickUtil.minutesToTicks(5);
+    private static final double MAX_DRAG_DISTANCE = 7.25;
 
     @Getter
     @Setter
@@ -64,7 +65,7 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     @Override
     public List<Message> createSpawnMessage() {
         return Collections.singletonList(
-            new SpawnXpOrbMessage(getEntityId(), getLocation(), (short) getExperience()));
+                new SpawnXpOrbMessage(getEntityId(), getLocation(), (short) getExperience()));
     }
 
     @Override
@@ -74,19 +75,29 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
         }
     }
 
+
     @Override
     public void pulse() {
         super.pulse();
-        // todo: drag self towards player
+
+        // Drag self towards the nearest player
+        getNearestPlayer().ifPresent(player -> {
+            final Vector distance = player.getLocation().subtract(location).toVector();
+
+            // The more the player is distant, the more the orb is slow
+            distance.multiply(Math.pow(distance.length(), -1));
+            this.setVelocity(distance);
+        });
+
 
         if (tickSkipped) {
             // find player to give experience
-            Optional<Player> player = getWorld().getPlayers().stream()
-                .filter(p -> p.getLocation().distanceSquared(location) <= 1)
-                .findAny();
+            Optional<GlowPlayer> player = getWorld().getRawPlayers().stream()
+                    .filter(p -> p.getLocation().distanceSquared(location) <= 1)
+                    .findAny();
+
             if (player.isPresent()) {
-                PlayerPickupExperienceEvent event =
-                    new PlayerPickupExperienceEvent(player.get(), this);
+                PlayerPickupExperienceEvent event = new PlayerPickupExperienceEvent(player.get(), this);
                 event = EventFactory.getInstance().callEvent(event);
                 if (!event.isCancelled()) {
                     player.get().giveExp(experience);
@@ -105,23 +116,17 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
         }
     }
 
-    private void refresh() {
-        DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(
-            Collections.singletonList(this.getEntityId()));
-        List<Message> spawnMessages = this.createSpawnMessage();
-        Message[] messages = new Message[] {destroyMessage, spawnMessages.get(0)};
-        getWorld()
-            .getRawPlayers()
-            .stream()
-            .filter(p -> p.canSeeEntity(this))
-            .forEach(p -> p.getSession().sendAll(messages));
+    private @NotNull Optional<Player> getNearestPlayer() {
+        return getWorld().getPlayers().stream()
+                .filter(p -> p.getLocation().distanceSquared(location) < (MAX_DRAG_DISTANCE * MAX_DRAG_DISTANCE))
+                .min(Comparator.comparingInt(o -> (int) o.getLocation().distanceSquared(location)));
     }
 
     @Override
     public void setExperience(int experience) {
-        Preconditions.checkArgument(experience > 0, "Experience points cannot be negative.");
+        checkArgument(experience > 0, "Experience points cannot be negative.");
         this.experience = experience;
-        refresh();
+        EntityUtils.refresh(this);
     }
 
     @Override
