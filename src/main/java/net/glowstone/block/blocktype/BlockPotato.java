@@ -15,7 +15,7 @@ public class BlockPotato extends BlockCrops {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         if (block.getData() >= CropState.RIPE.ordinal()) {
             if (ThreadLocalRandom.current().nextInt(100) < 2) {
                 return Collections.unmodifiableList(Arrays.asList(

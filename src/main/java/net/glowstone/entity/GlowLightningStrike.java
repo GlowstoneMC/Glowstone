@@ -7,7 +7,6 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.constants.GameRules;
-import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.SpawnGlobalEntityMessage;
 import org.bukkit.Location;
@@ -22,7 +21,9 @@ import org.bukkit.entity.LightningStrike;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -91,9 +92,9 @@ public class GlowLightningStrike extends GlowEntity implements LightningStrike {
             // Play Sound
             if (!isSilent) {
                 world.playSound(location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 10000,
-                    0.8F + ThreadLocalRandom.current().nextFloat() * 0.2F);
+                        0.8F + ThreadLocalRandom.current().nextFloat() * 0.2F);
                 world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 2,
-                    0.5F + ThreadLocalRandom.current().nextFloat() * 0.2F);
+                        0.5F + ThreadLocalRandom.current().nextFloat() * 0.2F);
             }
 
             if (!effect) { // if it's not just a visual effect
@@ -117,8 +118,7 @@ public class GlowLightningStrike extends GlowEntity implements LightningStrike {
                     }
 
                     if (entity instanceof Damageable) {
-                        ((Damageable) entity)
-                            .damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
+                        ((Damageable) entity).damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
                     }
                     entity.setFireTicks(entity.getMaxFireTicks());
                 }
@@ -146,17 +146,17 @@ public class GlowLightningStrike extends GlowEntity implements LightningStrike {
     }
 
     @Override
-    public List<Entity> getNearbyEntities(double x, double y, double z) {
+    public @NotNull List<Entity> getNearbyEntities(double x, double y, double z) {
         // This behavior is similar to CraftBukkit, where a call with args
         // (0, 0, 0) finds any entities whose bounding boxes intersect that of
         // this entity.
 
-        BoundingBox searchBox = BoundingBox
-            .fromPositionAndSize(location.toVector(), new Vector(0, 0, 0));
-        Vector vec = new Vector(x, y, z);
-        Vector vec2 = new Vector(0, 0.5 * y, 0);
-        searchBox.minCorner.subtract(vec).add(vec2);
-        searchBox.maxCorner.add(vec).add(vec2);
+        BoundingBox searchBox = BoundingBox.of(location, 0, 0, 0);
+        Vector expansion = new Vector(x, y, z);
+        Vector shift = new Vector(0, 0.5 * y, 0);
+
+        searchBox.expand(expansion).shift(shift);
+
 
         return world.getEntityManager().getEntitiesInside(searchBox, this);
     }
@@ -174,7 +174,7 @@ public class GlowLightningStrike extends GlowEntity implements LightningStrike {
     }
 
     @Override
-    public LightningStrike.Spigot spigot() {
+    public LightningStrike.@NotNull Spigot spigot() {
         return spigot;
     }
 

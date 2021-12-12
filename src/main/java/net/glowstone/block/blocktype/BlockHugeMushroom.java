@@ -30,7 +30,7 @@ public class BlockHugeMushroom extends BlockType {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         int rnd = ThreadLocalRandom.current().nextInt(100);
         if (rnd < 80) {
             return Collections.emptyList();

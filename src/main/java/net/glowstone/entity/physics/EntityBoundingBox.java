@@ -1,18 +1,18 @@
 package net.glowstone.entity.physics;
 
+import org.bukkit.Location;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A BoundingBox which changes position over time as an entity moves.
  */
 public class EntityBoundingBox extends BoundingBox {
 
-    private final double width;
-    private final double vertSize;
-    private final double depth;
-
-    public EntityBoundingBox(double horizSize, double vertSize) {
-        this(horizSize, vertSize, horizSize);
+    public EntityBoundingBox(@NotNull Location loc, double horizSize, double vertSize) {
+        super(loc.getX() - horizSize / 2, loc.getY() - vertSize / 2, loc.getZ() - horizSize / 2,
+                loc.getX() + horizSize / 2, loc.getY() + vertSize / 2, loc.getZ() + horizSize / 2);
     }
 
     /**
@@ -22,15 +22,13 @@ public class EntityBoundingBox extends BoundingBox {
      * @param vertSize the size on the Y axis
      * @param depth    the size on the Z axis
      */
-    public EntityBoundingBox(double width, double vertSize, double depth) {
-        this.width = width;
-        this.vertSize = vertSize;
-        this.depth = depth;
+    public EntityBoundingBox(@NotNull Location loc, double width, double vertSize, double depth) {
+        super(loc.getX() - width / 2, loc.getY() - vertSize / 2, loc.getZ() - depth / 2,
+                loc.getX() + width / 2, loc.getY() + vertSize / 2, loc.getZ() + depth / 2);
     }
 
-    @Override
     public Vector getSize() {
-        return new Vector(width, vertSize, depth);
+        return new Vector(getMaxX() - getMinX(), getMaxY() - getMinX(), getMaxZ() - getMinZ());
     }
 
     /**
@@ -41,12 +39,7 @@ public class EntityBoundingBox extends BoundingBox {
      * @param z the center Z coordinate
      */
     public void setCenter(double x, double y, double z) {
-        minCorner.setX(x - width / 2);
-        minCorner.setY(y);
-        minCorner.setZ(z - depth / 2);
-        maxCorner.setX(x + width / 2);
-        maxCorner.setY(y + vertSize);
-        maxCorner.setZ(z + depth / 2);
+        shift(getCenterX() - x, getCenterY() - y, getCenterZ() - z);
     }
 
 }

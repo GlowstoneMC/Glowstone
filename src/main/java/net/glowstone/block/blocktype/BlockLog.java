@@ -35,7 +35,7 @@ public class BlockLog extends BlockType {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         // TODO: 1.13 log types
         return Arrays
             .asList(new ItemStack(Material.LEGACY_LOG, 1, (short) (block.getData() & 0x03)));

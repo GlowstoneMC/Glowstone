@@ -32,7 +32,7 @@ public class BlockDeadBush extends BlockNeedsAttached {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock me, ItemStack tool) {
         // If the block below the dead bush is removed,
         // the bush will simply disappear without dropping anything.
         if (tool == null) {

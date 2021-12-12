@@ -12,11 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockLeaves extends BlockType {
@@ -36,7 +32,7 @@ public class BlockLeaves extends BlockType {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         int data = block.getData() & 0x03; //ignore "non-decay" and "check-decay" data.
 
         if (tool != null && tool.getType() == Material.SHEARS) {

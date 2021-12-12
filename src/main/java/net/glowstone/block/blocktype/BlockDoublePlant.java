@@ -37,7 +37,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         Bisected data = getCastedBlockData(Bisected.class, block.getBlockData());
         if (block.getType() != Material.TALL_GRASS
             && block.getType() != Material.LARGE_FERN

@@ -33,7 +33,7 @@ public class BlockWoodenTrapDoor extends BlockOpenable {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         return DROP;
     }
 

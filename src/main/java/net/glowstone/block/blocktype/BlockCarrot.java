@@ -15,7 +15,7 @@ public class BlockCarrot extends BlockCrops {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         if (block.getData() >= CropState.RIPE.ordinal()) {
             return Collections.unmodifiableList(Arrays.asList(
                 new ItemStack(Material.CARROT, ThreadLocalRandom.current().nextInt(4) + 1)));

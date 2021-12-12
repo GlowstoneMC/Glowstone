@@ -14,7 +14,7 @@ public class BlockMelon extends BlockType {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         return Collections.unmodifiableList(Arrays
             .asList(new ItemStack(Material.MELON, ThreadLocalRandom.current().nextInt(5) + 3)));
     }

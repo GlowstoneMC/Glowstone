@@ -56,7 +56,7 @@ public class BlockSnow extends BlockNeedsAttached {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         if (tool != null && ToolType.SHOVEL.matches(tool.getType())) {
             return Arrays.asList(new ItemStack(Material.SNOWBALL, block.getData() + 1));
         } else {
