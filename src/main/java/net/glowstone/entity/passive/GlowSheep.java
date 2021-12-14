@@ -1,5 +1,7 @@
 package net.glowstone.entity.passive;
 
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import net.glowstone.EventFactory;
@@ -7,11 +9,15 @@ import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.WoolUtil;
-import org.bukkit.*;
+import org.bukkit.DyeColor;
+import org.bukkit.EntityEffect;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
@@ -21,9 +27,6 @@ import org.bukkit.event.entity.SheepRegrowWoolEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
-
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowSheep extends GlowAnimal implements Sheep {
 

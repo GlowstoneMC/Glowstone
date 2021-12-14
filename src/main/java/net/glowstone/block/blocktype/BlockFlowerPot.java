@@ -1,5 +1,10 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
@@ -14,8 +19,6 @@ import org.bukkit.material.FlowerPot;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
 
 public class BlockFlowerPot extends BlockType {
 

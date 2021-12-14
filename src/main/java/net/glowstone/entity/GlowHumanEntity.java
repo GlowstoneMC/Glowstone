@@ -1,5 +1,13 @@
 package net.glowstone.entity;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import com.flowpowered.network.Message;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +15,13 @@ import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
-import net.glowstone.inventory.*;
+import net.glowstone.inventory.ArmorConstants;
+import net.glowstone.inventory.EquipmentMonitor;
+import net.glowstone.inventory.GlowCraftingInventory;
+import net.glowstone.inventory.GlowEnchantingInventory;
+import net.glowstone.inventory.GlowInventory;
+import net.glowstone.inventory.GlowInventoryView;
+import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
@@ -38,12 +52,6 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents a human entity, such as an NPC or a player.

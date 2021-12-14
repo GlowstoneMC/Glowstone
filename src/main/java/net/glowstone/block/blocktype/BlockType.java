@@ -1,5 +1,10 @@
 package net.glowstone.block.blocktype;
 
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
@@ -14,7 +19,11 @@ import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.util.SoundInfo;
 import net.glowstone.util.SoundUtil;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
@@ -28,12 +37,6 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Base class for specific types of blocks.
