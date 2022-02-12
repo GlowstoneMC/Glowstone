@@ -6,10 +6,10 @@ import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.physics.EntityBoundingBox;
-import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
+import net.glowstone.util.EntityUtils;
 import org.bukkit.Art;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -26,11 +26,7 @@ import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GlowPainting extends GlowHangingEntity implements Painting {
 
@@ -149,28 +145,9 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             return false;
         }
 
-        refresh();
+        EntityUtils.refresh(this);
 
         return true;
-    }
-
-    /**
-     * Refreshes the painting for nearby clients.
-     *
-     * <p>This will first destroy, and then spawn the painting again using its current art and
-     * facing value.
-     */
-    public void refresh() {
-        DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(
-            Collections.singletonList(this.getEntityId()));
-        List<Message> spawnMessages = this.createSpawnMessage();
-        Message[] messages = new Message[] {destroyMessage, spawnMessages.get(0)};
-
-        getWorld()
-            .getRawPlayers()
-            .stream()
-            .filter(p -> p.canSeeEntity(this))
-            .forEach(p -> p.getSession().sendAll(messages));
     }
 
     /**
@@ -230,7 +207,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             return false;
         }
 
-        refresh();
+        EntityUtils.refresh(this);
 
         return true;
     }
