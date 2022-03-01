@@ -158,7 +158,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     }
 
     private String getIpString() {
-        String ip = queryServer.getServer().getIp();
-        return ip.isEmpty() ? "127.0.0.1" : ip;
+        String address = queryServer.getServer().getIp();
+        return address.isEmpty() ? "0.0.0.0" : address;
     }
 }
