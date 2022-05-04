@@ -106,11 +106,11 @@ public final class LibraryManager {
         /**
          * The SHA-1 hash algorithm.
          */
-        SHA1(Hashing.sha1(), "sha1"),
+        SHA1(Hashing.sha256(), "sha256"),
         /**
          * The MD5 hash algorithm.
          */
-        MD5(Hashing.md5(), "md5");
+        MD5(Hashing.sha256(), "md5");
 
         private static final Map<String, HashAlgorithm> BY_NAME = Maps.newHashMap();
 
