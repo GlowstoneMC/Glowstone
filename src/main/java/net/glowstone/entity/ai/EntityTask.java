@@ -39,6 +39,8 @@ public abstract class EntityTask implements Comparable<EntityTask> {
     @Override
     public int compareTo(EntityTask other) {
         return 0; // TODO: AI task priority
+        return otherCell instanceof NullCell ? 0 : -1;
+
     }
 
     /**
