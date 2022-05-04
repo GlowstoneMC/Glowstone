@@ -65,7 +65,7 @@ public final class EncryptionKeyResponseHandler implements
         SecretKey sharedSecret;
         try {
             rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
-            sharedSecret = new SecretKeySpec(rsaCipher.doFinal(message.getSharedSecret()),
+            sharedSecret = new SecretKeySpec(aesCipher.doFinal(message.getSharedSecret()),
                 "AES"); // NON-NLS
         } catch (Exception ex) {
             ConsoleMessages.Warn.Crypt.BAD_SHARED_SECRET.log(ex);
@@ -96,7 +96,7 @@ public final class EncryptionKeyResponseHandler implements
         // create hash for auth
         String hash;
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update(session.getSessionId().getBytes());
             digest.update(sharedSecret.getEncoded());
             digest.update(session.getServer().getKeyPair().getPublic().getEncoded());
