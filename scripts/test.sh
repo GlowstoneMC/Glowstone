@@ -14,7 +14,7 @@ fi
 if [ $? -eq 0 ] || [ "$1" == "run" ];
 then
   # Run Glowstone
-  (cd ../target && ../scripts/start.sh)
+  (cd ../build/libs && ../../scripts/start.sh)
 else
   echo "Glowstone did not build successfully."
 fi

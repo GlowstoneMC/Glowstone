@@ -73,7 +73,7 @@ cd Glowstone
 ./scripts/build.sh
 ```
 
-The final jar will be placed in `target/` named `glowstone.jar`.
+The final jar will be placed in `build/libs/` named `glowstone.jar`.
 
 ## Running
 
