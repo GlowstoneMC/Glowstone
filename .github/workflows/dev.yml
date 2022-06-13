@@ -52,7 +52,7 @@ jobs:
         rm -f ~/.gradle/caches/modules-2/gc.properties
 
     - name: Push Javadocs to Pages
-      uses: dmnemec/copy_file_to_another_repo_action@v1
+      uses: dmnemec/copy_file_to_another_repo_action@v1.1.1
       env:
         API_TOKEN_GITHUB: ${{ secrets.GH_TOKEN }}
       with:
