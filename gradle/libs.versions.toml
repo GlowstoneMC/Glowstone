@@ -64,5 +64,6 @@ glowstone = ["glowstone-glowkit", "glowstone-blockdata", "glowstone-datapack"]
 
 linkstone = ["linkstone-annotations", "linkstone-runtime"]
 kotlin = ["kotlin-stdlib", "kotlin-reflect"]
-junit = ["junit-core", "junit-vintage-engine", "junit-jupiter-api", "junit-jupiter-params", "junit-jupiter-engine"]
+junit = ["junit-core", "junit-jupiter-api", "junit-jupiter-params"]
+junitRuntime = ["junit-jupiter-engine", "junit-vintage-engine"]
 powermock = ["powermock-core", "powermock-module-junit4", "powermock-api-mockito2"]

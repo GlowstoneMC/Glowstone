@@ -39,6 +39,7 @@ dependencies {
     runtimeOnly(libs.slf4j.jdk14)
 
     testImplementation(libs.bundles.junit)
+    testRuntimeOnly(libs.bundles.junitRuntime)
 
     testImplementation(libs.hamcrest)
     testImplementation(libs.bundles.powermock)
@@ -49,14 +50,6 @@ dependencies {
 group = "net.glowstone"
 version = "2021.9.1-SNAPSHOT"
 description = "A fast, customizable and compatible open source Minecraft server."
-
-tasks.javadoc {
-    if (JavaVersion.current().isJava9Compatible) {
-        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
-    }
-
-    exclude("**/*.xml")
-}
 
 publishing {
     repositories {
@@ -142,3 +135,15 @@ tasks.shadowJar {
 }
 
 tasks.assemble { dependsOn(tasks.shadowJar) }
+
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
+}
+
+tasks.javadoc {
+    if (JavaVersion.current().isJava9Compatible) {
+        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    }
+
+    exclude("**/*.xml")
+}
