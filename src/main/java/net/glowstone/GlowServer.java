@@ -2766,11 +2766,6 @@ public class GlowServer implements Server {
     }
 
     @Override
-    public int getMaxPlayers() {
-        return config.getInt(Key.MAX_PLAYERS);
-    }
-
-    @Override
     public String getUpdateFolder() {
         return config.getString(Key.UPDATE_FOLDER);
     }
