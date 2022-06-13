@@ -63,7 +63,7 @@ publishing {
     }
     publications {
         register<MavenPublication>("maven") {
-            project.shadow.component(this)
+            from(components["java"])
             pom {
                 url.set("https://www.glowstone.net")
             }

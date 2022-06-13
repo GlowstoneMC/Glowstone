@@ -38,7 +38,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: Publish with Gradle
+    - name: Build
+      run: BUILD_EXTRAS=true ./gradlew assemble --no-daemon
+
+    - name: Publish to Maven
       run: BUILD_EXTRAS=true ./gradlew publish --no-daemon
       env:
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
