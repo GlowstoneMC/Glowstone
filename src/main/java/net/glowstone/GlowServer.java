@@ -541,6 +541,10 @@ public class GlowServer implements Server {
         try {
             GlowServer server = createFromArguments(args);
 
+            GlowPotionEffect.register();
+            GlowEnchantment.register();
+            GlowDispenser.register();
+
             // we don't want to run a server when called with --version, --help or --generate-config
             if (server == null) {
                 return;
@@ -575,9 +579,6 @@ public class GlowServer implements Server {
         }
 
         ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
-        GlowPotionEffect.register();
-        GlowEnchantment.register();
-        GlowDispenser.register();
 
         return new GlowServer(config);
     }
@@ -2763,11 +2764,6 @@ public class GlowServer implements Server {
 
     public String getServerId() {
         return Integer.toHexString(getServerName().hashCode());
-    }
-
-    @Override
-    public int getMaxPlayers() {
-        return config.getInt(Key.MAX_PLAYERS);
     }
 
     @Override

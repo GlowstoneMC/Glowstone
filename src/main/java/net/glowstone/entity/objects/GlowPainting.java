@@ -15,6 +15,7 @@ import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
+import net.glowstone.util.EntityUtils;
 import org.bukkit.Art;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -147,7 +148,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             return false;
         }
 
-        refresh();
+        EntityUtils.refresh(this);
 
         return true;
     }
@@ -159,15 +160,16 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
      * facing value.
      */
     public void refresh() {
-        DestroyEntitiesMessage destroyMessage =
-                new DestroyEntitiesMessage(Collections.singletonList(this.getEntityId()));
+        DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(
+            Collections.singletonList(this.getEntityId()));
         List<Message> spawnMessages = this.createSpawnMessage();
-        spawnMessages.add(0, destroyMessage);
+        Message[] messages = new Message[] {destroyMessage, spawnMessages.get(0)};
 
-
-        getWorld().getRawPlayers().stream()
-                .filter(p -> p.canSeeEntity(this))
-                .forEach(p -> p.getSession().sendAll(spawnMessages.toArray(new Message[0])));
+        getWorld()
+            .getRawPlayers()
+            .stream()
+            .filter(p -> p.canSeeEntity(this))
+            .forEach(p -> p.getSession().sendAll(messages));
     }
 
     /**
@@ -227,7 +229,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             return false;
         }
 
-        refresh();
+        EntityUtils.refresh(this);
 
         return true;
     }

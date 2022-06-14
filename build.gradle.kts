@@ -3,7 +3,7 @@ import java.util.*
 
 plugins {
     java
-    id("io.freefair.lombok") version "6.0.0-m2"
+    id("io.freefair.lombok") version "6.5.0-rc1"
 
     `maven-publish`
     checkstyle
@@ -39,6 +39,7 @@ dependencies {
     runtimeOnly(libs.slf4j.jdk14)
 
     testImplementation(libs.bundles.junit)
+    testRuntimeOnly(libs.bundles.junitRuntime)
 
     testImplementation(libs.hamcrest)
     testImplementation(libs.bundles.powermock)
@@ -47,21 +48,25 @@ dependencies {
 }
 
 group = "net.glowstone"
-version = "2021.9.1-SNAPSHOT"
+version = "2022.6.1-SNAPSHOT"
 description = "A fast, customizable and compatible open source Minecraft server."
 
-lombok {
-    setVersion(libs.versions.lombok.get())
-}
-
-tasks.javadoc {
-    exclude("**/*.xml")
-}
-
 publishing {
+    repositories {
+        maven {
+            url = uri("https://repo.glowstone.net/content/repositories/" + if (version.toString().endsWith("SNAPSHOT")) "snapshots/" else "releases/")
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
     publications {
-        create<MavenPublication>("maven") {
-            project.shadow.component(this)
+        register<MavenPublication>("maven") {
+            from(components["java"])
+            pom {
+                url.set("https://www.glowstone.net")
+            }
         }
     }
 }
@@ -87,7 +92,14 @@ java {
 
     if (buildExtras) {
         withSourcesJar()
+        tasks.named<Jar>("sourcesJar") {
+            archiveVersion.set("")
+        }
+
         withJavadocJar()
+        tasks.named<Jar>("javadocJar") {
+            archiveVersion.set("")
+        }
     }
 }
 
@@ -117,6 +129,21 @@ tasks.shadowJar {
     relocate("it.unimi", "org.bukkit.craftbukkit.libs.it.unimi")
 
     exclude("mojang-translations/*")
+
+    archiveVersion.set("")
+    archiveClassifier.set("")
 }
 
 tasks.assemble { dependsOn(tasks.shadowJar) }
+
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
+}
+
+tasks.javadoc {
+    if (JavaVersion.current().isJava9Compatible) {
+        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    }
+
+    exclude("**/*.xml")
+}

@@ -7,55 +7,71 @@ on:
       - .github/workflows/**
       - etc/checkstyle.xml
       - src/**
-      - pom.xml
+      - gradle/**
+      - '**/*.gradle*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [16]
+        java: [ 17 ]
     name: Dev Build (Java ${{ matrix.java }})
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Maven
-      uses: actions/setup-java@v1
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
       with:
+        distribution: 'temurin'
         java-version: ${{ matrix.java }}
-        server-id: glowstone-upstream
-        server-username: MAVEN_USERNAME
-        server-password: MAVEN_PASSWORD
-    - name: Cache
-      uses: actions/cache@v2
+        cache: 'gradle'
+
+    - name: Cache gradle
+      uses: actions/cache@v3
       with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'gradle/libs.versions.toml') }}
         restore-keys: |
-          ${{ runner.os }}-maven-
-    - name: Cache Maven
-      run: mvn -T 1C -B dependency:go-offline
+          ${{ runner.os }}-gradle-
+
+    - name: Build
+      run: BUILD_EXTRAS=true ./gradlew assemble --no-daemon
+
     - name: Publish to Maven
-      run: mvn -Dmaven.test.skip=true -T 1C -B source:jar javadoc:jar deploy -Pbuild-extras
+      run: BUILD_EXTRAS=true ./gradlew publish --no-daemon
       env:
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-        JAVA_TOOL_OPTIONS: -Xmx2G
+
+    - name: Cleanup Gradle Cache
+      # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+      # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+      run: |
+        rm -f ~/.gradle/caches/modules-2/modules-2.lock
+        rm -f ~/.gradle/caches/modules-2/gc.properties
+
     - name: Push Javadocs to Pages
       uses: dmnemec/copy_file_to_another_repo_action@v1.1.1
       env:
         API_TOKEN_GITHUB: ${{ secrets.GH_TOKEN }}
       with:
-        source_file: 'target/apidocs/.'
+        source_file: 'build/docs/javadoc/.'
         destination_repo: 'GlowstoneMC/glowstonemc.github.io'
         destination_folder: 'content/jd/glowstone/1.16/' # TODO: detect version?
         user_email: 'mastercoms@tuta.io'
         user_name: 'mastercoms'
         commit_message: Update Javadocs for Glowstone commit ${{ github.sha }}
+
     - name: GitHub Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: glowstone
-        path: target/glowstone.jar
+        path: build/libs/glowstone.jar
+
     - name: Setup SSH
       if: ${{ github.ref == 'refs/heads/1.12' }}
       run: |
@@ -70,6 +86,7 @@ jobs:
         sudo apt-get install sshpass
       env:
         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+
     - name: Deploy to Test Server
       if: ${{ github.ref == 'refs/heads/1.12' }}
       run: |

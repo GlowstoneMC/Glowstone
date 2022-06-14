@@ -34,9 +34,10 @@ public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBott
 
     private void spawnOrb() {
         int xp = ThreadLocalRandom.current().nextInt(9) + 3;
-        ExpBottleEvent event = EventFactory.getInstance()
-            .callEvent(new ExpBottleEvent(this, xp));
+        ExpBottleEvent event = EventFactory.getInstance().callEvent(new ExpBottleEvent(this, xp));
         xp = event.getExperience();
+        // TODO: Show effect
+
         ExperienceOrb orb = (ExperienceOrb) world.spawnEntity(location, EntityType.EXPERIENCE_ORB);
         orb.setExperience(xp);
         if (orb instanceof GlowExperienceOrb) {

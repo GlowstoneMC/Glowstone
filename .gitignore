@@ -9,6 +9,7 @@ out
 nbproject
 bin
 doc
+lib
 target
 !.gitignore
 !.gitmodules

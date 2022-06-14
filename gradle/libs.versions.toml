@@ -1,10 +1,8 @@
 [versions]
-glowstone = "1.16.5-R0.1-SNAPSHOT"
-block-data-generated = "1.0.0-SNAPSHOT"
-redstone-trasformer = "1.0.0-SNAPSHOT"
-
-
+api = "1.16.5-R0.1-SNAPSHOT"
+redstone-transformer = "1.0.0-SNAPSHOT"
 linkstone = "1.0.0-SNAPSHOT"
+
 checkstyle = "8.44"
 jansi = "1.18"
 jline = "2.14.6"
@@ -22,18 +20,15 @@ junit-core = "4.13.1"
 junit-ext = "5.7.2"
 hamcrest = "2.2"
 powermock = "2.0.9"
-lombok = "1.18.20"
 jetbrains-annotations = "21.0.1"
-
-api = "1.16.5-R0.1-SNAPSHOT"
 
 [libraries]
 linkstone-annotations = { module = "net.glowstone:linkstone-annotations", version.ref = "linkstone" }
 linkstone-runtime = { module = "net.glowstone:linkstone-runtime", version.ref = "linkstone" }
 
-glowstone-glowkit = { module = "net.glowstone:glowkit", version.ref = "glowstone" }
-glowstone-blockdata = { module = "net.glowstone:block-data-generated", version.ref = "block-data-generated" }
-glowstone-datapack = { module = "net.glowstone:data-pack-generated", version.ref = "redstone-trasformer" }
+glowstone-glowkit = { module = "net.glowstone:glowkit", version.ref = "api" }
+glowstone-blockdata = { module = "net.glowstone:block-data-generated", version.ref = "redstone-transformer" }
+glowstone-datapack = { module = "net.glowstone:data-pack-generated", version.ref = "redstone-transformer" }
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
@@ -69,5 +64,6 @@ glowstone = ["glowstone-glowkit", "glowstone-blockdata", "glowstone-datapack"]
 
 linkstone = ["linkstone-annotations", "linkstone-runtime"]
 kotlin = ["kotlin-stdlib", "kotlin-reflect"]
-junit = ["junit-core", "junit-vintage-engine", "junit-jupiter-api", "junit-jupiter-params", "junit-jupiter-engine"]
+junit = ["junit-core", "junit-jupiter-api", "junit-jupiter-params"]
+junitRuntime = ["junit-jupiter-engine", "junit-vintage-engine"]
 powermock = ["powermock-core", "powermock-module-junit4", "powermock-api-mockito2"]
