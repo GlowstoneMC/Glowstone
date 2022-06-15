@@ -69,7 +69,6 @@ publishing {
     }
     publications {
         register<MavenPublication>("maven") {
-            withoutBuildIdentifier()
             from(components["java"])
             pom {
                 name.set(project.name)
