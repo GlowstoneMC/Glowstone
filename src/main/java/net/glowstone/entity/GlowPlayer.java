@@ -93,6 +93,7 @@ import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.Convert;
 import net.glowstone.util.EntityUtils;
 import net.glowstone.util.InventoryUtil;
+import net.glowstone.util.MaterialUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
@@ -2924,19 +2925,18 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void sendBlockChange(Location loc, Material material, byte data) {
-        sendBlockChange(loc, material.getId(), data);
+    public void sendBlockChange(@NotNull Location loc, Material type, byte data) {
+        // TODO: 1.13 get with data?
+        sendBlockChange(loc, MaterialUtil.getId(type));
     }
 
     @Override
-    public void sendBlockChange(@NotNull Location loc, @NotNull BlockData block) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void sendBlockChange(@NotNull Location loc, @NotNull BlockData blockData) {
+        sendBlockChange(loc, MaterialUtil.getId(blockData));
     }
 
-    @Deprecated
-    public void sendBlockChange(Location loc, int material, byte data) {
-        sendBlockChange(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc
-            .getBlockZ(), material, data));
+    private void sendBlockChange(@NotNull Location loc, int type) {
+        sendBlockChange(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), type));
     }
 
     /**
@@ -3963,11 +3963,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         int blockX = digging.getX();
         int blockY = digging.getY();
         int blockZ = digging.getZ();
-        // Tell the whole chunk
-        world.broadcastBlockChangeInRange(
-            Key.of(blockX >> 4, blockZ >> 4),
-            new BlockChangeMessage(blockX, blockY, blockZ, Material.AIR.getId(), 0)
-        );
         setDigging(null);
     }
 

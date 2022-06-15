@@ -19,6 +19,7 @@ import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
+import net.glowstone.util.MaterialUtil;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Bukkit;
@@ -573,7 +574,7 @@ public class GlowChunk implements Chunk {
      * @param type The type.
      */
     public void setType(int x, int z, int y, Material type) {
-        setType(x, z, y, type.getId());
+        setType(x, z, y, MaterialUtil.getId(type));
     }
 
     /**

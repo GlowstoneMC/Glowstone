@@ -22,6 +22,7 @@ public final class BlockChangeMessage implements Message {
      * @param type     the new block ID
      * @param metadata the new block data nibble
      */
+    @Deprecated
     public BlockChangeMessage(int x, int y, int z, int type, int metadata) {
         this(x, y, z, type << 4 | metadata & 0xf);
     }

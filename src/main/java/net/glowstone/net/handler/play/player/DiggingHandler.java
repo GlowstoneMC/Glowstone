@@ -16,6 +16,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.DiggingMessage;
+import net.glowstone.util.MaterialUtil;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -187,8 +188,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             player.addExhaustion(0.005f);
 
             // STEP_SOUND actually is the block break particles
-            world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND,
-                block.getType().getId(), 64, player);
+            world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, MaterialUtil.getId(block.getType()), 64, player);
             GlowBlockState state = block.getState();
             block.setType(Material.AIR);
             if (blockType != null) {

@@ -4,6 +4,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.MaterialUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -91,7 +92,7 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
                 }
 
                 me.setTypeIdAndData(
-                    (powered ? Material.REDSTONE_TORCH : Material.REDSTONE_TORCH).getId(),
+                    MaterialUtil.getId(Material.REDSTONE_TORCH),
                     // TODO: block data OFF : ON
                     me.getData(), true);
                 extraUpdate(me);

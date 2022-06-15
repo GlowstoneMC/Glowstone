@@ -8,15 +8,11 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.generator.ground.GroundGenerator;
-import net.glowstone.generator.ground.SnowyGroundGenerator;
 import net.glowstone.generator.populators.overworld.BiomePopulator;
-import net.glowstone.generator.populators.overworld.IceSpikesPopulator;
-import net.glowstone.generator.populators.overworld.SnowyTundraPopulator;
-import net.glowstone.generator.populators.overworld.TaigaPopulator;
-import net.glowstone.i18n.ConsoleMessages;
 import org.bukkit.block.Biome;
 
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static net.glowstone.GlowServer.getWorldConfig;
@@ -64,10 +60,6 @@ import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_RIVER;
 import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_ROCKY_SHORE;
 import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_SWAMPLAND;
 import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_SWAMPLAND_HILLS;
-import static org.bukkit.block.Biome.ICE_SPIKES;
-import static org.bukkit.block.Biome.SNOWY_TAIGA;
-import static org.bukkit.block.Biome.SNOWY_TAIGA_MOUNTAINS;
-import static org.bukkit.block.Biome.SNOWY_TUNDRA;
 
 /**
  * Mappings for Biome id values.
@@ -83,39 +75,13 @@ public final class GlowBiome {
 
     // TODO: use Biome builder with 1.13 biomes
     static {
-        register(
-                builder()
-                        .type(SNOWY_TUNDRA)
-                        .id(12)
-                        .temperature(0.0)
-                        .populator(SnowyTundraPopulator.class)
-                        .ground(GroundGenerator.class)
-                        .scale(BiomeScale.FLATLANDS)
-                        .build(),
-                builder()
-                        .type(ICE_SPIKES)
-                        .id(140)
-                        .temperature(0.0)
-                        .populator(IceSpikesPopulator.class)
-                        .ground(SnowyGroundGenerator.class)
-                        .scale(BiomeScale.MID_HILLS)
-                        .build(),
-                builder()
-                        .type(SNOWY_TAIGA)
-                        .id(30)
-                        .temperature(-0.5)
-                        .populator(TaigaPopulator.class)
-                        .ground(GroundGenerator.class)
-                        .scale(BiomeScale.MID_PLAINS)
-                        .build(),
-                builder()
-                        .type(SNOWY_TAIGA_MOUNTAINS)
-                        .id(158)
-                        .temperature(-0.5)
-                        .populator(TaigaPopulator.class)
-                        .ground(GroundGenerator.class)
-                        .scale(BiomeScale.MID_HILLS)
-                        .build()
+        register(builder()
+                .type(Biome.THE_VOID)
+                .id(127)
+                .temperature(0.5)
+                .downfall(0.5)
+                .scale(BiomeScale.DEFAULT)
+                .build()
         );
         // Make caches immutable
         populators = ImmutableClassToInstanceMap.copyOf(populators);
@@ -125,6 +91,7 @@ public final class GlowBiome {
     private final int id;
     private final Biome type;
     private final double temperature;
+    private final double downfall;
     private final BiomePopulator populator;
     private final GroundGenerator ground;
     private final BiomeScale scale;
@@ -147,12 +114,15 @@ public final class GlowBiome {
      * @return the Biome, or null
      */
     public static GlowBiome getBiome(int id) {
-        if (id < biomes.length) {
-            return biomes[id];
-        } else {
-            ConsoleMessages.Error.Biome.UNKNOWN.log(id);
-            return null;
+        if (id >= 0 && id < biomes.length) {
+            GlowBiome biome = biomes[id];
+            if (biome != null) {
+                return biome;
+            }
         }
+        // TODO: 1.13 biomes
+        //ConsoleMessages.Error.Biome.UNKNOWN.log(id);
+        return biomes[127];
     }
 
     /**
@@ -166,6 +136,7 @@ public final class GlowBiome {
     }
 
     private static void register(GlowBiome... biomes) {
+        Arrays.fill(ids, 127);
         for (GlowBiome biome : biomes) {
             GlowBiome.ids[biome.type.ordinal()] = biome.id;
             GlowBiome.biomes[biome.id] = biome;

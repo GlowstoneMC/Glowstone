@@ -24,8 +24,8 @@ public final class BlockActionCodec implements Codec<BlockActionMessage> {
     @Override
     public ByteBuf encode(ByteBuf buf, BlockActionMessage message) throws IOException {
         GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
-        buf.writeByte(message.getData1());
-        buf.writeByte(message.getData2());
+        buf.writeByte(message.getActionId());
+        buf.writeByte(message.getActionParam());
         ByteBufUtils.writeVarInt(buf, message.getBlockType());
         return buf;
     }

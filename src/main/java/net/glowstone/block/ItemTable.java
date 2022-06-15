@@ -164,8 +164,6 @@ public final class ItemTable {
 
     private final EnumMap<Material, ItemType> materialToType = new EnumMap<>(Material.class);
     private final Map<NamespacedKey, ItemType> extraTypes = new HashMap<>();
-    private int nextBlockId;
-    private int nextItemId;
 
     ////////////////////////////////////////////////////////////////////////////
     // Data
@@ -450,12 +448,9 @@ public final class ItemTable {
         type.setMaterial(material);
 
         if (material.isBlock()) {
-            nextBlockId = Math.max(nextBlockId, material.getId() + 1);
             if (type.getClass() != BlockType.class) {
                 ((BlockType) type).setPlaceSound(Sound.BLOCK_STONE_BREAK);
             }
-        } else {
-            nextItemId = Math.max(nextItemId, material.getId() + 1);
         }
     }
 
@@ -475,10 +470,7 @@ public final class ItemTable {
         type.setMaterial(material);
 
         if (material.isBlock()) {
-            nextBlockId = Math.max(nextBlockId, material.getId() + 1);
             ((BlockType) type).setPlaceSound(sound);
-        } else {
-            nextItemId = Math.max(nextItemId, material.getId() + 1);
         }
     }
 
@@ -585,15 +577,14 @@ public final class ItemTable {
     /**
      * Returns the {@link BlockType} for a {@link Material}, or null if not a block.
      *
-     * @param mat a {@link Material}
-     * @return {@code mat} as a {@link BlockType}, or null if {@code mat} isn't a block
+     * @param type a {@link Material}
+     * @return {@code type} as a {@link BlockType}, or null if {@code type} isn't a block
      */
-    public BlockType getBlock(Material mat) {
-        ItemType itemType = getItem(mat);
+    public BlockType getBlock(Material type) {
+        ItemType itemType = getItem(type);
         if (itemType instanceof BlockType) {
             return (BlockType) itemType;
         }
         return null;
     }
-
 }

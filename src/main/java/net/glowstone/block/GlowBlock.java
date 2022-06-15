@@ -15,6 +15,7 @@ import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.datapack.tags.ExtraMaterialTags;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
+import net.glowstone.util.MaterialUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -201,9 +202,14 @@ public class GlowBlock implements Block {
         return world.getBlockTypeAt(x, y, z);
     }
 
+    public int getId() {
+        // TODO: return MaterialUtil.getId(getBlockData());
+        return MaterialUtil.getId(getType());
+    }
+
     @Override
     public void setType(Material type) {
-        setTypeId(type.getId());
+        setTypeId(MaterialUtil.getId(type));
     }
 
     /**
@@ -211,7 +217,7 @@ public class GlowBlock implements Block {
      */
     @Override
     public void setType(Material type, boolean applyPhysics) {
-        setTypeId(type.getId(), applyPhysics);
+        setTypeId(MaterialUtil.getId(type), applyPhysics);
     }
 
     /**
@@ -222,7 +228,7 @@ public class GlowBlock implements Block {
      * @param applyPhysics notify this block and surrounding blocks to update physics
      */
     public void setType(Material type, byte data, boolean applyPhysics) {
-        setTypeIdAndData(type.getId(), data, applyPhysics);
+        setTypeIdAndData(MaterialUtil.getId(type), data, applyPhysics);
     }
 
     @Deprecated
@@ -356,7 +362,7 @@ public class GlowBlock implements Block {
 
     @Override
     public @NotNull BlockData getBlockData() {
-        return null; // TODO
+        return getType().createBlockData(); // TODO
     }
 
     @Override
@@ -555,7 +561,7 @@ public class GlowBlock implements Block {
         if (!drops.isEmpty()) {
             return breakNaturally(1.0f, drops);
         } else {
-            return setTypeId(Material.AIR.getId());
+            return setTypeId(MaterialUtil.getId(Material.AIR));
         }
     }
 

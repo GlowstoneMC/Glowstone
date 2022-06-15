@@ -1,5 +1,6 @@
 package net.glowstone.constants;
 
+import net.glowstone.util.MaterialUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -32,7 +33,7 @@ public final class GlowEffect {
                 break;
             case RECORD_PLAY:
                 checkArgument(((Material) data).isRecord(), "Invalid record type!");
-                result = ((Material) data).getId();
+                result = MaterialUtil.getId((Material) data);
                 break;
             case SMOKE:
                 // block face to data value conversion information from
@@ -72,7 +73,7 @@ public final class GlowEffect {
                 break;
             case STEP_SOUND:
                 checkArgument(((Material) data).isBlock(), "Material is not a block!");
-                result = ((Material) data).getId();
+                result = MaterialUtil.getId((Material) data);
                 break;
             default:
                 result = 0;

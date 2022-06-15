@@ -6,6 +6,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.JukeboxEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.MaterialUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Jukebox;
@@ -68,7 +69,7 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
             this.record = null;
         } else {
             this.record = new ItemStack(record);
-            id = record.getId();
+            id = MaterialUtil.getId(record);
         }
         Collection<GlowPlayer> players = getWorld().getRawPlayers();
         for (GlowPlayer player : players) {

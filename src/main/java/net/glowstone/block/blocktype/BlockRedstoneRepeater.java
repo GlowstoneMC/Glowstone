@@ -4,6 +4,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.MaterialUtil;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
@@ -106,11 +107,11 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
             && ((Diode) target.getState().getData()).getFacing() == diode.getFacing();
 
         if (!powered && block.getType() == Material.REPEATER) {
-            block.setTypeIdAndData(Material.REPEATER.getId(), block.getData(),
+            block.setTypeIdAndData(MaterialUtil.getId(Material.REPEATER), block.getData(),
                 true); // TODO: repeater off data
             extraUpdate(block);
         } else if (powered && block.getType() == Material.REPEATER) { // TODO: repeater off data
-            block.setTypeIdAndData(Material.REPEATER.getId(), block.getData(),
+            block.setTypeIdAndData(MaterialUtil.getId(Material.REPEATER), block.getData(),
                 true); // TODO: repeater on data
             extraUpdate(block);
         }

@@ -1,6 +1,5 @@
 package net.glowstone.util;
 
-import net.glowstone.block.ItemTable;
 import org.bukkit.Material;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +39,8 @@ public class VariableValueArrayTest {
      * @return The ID as put in an array for the given block.
      */
     private static int block(Material material, int metadata) {
-        int id = ItemTable.instance().getBlock(material).getMaterial().getId();
+        // TODO: 1.13 block data
+        int id = MaterialUtil.getId(material);
         return (id << 4 | metadata);
     }
 

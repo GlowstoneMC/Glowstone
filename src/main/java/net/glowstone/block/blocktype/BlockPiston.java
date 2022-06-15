@@ -119,7 +119,7 @@ public class BlockPiston extends BlockDirectional {
         BlockFace pistonBlockFace = piston.getFacing();
         int rawFace = BlockDirectional.getRawFace(pistonBlockFace);
         BlockActionMessage message = new BlockActionMessage(me.getX(), me.getY(), me.getZ(),
-            me.isBlockIndirectlyPowered() ? 0 : 1, rawFace, me.getType().getId());
+            me.isBlockIndirectlyPowered() ? 0 : 1, rawFace, me.getBlockData());
 
         GlowChunk chunk = me.getChunk();
         GlowChunk.Key chunkKey = GlowChunk.Key.of(chunk.getX(), chunk.getZ());

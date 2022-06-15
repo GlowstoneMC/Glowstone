@@ -1,6 +1,7 @@
 package net.glowstone.constants;
 
 import net.glowstone.util.InventoryUtil;
+import net.glowstone.util.MaterialUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
@@ -507,12 +508,12 @@ public final class ItemIds {
     /**
      * Get the full string identifier for a specified Material.
      *
-     * @param mat the Material.
+     * @param type the Material.
      * @return the identifier.
      */
-    public static String getName(Material mat) {
-        checkNotNull(mat, "Material cannot be null"); // NON-NLS
-        return names.get(mat.getId());
+    public static String getName(Material type) {
+        checkNotNull(type, "Material cannot be null"); // NON-NLS
+        return names.get(MaterialUtil.getId(type));
     }
 
     /**

@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.chunk.GlowChunk;
+import net.glowstone.util.MaterialUtil;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -71,12 +72,12 @@ public class GlowChunkData implements ChunkData {
 
     @Override
     public void setBlock(int x, int y, int z, Material material) {
-        setBlock(x, y, z, material.getId());
+        setBlock(x, y, z, MaterialUtil.getId(material));
     }
 
     @Override
     public void setBlock(int x, int y, int z, MaterialData materialData) {
-        setBlock(x, y, z, materialData.getItemType().getId(), materialData.getData());
+        setBlock(x, y, z, MaterialUtil.getId(materialData.getItemType()), (byte) 0);
     }
 
     @Override

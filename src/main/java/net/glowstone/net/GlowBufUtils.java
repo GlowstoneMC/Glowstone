@@ -14,6 +14,7 @@ import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.GlowUnsafeValues;
 import net.glowstone.util.InventoryUtil;
+import net.glowstone.util.MaterialUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
@@ -297,7 +298,7 @@ public final class GlowBufUtils {
             buf.writeBoolean(false);
         } else {
             buf.writeBoolean(true);
-            ByteBufUtils.writeVarInt(buf, stack.getType().getId());
+            ByteBufUtils.writeVarInt(buf, MaterialUtil.getId(stack.getType()));
             buf.writeByte(stack.getAmount());
             if (stack.hasItemMeta()) {
                 CompoundTag tag = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
