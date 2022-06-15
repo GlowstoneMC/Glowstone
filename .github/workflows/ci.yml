@@ -13,27 +13,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: gradle/wrapper-validation-action@v1
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-
       - name: Cache gradle
         uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
+            ~/.gradle/jdks
+            ~/.gradle/native
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'gradle/libs.versions.toml') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
-        run: BUILD_EXTRAS=true ./gradlew assemble --no-daemon
+        run: BUILD_EXTRAS=true ./gradlew -Dorg.gradle.parallel=true assemble --no-daemon --stacktrace
 
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.

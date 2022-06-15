@@ -10,7 +10,6 @@ fastutil = "1.0"
 flow = "1.2.10-SNAPSHOT"
 fastuuid = "0.1"
 brigadier = "1.0.17"
-kotlin = "1.5.10"
 gluegen = "2.3.2"
 jocl = "2.3.2"
 naether = "0.15.8"
@@ -29,9 +28,6 @@ linkstone-runtime = { module = "net.glowstone:linkstone-runtime", version.ref = 
 glowstone-glowkit = { module = "net.glowstone:glowkit", version.ref = "api" }
 glowstone-blockdata = { module = "net.glowstone:block-data-generated", version.ref = "redstone-transformer" }
 glowstone-datapack = { module = "net.glowstone:data-pack-generated", version.ref = "redstone-transformer" }
-
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 
 gluegen = { module = "org.jogamp.gluegen:gluegen-rt-main", version.ref = "gluegen" }
 jocl = { module = "org.jogamp.jocl:jocl-main", version.ref = "jocl" }
@@ -63,7 +59,6 @@ jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "j
 glowstone = ["glowstone-glowkit", "glowstone-blockdata", "glowstone-datapack"]
 
 linkstone = ["linkstone-annotations", "linkstone-runtime"]
-kotlin = ["kotlin-stdlib", "kotlin-reflect"]
 junit = ["junit-core", "junit-jupiter-api", "junit-jupiter-params"]
 junitRuntime = ["junit-jupiter-engine", "junit-vintage-engine"]
 powermock = ["powermock-core", "powermock-module-junit4", "powermock-api-mockito2"]
