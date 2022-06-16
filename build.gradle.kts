@@ -76,7 +76,6 @@ publishing {
                 description.set(project.description)
                 url.set("https://www.glowstone.net")
                 inceptionYear.set("2011")
-                packaging = "jar"
 
                 licenses {
                     license {
