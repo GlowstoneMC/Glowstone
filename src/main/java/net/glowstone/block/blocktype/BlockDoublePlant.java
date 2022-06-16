@@ -99,7 +99,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
         if (species == Material.TALL_GRASS
             || species == Material.LARGE_FERN) {
             if (holdingType != null && holdingType.canPlaceAt(null, block, face)) {
-                block.getRelative(BlockFace.UP).setType(Material.AIR, (byte) 0, false);
+                block.getRelative(BlockFace.UP).setType(Material.AIR,false);
             }
             return true;
         }
@@ -111,7 +111,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
                 if (underSpecies == Material.TALL_GRASS
                     || underSpecies == Material.LARGE_FERN) {
                     if (holdingType != null && holdingType.canPlaceAt(null, block, face)) {
-                        under.setType(Material.AIR, (byte) 0, false);
+                        under.setType(Material.AIR,false);
                     }
                     return true;
                 }

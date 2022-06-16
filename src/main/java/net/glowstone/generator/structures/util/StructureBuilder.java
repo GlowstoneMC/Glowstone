@@ -14,8 +14,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.EntityType;
-import org.bukkit.material.DirectionalContainer;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
@@ -426,15 +426,15 @@ public class StructureBuilder {
      *         int)} fails
      */
     public boolean createRandomItemsContainer(Vector pos, Random random, RandomItemsContent content,
-            DirectionalContainer container, int maxStacks) {
+                                              Directional container, int maxStacks) {
         Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
             BlockState state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ())
                     .getState();
             delegate.backupBlockState(state.getBlock());
 
-            state.setType(container.getItemType());
-            state.setData(container);
+            state.setType(container.getMaterial());
+            state.setBlockData(container);
             state.update(true);
 
             return content.fillContainer(random, state, maxStacks);

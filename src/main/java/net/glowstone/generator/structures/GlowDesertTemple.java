@@ -8,7 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.material.Chest;
+import org.bukkit.block.data.Directional;
 import org.bukkit.material.Stairs;
 import org.bukkit.material.Step;
 import org.bukkit.util.Vector;
@@ -252,26 +252,32 @@ public class GlowDesertTemple extends GlowTemplePiece {
         builder.setBlock(new Vector(7, 4, 10), Material.SANDSTONE, 1);
         builder.setBlock(new Vector(10, 3, 10), Material.STONE_PRESSURE_PLATE);
 
+        Directional blockData = (Directional) Material.CHEST.createBlockData();
+
         RandomItemsContent chestContent = getChestContent();
         if (!hasPlacedChest0) {
+            blockData.setFacing(BlockFace.NORTH);
             hasPlacedChest0 = builder
                 .createRandomItemsContainer(new Vector(10, 3, 12), random, chestContent,
-                    new Chest(getRelativeFacing(BlockFace.NORTH)), random.nextInt(5) + 2);
+                        blockData, random.nextInt(5) + 2);
         }
         if (!hasPlacedChest1) {
+            blockData.setFacing(BlockFace.EAST);
             hasPlacedChest1 = builder
                 .createRandomItemsContainer(new Vector(8, 3, 10), random, chestContent,
-                    new Chest(getRelativeFacing(BlockFace.EAST)), random.nextInt(5) + 2);
+                        blockData, random.nextInt(5) + 2);
         }
         if (!hasPlacedChest2) {
+            blockData.setFacing(BlockFace.SOUTH);
             hasPlacedChest2 = builder
                 .createRandomItemsContainer(new Vector(10, 3, 8), random, chestContent,
-                    new Chest(getRelativeFacing(BlockFace.SOUTH)), random.nextInt(5) + 2);
+                        blockData, random.nextInt(5) + 2);
         }
         if (!hasPlacedChest3) {
+            blockData.setFacing(BlockFace.WEST);
             hasPlacedChest3 = builder
                 .createRandomItemsContainer(new Vector(12, 3, 10), random, chestContent,
-                    new Chest(getRelativeFacing(BlockFace.WEST)), random.nextInt(5) + 2);
+                        blockData, random.nextInt(5) + 2);
         }
 
         return true;

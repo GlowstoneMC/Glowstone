@@ -247,27 +247,24 @@ public class GlowBlock implements Block {
         byte oldData = getData();
 
         GlowChunk chunk = (GlowChunk) world.getChunkAt(this);
-        Material material =
-            ((GlowServer) Bukkit.getServer()).getBlockDataManager().convertToBlockData(type)
-                .getMaterial();
-        chunk.setType(x & 0xf, z & 0xf, y, material);
-        chunk.setMetaData(x & 0xf, z & 0xf, y, data);
+        BlockData blockData = ((GlowServer) Bukkit.getServer()).getBlockDataManager().convertToBlockData(type);
+        chunk.setType(x & 0xf, z & 0xf, y, blockData);
 
         // TODO: fix so this hack isn't needed!
         /*if (oldTypeId == Material.DOUBLE_PLANT
                 && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
             world.getChunkAtAsync(this, c -> ((GlowChunk) c).setType(x & 0xf, z & 0xf, y + 1, 0));
             GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
-            BlockChangeMessage bcmsg = new BlockChangeMessage(x, y + 1, z, 0, 0);
+            BlockChangeMessage bcmsg = new BlockChangeMessage(x, y + 1, z, 0);
             world.broadcastBlockChangeInRange(key, bcmsg);
         }*/
 
         if (applyPhysics) {
-            applyPhysics(oldTypeId, material, oldData, data);
+            applyPhysics(oldTypeId, blockData.getMaterial(), oldData, data);
         }
 
         GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
-        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
+        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type);
         world.broadcastBlockChangeInRange(key, bcmsg);
 
         return true;
@@ -328,11 +325,10 @@ public class GlowBlock implements Block {
     // Data and light getters/setters
     @Override
     public byte getData() {
-        return (byte) ((GlowChunk) world.getChunkAt(this)).getMetaData(x & 0xf, z & 0xf, y);
+        return (byte) 0;
     }
 
     public void setData(byte data) {
-        setData(data, true);
     }
 
     public void setData(byte data, boolean applyPhysics) {
@@ -345,24 +341,23 @@ public class GlowBlock implements Block {
         GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
         BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
         StatefulBlockData blockData = blockDataManager.createBlockData(getType());
-        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z,
-            blockDataManager.convertToBlockId(blockData), data);
+        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, blockDataManager.convertToBlockId(blockData));
         world.broadcastBlockChangeInRange(key, bcmsg);
     }
 
     @Override
     public void setBlockData(@NotNull BlockData data, boolean applyPhysics) {
-        // TODO
+        setTypeId(MaterialUtil.getId(data), applyPhysics);
     }
 
     @Override
     public void setBlockData(@NotNull BlockData data) {
-        // TODO
+        setTypeId(MaterialUtil.getId(data));
     }
 
     @Override
     public @NotNull BlockData getBlockData() {
-        return getType().createBlockData(); // TODO
+        return world.getBlockDataAt(x, y, z);
     }
 
     @Override

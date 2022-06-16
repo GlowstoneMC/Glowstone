@@ -171,7 +171,6 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new SpawnGlobalEntityMessage(1, 2, 3, 4, 5),
         new BlockActionMessage(1, 2, 3, 4, 5, 6),
         new BlockChangeMessage(1, 2, 3, 4),
-        new BlockChangeMessage(1, 2, 3, 4, 5),
         //new ChunkBulkMessage(...),
         //new ChunkDataMessage(...),
         new ExperienceMessage(1f, 2, 3),

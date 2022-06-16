@@ -2,6 +2,8 @@ package net.glowstone.block;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
 import org.bukkit.Location;
@@ -31,8 +33,11 @@ public class GlowBlockState implements BlockState {
 
     @EqualsAndHashCode.Include
     protected Material type;
-    @EqualsAndHashCode.Include
+    @Getter
+    @Setter
     protected MaterialData data;
+    @EqualsAndHashCode.Include
+    protected BlockData blockData;
     private boolean flowed;
 
     ////////////////////////////////////////////////////////////////////////////
@@ -50,7 +55,7 @@ public class GlowBlockState implements BlockState {
         z = block.getZ();
         type = block.getType();
         lightLevel = block.getLightLevel();
-        makeData(block.getData());
+        blockData = block.getBlockData();
     }
 
     @Override
@@ -62,17 +67,6 @@ public class GlowBlockState implements BlockState {
     public GlowBlock getBlock() {
         return world.getBlockAt(x, y, z);
     }
-
-    @Override
-    public @NotNull BlockData getBlockData() {
-        return getBlock().getBlockData();
-    }
-
-    @Override
-    public void setBlockData(@NotNull BlockData data) {
-        getBlock().setBlockData(data);
-    }
-
     @Override
     public Location getLocation() {
         return getBlock().getLocation();
@@ -91,23 +85,17 @@ public class GlowBlockState implements BlockState {
         if (this.type == type) {
             return;
         }
-        Material old = this.type;
         this.type = type;
-        if (old.getData().equals(type.getData())) {
-            setRawData((byte) 0);
-        } else {
-            makeData((byte) 0);
-        }
+        setBlockData(type.createBlockData());
     }
 
     @Override
     public final byte getRawData() {
-        return getData().getData();
+        return (byte) 0;
     }
 
     @Override
     public final void setRawData(byte data) {
-        getData().setData(data);
     }
 
     @Override
@@ -132,21 +120,10 @@ public class GlowBlockState implements BlockState {
     public boolean update(boolean force, boolean applyPhysics) {
         Block block = getBlock();
         if (block.getType() == getType() || force) {
-            block.setBlockData(block.getBlockData(), applyPhysics);
+            block.setBlockData(blockData, applyPhysics);
             return true;
         }
         return false;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Internals
-
-    private void makeData(byte data) {
-        if (type == null) {
-            this.data = new MaterialData(type, data);
-        } else {
-            this.data = type.getNewData(data);
-        }
     }
 
     ////////////////////////////////////////////////////////////////////////////

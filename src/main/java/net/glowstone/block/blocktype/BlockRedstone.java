@@ -300,8 +300,7 @@ public class BlockRedstone extends BlockNeedsAttached {
         GlowChunk.Key key = GlowChunk.Key.of(me.getX() >> 4, me.getZ() >> 4);
         BlockDataManager blockDataManager = ((GlowServer) Bukkit.getServer()).getBlockDataManager();
         BlockChangeMessage bcmsg = new BlockChangeMessage(me.getX(), me.getY(), me.getZ(),
-            blockDataManager.convertToBlockId(blockDataManager.createBlockData(me.getType())),
-            me.getData());
+            blockDataManager.convertToBlockId(blockDataManager.createBlockData(me.getType())));
         me.getWorld().broadcastBlockChangeInRange(key, bcmsg);
     }
 }

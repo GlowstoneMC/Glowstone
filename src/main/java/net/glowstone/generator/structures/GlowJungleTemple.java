@@ -10,9 +10,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.material.Chest;
+import org.bukkit.block.data.Directional;
 import org.bukkit.material.Diode;
-import org.bukkit.material.Dispenser;
 import org.bukkit.material.Lever;
 import org.bukkit.material.PistonBaseMaterial;
 import org.bukkit.material.Stairs;
@@ -233,14 +232,18 @@ public class GlowJungleTemple extends GlowTemplePiece {
         lever.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
         builder.fill(new Vector(8, 2, 12), new Vector(10, 2, 12), lever.getItemType(), lever);
         if (!placedTrap1) {
+            Directional blockData = (Directional) Material.DISPENSER.createBlockData();
+            blockData.setFacing(BlockFace.SOUTH);
             placedTrap1 = builder
                 .createRandomItemsContainer(new Vector(3, 2, 1), random, dispenserContent,
-                    new Dispenser(getRelativeFacing(BlockFace.SOUTH)), 2);
+                    blockData, 2);
         }
         if (!placedTrap2) {
+            Directional blockData = (Directional) Material.DISPENSER.createBlockData();
+            blockData.setFacing(BlockFace.WEST);
             placedTrap2 = builder
                 .createRandomItemsContainer(new Vector(9, 2, 3), random, dispenserContent,
-                    new Dispenser(getRelativeFacing(BlockFace.WEST)), 2);
+                        blockData, 2);
         }
         Vine vine = new Vine(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
         builder.setBlock(new Vector(3, 2, 2), vine.getItemType(), vine);
@@ -278,14 +281,18 @@ public class GlowJungleTemple extends GlowTemplePiece {
         repeater.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
         builder.setBlock(new Vector(10, 2, 10), repeater.getItemType(), repeater);
         if (!placedMainChest) {
+            Directional blockData = (Directional) Material.CHEST.createBlockData();
+            blockData.setFacing(BlockFace.WEST);
             placedMainChest = builder
                 .createRandomItemsContainer(new Vector(8, 1, 3), random, chestContent,
-                    new Chest(getRelativeFacing(BlockFace.WEST)), random.nextInt(5) + 2);
+                        blockData, random.nextInt(5) + 2);
         }
         if (!placedHiddenChest) {
+            Directional blockData = (Directional) Material.CHEST.createBlockData();
+            blockData.setFacing(BlockFace.NORTH);
             placedHiddenChest = builder
                 .createRandomItemsContainer(new Vector(9, 1, 10), random, chestContent,
-                    new Chest(getRelativeFacing(BlockFace.NORTH)), random.nextInt(5) + 2);
+                        blockData, random.nextInt(5) + 2);
         }
 
         // 2nd floor inside

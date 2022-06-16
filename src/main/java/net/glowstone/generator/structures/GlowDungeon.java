@@ -12,8 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.EntityType;
-import org.bukkit.material.Chest;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -178,11 +178,13 @@ public class GlowDungeon extends GlowStructurePiece {
                         solidBlocksCount++;
                         face = BlockFace.NORTH;
                     }
+                    Directional blockData = (Directional) Material.CHEST.createBlockData();
                     if (solidBlocksCount == 1) {
+                        blockData.setFacing(face);
                         builder
                                 .createRandomItemsContainer(new Vector(x, 1, z), random,
                                         chestContent,
-                                        new Chest(face), 8);
+                                        blockData, 8);
                         break;
                     }
                 }
