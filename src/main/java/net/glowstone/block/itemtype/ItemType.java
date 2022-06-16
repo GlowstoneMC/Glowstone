@@ -17,7 +17,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Base class for specific types of items.
@@ -158,7 +161,10 @@ public class ItemType {
     @Override
     public final String toString() {
         return getClass().getSimpleName()
-            + "{" + getMaterial() + "}";
+            + "{" + Optional.ofNullable(materials)
+                            .orElseGet(Collections::emptyList)
+                            .stream().map(Object::toString)
+                            .collect(Collectors.joining(", ")) + "}";
     }
 
     /**
