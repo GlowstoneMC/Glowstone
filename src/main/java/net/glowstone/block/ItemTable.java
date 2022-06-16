@@ -434,7 +434,7 @@ public final class ItemTable {
     }
 
     private void reg(Material material, ItemType type) {
-        reg(material, type, Sound.BLOCK_STONE_BREAK);
+        reg(material, type, type.getClass() != BlockType.class ? Sound.BLOCK_STONE_BREAK : null);
     }
 
     private void reg(Material material, ItemType type, Sound sound) {
@@ -466,10 +466,8 @@ public final class ItemTable {
         }
         type.setMaterial(material);
 
-        if (isBlockType) {
-            if (type.getClass() != BlockType.class) {
-                ((BlockType) type).setPlaceSound(sound);
-            }
+        if (isBlockType && sound != null) {
+            ((BlockType) type).setPlaceSound(sound);
         }
     }
 
