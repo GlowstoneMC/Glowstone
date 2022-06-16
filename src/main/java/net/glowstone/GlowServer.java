@@ -1528,6 +1528,9 @@ public class GlowServer implements Server {
 
     @Override
     public BlockData createBlockData(Material material) {
+        if (material.isLegacy()) {
+            return null;
+        }
         return blockDataManager.createBlockData(material);
     }
 
