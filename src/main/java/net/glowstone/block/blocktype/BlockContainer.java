@@ -60,7 +60,7 @@ public class BlockContainer extends BlockType {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         Collection<ItemStack> drops = getContentDrops(block);
 
         MaterialMatcher neededTool = getNeededMiningTool(block);

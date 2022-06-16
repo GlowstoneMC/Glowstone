@@ -174,7 +174,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         // TODO: 1.13 sapling types
         return Arrays
             .asList(new ItemStack(Material.LEGACY_SAPLING, 1, (short) (block.getData() % 8)));

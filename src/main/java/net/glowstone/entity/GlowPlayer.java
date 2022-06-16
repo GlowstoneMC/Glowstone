@@ -1,5 +1,31 @@
 package net.glowstone.entity;
 
+import javax.annotation.Nullable;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static net.glowstone.GlowServer.logger;
 import com.destroystokyo.paper.ClientOption;
 import com.destroystokyo.paper.MaterialTags;
 import com.destroystokyo.paper.Title;
@@ -186,34 +212,6 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
-
-import javax.annotation.Nullable;
-import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static net.glowstone.GlowServer.logger;
 
 
 /**
@@ -2180,7 +2178,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public boolean teleport(Location location, TeleportCause cause) {
+    public boolean teleport(@NotNull Location location, @NotNull TeleportCause cause) {
         checkNotNull(location, "location cannot be null"); // NON-NLS
         checkNotNull(location.getWorld(), "location's world cannot be null"); // NON-NLS
         checkNotNull(cause, "cause cannot be null"); // NON-NLS
@@ -2886,7 +2884,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public Player.Spigot spigot() {
+    public Player.@NotNull Spigot spigot() {
         return spigot;
     }
 

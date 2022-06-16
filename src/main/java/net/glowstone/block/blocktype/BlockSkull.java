@@ -134,7 +134,7 @@ public class BlockSkull extends BlockType {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         GlowSkull skull = (GlowSkull) block.getState();
         Material skullMaterial = SKULL_MATERIALS.get(skull.getSkullType());
         ItemStack drop = new ItemStack(skullMaterial, 1);

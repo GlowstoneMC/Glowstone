@@ -1,5 +1,10 @@
 package net.glowstone.block.blocktype;
 
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
@@ -10,7 +15,6 @@ import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.physics.BlockBoundingBox;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.util.SoundInfo;
@@ -30,24 +34,19 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Base class for specific types of blocks.
  */
 public class BlockType extends ItemType {
 
-    protected static final BlockFace[] SIDES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST,
-        BlockFace.SOUTH, BlockFace.WEST};
-    protected static final BlockFace[] ADJACENT = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST,
-        BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+    protected static final BlockFace[] SIDES = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST,
+            BlockFace.SOUTH, BlockFace.WEST};
+    protected static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST,
+            BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
     protected List<ItemStack> drops;
 
@@ -118,8 +117,8 @@ public class BlockType extends ItemType {
      * @return The drops that should be returned.
      */
     @NotNull
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        if (!block.isValidTool(tool)) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, @Nullable ItemStack tool) {
+        if (tool != null && !block.isValidTool(tool)) {
             return Collections.emptyList();
         }
         if (drops == null) {
@@ -205,7 +204,7 @@ public class BlockType extends ItemType {
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
                            GlowBlockState oldState) {
         block.applyPhysics(oldState.getType(), block.getType(), oldState.getRawData(),
-            block.getData());
+                block.getData());
     }
 
     /**
@@ -245,7 +244,7 @@ public class BlockType extends ItemType {
     public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face,
                              GlowBlockState oldState) {
         block.applyPhysics(oldState.getType(), block.getType(), oldState.getRawData(),
-            block.getData());
+                block.getData());
     }
 
     /**
@@ -330,7 +329,7 @@ public class BlockType extends ItemType {
             return;
         }
         BlockPhysicsEvent event = EventFactory.getInstance()
-            .callEvent(new BlockPhysicsEvent(block, block.getBlockData()));
+                .callEvent(new BlockPhysicsEvent(block, block.getBlockData()));
         if (!event.isCancelled()) {
             updatePhysicsAfterEvent(block);
         }
@@ -346,7 +345,7 @@ public class BlockType extends ItemType {
                                       ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         GlowBlock target = against.getRelative(face);
         final Material targetMat = ItemTable.instance().getBlock(
-            target.getRelative(face.getOppositeFace()).getType()).getMaterial();
+                target.getRelative(face.getOppositeFace()).getType()).getMaterial();
 
         // prevent building above the height limit
         final int maxHeight = target.getWorld().getMaxHeight();
@@ -370,14 +369,16 @@ public class BlockType extends ItemType {
         }
 
         if (getMaterial().isSolid()) {
-            BlockBoundingBox box = new BlockBoundingBox(target);
+            final BoundingBox box = BoundingBox.of(target);
             List<Entity> entities = target.getWorld().getEntityManager()
-                .getEntitiesInside(box, null);
+                    .getEntitiesInside(box, null);
+
             for (Entity e : entities) {
                 if (e instanceof LivingEntity) {
                     return;
                 }
             }
+
         }
 
         // call canBuild event
@@ -392,7 +393,7 @@ public class BlockType extends ItemType {
             canBuild = canPlaceAt(player, target, face);
         }
         BlockCanBuildEvent canBuildEvent = new BlockCanBuildEvent(target, against.getBlockData(),
-            canBuild);
+                canBuild);
         if (!EventFactory.getInstance().callEvent(canBuildEvent).isBuildable()) {
             //revert(player, target);
             return;
@@ -406,14 +407,14 @@ public class BlockType extends ItemType {
             placeBlock(player, newState, face, holding, clickedLoc);
         } else {
             placeBlock(player, newState, face,
-                new ItemStack(itemType.getPlaceAs().getMaterial(), holding.getAmount(),
-                    holding.getDurability()), clickedLoc);
+                    new ItemStack(itemType.getPlaceAs().getMaterial(), holding.getAmount(),
+                            holding.getDurability()), clickedLoc);
         }
         newState.update(true);
 
         // call blockPlace event
         BlockPlaceEvent event = new BlockPlaceEvent(target, oldState, against, holding, player,
-            canBuild, hand);
+                canBuild, hand);
         EventFactory.getInstance().callEvent(event);
         if (event.isCancelled() || !event.canBuild()) {
             oldState.update(true);
@@ -422,7 +423,7 @@ public class BlockType extends ItemType {
 
         // play the placement sound, except for the current player (handled by the client)
         SoundUtil.playSoundAtLocationExcept(target.getLocation(), getPlaceSound().getSound(),
-            (getPlaceSound().getVolume() + 1F) / 2F, getPlaceSound().getPitch() * 0.8F, player);
+                (getPlaceSound().getVolume() + 1F) / 2F, getPlaceSound().getPitch() * 0.8F, player);
 
         // do any after-place actions
         afterPlace(player, target, holding, oldState);
@@ -475,7 +476,7 @@ public class BlockType extends ItemType {
     @Deprecated
     protected void warnMaterialData(Class<?> clazz, MaterialData data) {
         ConsoleMessages.Warn.Block.WRONG_MATERIAL_DATA.log(
-            getMaterial(), getClass().getSimpleName(), clazz.getSimpleName(), data);
+                getMaterial(), getClass().getSimpleName(), clazz.getSimpleName(), data);
     }
 
     /**
@@ -490,7 +491,7 @@ public class BlockType extends ItemType {
             return clazz.cast(data);
         }
         throw new UnsupportedOperationException(ConsoleMessages.Warn.Block.WRONG_BLOCK_DATA.get(
-            getMaterial(), getClass().getSimpleName(), clazz.getSimpleName(), data));
+                getMaterial(), getClass().getSimpleName(), clazz.getSimpleName(), data));
     }
 
     public void onRedstoneUpdate(GlowBlock block) {

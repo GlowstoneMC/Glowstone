@@ -44,7 +44,7 @@ public class BlockStem extends BlockCrops {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         if (block.getState().getRawData() >= CropState.RIPE.ordinal()) {
             return Collections.unmodifiableList(
                 Arrays.asList(new ItemStack(seedsType, ThreadLocalRandom.current().nextInt(4))));

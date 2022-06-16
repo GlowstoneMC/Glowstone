@@ -12,7 +12,7 @@ public abstract class BlockNeedsTool extends BlockType {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         MaterialMatcher neededTool = getNeededMiningTool(block);
         if (neededTool != null
             && (tool == null || !neededTool.matches(tool.getType()))) {

@@ -18,7 +18,7 @@ public class BlockGravel extends BlockFalling {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(
             ThreadLocalRandom.current().nextInt(10) == 1 ? Material.FLINT : Material.GRAVEL, 1)));
     }

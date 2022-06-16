@@ -27,7 +27,7 @@ public class BlockDoubleSlab extends BlockType {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         if (Tag.WOODEN_SLABS.isTagged(block.getType())
                 || tool != null && ToolType.PICKAXE.matches(tool.getType())) {
             return getMinedDrops(block);

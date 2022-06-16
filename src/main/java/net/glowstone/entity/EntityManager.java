@@ -1,17 +1,5 @@
 package net.glowstone.entity;
 
-import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
-import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.Multimaps;
-import net.glowstone.EventFactory;
-import net.glowstone.chunk.GlowChunk;
-import net.glowstone.entity.physics.BoundingBox;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -20,6 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
+import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Multimaps;
+import net.glowstone.EventFactory;
+import net.glowstone.chunk.GlowChunk;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.util.BoundingBox;
 
 /**
  * A class which manages all of the entities within a world.
@@ -37,7 +36,7 @@ public class EntityManager implements Iterable<GlowEntity> {
      * A map of entity types to a set containing all entities of that type.
      */
     private final Multimap<Class<? extends GlowEntity>, GlowEntity> groupedEntities
-        = Multimaps.synchronizedMultimap(MultimapBuilder.hashKeys().hashSetValues().build());
+            = Multimaps.synchronizedMultimap(MultimapBuilder.hashKeys().hashSetValues().build());
 
     /**
      * Returns all entities with the specified type.
@@ -88,7 +87,7 @@ public class EntityManager implements Iterable<GlowEntity> {
         groupedEntities.put(entity.getClass(), entity);
         ((GlowChunk) entity.location.getChunk()).getRawEntities().add(entity);
         EventFactory.getInstance().callEvent(
-            new EntityAddToWorldEvent(entity)
+                new EntityAddToWorldEvent(entity)
         );
     }
 
@@ -135,7 +134,7 @@ public class EntityManager implements Iterable<GlowEntity> {
     public List<Entity> getEntitiesInside(BoundingBox searchBox, GlowEntity except) {
         // todo: narrow search based on the box's corners
         return entities.values().stream()
-            .filter(entity -> entity != except && entity.intersects(searchBox))
-            .collect(Collectors.toCollection(LinkedList::new));
+                .filter(entity -> entity != except && entity.overlaps(searchBox))
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 }

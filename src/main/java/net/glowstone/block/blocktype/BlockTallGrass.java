@@ -28,7 +28,7 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         if (ThreadLocalRandom.current().nextFloat() < .125) {
             return Collections.singletonList(new ItemStack(Material.WHEAT_SEEDS, 1));
         }

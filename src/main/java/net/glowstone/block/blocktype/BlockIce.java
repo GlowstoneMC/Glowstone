@@ -17,7 +17,7 @@ public class BlockIce extends BlockType {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock me, ItemStack tool) {
         return Collections.emptyList();
     }
 

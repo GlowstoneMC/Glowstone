@@ -138,7 +138,7 @@ public class BlockVine extends BlockClimbable {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         if (tool != null && tool.getType() == Material.SHEARS) {
             return Arrays.asList(new ItemStack(Material.VINE));
         }

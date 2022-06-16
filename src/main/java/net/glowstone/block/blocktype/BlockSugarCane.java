@@ -100,7 +100,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock me, ItemStack tool) {
         // Overridden for sugar cane to remove data from the dropped item
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SUGAR_CANE)));
     }

@@ -1,5 +1,13 @@
 package net.glowstone.entity;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import com.flowpowered.network.Message;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,16 +51,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a human entity, such as an NPC or a player.
@@ -217,7 +216,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return profile.getName();
     }
 

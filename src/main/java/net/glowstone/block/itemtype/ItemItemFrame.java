@@ -10,25 +10,24 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class ItemItemFrame extends ItemType {
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
-                                ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
-        GlowItemFrame entity = new GlowItemFrame(player, target.getRelative(face).getLocation(),
-            face);
+    public void rightClickBlock(GlowPlayer player, @NotNull GlowBlock target,
+                                BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+        GlowItemFrame entity = new GlowItemFrame(player, target.getRelative(face).getLocation(), face);
 
-        if (EventFactory.getInstance()
-            .callEvent(new HangingPlaceEvent(entity, player, target, face))
-            .isCancelled()) {
+        if (EventFactory.getInstance().callEvent(new HangingPlaceEvent(entity, player, target, face)).isCancelled()) {
             return;
         }
 
         List<Message> spawnMessage = entity.createSpawnMessage();
-        entity.getWorld().getRawPlayers().stream().filter(p -> p.canSeeEntity(entity)).forEach(
-            p -> p.getSession().sendAll(spawnMessage.toArray(new Message[spawnMessage.size()])));
+        entity.getWorld().getRawPlayers().stream()
+                .filter(p -> p.canSeeEntity(entity))
+                .forEach(p -> p.getSession().sendAll(spawnMessage.toArray(new Message[0])));
     }
 }

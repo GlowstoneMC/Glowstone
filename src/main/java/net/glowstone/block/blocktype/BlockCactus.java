@@ -134,7 +134,7 @@ public class BlockCactus extends BlockType {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock me, ItemStack tool) {
         // Overridden for cactus to remove data from the dropped item
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.CACTUS)));
     }

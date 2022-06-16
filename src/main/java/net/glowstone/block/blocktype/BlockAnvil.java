@@ -28,7 +28,7 @@ public class BlockAnvil extends BlockFalling {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         // This is replicated from BlockNeedsTool and has been copy/pasted because classes cannot
         // extend 2 parents
         ToolType neededTool = ToolType.PICKAXE;

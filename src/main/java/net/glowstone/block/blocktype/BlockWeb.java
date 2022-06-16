@@ -17,7 +17,7 @@ public class BlockWeb extends BlockType {
 
     @NotNull
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(@NotNull GlowBlock block, ItemStack tool) {
         if (tool != null && (tool.getType() == Material.SHEARS || ToolType.SWORD
             .matches(tool.getType()))) {
             return DROP_STRING;
