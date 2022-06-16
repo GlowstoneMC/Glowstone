@@ -577,6 +577,10 @@ public class GlowChunk implements Chunk {
         setType(x, z, y, MaterialUtil.getId(type));
     }
 
+    public void setType(int x, int z, int y, BlockData blockData) {
+        setType(x, z, y, MaterialUtil.getId(blockData));
+    }
+
     /**
      * Sets the type of a block within this chunk.
      *
@@ -586,10 +590,6 @@ public class GlowChunk implements Chunk {
      * @param type The type.
      */
     private void setType(int x, int z, int y, int type) {
-        if (type < 0 || type > 0xfff) {
-            throw new IllegalArgumentException("Block type out of range: " + type);
-        }
-
         ChunkSection section = getSection(y);
         if (section == null) {
             if (type == 0) {
@@ -626,7 +626,7 @@ public class GlowChunk implements Chunk {
             }
         }
         // update the type - also sets metadata to 0
-        section.setType(x, y, z, (char) (type << 4));
+        section.setType(x, y, z, type);
 
         if (section.isEmpty()) {
             // destroy the empty section
@@ -670,20 +670,10 @@ public class GlowChunk implements Chunk {
      * @param z        The Z coordinate.
      * @param y        The Y coordinate.
      * @param metaData The metadata.
+     * @deprecated Unused in 1.13+
      */
+    @Deprecated
     public void setMetaData(int x, int z, int y, int metaData) {
-        if (metaData < 0 || metaData >= 16) {
-            throw new IllegalArgumentException("Metadata out of range: " + metaData);
-        }
-        ChunkSection section = getSection(y);
-        if (section == null) {
-            return;  // can't set metadata on an empty section
-        }
-        int type = section.getType(x, y, z);
-        if (type == 0) {
-            return;  // can't set metadata on air
-        }
-        section.setType(x, y, z, (char) (type & 0xfff0 | metaData));
     }
 
     /**

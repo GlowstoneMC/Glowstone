@@ -314,7 +314,7 @@ public final class ChunkManager {
         }
 
         if (glowChunkData != null) {
-            short[][] extSections = glowChunkData.getSections();
+            int[][] extSections = glowChunkData.getSections();
             if (extSections != null) {
                 ChunkSection[] sections = new ChunkSection[extSections.length];
                 for (int i = 0; i < extSections.length; ++i) {
@@ -511,7 +511,7 @@ public final class ChunkManager {
      */
     private static class BiomeGrid implements ChunkGenerator.BiomeGrid {
 
-        private final byte[] biomes = new byte[4096];
+        private final byte[] biomes = new byte[256];
 
         @Override
         public Biome getBiome(int x, int z) {

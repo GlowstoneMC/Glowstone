@@ -6,9 +6,11 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
 import lombok.Getter;
+import net.glowstone.GlowServer;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Bukkit;
 import org.bukkit.block.data.BlockData;
 
 import javax.annotation.Nullable;
@@ -72,7 +74,7 @@ public final class ChunkSection {
      * Create a new, empty ChunkSection.
      */
     public ChunkSection() {
-        this(new char[ARRAY_SIZE]);
+        this(new int[ARRAY_SIZE]);
     }
 
     /**
@@ -84,7 +86,7 @@ public final class ChunkSection {
      * @param types An array of block state IDs for this chunk section (containing type and
      *              metadata)
      */
-    public ChunkSection(char[] types) {
+    public ChunkSection(int[] types) {
         this(types, new NibbleArray(ARRAY_SIZE, DEFAULT_SKYLIGHT),
             new NibbleArray(ARRAY_SIZE, DEFAULT_BLOCK_LIGHT));
     }
@@ -100,7 +102,7 @@ public final class ChunkSection {
      * @param blockLight An array for blocklight data for this chunk section.
      */
     @Deprecated
-    public ChunkSection(char[] types, NibbleArray skyLight, NibbleArray blockLight) {
+    public ChunkSection(int[] types, NibbleArray skyLight, NibbleArray blockLight) {
         if (types.length != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE
             || blockLight.size() != ARRAY_SIZE) {
             throw new IllegalArgumentException(
@@ -110,7 +112,7 @@ public final class ChunkSection {
         this.skyLight = skyLight;
         this.blockLight = blockLight;
 
-        // loadTypeArray(types);
+        loadTypeArray(types);
     }
 
     /**
@@ -162,58 +164,58 @@ public final class ChunkSection {
     /**
      * Creates a new unlit chunk section containing the given types.
      *
-     * @param types An array of block IDs, with metadata
+     * @param types An array of block IDs
      * @return A matching chunk section.
      */
     @Deprecated
-    public static ChunkSection fromStateArray(short[] types) {
+    public static ChunkSection fromStateArray(int[] types) {
         if (types.length != ARRAY_SIZE) {
             throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
                 + types.length);
         }
-        char[] charTypes = new char[ARRAY_SIZE];
-        for (int i = 0; i < ARRAY_SIZE; i++) {
-            charTypes[i] = (char) (types[i]);
-        }
-        return new ChunkSection(charTypes);
+        return new ChunkSection(types);
     }
 
     /**
-     * Creates a new unlit chunk section containing the given types.
+     * Loads the contents of this chunk section from the given type array, initializing the
+     * palette.
      *
-     * @param types An array of block IDs, without metadata.
-     * @return A matching chunk section.
+     * @param types The type array.
      */
-    @Deprecated
-    public static ChunkSection fromIdArray(short[] types) {
+    public void loadTypeArray(int[] types) {
         if (types.length != ARRAY_SIZE) {
             throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
-                + types.length);
+                    + types.length);
         }
-        char[] charTypes = new char[ARRAY_SIZE];
-        for (int i = 0; i < ARRAY_SIZE; i++) {
-            charTypes[i] = (char) (types[i] << 4);
-        }
-        return new ChunkSection(charTypes);
-    }
 
-    /**
-     * Creates a new unlit chunk section containing the given types.
-     *
-     * @param types An array of block IDs, without metadata.
-     * @return A matching chunk section.
-     */
-    @Deprecated
-    public static ChunkSection fromIdArray(byte[] types) {
-        if (types.length != ARRAY_SIZE) {
-            throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
-                + types.length);
+        // Build the palette, and the count
+        this.count = 0;
+        this.palette = new IntArrayList();
+        for (int type : types) {
+            if (type != 0) {
+                count++;
+            }
+
+            if (!palette.contains(type)) {
+                palette.add(type);
+            }
         }
-        char[] charTypes = new char[ARRAY_SIZE];
+        // Now that we've built a palette, build the list
+        int bitsPerBlock = VariableValueArray.calculateNeededBits(palette.size());
+        if (bitsPerBlock < 4) {
+            bitsPerBlock = 4;
+        } else if (bitsPerBlock > 8) {
+            palette = null;
+            bitsPerBlock = GLOBAL_PALETTE_BITS_PER_BLOCK;
+        }
+        this.data = new VariableValueArray(bitsPerBlock, ARRAY_SIZE);
         for (int i = 0; i < ARRAY_SIZE; i++) {
-            charTypes[i] = (char) (types[i] << 4);
+            if (palette != null) {
+                data.set(i, palette.indexOf(types[i]));
+            } else {
+                data.set(i, types[i]);
+            }
         }
-        return new ChunkSection(charTypes);
     }
 
     /**
@@ -223,18 +225,9 @@ public final class ChunkSection {
      * @return The section
      */
     public static ChunkSection fromNbt(CompoundTag sectionTag) {
-        byte[] rawTypes = sectionTag.getByteArray("Blocks");
-        NibbleArray extTypes = sectionTag.containsKey("Add") ? new NibbleArray(sectionTag
-            .getByteArray("Add")) : null;
-        NibbleArray data = new NibbleArray(sectionTag.getByteArray("Data"));
+        int[] types = sectionTag.getIntArray("Blocks");
         NibbleArray blockLight = new NibbleArray(sectionTag.getByteArray("BlockLight"));
         NibbleArray skyLight = new NibbleArray(sectionTag.getByteArray("SkyLight"));
-
-        char[] types = new char[rawTypes.length];
-        for (int i = 0; i < rawTypes.length; i++) {
-            types[i] = (char) ((extTypes == null ? 0 : extTypes
-                .get(i)) << 12 | (rawTypes[i] & 0xff) << 4 | data.get(i));
-        }
 
         return new ChunkSection(types, skyLight, blockLight);
     }
@@ -283,9 +276,8 @@ public final class ChunkSection {
     }
 
     public BlockData getBlockData(int x, int y, int z) {
-        // TODO: Find the palette index inside the block array,
-        // then map the palette item to a BlockData instance.
-        throw new UnsupportedOperationException("Not implemented yet.");
+        int type = getType(x, y, z);
+        return ((GlowServer) Bukkit.getServer()).getBlockDataManager().convertToBlockData(type);
     }
 
     /**
@@ -295,15 +287,13 @@ public final class ChunkSection {
      * @param y The y coordinate, for up and down.
      * @param z The z coordinate, for north and south.
      * @return A type ID
-     * @deprecated Removed in 1.13.
      */
-    @Deprecated
-    public char getType(int x, int y, int z) {
+    public int getType(int x, int y, int z) {
         int value = data.get(index(x, y, z));
         if (palette != null) {
             value = palette.getInt(value);
         }
-        return (char) value;
+        return value;
     }
 
     /**
@@ -313,10 +303,8 @@ public final class ChunkSection {
      * @param y     The y coordinate, for up and down.
      * @param z     The z coordinate, for north and south.
      * @param value The new type ID for that coordinate.
-     * @deprecated Removed in 1.13.
      */
-    @Deprecated
-    public void setType(int x, int y, int z, char value) {
+    public void setType(int x, int y, int z, int value) {
         int oldType = getType(x, y, z);
         if (oldType != 0) {
             count--;
@@ -362,15 +350,14 @@ public final class ChunkSection {
      *
      * @return The block type array.
      */
-    @Deprecated
-    public char[] getTypes() {
-        char[] types = new char[ARRAY_SIZE];
+    public int[] getTypes() {
+        int[] types = new int[ARRAY_SIZE];
         for (int i = 0; i < ARRAY_SIZE; i++) {
             int type = data.get(i);
             if (palette != null) {
                 type = palette.getInt(type);
             }
-            types[i] = (char) type;
+            types[i] = type;
         }
         return types;
     }
@@ -508,29 +495,7 @@ public final class ChunkSection {
      * @param sectionTag The tag to write to
      */
     public void writeToNbt(CompoundTag sectionTag) {
-        // TODO: 1.13 Palette creation and serialization
-
-        char[] types = this.getTypes();
-        byte[] rawTypes = new byte[ChunkSection.ARRAY_SIZE];
-        NibbleArray extTypes = null;
-        NibbleArray data = new NibbleArray(ChunkSection.ARRAY_SIZE);
-        for (int j = 0; j < ChunkSection.ARRAY_SIZE; j++) {
-            char type = types[j];
-            rawTypes[j] = (byte) (type >> 4 & 0xFF);
-            byte extType = (byte) (type >> 12);
-            if (extType > 0) {
-                if (extTypes == null) {
-                    extTypes = new NibbleArray(ChunkSection.ARRAY_SIZE);
-                }
-                extTypes.set(j, extType);
-            }
-            data.set(j, (byte) (type & 0xF));
-        }
-        sectionTag.putByteArray("Blocks", rawTypes);
-        if (extTypes != null) {
-            sectionTag.putByteArray("Add", extTypes.getRawData());
-        }
-        sectionTag.putByteArray("Data", data.getRawData());
+        sectionTag.putIntArray("Blocks", getTypes());
         sectionTag.putByteArray("BlockLight", blockLight.getRawData());
         sectionTag.putByteArray("SkyLight", skyLight.getRawData());
     }

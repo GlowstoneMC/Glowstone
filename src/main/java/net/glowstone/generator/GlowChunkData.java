@@ -20,11 +20,11 @@ public class GlowChunkData implements ChunkData {
     @Getter
     private final int maxHeight;
     @Getter
-    private short[][] sections;
+    private int[][] sections;
 
     public GlowChunkData(World world) {
         maxHeight = world.getMaxHeight();
-        sections = new short[GlowChunk.SEC_COUNT][];
+        sections = new int[GlowChunk.SEC_COUNT][];
     }
 
     @Override
@@ -96,7 +96,7 @@ public class GlowChunkData implements ChunkData {
             return;
         }
         if (sections[y >> 4] == null) {
-            sections[y >> 4] = new short[4096];
+            sections[y >> 4] = new int[4096];
         }
         sections[y >> 4][(y & 0xF) << 8 | z << 4 | x] = (short) (blockId << 4 | data);
     }
