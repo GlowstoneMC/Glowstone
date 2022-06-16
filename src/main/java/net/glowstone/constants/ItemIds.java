@@ -1,7 +1,6 @@
 package net.glowstone.constants;
 
 import net.glowstone.util.InventoryUtil;
-import net.glowstone.util.MaterialUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
@@ -13,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -513,7 +513,7 @@ public final class ItemIds {
      */
     public static String getName(Material type) {
         checkNotNull(type, "Material cannot be null"); // NON-NLS
-        return names.get(MaterialUtil.getId(type));
+        return type.name().toLowerCase(Locale.ENGLISH);
     }
 
     /**

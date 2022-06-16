@@ -119,7 +119,7 @@ public final class VariableValueArray implements Cloneable {
         // The value is divided over two long values
         if (i2 > 64) {
             i0++;
-            backing[i0] = backing[i0] & ~((1L << i2 - 64) - 1L) | value >> 64 - i1;
+            backing[i0] = backing[i0] & -(1L << i2 - 64) | value >> 64 - i1;
         }
     }
 

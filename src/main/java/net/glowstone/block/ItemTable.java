@@ -150,6 +150,8 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * The lookup table for block and item types.
@@ -163,6 +165,7 @@ public final class ItemTable {
     }
 
     private final EnumMap<Material, ItemType> materialToType = new EnumMap<>(Material.class);
+    private final EnumMap<Material, BlockType> materialToBlockType = new EnumMap<>(Material.class);
     private final Map<NamespacedKey, ItemType> extraTypes = new HashMap<>();
 
     ////////////////////////////////////////////////////////////////////////////
@@ -221,14 +224,14 @@ public final class ItemTable {
         reg(Material.PRISMARINE, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.RED_SANDSTONE, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.SANDSTONE, new BlockDirectDrops(ToolType.PICKAXE));
-        reg(Material.NETHER_BRICK, new BlockDirectDrops(ToolType.PICKAXE));
+        reg(Material.NETHER_BRICKS, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.NETHER_BRICK_FENCE,
             new BlockFence(Material.NETHER_BRICK_FENCE, ToolType.PICKAXE));
         regAll(Tag.WOODEN_FENCES, BlockFence::new);
         reg(Material.NETHERRACK, new BlockDirectDrops(ToolType.PICKAXE));
-        reg(Material.IRON_BARS, new BlockDirectDrops(ToolType.PICKAXE)); // TODO: Convert
-        reg(Material.BRICK, new BlockDirectDrops(ToolType.PICKAXE));
-        reg(Material.LEGACY_SMOOTH_BRICK, new BlockDirectDrops(ToolType.PICKAXE)); // TODO: Convert
+        reg(Material.IRON_BARS, new BlockDirectDrops(ToolType.PICKAXE));
+        reg(Material.BRICKS, new BlockDirectDrops(ToolType.PICKAXE));
+        reg(Material.STONE_BRICKS, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.END_STONE, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.COBBLESTONE, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.COBBLESTONE_WALL, new BlockDirectDrops(ToolType.PICKAXE));
@@ -251,7 +254,7 @@ public final class ItemTable {
         reg(Material.NETHER_QUARTZ_ORE, new BlockOre(Material.QUARTZ, ToolType.PICKAXE));
         reg(Material.REDSTONE_ORE, new BlockRedstoneOre());
         reg(Material.REDSTONE_BLOCK, new BlockDirectDrops(ToolType.PICKAXE));
-        reg(Material.CARROT, new BlockCarrot(), Sound.BLOCK_GRASS_BREAK);
+        reg(Material.CARROTS, new BlockCarrot(), Sound.BLOCK_GRASS_BREAK);
         reg(Material.COCOA, new BlockCocoa(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.DEAD_BUSH, new BlockDeadBush(), Sound.BLOCK_GRASS_BREAK);
         reg(Material.TALL_GRASS, new BlockTallGrass(), Sound.BLOCK_GRASS_BREAK);
@@ -261,7 +264,7 @@ public final class ItemTable {
         reg(Material.MELON, new BlockMelon(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.MELON_STEM, new BlockStem(Material.MELON_STEM), Sound.BLOCK_GRASS_BREAK);
         reg(Material.NETHER_WART, new BlockNetherWart(), Sound.BLOCK_GRASS_BREAK);
-        reg(Material.POTATO, new BlockPotato(), Sound.BLOCK_GRASS_BREAK);
+        reg(Material.POTATOES, new BlockPotato(), Sound.BLOCK_GRASS_BREAK);
         reg(Material.PUMPKIN_STEM, new BlockStem(Material.PUMPKIN_STEM), Sound.BLOCK_GRASS_BREAK);
         reg(Material.WHEAT, new BlockCrops(), Sound.BLOCK_GRASS_BREAK);
         reg(Material.CAKE, new BlockDropless(), Sound.BLOCK_WOOL_BREAK);
@@ -269,7 +272,7 @@ public final class ItemTable {
         reg(Material.FIRE, new BlockFire());
         reg(Material.END_PORTAL_FRAME, new BlockEnderPortalFrame());
         regAll(MaterialTags.WOODEN_GATES, new BlockFenceGate());
-        regAll(Tag.TRAPDOORS, new BlockWoodenTrapDoor(), Sound.BLOCK_WOOD_BREAK);
+        regAll(Tag.TRAPDOORS, new BlockWoodenTrapDoor(), Sound.BLOCK_WOOD_BREAK, material -> material != Material.IRON_TRAPDOOR);
         reg(Material.IRON_TRAPDOOR, new BlockIronTrapDoor());
         reg(Material.FURNACE, new BlockFurnace());
         reg(Material.LEVER, new BlockLever());
@@ -297,7 +300,7 @@ public final class ItemTable {
         reg(Material.STONE_PRESSURE_PLATE,
             new BlockDirectDrops(Material.STONE_PRESSURE_PLATE, ToolType.PICKAXE));
         reg(Material.DAYLIGHT_DETECTOR, new BlockDaylightDetector());
-        regAll(Tag.FLOWERS, new BlockNeedsAttached());
+        regAll(Tag.SMALL_FLOWERS, new BlockNeedsAttached());
         reg(Material.BROWN_MUSHROOM, new BlockMushroom(Material.BROWN_MUSHROOM));
         reg(Material.RED_MUSHROOM, new BlockMushroom(Material.RED_MUSHROOM));
         reg(Material.SUGAR_CANE, new BlockSugarCane(), Sound.BLOCK_GRASS_BREAK);
@@ -315,7 +318,7 @@ public final class ItemTable {
         reg(Material.CAULDRON, new BlockCauldron());
         reg(Material.SPONGE, new BlockSponge());
         reg(Material.TNT, new BlockTnt());
-        reg(Material.LEGACY_DOUBLE_PLANT, new BlockDoublePlant()); // TODO: Convert
+        regAll(Tag.TALL_FLOWERS, new BlockDoublePlant());
         reg(Material.PUMPKIN, new BlockPumpkin());
         reg(Material.JACK_O_LANTERN, new BlockPumpkinBase(Material.JACK_O_LANTERN));
         reg(Material.SEA_LANTERN, new BlockRandomDrops(Material.PRISMARINE_CRYSTALS, 2, 3));
@@ -337,19 +340,18 @@ public final class ItemTable {
         reg(Material.END_ROD, new BlockEndRod());
         regAll(MaterialTags.CONCRETES, BlockDirectDrops::new);
         regAll(MaterialTags.CONCRETE_POWDER, new BlockConcretePowder());
-        regAll(MaterialTags.GLAZED_TERRACOTTA, BlockDirectDrops::new);
         reg(Material.CHORUS_FLOWER, new BlockChorusFlower());
         reg(Material.CHORUS_PLANT, new BlockChorusPlant());
         reg(Material.GRASS_PATH, new BlockGrassPath(), Sound.BLOCK_GRASS_BREAK);
 
         // Non-block and ItemPlaceAs items:
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
-        regAll(Tag.SIGNS, new ItemSign());
+        regAll(Tag.STANDING_SIGNS, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
         reg(Material.BREWING_STAND, new ItemPlaceAs(Material.BREWING_STAND));
         reg(Material.CAULDRON, new ItemPlaceAs(Material.CAULDRON));
         reg(Material.FLOWER_POT, new ItemPlaceAs(Material.FLOWER_POT));
-        regAll(MaterialTags.SKULLS, ItemPlaceAs::new);
+        regAll(MaterialTags.SKULLS, ItemPlaceAs::new, Material::isItem);
         reg(Material.BUCKET, new ItemBucket());
         reg(Material.WATER_BUCKET, new ItemFilledBucket(Material.WATER));
         reg(Material.LAVA_BUCKET, new ItemFilledBucket(Material.LAVA));
@@ -371,7 +373,7 @@ public final class ItemTable {
         reg(Material.CARROT, new ItemFoodSeeds(Material.CARROT, Material.FARMLAND, 3, 3.6f));
         reg(Material.POTATO, new ItemFoodSeeds(Material.POTATO, Material.FARMLAND, 1, 0.6f));
         reg(Material.INK_SAC, new ItemDye());
-        regAll(Tag.BANNERS, new ItemBanner());
+        regAll(Tag.BANNERS, new ItemBanner(), Material::isItem);
         reg(Material.IRON_DOOR, new ItemPlaceAs(Material.IRON_DOOR));
         reg(Material.WRITTEN_BOOK, new ItemWrittenBook());
         reg(Material.ITEM_FRAME, new ItemItemFrame());
@@ -432,49 +434,51 @@ public final class ItemTable {
     }
 
     private void reg(Material material, ItemType type) {
-        if (material.isBlock() != type instanceof BlockType) {
-            throw new IllegalArgumentException(
-                "Cannot mismatch item and block: " + material + ", " + type);
-        }
-
-        if (materialToType.containsKey(material)) {
-            throw new IllegalArgumentException(
-                "Cannot use " + type + " for " + material + ", is already " + materialToType
-                    .get(material));
-        }
-
-        materialToType.put(material, type);
-        type.setMaterial(material);
-
-        if (material.isBlock()) {
-            if (type.getClass() != BlockType.class) {
-                ((BlockType) type).setPlaceSound(Sound.BLOCK_STONE_BREAK);
-            }
-        }
+        reg(material, type, Sound.BLOCK_STONE_BREAK);
     }
 
     private void reg(Material material, ItemType type, Sound sound) {
-        if (material.isBlock() != type instanceof BlockType) {
+        boolean isBlockType = type instanceof BlockType;
+        if (isBlockType && !material.isBlock() || !isBlockType && !material.isItem()) {
             throw new IllegalArgumentException(
-                "Cannot mismatch item and block: " + material + ", " + type);
+                    "Cannot mismatch item and block: " + material + ", " + type);
         }
 
+        ItemType existingType = null;
         if (materialToType.containsKey(material)) {
-            throw new IllegalArgumentException(
-                "Cannot use " + type + " for " + material + ", is already " + materialToType
-                    .get(material));
+            existingType = materialToType.get(material);
+            if (existingType instanceof BlockType == isBlockType) {
+                throw new IllegalArgumentException(
+                        "Cannot use " + type + " for " + material + ", is already " + materialToType
+                                .get(material));
+            }
         }
 
-        materialToType.put(material, type);
+        if (existingType != null) {
+            if (isBlockType) {
+                materialToBlockType.put(material, (BlockType) type);
+            } else {
+                materialToBlockType.put(material, (BlockType) existingType);
+                materialToType.put(material, type);
+            }
+        } else {
+            materialToType.put(material, type);
+        }
         type.setMaterial(material);
 
-        if (material.isBlock()) {
-            ((BlockType) type).setPlaceSound(sound);
+        if (isBlockType) {
+            if (type.getClass() != BlockType.class) {
+                ((BlockType) type).setPlaceSound(sound);
+            }
         }
     }
 
     private void regAll(Tag<Material> tag, ItemType type) {
         regAll(tag.getValues(), type);
+    }
+
+    private void regAll(Tag<Material> tag, ItemType type, Predicate<Material> predicate) {
+        regAll(tag.getValues().stream().filter(predicate).collect(Collectors.toSet()), type);
     }
 
     private void regAll(Iterable<Material> materials, ItemType type) {
@@ -485,6 +489,10 @@ public final class ItemTable {
 
     private void regAll(Tag<Material> tag, ItemType type, Sound sound) {
         regAll(tag.getValues(), type, sound);
+    }
+
+    private void regAll(Tag<Material> tag, ItemType type, Sound sound, Predicate<Material> predicate) {
+        regAll(tag.getValues().stream().filter(predicate).collect(Collectors.toSet()), type, sound);
     }
 
     private void regAll(Iterable<Material> materials, ItemType type, Sound sound) {
@@ -508,6 +516,11 @@ public final class ItemTable {
     private void regAll(Tag<Material> tag,
             Function<? super Material, ? extends ItemType> itemTypeFunction, Sound sound) {
         regAll(tag.getValues(), itemTypeFunction, sound);
+    }
+
+    private void regAll(Tag<Material> tag,
+                        Function<? super Material, ? extends ItemType> itemTypeFunction, Predicate<Material> predicate) {
+        regAll(tag.getValues().stream().filter(predicate).collect(Collectors.toSet()), itemTypeFunction);
     }
 
     private void regAll(Iterable<Material> items,
