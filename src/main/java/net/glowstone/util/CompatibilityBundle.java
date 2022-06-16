@@ -19,7 +19,7 @@ public enum CompatibilityBundle {
     CRAFTBUKKIT(
         Stream.of(
             new Library("org.xerial", "sqlite-jdbc", "3.30.1",
-                LibraryManager.HashAlgorithm.SHA1, "9140be77aafa5050bf4bb936d560cbacb5a6b5c1"),
+                LibraryManager.HashAlgorithm.SHA1, "456f2e23fd0e6a615db6e738b01b9d69456d738c"),
             new Library("mysql", "mysql-connector-java", "5.1.48",
                 LibraryManager.HashAlgorithm.SHA1, "9140be77aafa5050bf4bb936d560cbacb5a6b5c1"),
             new Library("org.apache.logging.log4j", "log4j-slf4j-impl", "2.8.1",
