@@ -190,7 +190,6 @@ public final class ItemTable {
         regAll(MaterialTags.INFESTED_BLOCKS, new BlockMonsterEgg());
         reg(Material.DRAGON_EGG, new BlockFalling(Material.DRAGON_EGG));
         regAll(Tag.SIGNS, BlockSign::new, Sound.BLOCK_WOOD_BREAK);
-        regAll(Tag.WALL_SIGNS, BlockSign::new, Sound.BLOCK_WOOD_BREAK);
         reg(Material.CRAFTING_TABLE, new BlockWorkbench(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.ENDER_CHEST, new BlockEnderChest());
         reg(Material.CHEST, new BlockChest(), Sound.BLOCK_WOOD_BREAK);
