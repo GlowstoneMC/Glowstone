@@ -9,10 +9,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.generator.ground.GroundGenerator;
 import net.glowstone.generator.populators.overworld.BiomePopulator;
+import net.glowstone.i18n.ConsoleMessages;
 import org.bukkit.block.Biome;
 
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static net.glowstone.GlowServer.getWorldConfig;
@@ -73,16 +75,17 @@ public final class GlowBiome {
     private static ClassToInstanceMap<BiomePopulator> populators = MutableClassToInstanceMap.create();
     private static ClassToInstanceMap<GroundGenerator> groundGenerators = MutableClassToInstanceMap.create();
 
-    // TODO: use Biome builder with 1.13 biomes
+    // TODO: use redstone-transformer biomes
     static {
-        register(builder()
-                .type(Biome.THE_VOID)
-                .id(127)
-                .temperature(0.5)
-                .downfall(0.5)
-                .scale(BiomeScale.DEFAULT)
-                .build()
-        );
+        List<GlowBiome> biomes = new ArrayList<>();
+        for (Biome biome : Biome.values()) {
+            biomes.add(builder()
+                    .type(biome)
+                    .id(biome.ordinal())
+                    .build()
+            );
+        }
+        register(biomes.toArray(GlowBiome[]::new));
         // Make caches immutable
         populators = ImmutableClassToInstanceMap.copyOf(populators);
         groundGenerators = ImmutableClassToInstanceMap.copyOf(groundGenerators);
@@ -114,15 +117,12 @@ public final class GlowBiome {
      * @return the Biome, or null
      */
     public static GlowBiome getBiome(int id) {
-        if (id >= 0 && id < biomes.length) {
-            GlowBiome biome = biomes[id];
-            if (biome != null) {
-                return biome;
-            }
+        if (id < biomes.length) {
+            return biomes[id];
+        } else {
+            ConsoleMessages.Error.Biome.UNKNOWN.log(id);
+            return null;
         }
-        // TODO: 1.13 biomes
-        //ConsoleMessages.Error.Biome.UNKNOWN.log(id);
-        return biomes[127];
     }
 
     /**
@@ -136,7 +136,6 @@ public final class GlowBiome {
     }
 
     private static void register(GlowBiome... biomes) {
-        Arrays.fill(ids, 127);
         for (GlowBiome biome : biomes) {
             GlowBiome.ids[biome.type.ordinal()] = biome.id;
             GlowBiome.biomes[biome.id] = biome;
