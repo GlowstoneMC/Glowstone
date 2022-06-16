@@ -196,10 +196,6 @@ public final class ChunkSection {
                 count++;
             }
 
-            if (type > 15000 || type < 0) {
-                System.out.println(type);
-            }
-
             if (!palette.contains(type)) {
                 palette.add(type);
             }
@@ -309,10 +305,6 @@ public final class ChunkSection {
      * @param value The new type ID for that coordinate.
      */
     public void setType(int x, int y, int z, int value) {
-        if (value > 15000 || value < 0) {
-            System.out.println(value);
-        }
-
         int oldType = getType(x, y, z);
         if (oldType != 0) {
             count--;
