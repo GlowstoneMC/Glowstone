@@ -15,8 +15,7 @@ public class Lake implements TerrainObject {
     private static final double MAX_DIAMETER = 16.0D;
     private static final double MAX_HEIGHT = 8.0D;
     private static final int MAX_BLOCKS = (int) (MAX_DIAMETER * MAX_DIAMETER * MAX_HEIGHT);
-    private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_FIELDS,
-        Biome.MUSHROOM_FIELD_SHORE};
+    private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_FIELDS};
     private final Material type;
 
     public Lake(Material type) {

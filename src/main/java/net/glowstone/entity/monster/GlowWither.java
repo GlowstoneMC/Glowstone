@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowWither extends GlowBoss implements Wither {
 
@@ -52,6 +53,16 @@ public class GlowWither extends GlowBoss implements Wither {
             return;
         }
         super.damage(amount, source, cause);
+    }
+
+    @Override
+    public void setTarget(@NotNull Head head, @Nullable LivingEntity target) {
+
+    }
+
+    @Override
+    public @Nullable LivingEntity getTarget(@NotNull Head head) {
+        return null;
     }
 
     public void setInvulnerableTicks(int invulnerableTicks) {

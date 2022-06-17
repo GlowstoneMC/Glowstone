@@ -4,6 +4,7 @@ import com.destroystokyo.paper.entity.Pathfinder;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.loot.LootTable;
@@ -32,8 +33,58 @@ public abstract class GlowMob extends GlowLivingEntity implements Mob {
     }
 
     @Override
+    public void lookAt(@NotNull Location location) {
+
+    }
+
+    @Override
+    public void lookAt(@NotNull Location location, float headRotationSpeed, float maxHeadPitch) {
+
+    }
+
+    @Override
+    public void lookAt(@NotNull Entity entity) {
+
+    }
+
+    @Override
+    public void lookAt(@NotNull Entity entity, float headRotationSpeed, float maxHeadPitch) {
+
+    }
+
+    @Override
+    public void lookAt(double x, double y, double z) {
+
+    }
+
+    @Override
+    public void lookAt(double x, double y, double z, float headRotationSpeed, float maxHeadPitch) {
+
+    }
+
+    @Override
+    public int getHeadRotationSpeed() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxHeadPitch() {
+        return 0;
+    }
+
+    @Override
     public @Nullable LivingEntity getTarget() {
         return null;
+    }
+
+    @Override
+    public boolean isLeftHanded() {
+        return false;
+    }
+
+    @Override
+    public void setLeftHanded(boolean leftHanded) {
+
     }
 
     @Override

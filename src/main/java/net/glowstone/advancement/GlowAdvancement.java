@@ -3,12 +3,17 @@ package net.glowstone.advancement;
 import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import io.papermc.paper.advancement.AdvancementDisplay;
 import lombok.Data;
 import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -66,6 +71,16 @@ public class GlowAdvancement implements Advancement {
         return ImmutableList.copyOf(criteriaIds);
     }
 
+    @Override
+    public @NotNull @Unmodifiable Collection<Advancement> getChildren() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Advancement getRoot() {
+        return null;
+    }
+
     /**
      * Writes a notification of earning this advancement to a byte buffer.
      *
@@ -94,5 +109,9 @@ public class GlowAdvancement implements Advancement {
             }
         }
         return buf;
+    }
+
+    public @Nullable AdvancementDisplay getDisplay() {
+        return display;
     }
 }

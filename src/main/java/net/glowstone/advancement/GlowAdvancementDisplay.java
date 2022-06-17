@@ -2,18 +2,22 @@ package net.glowstone.advancement;
 
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import io.papermc.paper.advancement.AdvancementDisplay;
 import lombok.Data;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.util.TextMessage;
+import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Objects;
 
 
 @Data
-public class GlowAdvancementDisplay {
+public class GlowAdvancementDisplay implements AdvancementDisplay {
     private static final int HAS_BACKGROUND_TEXTURE = 0x1;
     private static final int SHOW_TOAST = 0x2;
     private static final int HIDDEN = 0x4;
@@ -32,7 +36,7 @@ public class GlowAdvancementDisplay {
     /**
      * The type of frame for the icon
      */
-    private final FrameType type;
+    private final AdvancementDisplay.Frame type;
     /**
      * The optional directory for the background to use in this advancement tab (used only for the root advancement)
      */
@@ -73,18 +77,43 @@ public class GlowAdvancementDisplay {
         return buf;
     }
 
-    public enum FrameType {
-        /**
-         * Normal Tile
-         */
-        TASK,
-        /**
-         * A tile with a more fancy spiked border, used for the kill all mobs advancement
-         */
-        CHALLENGE,
-        /**
-         * A tile with a rounded border, used for the full beacon advancement
-         */
-        GOAL
+    @Override
+    public @NotNull Frame frame() {
+        return type;
+    }
+
+    @Override
+    public @NotNull Component title() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Component description() {
+        return null;
+    }
+
+    @Override
+    public @NotNull ItemStack icon() {
+        return icon;
+    }
+
+    @Override
+    public boolean doesShowToast() {
+        return false;
+    }
+
+    @Override
+    public boolean doesAnnounceToChat() {
+        return false;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return false;
+    }
+
+    @Override
+    public @Nullable NamespacedKey backgroundPath() {
+        return background;
     }
 }

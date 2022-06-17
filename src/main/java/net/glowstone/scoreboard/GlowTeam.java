@@ -11,12 +11,14 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -123,6 +125,11 @@ public final class GlowTeam implements Team {
     @Override
     public void suffix(@Nullable Component component) throws IllegalStateException, IllegalArgumentException {
         throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public boolean hasColor() {
+        return color != ChatColor.RESET;
     }
 
     @Override
@@ -265,6 +272,21 @@ public final class GlowTeam implements Team {
         update();
     }
 
+    @Override
+    public void addEntity(@NotNull Entity entity) throws IllegalStateException, IllegalArgumentException {
+
+    }
+
+    @Override
+    public boolean removeEntity(@NotNull Entity entity) throws IllegalStateException, IllegalArgumentException {
+        return false;
+    }
+
+    @Override
+    public boolean hasEntity(@NotNull Entity entity) throws IllegalStateException, IllegalArgumentException {
+        return false;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Player management
     @Override
@@ -309,6 +331,16 @@ public final class GlowTeam implements Team {
     }
 
     @Override
+    public void addEntities(@NotNull Collection<Entity> entities) throws IllegalStateException, IllegalArgumentException {
+
+    }
+
+    @Override
+    public void addEntries(@NotNull Collection<String> entries) throws IllegalStateException, IllegalArgumentException {
+
+    }
+
+    @Override
     @Deprecated
     public void addPlayer(OfflinePlayer player)
         throws IllegalStateException, IllegalArgumentException {
@@ -327,6 +359,16 @@ public final class GlowTeam implements Team {
     public boolean removeEntry(String s) throws IllegalStateException, IllegalArgumentException {
         checkValid();
         return players.remove(s);
+    }
+
+    @Override
+    public boolean removeEntities(@NotNull Collection<Entity> entities) throws IllegalStateException, IllegalArgumentException {
+        return false;
+    }
+
+    @Override
+    public boolean removeEntries(@NotNull Collection<String> entries) throws IllegalStateException, IllegalArgumentException {
+        return false;
     }
 
     @Override

@@ -37,6 +37,7 @@ import net.glowstone.util.RayUtil;
 import net.glowstone.util.SoundUtil;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.EntityEffect;
 import org.bukkit.FluidCollisionMode;
@@ -59,7 +60,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.SpawnCategory;
 import org.bukkit.entity.memory.MemoryKey;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -535,6 +538,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
+    public List<Message> createSpawnMessage() {
+        return null;
+    }
+
+    @Override
     public List<Message> createUpdateMessage(GlowSession session) {
         List<Message> messages = super.createUpdateMessage(session);
 
@@ -573,6 +581,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return false;
     }
 
+    @Override
+    public boolean hasLineOfSight(@NotNull Location location) {
+        return false;
+    }
+
     public void setHeadYaw(float headYaw) {
         this.headYaw = headYaw;
         this.headRotated = true;
@@ -604,6 +617,26 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void setMaximumAir(int ticks) {
         maximumAir = Math.max(0, ticks);
+    }
+
+    @Override
+    public int getBeeStingerCooldown() {
+        return 0;
+    }
+
+    @Override
+    public void setBeeStingerCooldown(int ticks) {
+
+    }
+
+    @Override
+    public int getBeeStingersInBody() {
+        return 0;
+    }
+
+    @Override
+    public void setBeeStingersInBody(int count) {
+
     }
 
     @Override
@@ -1364,6 +1397,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
+    public @NotNull EquipmentSlot getHandRaised() {
+        return null;
+    }
+
+    @Override
     public boolean isSwimming() {
         // TODO: 1.13
         throw new UnsupportedOperationException("Not implemented yet.");
@@ -1385,6 +1423,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public boolean isSleeping() {
         // TODO: 1.16
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isClimbing() {
+        return false;
     }
 
     /**
@@ -1578,5 +1621,75 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         world.getRawPlayers().stream().filter(other -> other.canSeeEntity(this))
                 .forEach(other -> other.getSession().send(message));
         item.remove();
+    }
+
+    @Override
+    public void setVisualFire(boolean fire) {
+
+    }
+
+    @Override
+    public boolean isVisualFire() {
+        return false;
+    }
+
+    @Override
+    public int getFreezeTicks() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxFreezeTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setFreezeTicks(int ticks) {
+
+    }
+
+    @Override
+    public boolean isFrozen() {
+        return false;
+    }
+
+    @Override
+    public boolean isFreezeTickingLocked() {
+        return false;
+    }
+
+    @Override
+    public void lockFreezeTicks(boolean locked) {
+
+    }
+
+    @Override
+    public @NotNull SpawnCategory getSpawnCategory() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Component teamDisplayName() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Set<Player> getTrackedPlayers() {
+        return null;
+    }
+
+    @Override
+    public boolean spawnAt(@NotNull Location location, CreatureSpawnEvent.@NotNull SpawnReason reason) {
+        return false;
+    }
+
+    @Override
+    public boolean isInPowderedSnow() {
+        return false;
+    }
+
+    @Override
+    public @NotNull Component name() {
+        return null;
     }
 }

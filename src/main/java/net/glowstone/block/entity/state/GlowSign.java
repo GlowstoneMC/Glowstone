@@ -73,6 +73,16 @@ public class GlowSign extends GlowBlockState implements Sign {
     }
 
     @Override
+    public boolean isGlowingText() {
+        return false;
+    }
+
+    @Override
+    public void setGlowingText(boolean glowing) {
+
+    }
+
+    @Override
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
         if (result) {

@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class MountainsPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.MOUNTAINS, Biome.GRAVELLY_MOUNTAINS};
+    private static final Biome[] BIOMES = {};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree::new, 20),
         new TreeDecoration(BigOakTree::new, 1),
         new TreeDecoration(GenericTree::new, 9)};

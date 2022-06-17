@@ -2,21 +2,16 @@ package net.glowstone.generator.biomegrid;
 
 import net.glowstone.constants.GlowBiome;
 
-import static org.bukkit.block.Biome.BADLANDS_PLATEAU;
 import static org.bukkit.block.Biome.BIRCH_FOREST;
 import static org.bukkit.block.Biome.DARK_FOREST;
 import static org.bukkit.block.Biome.DESERT;
 import static org.bukkit.block.Biome.FOREST;
-import static org.bukkit.block.Biome.GIANT_TREE_TAIGA;
 import static org.bukkit.block.Biome.JUNGLE;
-import static org.bukkit.block.Biome.MOUNTAINS;
 import static org.bukkit.block.Biome.PLAINS;
 import static org.bukkit.block.Biome.SAVANNA;
 import static org.bukkit.block.Biome.SNOWY_TAIGA;
-import static org.bukkit.block.Biome.SNOWY_TUNDRA;
 import static org.bukkit.block.Biome.SWAMP;
 import static org.bukkit.block.Biome.TAIGA;
-import static org.bukkit.block.Biome.WOODED_BADLANDS_PLATEAU;
 
 public class BiomeMapLayer extends MapLayer {
 
@@ -33,23 +28,13 @@ public class BiomeMapLayer extends MapLayer {
             GlowBiome.getId(FOREST),
             GlowBiome.getId(BIRCH_FOREST),
             GlowBiome.getId(DARK_FOREST),
-            GlowBiome.getId(MOUNTAINS),
             GlowBiome.getId(SWAMP)};
     private static final int[] DRY = new int[]{
             GlowBiome.getId(PLAINS),
             GlowBiome.getId(FOREST),
-            GlowBiome.getId(TAIGA),
-            GlowBiome.getId(MOUNTAINS)};
+            GlowBiome.getId(TAIGA)};
     private static final int[] COLD = new int[]{
-            GlowBiome.getId(SNOWY_TUNDRA),
-            GlowBiome.getId(SNOWY_TUNDRA),
             GlowBiome.getId(SNOWY_TAIGA)};
-    private static final int[] WARM_LARGE = new int[]{
-            GlowBiome.getId(WOODED_BADLANDS_PLATEAU),
-            GlowBiome.getId(WOODED_BADLANDS_PLATEAU),
-            GlowBiome.getId(BADLANDS_PLATEAU)};
-    private static final int[] DRY_LARGE = new int[]{
-            GlowBiome.getId(GIANT_TREE_TAIGA)};
     private static final int[] WET_LARGE = new int[]{
             GlowBiome.getId(JUNGLE)};
 
@@ -85,10 +70,10 @@ public class BiomeMapLayer extends MapLayer {
                             val = WET[nextInt(WET.length)];
                             break;
                         case 1001:
-                            val = DRY_LARGE[nextInt(DRY_LARGE.length)];
+                            val = DRY[nextInt(DRY.length)];
                             break;
                         case 1002:
-                            val = WARM_LARGE[nextInt(WARM_LARGE.length)];
+                            val = WARM[nextInt(WARM.length)];
                             break;
                         case 1004:
                             val = WET_LARGE[nextInt(WET_LARGE.length)];

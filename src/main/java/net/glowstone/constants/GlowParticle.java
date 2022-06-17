@@ -6,7 +6,7 @@ import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.block.data.states.StatefulBlockData;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Effect;
@@ -40,7 +40,6 @@ public class GlowParticle {
         // Vanilla particles
         registerParticle("ambient_entity_effect", Particle.SPELL_MOB_AMBIENT);
         registerParticle("angry_villager", Particle.VILLAGER_ANGRY);
-        registerParticle(Particle.BARRIER);
         registerParticle("block", Particle.BLOCK_DUST);
         registerParticle("block", Particle.BLOCK_CRACK);
         registerParticle("bubble", Particle.WATER_BUBBLE);

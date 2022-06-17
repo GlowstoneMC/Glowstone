@@ -5,10 +5,11 @@ import net.glowstone.GlowServer;
 import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.util.MaterialUtil;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
 import org.bukkit.material.MaterialData;
@@ -49,7 +50,7 @@ public class GlowChunkData implements ChunkData {
     @Override
     public BlockData getBlockData(int x, int y, int z) {
         // TODO: 1.13
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     private int getTypeId(int x, int y, int z) {
@@ -61,6 +62,16 @@ public class GlowChunkData implements ChunkData {
             return 0;
         }
         return sections[y >> 4][(y & 0xF) << 8 | z << 4 | x];
+    }
+
+    @Override
+    public int getMinHeight() {
+        return 0;
+    }
+
+    @Override
+    public @NotNull Biome getBiome(int x, int y, int z) {
+        return null;
     }
 
     @Override
@@ -76,7 +87,7 @@ public class GlowChunkData implements ChunkData {
     @Override
     public void setBlock(int x, int y, int z, @NotNull BlockData blockData) {
         // TODO: 1.13
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     public void setBlock(int x, int y, int z, int blockId) {
@@ -119,6 +130,6 @@ public class GlowChunkData implements ChunkData {
     @Override
     public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, @NotNull BlockData blockData) {
         // TODO: 1.13
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 }

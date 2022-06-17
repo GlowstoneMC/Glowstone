@@ -5,18 +5,21 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.hover.content.Content;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Locale;
+import java.util.Random;
 import java.util.function.UnaryOperator;
 
 /**
@@ -90,9 +93,19 @@ public final class GlowItemFactory implements ItemFactory {
     }
 
     @Override
+    public @NotNull ItemStack createItemStack(@NotNull String input) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
     public @NotNull Material updateMaterial(@NotNull ItemMeta meta, @NotNull Material material) throws IllegalArgumentException {
         // TODO: implementation (1.13.2)
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
+    }
+
+    @Override
+    public @NotNull ItemStack enchantWithLevels(@NotNull ItemStack itemStack, @Range(from = 1L, to = 30L) int levels, boolean allowTreasure, @NotNull Random random) {
+        return null;
     }
 
     @Override
@@ -140,6 +153,11 @@ public final class GlowItemFactory implements ItemFactory {
     @Override
     public @NotNull Content hoverContentOf(@NotNull Entity entity, @NotNull BaseComponent[] baseComponents) {
         throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public @Nullable ItemStack getSpawnEgg(@Nullable EntityType type) {
+        return null;
     }
 
     /**

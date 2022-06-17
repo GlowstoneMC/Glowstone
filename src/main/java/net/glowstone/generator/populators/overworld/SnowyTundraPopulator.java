@@ -12,7 +12,7 @@ import java.util.Collections;
 
 public class SnowyTundraPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.SNOWY_TUNDRA, Biome.SNOWY_MOUNTAINS};
+    private static final Biome[] BIOMES = {};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree::new, 1)};
 
     /**

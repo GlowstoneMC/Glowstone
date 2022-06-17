@@ -20,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.SoundGroup;
 import org.bukkit.Tag;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -29,6 +30,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.material.Lever;
@@ -40,6 +42,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.bukkit.util.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -146,6 +149,11 @@ public class GlowBlock implements Block {
     @Override
     public @NotNull Biome getBiome() {
         return getWorld().getBiome(x, z);
+    }
+
+    @Override
+    public @NotNull Biome getComputedBiome() {
+        return null;
     }
 
     @Override
@@ -314,6 +322,11 @@ public class GlowBlock implements Block {
     @Override
     public boolean isSolid() {
         return getType().isSolid();
+    }
+
+    @Override
+    public boolean isCollidable() {
+        return false;
     }
 
     public ValueCollection getMaterialValues() {
@@ -561,6 +574,11 @@ public class GlowBlock implements Block {
     }
 
     @Override
+    public boolean breakNaturally(boolean triggerEffect) {
+        return false;
+    }
+
+    @Override
     public boolean breakNaturally(@NotNull ItemStack tool, boolean triggerEffect) {
         // TODO: triggerEffect
         return breakNaturally(tool);
@@ -595,6 +613,11 @@ public class GlowBlock implements Block {
     }
 
     @Override
+    public float getBreakSpeed(@NotNull Player player) {
+        return 0;
+    }
+
+    @Override
     public boolean isPassable() {
         return isEmpty(); // TODO
     }
@@ -615,7 +638,22 @@ public class GlowBlock implements Block {
     }
 
     @Override
+    public @NotNull VoxelShape getCollisionShape() {
+        return null;
+    }
+
+    @Override
+    public boolean canPlace(@NotNull BlockData data) {
+        return false;
+    }
+
+    @Override
     public @NotNull BlockSoundGroup getSoundGroup() {
+        return null;
+    }
+
+    @Override
+    public @NotNull SoundGroup getBlockSoundGroup() {
         return null;
     }
 
@@ -773,6 +811,11 @@ public class GlowBlock implements Block {
         }
         GlowBlock other = (GlowBlock) obj;
         return x == other.x && y == other.y && z == other.z && getWorld().equals(other.getWorld());
+    }
+
+    @Override
+    public @NotNull String translationKey() {
+        return null;
     }
 
     /**

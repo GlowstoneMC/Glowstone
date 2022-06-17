@@ -50,6 +50,16 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
         return 0;
     }
 
+    @Override
+    public int getRepairCostAmount() {
+        return 0;
+    }
+
+    @Override
+    public void setRepairCostAmount(int amount) {
+
+    }
+
     public ItemStack getFirstItem() {
         return getSlot(FIRST_ITEM_SLOT).getItem();
     }

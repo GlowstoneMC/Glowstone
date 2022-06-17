@@ -3,7 +3,7 @@ package net.glowstone.block.blocktype;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockSoundGroup;
+import net.glowstone.block.GlowSoundGroup;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.BlockEntity;
@@ -60,7 +60,7 @@ public class BlockType extends ItemType {
     protected SoundInfo placeSound = new SoundInfo(Sound.BLOCK_WOOD_BREAK, 1F, 0.75F);
 
     @Getter
-    protected GlowBlockSoundGroup soundGroup;
+    protected GlowSoundGroup soundGroup;
 
     ////////////////////////////////////////////////////////////////////////////
     // Setters for subclass use

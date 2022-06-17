@@ -47,13 +47,14 @@ import net.glowstone.util.RayUtil;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.collection.ConcurrentSet;
 import net.glowstone.util.config.WorldConfig;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Difficulty;
 import org.bukkit.Effect;
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.GameEvent;
 import org.bukkit.GameRule;
 import org.bukkit.HeightMap;
 import org.bukkit.Location;
@@ -82,6 +83,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.SpawnCategory;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntitySpawnEvent;
@@ -95,6 +97,7 @@ import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
+import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
@@ -102,6 +105,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.Consumer;
@@ -124,6 +128,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -1204,9 +1209,49 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public long getTicksPerWaterUndergroundCreatureSpawns() {
+        return 0;
+    }
+
+    @Override
+    public void setTicksPerWaterUndergroundCreatureSpawns(int ticksPerWaterUndergroundCreatureSpawns) {
+
+    }
+
+    @Override
     public long getTicksPerAmbientSpawns() {
         // Can't be lombokified because inherited return type is long, not int
         return ticksPerAmbientSpawns;
+    }
+
+    @Override
+    public long getTicksPerSpawns(@NotNull SpawnCategory spawnCategory) {
+        return 0;
+    }
+
+    @Override
+    public void setTicksPerSpawns(@NotNull SpawnCategory spawnCategory, int ticksPerCategorySpawn) {
+
+    }
+
+    @Override
+    public int getWaterUndergroundCreatureSpawnLimit() {
+        return 0;
+    }
+
+    @Override
+    public void setWaterUndergroundCreatureSpawnLimit(int limit) {
+
+    }
+
+    @Override
+    public int getSpawnLimit(@NotNull SpawnCategory spawnCategory) {
+        return 0;
+    }
+
+    @Override
+    public void setSpawnLimit(@NotNull SpawnCategory spawnCategory, int limit) {
+
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1247,6 +1292,11 @@ public class GlowWorld implements World {
     @Override
     public ChunkGenerator getGenerator() {
         return chunkManager.getGenerator();
+    }
+
+    @Override
+    public @Nullable BiomeProvider getBiomeProvider() {
+        return null;
     }
 
     @Override
@@ -1500,6 +1550,11 @@ public class GlowWorld implements World {
         return NamespacedKey.minecraft(name);
     }
 
+    @Override
+    public boolean lineOfSightExists(@NotNull Location from, @NotNull Location to) {
+        return false;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Chunk loading and unloading
 
@@ -1667,10 +1722,25 @@ public class GlowWorld implements World {
         }
     }
 
+    @Override
+    public @NotNull Biome getBiome(@NotNull Location location) {
+        return null;
+    }
+
     @NotNull
     @Override
     public Biome getBiome(int x, int y, int z) {
         return getBiome(x, z); // TODO: Biomes are now 3-dimensional
+    }
+
+    @Override
+    public @NotNull Biome getComputedBiome(int x, int y, int z) {
+        return null;
+    }
+
+    @Override
+    public void setBiome(@NotNull Location location, @NotNull Biome biome) {
+
     }
 
     @Override
@@ -1684,6 +1754,71 @@ public class GlowWorld implements World {
     public void setBiome(int x, int y, int z, @NotNull Biome biome) {
         // TODO: Biomes are now 3-dimensional
         setBiome(x, z, biome);
+    }
+
+    @Override
+    public @NotNull BlockState getBlockState(@NotNull Location location) {
+        return null;
+    }
+
+    @Override
+    public @NotNull BlockState getBlockState(int x, int y, int z) {
+        return null;
+    }
+
+    @Override
+    public @NotNull BlockData getBlockData(@NotNull Location location) {
+        return null;
+    }
+
+    @Override
+    public @NotNull BlockData getBlockData(int x, int y, int z) {
+        return null;
+    }
+
+    @Override
+    public @NotNull Material getType(@NotNull Location location) {
+        return null;
+    }
+
+    @Override
+    public @NotNull Material getType(int x, int y, int z) {
+        return null;
+    }
+
+    @Override
+    public void setBlockData(@NotNull Location location, @NotNull BlockData blockData) {
+
+    }
+
+    @Override
+    public void setBlockData(int x, int y, int z, @NotNull BlockData blockData) {
+
+    }
+
+    @Override
+    public void setType(@NotNull Location location, @NotNull Material material) {
+
+    }
+
+    @Override
+    public void setType(int x, int y, int z, @NotNull Material material) {
+
+    }
+
+    @Override
+    public boolean generateTree(@NotNull Location location, @NotNull Random random, @NotNull TreeType type) {
+        return false;
+    }
+
+    @Override
+    public boolean generateTree(@NotNull Location location, @NotNull Random random, @NotNull TreeType type, @Nullable Consumer<BlockState> stateConsumer) {
+        return false;
+    }
+
+    @Override
+    public boolean generateTree(@NotNull Location location, @NotNull Random random, @NotNull TreeType type, @Nullable Predicate<BlockState> statePredicate) {
+        return false;
     }
 
     @Override
@@ -1709,8 +1844,18 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public int getLogicalHeight() {
+        return 0;
+    }
+
+    @Override
     public int getMinHeight() {
         return 0;
+    }
+
+    @Override
+    public @NotNull BiomeProvider vanillaBiomeProvider() {
+        return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1735,6 +1880,11 @@ public class GlowWorld implements World {
                                       Consumer<T> function,
                                       CreatureSpawnEvent.SpawnReason spawnReason) throws IllegalArgumentException {
         return (T) spawnGlowEntity(location, EntityRegistry.getEntity(clazz), spawnReason, function);
+    }
+
+    @Override
+    public <T extends Entity> @NotNull T spawn(@NotNull Location location, @NotNull Class<T> clazz, boolean randomizeData, @Nullable Consumer<T> function) throws IllegalArgumentException {
+        return null;
     }
 
     /**
@@ -1913,7 +2063,7 @@ public class GlowWorld implements World {
     @Override
     public <T extends AbstractArrow> T spawnArrow(@NotNull Location location, @NotNull Vector vector, float speed, float spread, @NotNull Class<T> clazz) {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
@@ -1945,6 +2095,11 @@ public class GlowWorld implements World {
         return spawn(loc, type.getEntityClass());
     }
 
+    @Override
+    public @NotNull Entity spawnEntity(@NotNull Location loc, @NotNull EntityType type, boolean randomizeData) {
+        return null;
+    }
+
     private GlowLightningStrike strikeLightningFireEvent(Location loc, boolean effect,
                                                          boolean isSilent) {
         checkNotNull(loc);
@@ -1964,6 +2119,16 @@ public class GlowWorld implements World {
     @Override
     public GlowLightningStrike strikeLightningEffect(Location loc) {
         return strikeLightningFireEvent(loc, true, false);
+    }
+
+    @Override
+    public @Nullable Location findLightningRod(@NotNull Location location) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Location findLightningTarget(@NotNull Location location) {
+        return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -2046,19 +2211,19 @@ public class GlowWorld implements World {
     @Override
     public boolean isClearWeather() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public void setClearWeatherDuration(int i) {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public int getClearWeatherDuration() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     private void updateWeather() {
@@ -2226,6 +2391,16 @@ public class GlowWorld implements World {
                           float pitch) {
         checkNotNull(sound);
         playSound(location, GlowSound.getVanillaSound(sound), category, volume, pitch);
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull Sound sound, float volume, float pitch) {
+
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull Sound sound, @NotNull SoundCategory category, float volume, float pitch) {
+
     }
 
     @Override
@@ -2568,79 +2743,119 @@ public class GlowWorld implements World {
     @Override
     public @Nullable Location locateNearestBiome(@NotNull Location location, @NotNull Biome biome, int i) {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public @Nullable Location locateNearestBiome(@NotNull Location location, @NotNull Biome biome, int i, int i1) {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public boolean isUltrawarm() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public boolean isNatural() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
+    }
+
+    @Override
+    public boolean isBedWorks() {
+        return false;
+    }
+
+    @Override
+    public boolean hasSkyLight() {
+        return false;
+    }
+
+    @Override
+    public boolean hasCeiling() {
+        return false;
     }
 
     @Override
     public double getCoordinateScale() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public boolean hasSkylight() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public boolean hasBedrockCeiling() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public boolean isPiglinSafe() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
+    }
+
+    @Override
+    public boolean isRespawnAnchorWorks() {
+        return false;
     }
 
     @Override
     public boolean doesBedWork() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public boolean doesRespawnAnchorWork() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public boolean hasRaids() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
+    }
+
+    @Override
+    public boolean isUltraWarm() {
+        return false;
     }
 
     @Override
     public boolean isFixedTime() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public @NotNull Collection<Material> getInfiniburn() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
+    }
+
+    @Override
+    public void sendGameEvent(@Nullable Entity sourceEntity, @NotNull GameEvent gameEvent, @NotNull Vector position) {
+
+    }
+
+    @Override
+    public int getSimulationDistance() {
+        return 0;
+    }
+
+    @Override
+    public void setSimulationDistance(int simulationDistance) {
+
     }
 
     @Override
@@ -2653,6 +2868,16 @@ public class GlowWorld implements World {
     public void setNoTickViewDistance(int viewDistance) {
         // TODO: Distinction between no-tick and tick view distance
         this.setViewDistance(viewDistance);
+    }
+
+    @Override
+    public int getSendViewDistance() {
+        return 0;
+    }
+
+    @Override
+    public void setSendViewDistance(int viewDistance) {
+
     }
 
     @Override
@@ -2759,6 +2984,11 @@ public class GlowWorld implements World {
     @Override
     public boolean equals(Object obj) {
         return obj == this;
+    }
+
+    @Override
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
+        return null;
     }
 
     /**

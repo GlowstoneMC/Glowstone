@@ -19,14 +19,6 @@ public class GlowGhast extends GlowMonster implements Ghast {
         setBoundingBox(4, 4);
     }
 
-    public boolean isAttacking() {
-        return metadata.getBoolean(MetadataIndex.GHAST_ATTACKING);
-    }
-
-    public void setAttacking(boolean attacking) {
-        metadata.set(MetadataIndex.GHAST_ATTACKING, attacking);
-    }
-
     @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_GHAST_DEATH;
@@ -40,5 +32,15 @@ public class GlowGhast extends GlowMonster implements Ghast {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_GHAST_AMBIENT;
+    }
+
+    @Override
+    public boolean isCharging() {
+        return metadata.getBoolean(MetadataIndex.GHAST_ATTACKING);
+    }
+
+    @Override
+    public void setCharging(boolean charging) {
+        metadata.set(MetadataIndex.GHAST_ATTACKING, charging);
     }
 }

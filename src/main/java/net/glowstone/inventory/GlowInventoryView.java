@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.glowstone.entity.GlowHumanEntity;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -87,7 +87,7 @@ public class GlowInventoryView extends InventoryView {
 
     @Override
     public @NotNull String getTitle() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     /**

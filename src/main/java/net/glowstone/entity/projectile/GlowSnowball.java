@@ -1,6 +1,7 @@
 package net.glowstone.entity.projectile;
 
 import net.glowstone.entity.EntityNetworkUtil;
+import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.monster.GlowBlaze;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -52,15 +53,16 @@ public class GlowSnowball extends GlowProjectile implements Snowball {
     @Override
     public void collide(LivingEntity entity) {
         ProjectileSource source = getShooter();
+        GlowLivingEntity impl = (GlowLivingEntity) entity;
         // the entity receives fake damage.
         if (source instanceof Entity) {
             if (entity instanceof GlowBlaze) {
-                entity.damage(3, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
+                impl.damage(3, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
             } else {
-                entity.damage(0, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
+                impl.damage(0, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
             }
         } else {
-            entity.damage(0, EntityDamageEvent.DamageCause.PROJECTILE);
+            impl.damage(0, EntityDamageEvent.DamageCause.PROJECTILE);
         }
         collide(location.getBlock());
     }

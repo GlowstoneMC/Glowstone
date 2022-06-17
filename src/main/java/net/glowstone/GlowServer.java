@@ -14,6 +14,7 @@ import com.tobedevoured.naether.NaetherException;
 import com.tobedevoured.naether.api.Naether;
 import com.tobedevoured.naether.impl.NaetherImpl;
 import com.tobedevoured.naether.util.RepoBuilder;
+import io.papermc.paper.advancement.AdvancementDisplay;
 import io.papermc.paper.datapack.DatapackManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -142,7 +143,7 @@ import net.glowstone.util.loot.LootingManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
@@ -162,6 +163,7 @@ import org.bukkit.UnsafeValues;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.WorldBorder;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.advancement.Advancement;
@@ -182,6 +184,7 @@ import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.SpawnCategory;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.server.BroadcastMessageEvent;
 import org.bukkit.generator.ChunkGenerator;
@@ -205,6 +208,9 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.SimpleServicesManager;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
+import org.bukkit.potion.PotionBrewer;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.structure.StructureManager;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -511,7 +517,7 @@ public class GlowServer implements Server {
                 new TextMessage(GlowstoneMessages.Advancement.TITLE.get()),
                 new TextMessage("=)"),
                 new ItemStack(Material.GLOWSTONE),
-                GlowAdvancementDisplay.FrameType.GOAL,
+                AdvancementDisplay.Frame.GOAL,
                 NamespacedKey.minecraft("textures/gui/advancements/backgrounds/adventure.png"),
                 -10F, 0));
         addAdvancement(advancement);
@@ -1577,6 +1583,11 @@ public class GlowServer implements Server {
         return null;
     }
 
+    @Override
+    public @NotNull StructureManager getStructureManager() {
+        return null;
+    }
+
     /**
      * Registers an advancement to the advancement registry.
      *
@@ -1663,6 +1674,16 @@ public class GlowServer implements Server {
         whitelistEnabled = enabled;
         config.set(Key.WHITELIST, whitelistEnabled);
         config.save();
+    }
+
+    @Override
+    public boolean isWhitelistEnforced() {
+        return false;
+    }
+
+    @Override
+    public void setWhitelistEnforced(boolean value) {
+
     }
 
     /**
@@ -1813,6 +1834,16 @@ public class GlowServer implements Server {
         return config.getString(Key.RESOURCE_PACK_HASH);
     }
 
+    @Override
+    public @NotNull String getResourcePackPrompt() {
+        return null;
+    }
+
+    @Override
+    public boolean isResourcePackRequired() {
+        return false;
+    }
+
     /**
      * Get the time after a profile lookup should be cancelled.
      *
@@ -1838,6 +1869,11 @@ public class GlowServer implements Server {
         } else {
             onlinePlayers.remove(player);
         }
+    }
+
+    @Override
+    public @NotNull File getPluginsFolder() {
+        return null;
     }
 
     @Override
@@ -1958,6 +1994,11 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public @NotNull Component permissionMessage() {
+        return null;
+    }
+
+    @Override
     public GlowPlayerProfile createProfile(UUID id) {
         return createProfile(id, null);
     }
@@ -1971,6 +2012,11 @@ public class GlowServer implements Server {
     @Override
     public GlowPlayerProfile createProfile(UUID id, String name) {
         return createProfile(id, name, false);
+    }
+
+    @Override
+    public com.destroystokyo.paper.profile.@NotNull PlayerProfile createProfileExact(@org.jetbrains.annotations.Nullable UUID uuid, @org.jetbrains.annotations.Nullable String name) {
+        return null;
     }
 
     /**
@@ -2000,6 +2046,11 @@ public class GlowServer implements Server {
     @Override
     public ConsoleCommandSender getConsoleSender() {
         return consoleManager.getSender();
+    }
+
+    @Override
+    public @NotNull CommandSender createCommandSender(@NotNull Consumer<? super Component> feedback) {
+        return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -2208,6 +2259,21 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public @NotNull PlayerProfile createPlayerProfile(@org.jetbrains.annotations.Nullable UUID uniqueId, @org.jetbrains.annotations.Nullable String name) {
+        return null;
+    }
+
+    @Override
+    public @NotNull PlayerProfile createPlayerProfile(@NotNull UUID uniqueId) {
+        return null;
+    }
+
+    @Override
+    public @NotNull PlayerProfile createPlayerProfile(@NotNull String name) {
+        return null;
+    }
+
+    @Override
     public OfflinePlayer getOfflinePlayerIfCached(@NotNull String username) {
         UUID cached = ProfileCache.getUuidCached(username);
         if (cached != null) {
@@ -2281,6 +2347,11 @@ public class GlowServer implements Server {
 
         sent.forEach(cs -> cs.sendMessage(message));
         return sent.size();
+    }
+
+    @Override
+    public int broadcast(@NotNull Component message) {
+        return 0;
     }
 
     @Override
@@ -2386,6 +2457,11 @@ public class GlowServer implements Server {
 
     @Override
     public World getWorld(@NotNull NamespacedKey namespacedKey) {
+        return null;
+    }
+
+    @Override
+    public @NotNull WorldBorder createWorldBorder() {
         return null;
     }
 
@@ -2508,6 +2584,16 @@ public class GlowServer implements Server {
     @Override
     public Recipe getRecipe(@NotNull NamespacedKey key) {
         return recipeManager.getRecipe(key);
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable Recipe getCraftingRecipe(@NotNull ItemStack[] craftingMatrix, @NotNull World world) {
+        return null;
+    }
+
+    @Override
+    public @NotNull ItemStack craftItem(@NotNull ItemStack[] craftingMatrix, @NotNull World world, @NotNull Player player) {
+        return null;
     }
 
     @Override
@@ -2640,6 +2726,11 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public boolean getHideOnlinePlayers() {
+        return false;
+    }
+
+    @Override
     public boolean hasWhitelist() {
         return whitelistEnabled;
     }
@@ -2668,9 +2759,7 @@ public class GlowServer implements Server {
 
     @Override
     public ChunkData createVanillaChunkData(World world, int x, int z) {
-        ChunkData chunkData = createChunkData(world);
-        // TODO: This function should populate the chunk.
-        return chunkData;
+        return null;
     }
 
     @Override
@@ -2790,6 +2879,11 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public @NotNull String getResourcePack() {
+        return null;
+    }
+
+    @Override
     public boolean getAllowEnd() {
         return config.getBoolean(Key.ALLOW_END);
     }
@@ -2797,6 +2891,11 @@ public class GlowServer implements Server {
     @Override
     public int getViewDistance() {
         return config.getInt(Key.VIEW_DISTANCE);
+    }
+
+    @Override
+    public int getSimulationDistance() {
+        return 0;
     }
 
     @Override
@@ -2868,8 +2967,18 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public int getTicksPerWaterUndergroundCreatureSpawns() {
+        return 0;
+    }
+
+    @Override
     public int getTicksPerAmbientSpawns() {
         return config.getInt(Key.AMBIENT_TICKS);
+    }
+
+    @Override
+    public int getTicksPerSpawns(@NotNull SpawnCategory spawnCategory) {
+        return 0;
     }
 
     @Override
@@ -2900,6 +3009,11 @@ public class GlowServer implements Server {
     @Override
     public @NotNull DatapackManager getDatapackManager() {
         throw new UnsupportedOperationException("Datapacks are not yet supported.");
+    }
+
+    @Override
+    public @NotNull PotionBrewer getPotionBrewer() {
+        return null;
     }
 
     @Override
@@ -2937,8 +3051,18 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public int getSpawnLimit(@NotNull SpawnCategory spawnCategory) {
+        return 0;
+    }
+
+    @Override
     public int getWaterAmbientSpawnLimit() {
         return config.getInt(Key.WATER_AMBIENT_LIMIT);
+    }
+
+    @Override
+    public int getWaterUndergroundCreatureSpawnLimit() {
+        return 0;
     }
 
     @Override

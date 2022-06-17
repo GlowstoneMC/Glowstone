@@ -508,6 +508,11 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     @Override
+    public @NotNull String getAsString() {
+        return null;
+    }
+
+    @Override
     public @NotNull CustomItemTagContainer getCustomTagContainer() {
         return null;
     }

@@ -34,6 +34,16 @@ public class GlowOcelot extends GlowTameable implements Ocelot {
     }
 
     @Override
+    public boolean isTrusting() {
+        return false;
+    }
+
+    @Override
+    public void setTrusting(boolean trust) {
+
+    }
+
+    @Override
     public void setCatType(Type type) {
         catType = type;
         metadata.set(MetadataIndex.OCELOT_TYPE, type.getId());

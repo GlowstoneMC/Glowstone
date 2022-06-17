@@ -11,6 +11,7 @@ import org.bukkit.WorldBorder;
 
 public class GlowWorldBorder implements WorldBorder {
 
+    @Getter
     private final World world;
     @Getter
     private double size;

@@ -5,15 +5,17 @@ import net.glowstone.entity.ai.EntityDirector;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -121,17 +123,77 @@ public class GlowAnimal extends GlowAgeable implements Animals {
     @Override
     public @Nullable UUID getBreedCause() {
         // TODO: 1.13
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public void setBreedCause(@Nullable UUID uuid) {
         // TODO: 1.13
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
     public boolean isLoveMode() {
         return getLoveModeTicks() > 0;
+    }
+
+    @Override
+    public boolean isBreedItem(@NotNull ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean isBreedItem(@NotNull Material material) {
+        return false;
+    }
+
+    @Override
+    public void lookAt(@NotNull Location location) {
+
+    }
+
+    @Override
+    public void lookAt(@NotNull Location location, float headRotationSpeed, float maxHeadPitch) {
+
+    }
+
+    @Override
+    public void lookAt(@NotNull Entity entity) {
+
+    }
+
+    @Override
+    public void lookAt(@NotNull Entity entity, float headRotationSpeed, float maxHeadPitch) {
+
+    }
+
+    @Override
+    public void lookAt(double x, double y, double z) {
+
+    }
+
+    @Override
+    public void lookAt(double x, double y, double z, float headRotationSpeed, float maxHeadPitch) {
+
+    }
+
+    @Override
+    public int getHeadRotationSpeed() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxHeadPitch() {
+        return 0;
+    }
+
+    @Override
+    public boolean isLeftHanded() {
+        return false;
+    }
+
+    @Override
+    public void setLeftHanded(boolean leftHanded) {
+
     }
 }

@@ -4,6 +4,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -61,11 +62,12 @@ public class GlowEgg extends GlowProjectile implements Egg {
     @Override
     public void collide(LivingEntity entity) {
         ProjectileSource source = getShooter();
+        GlowLivingEntity impl = (GlowLivingEntity) entity;
         // the entity receives fake damage.
-        if (entity instanceof Entity) {
-            entity.damage(0, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
+        if (source instanceof Entity) {
+            impl.damage(0, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
         } else {
-            entity.damage(0, EntityDamageEvent.DamageCause.PROJECTILE);
+            impl.damage(0, EntityDamageEvent.DamageCause.PROJECTILE);
         }
 
         collide(entity.getLocation().getBlock());

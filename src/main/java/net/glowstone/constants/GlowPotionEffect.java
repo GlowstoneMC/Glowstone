@@ -1,8 +1,12 @@
 package net.glowstone.constants;
 
+import io.papermc.paper.potion.PotionMix;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Color;
+import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionBrewer;
@@ -10,6 +14,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionEffectTypeWrapper;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +43,7 @@ public final class GlowPotionEffect extends PotionEffectType {
     private final Impl impl;
 
     private GlowPotionEffect(Impl impl) {
-        super(impl.id);
+        super(impl.id, NamespacedKey.minecraft(impl.getVanillaId()));
         this.impl = impl;
     }
 
@@ -141,6 +146,21 @@ public final class GlowPotionEffect extends PotionEffectType {
     }
 
     @Override
+    public @NotNull Map<Attribute, AttributeModifier> getEffectAttributes() {
+        return null;
+    }
+
+    @Override
+    public double getAttributeModifierAmount(@NotNull Attribute attribute, int effectAmplifier) {
+        return 0;
+    }
+
+    @Override
+    public @NotNull Category getEffectCategory() {
+        return null;
+    }
+
+    @Override
     public double getDurationModifier() {
         return impl.modifier;
     }
@@ -160,6 +180,11 @@ public final class GlowPotionEffect extends PotionEffectType {
         if (!impl.instant || effect.getDuration() != 0) {
             impl.pulse(entity, effect.getAmplifier(), effect.getDuration());
         }
+    }
+
+    @Override
+    public @NotNull String translationKey() {
+        return null;
     }
 
     @RequiredArgsConstructor
@@ -221,6 +246,21 @@ public final class GlowPotionEffect extends PotionEffectType {
         @Override
         public Collection<PotionEffect> getEffects(PotionType potionType, boolean b, boolean b1) {
             return null;
+        }
+
+        @Override
+        public void addPotionMix(@NotNull PotionMix potionMix) {
+
+        }
+
+        @Override
+        public void removePotionMix(@NotNull NamespacedKey key) {
+
+        }
+
+        @Override
+        public void resetPotionMixes() {
+
         }
     }
 }

@@ -39,7 +39,7 @@ import net.glowstone.block.blocktype.BlockFire;
 import net.glowstone.block.blocktype.BlockFlowerPot;
 import net.glowstone.block.blocktype.BlockFurnace;
 import net.glowstone.block.blocktype.BlockGrass;
-import net.glowstone.block.blocktype.BlockGrassPath;
+import net.glowstone.block.blocktype.BlockDirtPath;
 import net.glowstone.block.blocktype.BlockGravel;
 import net.glowstone.block.blocktype.BlockHay;
 import net.glowstone.block.blocktype.BlockHopper;
@@ -342,7 +342,7 @@ public final class ItemTable {
         regAll(MaterialTags.CONCRETE_POWDER, new BlockConcretePowder());
         reg(Material.CHORUS_FLOWER, new BlockChorusFlower());
         reg(Material.CHORUS_PLANT, new BlockChorusPlant());
-        reg(Material.GRASS_PATH, new BlockGrassPath(), Sound.BLOCK_GRASS_BREAK);
+        reg(Material.DIRT_PATH, new BlockDirtPath(), Sound.BLOCK_GRASS_BREAK);
 
         // Non-block and ItemPlaceAs items:
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());

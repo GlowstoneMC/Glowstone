@@ -10,7 +10,7 @@ import java.util.Collections;
 
 public class DesertPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.DESERT, Biome.DESERT_HILLS};
+    private static final Biome[] BIOMES = {Biome.DESERT};
 
     /**
      * Creates a {@link BiomePopulator} adjusted for the desert.

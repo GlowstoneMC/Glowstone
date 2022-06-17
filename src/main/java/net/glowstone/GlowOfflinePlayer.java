@@ -15,6 +15,9 @@ import org.bukkit.Statistic;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.profile.PlayerProfile;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -140,6 +143,11 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     }
 
     @Override
+    public @NotNull PlayerProfile getPlayerProfile() {
+        return profile;
+    }
+
+    @Override
     public boolean isOnline() {
         return getPlayer() != null;
     }
@@ -216,6 +224,11 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     @Override
     public void setStatistic(Statistic statistic, EntityType entityType, int newValue) {
         stats.set(statistic, entityType, newValue);
+    }
+
+    @Override
+    public @Nullable Location getLastDeathLocation() {
+        return null;
     }
 
     @Override

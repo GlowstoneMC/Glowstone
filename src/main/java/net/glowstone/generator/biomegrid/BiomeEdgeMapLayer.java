@@ -9,19 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static org.bukkit.block.Biome.BADLANDS;
-import static org.bukkit.block.Biome.BADLANDS_PLATEAU;
 import static org.bukkit.block.Biome.DESERT;
-import static org.bukkit.block.Biome.GIANT_TREE_TAIGA;
 import static org.bukkit.block.Biome.JUNGLE;
-import static org.bukkit.block.Biome.JUNGLE_EDGE;
 import static org.bukkit.block.Biome.PLAINS;
 import static org.bukkit.block.Biome.SNOWY_TAIGA;
-import static org.bukkit.block.Biome.SNOWY_TUNDRA;
 import static org.bukkit.block.Biome.SWAMP;
-import static org.bukkit.block.Biome.TAIGA;
-import static org.bukkit.block.Biome.WOODED_BADLANDS_PLATEAU;
-import static org.bukkit.block.Biome.WOODED_MOUNTAINS;
 
 public class BiomeEdgeMapLayer extends MapLayer {
 
@@ -33,21 +25,11 @@ public class BiomeEdgeMapLayer extends MapLayer {
     private static final Map<Map<Integer, Integer>, List<Integer>> EDGES = new HashMap<>();
 
     static {
-        MESA_EDGES.put(GlowBiome.getId(WOODED_BADLANDS_PLATEAU), GlowBiome.getId(BADLANDS));
-        MESA_EDGES.put(GlowBiome.getId(BADLANDS_PLATEAU), GlowBiome.getId(BADLANDS));
-
-        MEGA_TAIGA_EDGES.put(GlowBiome.getId(GIANT_TREE_TAIGA), GlowBiome.getId(TAIGA));
-
-        DESERT_EDGES.put(GlowBiome.getId(DESERT), GlowBiome.getId(WOODED_MOUNTAINS));
-
         SWAMP1_EDGES.put(GlowBiome.getId(SWAMP), GlowBiome.getId(PLAINS));
-        SWAMP2_EDGES.put(GlowBiome.getId(SWAMP), GlowBiome.getId(JUNGLE_EDGE));
 
         EDGES.put(MESA_EDGES, null);
         EDGES.put(MEGA_TAIGA_EDGES, null);
-        EDGES.put(DESERT_EDGES, Collections.singletonList(GlowBiome.getId(SNOWY_TUNDRA)));
-        EDGES.put(SWAMP1_EDGES, Arrays.asList(GlowBiome.getId(DESERT), GlowBiome.getId(SNOWY_TAIGA),
-                GlowBiome.getId(SNOWY_TUNDRA)));
+        EDGES.put(SWAMP1_EDGES, Arrays.asList(GlowBiome.getId(DESERT), GlowBiome.getId(SNOWY_TAIGA)));
         EDGES.put(SWAMP2_EDGES, Collections.singletonList(GlowBiome.getId(JUNGLE)));
     }
 

@@ -50,6 +50,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.SpawnCategory;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -476,7 +477,22 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
+    public @NotNull SpawnCategory getSpawnCategory() {
+        return null;
+    }
+
+    @Override
     public @NotNull Spigot spigot() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Component name() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Component teamDisplayName() {
         return null;
     }
 
@@ -590,6 +606,21 @@ public abstract class GlowEntity implements Entity {
     @Override
     public boolean isTicking() {
         return getLocation().getChunk().isLoaded();
+    }
+
+    @Override
+    public @NotNull Set<Player> getTrackedPlayers() {
+        return null;
+    }
+
+    @Override
+    public boolean spawnAt(@NotNull Location location, CreatureSpawnEvent.@NotNull SpawnReason reason) {
+        return false;
+    }
+
+    @Override
+    public boolean isInPowderedSnow() {
+        return false;
     }
 
     /**
@@ -1154,6 +1185,46 @@ public abstract class GlowEntity implements Entity {
     @Override
     public int getMaxFireTicks() {
         return 160;  // this appears to be Minecraft's default value
+    }
+
+    @Override
+    public void setVisualFire(boolean fire) {
+
+    }
+
+    @Override
+    public boolean isVisualFire() {
+        return false;
+    }
+
+    @Override
+    public int getFreezeTicks() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxFreezeTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setFreezeTicks(int ticks) {
+
+    }
+
+    @Override
+    public boolean isFrozen() {
+        return false;
+    }
+
+    @Override
+    public boolean isFreezeTickingLocked() {
+        return false;
+    }
+
+    @Override
+    public void lockFreezeTicks(boolean locked) {
+
     }
 
     @Override

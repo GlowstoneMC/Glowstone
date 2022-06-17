@@ -9,6 +9,8 @@ import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.profile.PlayerTextures;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -241,7 +243,7 @@ public class GlowPlayerProfile implements PlayerProfile {
     @Override
     public UUID setId(@Nullable UUID uuid) {
         checkOwnerCriteria(name, uuid);
-        UUID oldUuid = null;
+        UUID oldUuid;
         if (uniqueId == null) {
             synchronized (this) {
                 if (uniqueId == null) {
@@ -257,6 +259,21 @@ public class GlowPlayerProfile implements PlayerProfile {
             uniqueId.obtrudeValue(uuid);
         }
         return oldUuid;
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable UUID getUniqueId() {
+        return null;
+    }
+
+    @Override
+    public @NotNull PlayerTextures getTextures() {
+        return null;
+    }
+
+    @Override
+    public void setTextures(@org.jetbrains.annotations.Nullable PlayerTextures textures) {
+
     }
 
     /**
@@ -334,6 +351,16 @@ public class GlowPlayerProfile implements PlayerProfile {
     }
 
     @Override
+    public @NotNull CompletableFuture<org.bukkit.profile.PlayerProfile> update() {
+        return null;
+    }
+
+    @Override
+    public org.bukkit.profile.@NotNull PlayerProfile clone() {
+        return null;
+    }
+
+    @Override
     public boolean completeFromCache() {
         return completeCached();
     }
@@ -402,5 +429,10 @@ public class GlowPlayerProfile implements PlayerProfile {
             }
         }
         return isComplete();
+    }
+
+    @Override
+    public @NotNull Map<String, Object> serialize() {
+        return null;
     }
 }

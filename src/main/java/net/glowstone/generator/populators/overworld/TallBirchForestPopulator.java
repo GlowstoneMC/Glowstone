@@ -11,8 +11,7 @@ import java.util.Collections;
 
 public class TallBirchForestPopulator extends BirchForestPopulator {
 
-    private static final Biome[] BIOMES = {Biome.TALL_BIRCH_FOREST,
-        Biome.TALL_BIRCH_HILLS};
+    private static final Biome[] BIOMES = {};
     private static final TreeDecoration[] TREES = {new TreeDecoration(BirchTree::new, 1),
         new TreeDecoration(TallBirchTree::new, 1)};
 

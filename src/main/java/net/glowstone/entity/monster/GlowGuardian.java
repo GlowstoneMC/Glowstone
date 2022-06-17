@@ -20,6 +20,16 @@ public class GlowGuardian extends GlowMonster implements Guardian {
     }
 
     @Override
+    public boolean setLaser(boolean activated) {
+        return false;
+    }
+
+    @Override
+    public boolean hasLaser() {
+        return false;
+    }
+
+    @Override
     public boolean isElder() {
         return false;
     }

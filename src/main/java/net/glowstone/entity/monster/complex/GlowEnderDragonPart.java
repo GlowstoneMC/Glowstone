@@ -44,12 +44,12 @@ public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
 
     @Override
     public void damage(double amount, EntityDamageEvent.DamageCause cause) {
-        parent.damage(amount, cause);
+        ((GlowEnderDragon) parent).damage(amount, cause);
     }
 
     @Override
     public void damage(double amount, Entity source, @NotNull EntityDamageEvent.DamageCause cause) {
-        parent.damage(amount, source, cause);
+        ((GlowEnderDragon) parent).damage(amount, source, cause);
     }
 
     @Override

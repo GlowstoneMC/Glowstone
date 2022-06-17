@@ -124,6 +124,7 @@ import org.bukkit.Tag;
 import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.WorldBorder;
 import org.bukkit.WorldType;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
@@ -138,6 +139,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Villager;
@@ -155,6 +157,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerLocaleChangeEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
@@ -168,6 +171,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.event.player.PlayerUnregisterChannelEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.ItemStack;
@@ -1219,7 +1223,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      *
      * @param location The location to place the player.
      */
-    private void spawnAt(Location location) {
+    private void spawnPlayerAt(Location location) {
         GlowWorld oldWorld;
         // switch worlds
         worldLock.writeLock().lock();
@@ -1340,7 +1344,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             active = true;
             deathTicks = 0;
             setStatistic(Statistic.TIME_SINCE_DEATH, 0);
-            spawnAt(event.getRespawnLocation());
+            spawnPlayerAt(event.getRespawnLocation());
         } finally {
             worldLock.writeLock().unlock();
         }
@@ -2056,6 +2060,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void sendHealthUpdate(double health, int foodLevel, float saturationLevel) {
+
+    }
+
+    @Override
+    public void sendHealthUpdate() {
+
+    }
+
+    @Override
     public Entity getSpectatorTarget() {
         return spectating;
     }
@@ -2195,7 +2209,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         worldLock.writeLock().lock();
         try {
             if (location.getWorld() != world) {
-                spawnAt(location);
+                spawnPlayerAt(location);
             } else {
                 world.getEntityManager().move(this, location);
                 //Position.copyLocation(location, this.previousLocation);
@@ -2234,7 +2248,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         target = event.getTo();
 
-        spawnAt(target);
+        spawnPlayerAt(target);
         teleported = true;
 
         return true;
@@ -2263,7 +2277,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         target = event.getTo();
 
-        spawnAt(target);
+        spawnPlayerAt(target);
         teleported = true;
 
         return true;
@@ -2558,6 +2572,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void showDemoScreen() {
+
+    }
+
+    @Override
+    public boolean isAllowingServerListings() {
+        return false;
+    }
+
+    @Override
     public int getViewDistance() {
         return settings.getViewDistance();
     }
@@ -2568,9 +2592,44 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public int getSimulationDistance() {
+        return 0;
+    }
+
+    @Override
+    public void setSimulationDistance(int simulationDistance) {
+
+    }
+
+    @Override
+    public int getNoTickViewDistance() {
+        return 0;
+    }
+
+    @Override
+    public void setNoTickViewDistance(int viewDistance) {
+
+    }
+
+    @Override
+    public int getSendViewDistance() {
+        return 0;
+    }
+
+    @Override
+    public void setSendViewDistance(int viewDistance) {
+
+    }
+
+    @Override
     public void kickPlayer(String message) {
         remove();
         session.disconnect(message == null ? "" : message);
+    }
+
+    @Override
+    public void kick() {
+
     }
 
     public void kickPlayer(String message, boolean async) {
@@ -2582,6 +2641,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void kick(@org.jetbrains.annotations.Nullable Component component) {
         throw new UnsupportedOperationException("Adventure API is not yet supported.");
+    }
+
+    @Override
+    public void kick(@org.jetbrains.annotations.Nullable Component message, PlayerKickEvent.@NotNull Cause cause) {
+
     }
 
     @Override
@@ -2688,12 +2752,42 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void setResourcePack(@NotNull String url, @org.jetbrains.annotations.Nullable byte[] hash, @org.jetbrains.annotations.Nullable String prompt) {
+
+    }
+
+    @Override
+    public void setResourcePack(@NotNull String url, @org.jetbrains.annotations.Nullable byte[] hash, boolean force) {
+
+    }
+
+    @Override
+    public void setResourcePack(@NotNull String url, @org.jetbrains.annotations.Nullable byte[] hash, @org.jetbrains.annotations.Nullable String prompt, boolean force) {
+
+    }
+
+    @Override
+    public void setResourcePack(@NotNull String url, byte @org.jetbrains.annotations.Nullable [] hash, @org.jetbrains.annotations.Nullable Component prompt, boolean force) {
+
+    }
+
+    @Override
     public void setResourcePack(String url, String hash) {
         checkNotNull(url);
         checkNotNull(hash);
         checkArgument(hash.length() == 40, "Resource pack hash is of an invalid length.");
         session.send(new ResourcePackSendMessage(url, hash));
         resourcePackHash = hash;
+    }
+
+    @Override
+    public void setResourcePack(@NotNull String url, @NotNull String hash, boolean required) {
+
+    }
+
+    @Override
+    public void setResourcePack(@NotNull String url, @NotNull String hash, boolean required, @org.jetbrains.annotations.Nullable Component resourcePackPrompt) {
+
     }
 
     @Override
@@ -2826,6 +2920,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public boolean breakBlock(@NotNull Block block) {
+        return false;
+    }
+
+    @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
         playSound(location, sound, GlowSound
             .getSoundCategory(GlowSound.getVanillaId(sound)), volume, pitch);
@@ -2846,6 +2945,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         double y = location.getY();
         double z = location.getZ();
         session.send(new NamedSoundEffectMessage(sound, category, x, y, z, volume, pitch));
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull Sound sound, float volume, float pitch) {
+
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull Sound sound, @NotNull SoundCategory category, float volume, float pitch) {
+
     }
 
     @Override
@@ -2870,6 +2979,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             sound = null;
         }
         session.send(new StopSoundMessage(category, sound));
+    }
+
+    @Override
+    public void stopAllSounds() {
+
     }
 
     public void stopSound(SoundCategory category, Sound sound) {
@@ -2962,8 +3076,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void sendMultiBlockChange(@NotNull Map<Location, BlockData> blockChanges, boolean suppressLightUpdates) {
+
+    }
+
+    @Override
+    public void sendEquipmentChange(@NotNull LivingEntity entity, @NotNull EquipmentSlot slot, @NotNull ItemStack item) {
+
     }
 
     @Override
@@ -2978,6 +3097,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                                @org.jetbrains.annotations.Nullable List<Component> list,
                                @NotNull DyeColor dyeColor) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sendSignChange(@NotNull Location loc, @org.jetbrains.annotations.Nullable List<Component> lines, @NotNull DyeColor dyeColor, boolean hasGlowingText) throws IllegalArgumentException {
+
     }
 
     @Override
@@ -2996,6 +3120,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                                @org.jetbrains.annotations.Nullable String[] strings,
                                @NotNull DyeColor dyeColor) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sendSignChange(@NotNull Location loc, @org.jetbrains.annotations.Nullable String[] lines, @NotNull DyeColor dyeColor, boolean hasGlowingText) throws IllegalArgumentException {
+
     }
 
     /**
@@ -3378,6 +3507,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new SetWindowContentsMessage(invMonitor.getId(), invMonitor.getContents()));
     }
 
+    @Override
+    public @org.jetbrains.annotations.Nullable GameMode getPreviousGameMode() {
+        return null;
+    }
+
     /**
      * Sends a {@link SetWindowSlotMessage} to update the contents of an inventory slot.
      *
@@ -3667,6 +3801,21 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return !hiddenEntities.contains(player.getUniqueId());
     }
 
+    @Override
+    public void hideEntity(@NotNull Plugin plugin, @NotNull Entity entity) {
+
+    }
+
+    @Override
+    public void showEntity(@NotNull Plugin plugin, @NotNull Entity entity) {
+
+    }
+
+    @Override
+    public boolean canSee(@NotNull Entity entity) {
+        return false;
+    }
+
     /**
      * Called when a player hidden to this player disconnects. This is necessary so the player is
      * visible again after they reconnected.
@@ -3698,6 +3847,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         this.scoreboard.unsubscribe(this);
         this.scoreboard = (GlowScoreboard) scoreboard;
         this.scoreboard.subscribe(this);
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable WorldBorder getWorldBorder() {
+        return null;
+    }
+
+    @Override
+    public void setWorldBorder(@org.jetbrains.annotations.Nullable WorldBorder border) {
+
     }
 
     @Override

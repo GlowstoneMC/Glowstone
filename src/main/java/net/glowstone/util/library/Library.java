@@ -3,7 +3,7 @@ package net.glowstone.util.library;
 import com.google.common.collect.ComparisonChain;
 import lombok.Getter;
 import net.glowstone.util.library.LibraryManager.HashAlgorithm;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.jetbrains.annotations.NonNls;
 

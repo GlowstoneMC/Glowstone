@@ -2,6 +2,8 @@ package net.glowstone.command.minecraft;
 
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.entity.GlowLivingEntity;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.Collections;
@@ -35,7 +36,7 @@ public class KillCommand extends GlowVanillaCommand {
                     new LocalizedStringImpl("kill.self-dead", commandMessages.getResourceBundle())
                         .send(entity);
                 } else if (entity instanceof LivingEntity) {
-                    LivingEntity living = (LivingEntity) entity;
+                    GlowLivingEntity living = (GlowLivingEntity) entity;
                     living.damage(Double.MAX_VALUE, EntityDamageEvent.DamageCause.SUICIDE);
                     new LocalizedStringImpl("kill.done", commandMessages.getResourceBundle())
                         .send(sender, CommandUtils.getName(entity));
@@ -67,7 +68,7 @@ public class KillCommand extends GlowVanillaCommand {
                     commandMessages.getResourceBundle());
                 for (Entity entity : matched) {
                     if (entity instanceof LivingEntity) {
-                        LivingEntity living = (LivingEntity) entity;
+                        GlowLivingEntity living = (GlowLivingEntity) entity;
                         living.damage(Double.MAX_VALUE, EntityDamageEvent.DamageCause.VOID);
                     } else {
                         entity.remove();
@@ -76,7 +77,7 @@ public class KillCommand extends GlowVanillaCommand {
                 }
                 return true;
             } else {
-                Player player = Bukkit.getPlayerExact(name);
+                GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(name);
                 if (player == null) {
                     commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
                         .sendInColor(ChatColor.RED, sender, name);

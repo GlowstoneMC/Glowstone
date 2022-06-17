@@ -5,6 +5,7 @@ import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
 import net.glowstone.util.TextMessage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -214,6 +215,11 @@ public final class GlowObjective implements Objective {
             scoreboard.getScoresForName(entryCopy).add(score);
             return score;
         });
+    }
+
+    @Override
+    public @NotNull Score getScoreFor(@NotNull Entity entity) throws IllegalArgumentException, IllegalStateException {
+        return null;
     }
 
     @Override

@@ -82,6 +82,16 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     }
 
     @Override
+    public boolean doesAutoExpire() {
+        return true;
+    }
+
+    @Override
+    public void shouldAutoExpire(boolean autoExpires) {
+
+    }
+
+    @Override
     public Material getMaterial() {
         return getBlockData().getMaterial();
     }

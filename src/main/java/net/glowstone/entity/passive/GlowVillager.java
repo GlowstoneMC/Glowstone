@@ -10,6 +10,7 @@ import net.glowstone.entity.GlowAgeable;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.monster.GlowWitch;
 import net.glowstone.inventory.GlowMerchantInventory;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.PluginMessage;
@@ -22,6 +23,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Witch;
+import org.bukkit.entity.ZombieVillager;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -191,6 +193,16 @@ public class GlowVillager extends GlowAgeable implements Villager {
     }
 
     @Override
+    public void shakeHead() {
+
+    }
+
+    @Override
+    public @Nullable ZombieVillager zombify() {
+        return null;
+    }
+
+    @Override
     public @Nullable Reputation getReputation(@NotNull UUID uuid) {
         throw new UnsupportedOperationException();
     }
@@ -349,7 +361,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
         }
 
         Witch witch = world.spawn(this.location, Witch.class);
-        witch.damage(amount, source, cause);
+        ((GlowWitch) witch).damage(amount, source, cause);
         witch.setFireTicks(this.getFireTicks());
         remove();
     }

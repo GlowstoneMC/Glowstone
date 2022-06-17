@@ -70,6 +70,9 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
     @Getter
     @Setter
     private int maxWaitTime;
+    @Getter
+    @Setter
+    private int waitTime;
     @Setter
     private boolean applyLure;
     private int lived;

@@ -8,6 +8,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Vex;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -66,6 +67,41 @@ public class GlowVex extends GlowMonster implements Vex {
 
     @Override
     public void setCharging(boolean charging) {
+
+    }
+
+    @Override
+    public @Nullable Location getBound() {
+        return null;
+    }
+
+    @Override
+    public void setBound(@Nullable Location location) {
+
+    }
+
+    @Override
+    public boolean hasLimitedLife() {
+        return false;
+    }
+
+    @Override
+    public boolean hasLimitedLifetime() {
+        return false;
+    }
+
+    @Override
+    public void setLimitedLifetime(boolean hasLimitedLifetime) {
+
+    }
+
+    @Override
+    public int getLimitedLifetimeTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setLimitedLifetimeTicks(int ticks) {
 
     }
 }

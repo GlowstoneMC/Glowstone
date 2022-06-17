@@ -8,8 +8,7 @@ import java.util.Collections;
 
 public class BadlandsPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.BADLANDS, Biome.BADLANDS_PLATEAU,
-        Biome.MODIFIED_BADLANDS_PLATEAU, Biome.ERODED_BADLANDS};
+    private static final Biome[] BIOMES = {Biome.BADLANDS, Biome.ERODED_BADLANDS};
 
     /**
      * Creates a populator specialized for badlands biomes.

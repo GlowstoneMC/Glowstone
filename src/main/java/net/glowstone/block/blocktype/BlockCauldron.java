@@ -200,9 +200,8 @@ public class BlockCauldron extends BlockNeedsTool {
 
     private boolean setCauldronLevel(GlowBlock block, int newLevel, Entity entity,
                                      CauldronLevelChangeEvent.ChangeReason reason) {
-        int oldLevel = (int) block.getData();
         CauldronLevelChangeEvent event = EventFactory.getInstance().callEvent(
-            new CauldronLevelChangeEvent(block, entity, reason, oldLevel, newLevel));
+            new CauldronLevelChangeEvent(block, entity, reason, block.getState()));
         if (!event.isCancelled()) {
             block.setData((byte) event.getNewLevel());
         }

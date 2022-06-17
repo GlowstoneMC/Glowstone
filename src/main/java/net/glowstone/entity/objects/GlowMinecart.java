@@ -9,6 +9,7 @@ import net.glowstone.entity.GlowVehicle;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -292,6 +293,26 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
         public Powered(Location location) {
             super(location, MinecartType.FURNACE);
         }
+
+        @Override
+        public double getPushX() {
+            return 0;
+        }
+
+        @Override
+        public double getPushZ() {
+            return 0;
+        }
+
+        @Override
+        public void setPushX(double xPush) {
+
+        }
+
+        @Override
+        public void setPushZ(double zPush) {
+
+        }
     }
 
     public static class Explosive extends GlowMinecart implements ExplosiveMinecart {
@@ -424,6 +445,26 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
 
         public Command(Location location) {
             super(location, MinecartType.COMMAND);
+        }
+
+        @Override
+        public @NotNull Component lastOutput() {
+            return null;
+        }
+
+        @Override
+        public void lastOutput(@Nullable Component lastOutput) {
+
+        }
+
+        @Override
+        public int getSuccessCount() {
+            return 0;
+        }
+
+        @Override
+        public void setSuccessCount(int successCount) {
+
         }
     }
 }

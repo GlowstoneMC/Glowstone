@@ -10,17 +10,12 @@ import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
 import net.glowstone.constants.GlowBiome;
-import net.glowstone.generator.ground.DirtAndStonePatchGroundGenerator;
-import net.glowstone.generator.ground.DirtPatchGroundGenerator;
-import net.glowstone.generator.ground.GravelPatchGroundGenerator;
 import net.glowstone.generator.ground.GroundGenerator;
 import net.glowstone.generator.ground.MesaGroundGenerator;
 import net.glowstone.generator.ground.MesaGroundGenerator.MesaType;
 import net.glowstone.generator.ground.MycelGroundGenerator;
-import net.glowstone.generator.ground.RockyGroundGenerator;
 import net.glowstone.generator.ground.SandyGroundGenerator;
 import net.glowstone.generator.ground.SnowyGroundGenerator;
-import net.glowstone.generator.ground.StonePatchGroundGenerator;
 import net.glowstone.generator.populators.OverworldPopulator;
 import net.glowstone.generator.populators.StructurePopulator;
 import net.glowstone.generator.populators.overworld.SnowPopulator;
@@ -102,56 +97,23 @@ import static net.glowstone.util.config.WorldConfig.Key.OVERWORLD_HEIGHT_SCALE;
 import static net.glowstone.util.config.WorldConfig.Key.OVERWORLD_STRETCH_Y;
 import static net.glowstone.util.config.WorldConfig.Key.OVERWORLD_SURFACE_SCALE;
 import static org.bukkit.block.Biome.BADLANDS;
-import static org.bukkit.block.Biome.BADLANDS_PLATEAU;
 import static org.bukkit.block.Biome.BEACH;
-import static org.bukkit.block.Biome.BIRCH_FOREST_HILLS;
-import static org.bukkit.block.Biome.DARK_FOREST_HILLS;
 import static org.bukkit.block.Biome.DEEP_OCEAN;
 import static org.bukkit.block.Biome.DESERT;
-import static org.bukkit.block.Biome.DESERT_HILLS;
-import static org.bukkit.block.Biome.DESERT_LAKES;
 import static org.bukkit.block.Biome.ERODED_BADLANDS;
 import static org.bukkit.block.Biome.FLOWER_FOREST;
 import static org.bukkit.block.Biome.FROZEN_OCEAN;
 import static org.bukkit.block.Biome.FROZEN_RIVER;
-import static org.bukkit.block.Biome.GIANT_SPRUCE_TAIGA;
-import static org.bukkit.block.Biome.GIANT_SPRUCE_TAIGA_HILLS;
-import static org.bukkit.block.Biome.GIANT_TREE_TAIGA;
-import static org.bukkit.block.Biome.GIANT_TREE_TAIGA_HILLS;
-import static org.bukkit.block.Biome.GRAVELLY_MOUNTAINS;
 import static org.bukkit.block.Biome.ICE_SPIKES;
-import static org.bukkit.block.Biome.JUNGLE_HILLS;
-import static org.bukkit.block.Biome.MODIFIED_BADLANDS_PLATEAU;
-import static org.bukkit.block.Biome.MODIFIED_GRAVELLY_MOUNTAINS;
-import static org.bukkit.block.Biome.MODIFIED_JUNGLE;
-import static org.bukkit.block.Biome.MODIFIED_JUNGLE_EDGE;
-import static org.bukkit.block.Biome.MODIFIED_WOODED_BADLANDS_PLATEAU;
-import static org.bukkit.block.Biome.MOUNTAIN_EDGE;
 import static org.bukkit.block.Biome.MUSHROOM_FIELDS;
-import static org.bukkit.block.Biome.MUSHROOM_FIELD_SHORE;
 import static org.bukkit.block.Biome.OCEAN;
 import static org.bukkit.block.Biome.RIVER;
 import static org.bukkit.block.Biome.SAVANNA;
 import static org.bukkit.block.Biome.SAVANNA_PLATEAU;
-import static org.bukkit.block.Biome.SHATTERED_SAVANNA;
-import static org.bukkit.block.Biome.SHATTERED_SAVANNA_PLATEAU;
 import static org.bukkit.block.Biome.SNOWY_BEACH;
-import static org.bukkit.block.Biome.SNOWY_MOUNTAINS;
 import static org.bukkit.block.Biome.SNOWY_TAIGA;
-import static org.bukkit.block.Biome.SNOWY_TAIGA_HILLS;
-import static org.bukkit.block.Biome.SNOWY_TAIGA_MOUNTAINS;
-import static org.bukkit.block.Biome.SNOWY_TUNDRA;
-import static org.bukkit.block.Biome.STONE_SHORE;
 import static org.bukkit.block.Biome.SWAMP;
-import static org.bukkit.block.Biome.SWAMP_HILLS;
 import static org.bukkit.block.Biome.TAIGA;
-import static org.bukkit.block.Biome.TAIGA_HILLS;
-import static org.bukkit.block.Biome.TAIGA_MOUNTAINS;
-import static org.bukkit.block.Biome.TALL_BIRCH_FOREST;
-import static org.bukkit.block.Biome.TALL_BIRCH_HILLS;
-import static org.bukkit.block.Biome.WOODED_BADLANDS_PLATEAU;
-import static org.bukkit.block.Biome.WOODED_HILLS;
-import static org.bukkit.block.Biome.WOODED_MOUNTAINS;
 
 public class OverworldGenerator extends GlowChunkGenerator {
 
@@ -174,49 +136,23 @@ public class OverworldGenerator extends GlowChunkGenerator {
     private static double biomeScaleWeight;
 
     static {
-        setBiomeSpecificGround(new SandyGroundGenerator(), BEACH, SNOWY_BEACH, DESERT,
-                DESERT_HILLS, DESERT_LAKES);
-        setBiomeSpecificGround(new RockyGroundGenerator(), STONE_SHORE);
+        setBiomeSpecificGround(new SandyGroundGenerator(), BEACH, SNOWY_BEACH, DESERT);
         setBiomeSpecificGround(new SnowyGroundGenerator(), ICE_SPIKES);
-        setBiomeSpecificGround(new MycelGroundGenerator(), MUSHROOM_FIELDS, MUSHROOM_FIELD_SHORE);
-        setBiomeSpecificGround(new StonePatchGroundGenerator(), Biome.MOUNTAINS);
-        setBiomeSpecificGround(new GravelPatchGroundGenerator(), GRAVELLY_MOUNTAINS,
-                MODIFIED_GRAVELLY_MOUNTAINS);
-        setBiomeSpecificGround(new DirtAndStonePatchGroundGenerator(), SHATTERED_SAVANNA,
-                SHATTERED_SAVANNA_PLATEAU);
-        setBiomeSpecificGround(new DirtPatchGroundGenerator(), GIANT_TREE_TAIGA, GIANT_TREE_TAIGA_HILLS,
-                GIANT_SPRUCE_TAIGA, GIANT_SPRUCE_TAIGA_HILLS);
-        setBiomeSpecificGround(new MesaGroundGenerator(), BADLANDS, BADLANDS_PLATEAU, WOODED_BADLANDS_PLATEAU);
+        setBiomeSpecificGround(new MycelGroundGenerator(), MUSHROOM_FIELDS);
+        setBiomeSpecificGround(new MesaGroundGenerator(), BADLANDS);
         setBiomeSpecificGround(new MesaGroundGenerator(MesaType.BRYCE), ERODED_BADLANDS);
-        setBiomeSpecificGround(new MesaGroundGenerator(MesaType.FOREST), WOODED_BADLANDS_PLATEAU,
-                MODIFIED_WOODED_BADLANDS_PLATEAU);
 
         setBiomeHeight(BiomeHeight.OCEAN, OCEAN, FROZEN_OCEAN);
         setBiomeHeight(BiomeHeight.DEEP_OCEAN, DEEP_OCEAN);
         setBiomeHeight(BiomeHeight.RIVER, RIVER, FROZEN_RIVER);
-        setBiomeHeight(BiomeHeight.FLAT_SHORE, BEACH, SNOWY_BEACH, MUSHROOM_FIELD_SHORE);
-        setBiomeHeight(BiomeHeight.ROCKY_SHORE, STONE_SHORE);
-        setBiomeHeight(BiomeHeight.FLATLANDS, DESERT, SNOWY_TUNDRA, SAVANNA);
-        setBiomeHeight(BiomeHeight.MOUNTAINS, Biome.MOUNTAINS, WOODED_MOUNTAINS,
-                GRAVELLY_MOUNTAINS, MODIFIED_GRAVELLY_MOUNTAINS);
-        setBiomeHeight(BiomeHeight.MID_PLAINS, TAIGA, SNOWY_TAIGA, GIANT_TREE_TAIGA);
+        setBiomeHeight(BiomeHeight.FLAT_SHORE, BEACH, SNOWY_BEACH);
+        setBiomeHeight(BiomeHeight.FLATLANDS, DESERT, SAVANNA);
+        setBiomeHeight(BiomeHeight.MID_PLAINS, TAIGA, SNOWY_TAIGA);
         setBiomeHeight(BiomeHeight.SWAMP, SWAMP);
         setBiomeHeight(BiomeHeight.LOW_HILLS, MUSHROOM_FIELDS);
-        setBiomeHeight(BiomeHeight.HILLS, SNOWY_MOUNTAINS, DESERT_HILLS, WOODED_HILLS, TAIGA_HILLS,
-                MOUNTAIN_EDGE, JUNGLE_HILLS, BIRCH_FOREST_HILLS, SNOWY_TAIGA_HILLS,
-                GIANT_TREE_TAIGA_HILLS, MODIFIED_WOODED_BADLANDS_PLATEAU, MODIFIED_BADLANDS_PLATEAU);
-        setBiomeHeight(BiomeHeight.HIGH_PLATEAU, SAVANNA_PLATEAU, WOODED_BADLANDS_PLATEAU, BADLANDS_PLATEAU);
-        setBiomeHeight(BiomeHeight.FLATLANDS_HILLS, DESERT_LAKES);
+        setBiomeHeight(BiomeHeight.HIGH_PLATEAU, SAVANNA_PLATEAU);
         setBiomeHeight(BiomeHeight.BIG_HILLS, ICE_SPIKES);
-        setBiomeHeight(BiomeHeight.BIG_HILLS2, TALL_BIRCH_HILLS);
-        setBiomeHeight(BiomeHeight.SWAMP_HILLS, SWAMP_HILLS);
-        setBiomeHeight(BiomeHeight.DEFAULT_HILLS, MODIFIED_JUNGLE, MODIFIED_JUNGLE_EDGE,
-                TALL_BIRCH_FOREST, DARK_FOREST_HILLS);
-        setBiomeHeight(BiomeHeight.MID_HILLS, TAIGA_MOUNTAINS, SNOWY_TAIGA_MOUNTAINS,
-                GIANT_SPRUCE_TAIGA, GIANT_SPRUCE_TAIGA_HILLS);
         setBiomeHeight(BiomeHeight.MID_HILLS2, FLOWER_FOREST);
-        setBiomeHeight(BiomeHeight.LOW_SPIKES, SHATTERED_SAVANNA);
-        setBiomeHeight(BiomeHeight.HIGH_SPIKES, SHATTERED_SAVANNA_PLATEAU);
 
         // fill a 5x5 array with values that acts as elevation weight on chunk neighboring,
         // this can be viewed as a parabolic field: the center gets the more weight, and the

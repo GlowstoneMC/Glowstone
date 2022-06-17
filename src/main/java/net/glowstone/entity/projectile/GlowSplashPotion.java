@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -90,5 +91,15 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
         ItemMeta meta = item.getItemMeta();
         return meta instanceof PotionMeta ? ((PotionMeta) meta).getCustomEffects()
             : Collections.emptyList();
+    }
+
+    @Override
+    public @NotNull PotionMeta getPotionMeta() {
+        return null;
+    }
+
+    @Override
+    public void setPotionMeta(@NotNull PotionMeta meta) {
+
     }
 }

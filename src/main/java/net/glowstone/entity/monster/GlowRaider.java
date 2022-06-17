@@ -24,4 +24,14 @@ public abstract class GlowRaider extends GlowMonster implements Raider {
     public GlowRaider(Location loc, EntityType type, double maxHealth) {
         super(loc, type, maxHealth);
     }
+
+    @Override
+    public boolean isCelebrating() {
+        return false;
+    }
+
+    @Override
+    public void setCelebrating(boolean celebrating) {
+
+    }
 }

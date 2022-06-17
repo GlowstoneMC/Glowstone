@@ -14,7 +14,7 @@ import java.util.Collections;
 
 public class DarkForestPopulator extends ForestPopulator {
 
-    private static final Biome[] BIOMES = {Biome.DARK_FOREST, Biome.DARK_FOREST_HILLS};
+    private static final Biome[] BIOMES = {Biome.DARK_FOREST};
     private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree::new, 20),
         new TreeDecoration(BirchTree::new, 5),
         new TreeDecoration(RedMushroomTree::new, 2),

@@ -5,7 +5,7 @@ import lombok.Setter;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.InventoryUtil;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -332,7 +332,7 @@ public class GlowInventory implements Inventory {
     @Override
     public @Nullable InventoryHolder getHolder(boolean snapshotBlockEntity) {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     @Override
@@ -694,7 +694,7 @@ public class GlowInventory implements Inventory {
     @Override
     public int close() {
         // TODO: 1.16
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
     }
 
     /**

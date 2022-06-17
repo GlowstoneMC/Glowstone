@@ -10,7 +10,7 @@ import java.util.Collections;
 
 public class BirchForestPopulator extends ForestPopulator {
 
-    private static final Biome[] BIOMES = {Biome.BIRCH_FOREST, Biome.BIRCH_FOREST_HILLS};
+    private static final Biome[] BIOMES = {Biome.BIRCH_FOREST};
     private static final TreeDecoration[] TREES = {new TreeDecoration(BirchTree::new, 1)};
 
     public BirchForestPopulator() {

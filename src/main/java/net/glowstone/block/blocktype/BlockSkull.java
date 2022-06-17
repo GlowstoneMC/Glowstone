@@ -105,10 +105,7 @@ public class BlockSkull extends BlockType {
         GlowSkull skull = (GlowSkull) block.getState();
         skull.setSkullType(getType(holding.getDurability()));
         if (skull.getSkullType() == SkullType.PLAYER) {
-            SkullMeta meta = (SkullMeta) holding.getItemMeta();
-            if (meta != null) {
-                skull.setOwner(meta.getOwner());
-            }
+            skull.setOwner(skull.getOwner());
         }
         MaterialData data = skull.getData();
         if (!(data instanceof Skull)) {
@@ -140,7 +137,7 @@ public class BlockSkull extends BlockType {
         ItemStack drop = new ItemStack(skullMaterial, 1);
         if (skull.hasOwner()) {
             SkullMeta meta = (SkullMeta) drop.getItemMeta();
-            meta.setOwner(skull.getOwner());
+            meta.setOwnerProfile(skull.getOwnerProfile());
             drop.setItemMeta(meta);
         }
         drop.setDurability((short) skull.getSkullType().ordinal());

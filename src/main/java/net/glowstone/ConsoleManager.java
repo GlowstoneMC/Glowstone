@@ -3,6 +3,7 @@ package net.glowstone;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
@@ -389,6 +390,11 @@ public final class ConsoleManager {
         @Override
         public Spigot spigot() {
             return spigot;
+        }
+
+        @Override
+        public @NotNull Component name() {
+            return null;
         }
 
         @Override

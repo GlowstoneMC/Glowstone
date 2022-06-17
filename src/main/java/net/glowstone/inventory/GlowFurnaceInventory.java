@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowFurnaceInventory extends GlowInventory implements FurnaceInventory {
 
@@ -66,6 +67,16 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     @Override
     public void setSmelting(ItemStack stack) {
         setItem(INPUT_SLOT, stack);
+    }
+
+    @Override
+    public boolean isFuel(@Nullable ItemStack item) {
+        return false;
+    }
+
+    @Override
+    public boolean canSmelt(@Nullable ItemStack item) {
+        return false;
     }
 
     @Override

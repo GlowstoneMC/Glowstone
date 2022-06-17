@@ -4,11 +4,13 @@ import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BannerEntity;
+import net.kyori.adventure.text.Component;
 import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,5 +103,25 @@ public class GlowBanner extends GlowBlockState implements Banner {
     @Override
     public @NotNull PersistentDataContainer getPersistentDataContainer() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public @Nullable Component customName() {
+        return null;
+    }
+
+    @Override
+    public void customName(@Nullable Component customName) {
+
+    }
+
+    @Override
+    public @Nullable String getCustomName() {
+        return null;
+    }
+
+    @Override
+    public void setCustomName(@Nullable String name) {
+
     }
 }

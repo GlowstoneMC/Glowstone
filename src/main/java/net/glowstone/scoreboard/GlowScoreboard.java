@@ -12,6 +12,7 @@ import net.glowstone.util.TextMessage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.RenderType;
@@ -293,6 +294,21 @@ public final class GlowScoreboard implements Scoreboard {
     public void clearSlot(DisplaySlot slot) throws IllegalArgumentException {
         checkNotNull(slot, "Slot cannot be null");
         setDisplaySlot(slot, null);
+    }
+
+    @Override
+    public @NotNull Set<Score> getScoresFor(@NotNull Entity entity) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
+    public void resetScoresFor(@NotNull Entity entity) throws IllegalArgumentException {
+
+    }
+
+    @Override
+    public @Nullable Team getEntityTeam(@NotNull Entity entity) throws IllegalArgumentException {
+        return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////

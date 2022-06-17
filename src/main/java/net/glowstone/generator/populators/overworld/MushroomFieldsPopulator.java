@@ -18,7 +18,7 @@ import java.util.Random;
 
 public class MushroomFieldsPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.MUSHROOM_FIELDS, Biome.MUSHROOM_FIELD_SHORE};
+    private static final Biome[] BIOMES = {Biome.MUSHROOM_FIELDS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedMushroomTree::new, 1),
         new TreeDecoration(BrownMushroomTree::new, 1)};
 

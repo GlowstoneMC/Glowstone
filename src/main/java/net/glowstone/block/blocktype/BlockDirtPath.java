@@ -4,9 +4,9 @@ import net.glowstone.block.GlowBlock;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 
-public class BlockGrassPath extends BlockDirectDrops {
+public class BlockDirtPath extends BlockDirectDrops {
 
-    public BlockGrassPath() {
+    public BlockDirtPath() {
         super(Material.DIRT);
     }
 

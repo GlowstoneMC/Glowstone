@@ -8,8 +8,7 @@ import java.util.Collections;
 
 public class WoodedMountainsPopulator extends MountainsPopulator {
 
-    private static final Biome[] BIOMES = {Biome.MOUNTAIN_EDGE,
-        Biome.WOODED_MOUNTAINS, Biome.MODIFIED_GRAVELLY_MOUNTAINS};
+    private static final Biome[] BIOMES = {};
 
     public WoodedMountainsPopulator() {
         treeDecorator.setAmount(3);

@@ -68,6 +68,16 @@ public class GlowEnderDragon extends GlowBoss implements EnderDragon {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public @NotNull Location getPodium() {
+        return null;
+    }
+
+    @Override
+    public void setPodium(@Nullable Location location) {
+
+    }
+
     @NotNull
     @Override
     public Set<ComplexEntityPart> getParts() {

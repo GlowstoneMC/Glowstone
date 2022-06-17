@@ -11,21 +11,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import static org.bukkit.block.Biome.BADLANDS;
-import static org.bukkit.block.Biome.BADLANDS_PLATEAU;
 import static org.bukkit.block.Biome.DEEP_OCEAN;
 import static org.bukkit.block.Biome.DESERT;
 import static org.bukkit.block.Biome.ERODED_BADLANDS;
 import static org.bukkit.block.Biome.FOREST;
-import static org.bukkit.block.Biome.JUNGLE;
-import static org.bukkit.block.Biome.JUNGLE_EDGE;
-import static org.bukkit.block.Biome.JUNGLE_HILLS;
-import static org.bukkit.block.Biome.MODIFIED_BADLANDS_PLATEAU;
-import static org.bukkit.block.Biome.MODIFIED_JUNGLE;
-import static org.bukkit.block.Biome.MODIFIED_JUNGLE_EDGE;
-import static org.bukkit.block.Biome.MODIFIED_WOODED_BADLANDS_PLATEAU;
 import static org.bukkit.block.Biome.OCEAN;
 import static org.bukkit.block.Biome.TAIGA;
-import static org.bukkit.block.Biome.WOODED_BADLANDS_PLATEAU;
 
 public class BiomeThinEdgeMapLayer extends MapLayer {
 
@@ -40,21 +31,10 @@ public class BiomeThinEdgeMapLayer extends MapLayer {
 
         MESA_EDGES.put(GlowBiome.getId(BADLANDS), GlowBiome.getId(DESERT));
         MESA_EDGES.put(GlowBiome.getId(ERODED_BADLANDS), GlowBiome.getId(DESERT));
-        MESA_EDGES.put(GlowBiome.getId(WOODED_BADLANDS_PLATEAU), GlowBiome.getId(DESERT));
-        MESA_EDGES.put(GlowBiome.getId(MODIFIED_WOODED_BADLANDS_PLATEAU), GlowBiome.getId(DESERT));
-        MESA_EDGES.put(GlowBiome.getId(BADLANDS_PLATEAU), GlowBiome.getId(DESERT));
-        MESA_EDGES.put(GlowBiome.getId(MODIFIED_BADLANDS_PLATEAU), GlowBiome.getId(DESERT));
-
-        JUNGLE_EDGES.put(GlowBiome.getId(JUNGLE), GlowBiome.getId(JUNGLE_EDGE));
-        JUNGLE_EDGES.put(GlowBiome.getId(JUNGLE_HILLS), GlowBiome.getId(JUNGLE_EDGE));
-        JUNGLE_EDGES.put(GlowBiome.getId(MODIFIED_JUNGLE), GlowBiome.getId(JUNGLE_EDGE));
-        JUNGLE_EDGES.put(GlowBiome.getId(MODIFIED_JUNGLE_EDGE), GlowBiome.getId(JUNGLE_EDGE));
 
         EDGES.put(MESA_EDGES, null);
         EDGES.put(JUNGLE_EDGES,
                 Arrays.asList(
-                        GlowBiome.getId(JUNGLE), GlowBiome.getId(JUNGLE_HILLS),
-                        GlowBiome.getId(MODIFIED_JUNGLE), GlowBiome.getId(MODIFIED_JUNGLE_EDGE),
                         GlowBiome.getId(FOREST), GlowBiome.getId(TAIGA)
                 )
         );

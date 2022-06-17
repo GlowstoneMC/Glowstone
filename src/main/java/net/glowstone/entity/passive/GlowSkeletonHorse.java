@@ -26,10 +26,25 @@ public class GlowSkeletonHorse extends GlowUndeadHorse implements SkeletonHorse 
         return Sound.ENTITY_SKELETON_HORSE_AMBIENT;
     }
 
+    @Override
+    public boolean isTrapped() {
+        return false;
+    }
+
+    @Override
+    public void setTrapped(boolean trapped) {
+
+    }
+
     // TODO: 1.13
     @Override
     public int getTrapTime() {
         return 0;
+    }
+
+    @Override
+    public void setTrapTime(int trapTime) {
+
     }
 
     @Override

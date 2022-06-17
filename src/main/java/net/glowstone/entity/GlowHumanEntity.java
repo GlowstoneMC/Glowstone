@@ -25,9 +25,11 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -37,13 +39,18 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MainHand;
+import org.bukkit.inventory.Merchant;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -221,6 +228,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return profile.getName();
     }
 
+    @Override
+    public @NotNull MainHand getMainHand() {
+        return null;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Properties
 
@@ -241,6 +253,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     @Override
     public boolean isBlocking() {
         return false;
+    }
+
+    @Override
+    public @Nullable ItemStack getItemInUse() {
+        return null;
     }
 
     @Override
@@ -349,6 +366,46 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     @Override
+    public boolean hasCooldown(@NotNull Material material) {
+        return false;
+    }
+
+    @Override
+    public int getCooldown(@NotNull Material material) {
+        return 0;
+    }
+
+    @Override
+    public void setCooldown(@NotNull Material material, int ticks) {
+
+    }
+
+    @Override
+    public boolean isDeeplySleeping() {
+        return false;
+    }
+
+    @Override
+    public @Nullable Location getPotentialBedLocation() {
+        return null;
+    }
+
+    @Override
+    public boolean sleep(@NotNull Location location, boolean force) {
+        return false;
+    }
+
+    @Override
+    public void wakeup(boolean setSpawnLocation) {
+
+    }
+
+    @Override
+    public @NotNull Location getBedLocation() {
+        return null;
+    }
+
+    @Override
     public boolean setWindowProperty(Property prop, int value) {
         // nb: does not actually send anything
         return prop.getType() == openInventory.getType();
@@ -372,6 +429,46 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         openInventory = inventory;
         addViewer(openInventory.getTopInventory());
         addViewer(openInventory.getBottomInventory());
+    }
+
+    @Override
+    public @Nullable InventoryView openMerchant(@NotNull Villager trader, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @Nullable InventoryView openMerchant(@NotNull Merchant merchant, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @Nullable InventoryView openAnvil(@Nullable Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @Nullable InventoryView openCartographyTable(@Nullable Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @Nullable InventoryView openGrindstone(@Nullable Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @Nullable InventoryView openLoom(@Nullable Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @Nullable InventoryView openSmithingTable(@Nullable Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public @Nullable InventoryView openStonecutter(@Nullable Location location, boolean force) {
+        return null;
     }
 
     @Override
@@ -592,6 +689,41 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return shoulderEntity;
     }
 
+    @Override
+    public float getAttackCooldown() {
+        return 0;
+    }
+
+    @Override
+    public boolean discoverRecipe(@NotNull NamespacedKey recipe) {
+        return false;
+    }
+
+    @Override
+    public int discoverRecipes(@NotNull Collection<NamespacedKey> recipes) {
+        return 0;
+    }
+
+    @Override
+    public boolean undiscoverRecipe(@NotNull NamespacedKey recipe) {
+        return false;
+    }
+
+    @Override
+    public int undiscoverRecipes(@NotNull Collection<NamespacedKey> recipes) {
+        return 0;
+    }
+
+    @Override
+    public boolean hasDiscoveredRecipe(@NotNull NamespacedKey recipe) {
+        return false;
+    }
+
+    @Override
+    public @NotNull Set<NamespacedKey> getDiscoveredRecipes() {
+        return null;
+    }
+
     public CompoundTag getLeftShoulderTag() {
         Object tag = metadata.get(MetadataIndex.PLAYER_LEFT_SHOULDER);
         return tag == null ? new CompoundTag() : (CompoundTag) tag;
@@ -613,5 +745,80 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     @Override
     public void openSign(Sign sign) {
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean dropItem(boolean dropAll) {
+        return false;
+    }
+
+    @Override
+    public float getExhaustion() {
+        return 0;
+    }
+
+    @Override
+    public void setExhaustion(float value) {
+
+    }
+
+    @Override
+    public float getSaturation() {
+        return 0;
+    }
+
+    @Override
+    public void setSaturation(float value) {
+
+    }
+
+    @Override
+    public int getFoodLevel() {
+        return 0;
+    }
+
+    @Override
+    public void setFoodLevel(int value) {
+
+    }
+
+    @Override
+    public int getSaturatedRegenRate() {
+        return 0;
+    }
+
+    @Override
+    public void setSaturatedRegenRate(int ticks) {
+
+    }
+
+    @Override
+    public int getUnsaturatedRegenRate() {
+        return 0;
+    }
+
+    @Override
+    public void setUnsaturatedRegenRate(int ticks) {
+
+    }
+
+    @Override
+    public int getStarvationRate() {
+        return 0;
+    }
+
+    @Override
+    public void setStarvationRate(int ticks) {
+
+    }
+
+    @Override
+    public @Nullable Location getLastDeathLocation() {
+        return null;
+    }
+
+    @Override
+    public void setLastDeathLocation(@Nullable Location location) {
+
     }
 }

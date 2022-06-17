@@ -27,9 +27,7 @@ public class GlowTemple extends GlowStructure {
     public GlowTemple(World world, int chunkX, int chunkZ) {
         super(world, chunkX, chunkZ);
         types.put(Biome.DESERT, TempleType.DESERT_TEMPLE);
-        types.put(Biome.DESERT_HILLS, TempleType.DESERT_TEMPLE);
         types.put(Biome.JUNGLE, TempleType.JUNGLE_TEMPLE);
-        types.put(Biome.JUNGLE_HILLS, TempleType.JUNGLE_TEMPLE);
         types.put(Biome.SWAMP, TempleType.WITCH_HUT);
     }
 

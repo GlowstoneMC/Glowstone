@@ -2,35 +2,22 @@ package net.glowstone.generator.biomegrid;
 
 import net.glowstone.constants.GlowBiome;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import static org.bukkit.block.Biome.DEEP_OCEAN;
-import static org.bukkit.block.Biome.FROZEN_RIVER;
-import static org.bukkit.block.Biome.MUSHROOM_FIELDS;
-import static org.bukkit.block.Biome.MUSHROOM_FIELD_SHORE;
 import static org.bukkit.block.Biome.OCEAN;
 import static org.bukkit.block.Biome.RIVER;
-import static org.bukkit.block.Biome.SNOWY_TUNDRA;
 
 public class RiverMapLayer extends MapLayer {
 
     private static final Set<Integer> OCEANS = new HashSet<>();
-    private static final Map<Integer, Integer> SPECIAL_RIVERS = new HashMap<>();
     private static final int CLEAR_VALUE = 0;
     private static final int RIVER_VALUE = 1;
 
     static {
         OCEANS.add(GlowBiome.getId(OCEAN));
         OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
-
-        SPECIAL_RIVERS.put(GlowBiome.getId(SNOWY_TUNDRA), GlowBiome.getId(FROZEN_RIVER));
-        SPECIAL_RIVERS
-            .put(GlowBiome.getId(MUSHROOM_FIELDS), GlowBiome.getId(MUSHROOM_FIELD_SHORE));
-        SPECIAL_RIVERS
-            .put(GlowBiome.getId(MUSHROOM_FIELD_SHORE), GlowBiome.getId(MUSHROOM_FIELD_SHORE));
     }
 
     private final MapLayer belowLayer;
@@ -98,11 +85,8 @@ public class RiverMapLayer extends MapLayer {
             if (OCEANS.contains(mergeValues[i])) {
                 val = mergeValues[i];
             } else if (values[i] == RIVER_VALUE) {
-                if (SPECIAL_RIVERS.containsKey(mergeValues[i])) {
-                    val = SPECIAL_RIVERS.get(mergeValues[i]);
-                } else {
-                    val = GlowBiome.getId(RIVER);
-                }
+                // TODO: frozen river
+                val = GlowBiome.getId(RIVER);
             }
             finalValues[i] = val;
         }

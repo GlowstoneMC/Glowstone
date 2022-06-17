@@ -50,9 +50,6 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
         }
     }
 
-    @Setter
-    private boolean bounce;
-
     @Getter
     @Setter
     @Nullable
@@ -116,6 +113,12 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
     @Override
     public boolean doesBounce() {
-        return bounce;
+        // deprecated, does not do anything
+        return false;
+    }
+
+    @Override
+    public void setBounce(boolean doesBounce) {
+        // deprecated, does not do anything
     }
 }

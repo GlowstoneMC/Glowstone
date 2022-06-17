@@ -6,6 +6,7 @@ import lombok.Setter;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.monster.GlowPigZombie;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
@@ -101,7 +102,7 @@ public class GlowPig extends GlowAnimal implements Pig {
         }
 
         PigZombie pigZombie = world.spawn(this.location, PigZombie.class);
-        pigZombie.damage(amount, source, cause);
+        ((GlowPigZombie) pigZombie).damage(amount, source, cause);
         remove();
     }
 

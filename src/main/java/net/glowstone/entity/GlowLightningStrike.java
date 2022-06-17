@@ -15,14 +15,15 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LightningStrike;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -116,9 +117,8 @@ public class GlowLightningStrike extends GlowEntity implements LightningStrike {
                         continue;
                     }
 
-                    if (entity instanceof Damageable) {
-                        ((Damageable) entity)
-                            .damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
+                    if (entity instanceof GlowLivingEntity) {
+                        ((GlowLivingEntity) entity).damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
                     }
                     entity.setFireTicks(entity.getMaxFireTicks());
                 }
@@ -186,5 +186,15 @@ public class GlowLightningStrike extends GlowEntity implements LightningStrike {
     @Override
     public void setLifeTicks(int i) {
         this.ticksToLive = i;
+    }
+
+    @Override
+    public @Nullable Entity getCausingEntity() {
+        return null;
+    }
+
+    @Override
+    public void setCausingPlayer(@Nullable Player causingPlayer) {
+
     }
 }

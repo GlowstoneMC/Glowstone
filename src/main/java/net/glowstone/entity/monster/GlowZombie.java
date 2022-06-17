@@ -153,6 +153,11 @@ public class GlowZombie extends GlowMonster implements Zombie {
     }
 
     @Override
+    public boolean supportsBreakingDoors() {
+        return false;
+    }
+
+    @Override
     protected float getSoundPitch() {
         if (isBaby()) {
             return SoundUtil.randomReal(0.2F) + 1.5F;

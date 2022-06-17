@@ -66,4 +66,24 @@ public class GlowSkeleton extends GlowMonster implements Skeleton {
     public boolean shouldBurnInDay() {
         return shouldBurnInDay;
     }
+
+    @Override
+    public boolean isConverting() {
+        return false;
+    }
+
+    @Override
+    public int getConversionTime() {
+        return 0;
+    }
+
+    @Override
+    public void setConversionTime(int time) {
+
+    }
+
+    @Override
+    public int inPowderedSnowTime() {
+        return 0;
+    }
 }

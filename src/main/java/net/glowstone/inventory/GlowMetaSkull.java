@@ -12,6 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -163,6 +164,16 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
             return false;
         }
         return setOwningPlayerInternal(owningPlayer);
+    }
+
+    @Override
+    public org.bukkit.profile.@Nullable PlayerProfile getOwnerProfile() {
+        return owner.get();
+    }
+
+    @Override
+    public void setOwnerProfile(org.bukkit.profile.@Nullable PlayerProfile profile) {
+        owner.set((GlowPlayerProfile) profile);
     }
 
     private boolean setOwningPlayerInternal(OfflinePlayer owningPlayer) {

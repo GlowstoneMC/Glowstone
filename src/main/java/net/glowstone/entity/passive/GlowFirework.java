@@ -6,6 +6,7 @@ import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.Summonable;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
@@ -27,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -157,6 +159,36 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
     }
 
     @Override
+    public @NotNull ItemStack getItem() {
+        return null;
+    }
+
+    @Override
+    public void setItem(@Nullable ItemStack itemStack) {
+
+    }
+
+    @Override
+    public int getTicksFlown() {
+        return 0;
+    }
+
+    @Override
+    public void setTicksFlown(int ticks) {
+
+    }
+
+    @Override
+    public int getTicksToDetonate() {
+        return 0;
+    }
+
+    @Override
+    public void setTicksToDetonate(int ticks) {
+
+    }
+
+    @Override
     public void pulse() {
         super.pulse();
 
@@ -178,7 +210,7 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
             int effectsSize = getFireworkMeta().getEffectsSize();
             if (effectsSize > 0) {
                 if (boostedEntity != null) {
-                    boostedEntity.damage((5 + effectsSize * 2), DamageCause.ENTITY_EXPLOSION);
+                    ((GlowLivingEntity) boostedEntity).damage((5 + effectsSize * 2), DamageCause.ENTITY_EXPLOSION);
                 }
 
                 List<Entity> nearbyEntities = this.getNearbyEntities(2.5, 2.5, 2.5);
@@ -192,7 +224,7 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
                     // "The explosion of firework rockets deals 2.5 hearts of damage, per firework
                     // star."
-                    ((LivingEntity) nearbyEntity)
+                    ((GlowLivingEntity) nearbyEntity)
                         .damage((effectsSize * 5), DamageCause.ENTITY_EXPLOSION);
                 }
             }
@@ -261,12 +293,12 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
     @Override
     public boolean doesBounce() {
+        // deprecated, does not do anything
         return false;
     }
 
     @Override
-    public void setBounce(boolean b) {
-        // TODO: 1.16
-        throw new UnsupportedOperationException("Not implemented yet.");
+    public void setBounce(boolean doesBounce) {
+        // deprecated, does not do anything
     }
 }

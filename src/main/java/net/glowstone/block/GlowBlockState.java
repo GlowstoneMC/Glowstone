@@ -10,9 +10,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.TileState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +24,7 @@ import java.util.List;
  * Represents a state a block could be in as well as any block entities.
  */
 @Data
-public class GlowBlockState implements BlockState {
+public class GlowBlockState implements BlockState, TileState {
 
     private final GlowWorld world;
     private final int x;
@@ -103,6 +105,11 @@ public class GlowBlockState implements BlockState {
         return world != null; // TODO: is this sufficient?
     }
 
+    @Override
+    public boolean isCollidable() {
+        return false;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Update
 
@@ -147,5 +154,15 @@ public class GlowBlockState implements BlockState {
     @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         getBlock().removeMetadata(metadataKey, owningPlugin);
+    }
+
+    @Override
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
+        return null;
+    }
+
+    @Override
+    public boolean isSnapshot() {
+        return false;
     }
 }

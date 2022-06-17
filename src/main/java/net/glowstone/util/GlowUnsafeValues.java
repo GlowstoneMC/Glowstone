@@ -1,19 +1,30 @@
 package net.glowstone.util;
 
+import com.google.common.collect.Multimap;
 import io.papermc.paper.inventory.ItemRarity;
 import net.glowstone.GlowServer;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.Statistic;
 import org.bukkit.UnsafeValues;
+import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.attribute.Attributable;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.CreativeCategory;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -60,17 +71,22 @@ public final class GlowUnsafeValues implements UnsafeValues {
 
     @Override
     public PlainComponentSerializer plainComponentSerializer() {
-        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+        return null;
+    }
+
+    @Override
+    public PlainTextComponentSerializer plainTextSerializer() {
+        return null;
     }
 
     @Override
     public GsonComponentSerializer gsonComponentSerializer() {
-        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+        return null;
     }
 
     @Override
     public GsonComponentSerializer colorDownsamplingGsonComponentSerializer() {
-        throw new UnsupportedOperationException("Adventure API is not yet supported.");
+        return null;
     }
 
     @Override
@@ -211,6 +227,16 @@ public final class GlowUnsafeValues implements UnsafeValues {
     }
 
     @Override
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(Material material, EquipmentSlot slot) {
+        return null;
+    }
+
+    @Override
+    public CreativeCategory getCreativeCategory(Material material) {
+        return null;
+    }
+
+    @Override
     public String getTimingsServerName() {
         return "Glowstone";
     }
@@ -228,6 +254,16 @@ public final class GlowUnsafeValues implements UnsafeValues {
     @Override
     public ItemStack deserializeItem(byte[] bytes) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public byte[] serializeEntity(Entity entity) {
+        return new byte[0];
+    }
+
+    @Override
+    public Entity deserializeEntity(byte[] data, World world, boolean preserveUUID) {
+        return null;
     }
 
     @Override
@@ -256,6 +292,16 @@ public final class GlowUnsafeValues implements UnsafeValues {
     }
 
     @Override
+    public @NotNull <T extends Keyed> Registry<T> registryFor(Class<T> classOfT) {
+        return null;
+    }
+
+    @Override
+    public @NotNull String getMainLevelName() {
+        return null;
+    }
+
+    @Override
     public ItemRarity getItemRarity(Material material) {
         throw new UnsupportedOperationException();
     }
@@ -272,7 +318,27 @@ public final class GlowUnsafeValues implements UnsafeValues {
     }
 
     @Override
+    public @NotNull Multimap<Attribute, AttributeModifier> getItemAttributes(@NotNull Material material, @NotNull EquipmentSlot equipmentSlot) {
+        return null;
+    }
+
+    @Override
     public int getProtocolVersion() {
         return GlowServer.PROTOCOL_VERSION;
+    }
+
+    @Override
+    public boolean hasDefaultEntityAttributes(@NotNull NamespacedKey entityKey) {
+        return false;
+    }
+
+    @Override
+    public @NotNull Attributable getDefaultEntityAttributes(@NotNull NamespacedKey entityKey) {
+        return null;
+    }
+
+    @Override
+    public boolean isCollidable(@NotNull Material material) {
+        return false;
     }
 }

@@ -8,7 +8,7 @@ import java.util.Collections;
 
 public class WoodedBadlandsPopulator extends BadlandsPopulator {
 
-    private static final Biome[] BIOMES = {Biome.WOODED_BADLANDS_PLATEAU, Biome.MODIFIED_WOODED_BADLANDS_PLATEAU};
+    private static final Biome[] BIOMES = {};
 
     public WoodedBadlandsPopulator() {
         treeDecorator.setAmount(5);

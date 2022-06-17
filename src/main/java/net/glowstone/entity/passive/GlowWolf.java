@@ -73,6 +73,16 @@ public class GlowWolf extends GlowTameable implements Wolf {
         metadata.set(MetadataIndex.WOLF_COLOR, color.getDyeData());
     }
 
+    @Override
+    public void setInterested(boolean interested) {
+
+    }
+
+    @Override
+    public boolean isInterested() {
+        return false;
+    }
+
     /**
      * Gets whether the wolf is in the 'begging' state.
      *

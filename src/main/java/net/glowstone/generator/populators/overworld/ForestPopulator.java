@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class ForestPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.FOREST, Biome.WOODED_HILLS};
+    private static final Biome[] BIOMES = {Biome.FOREST};
     private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree::new, 4),
         new TreeDecoration(BirchTree::new, 1)};
     private static final Material[] DOUBLE_PLANTS = {Material.LILAC,

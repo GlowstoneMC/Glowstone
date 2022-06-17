@@ -285,6 +285,11 @@ public class GlowChunk implements Chunk {
     }
 
     @Override
+    public boolean isEntitiesLoaded() {
+        return false;
+    }
+
+    @Override
     public boolean isLoaded() {
         return sections != null;
     }
@@ -1041,7 +1046,7 @@ public class GlowChunk implements Chunk {
         }
 
         private static long mapCode(int x, int z) {
-            return (((long) x) << 32) | (z & 0xffffffffL);
+            return Chunk.getChunkKey(x, z);
         }
 
         public static Key of(int x, int z) {

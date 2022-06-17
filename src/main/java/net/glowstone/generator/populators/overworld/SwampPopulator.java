@@ -18,7 +18,7 @@ import java.util.Random;
 
 public class SwampPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.SWAMP, Biome.SWAMP_HILLS};
+    private static final Biome[] BIOMES = {Biome.SWAMP};
     private static final TreeDecoration[] TREES = {new TreeDecoration(SwampTree::new, 1)};
     private static final FlowerDecoration[] FLOWERS = {
         new FlowerDecoration(FlowerType.BLUE_ORCHID, 1)};

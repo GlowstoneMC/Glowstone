@@ -43,9 +43,9 @@ public class GlowItem extends GlowEntity implements Item {
     private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
 
     /**
-     * The number of ticks (equal to 5 minutes) that item entities should live for.
+     * The number of minutes that item entities should live for.
      */
-    private static final int LIFETIME = TickUtil.minutesToTicks(5);
+    private static final int DEFAULT_HEALTH = 5;
 
     /**
      * The remaining delay until this item may be picked up.
@@ -66,6 +66,9 @@ public class GlowItem extends GlowEntity implements Item {
     private boolean canPlayerPickup;
     @Setter
     private boolean willAge;
+    @Getter
+    @Setter
+    private int health;
 
     @Getter
     @Setter
@@ -90,6 +93,7 @@ public class GlowItem extends GlowEntity implements Item {
         setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
         setApplyDragBeforeAccel(true);
         pickupDelay = 20;
+        health = DEFAULT_HEALTH;
     }
 
     private boolean getPickedUp(LivingEntity entity) {
@@ -181,12 +185,12 @@ public class GlowItem extends GlowEntity implements Item {
         }
 
         // disappear if we've lived too long
-        if (getTicksLived() >= LIFETIME) {
+        if (getTicksLived() % TickUtil.minutesToTicks(1) == 0 && --health <= 0) {
             ItemDespawnEvent event = EventFactory.getInstance()
                 .callEvent(new ItemDespawnEvent(this, getLocation()));
             if (event.isCancelled()) {
                 // Allow it to live for 5 more minutes, according to docs
-                ticksLived -= LIFETIME;
+                health += DEFAULT_HEALTH;
                 return;
             }
             remove();
@@ -226,6 +230,16 @@ public class GlowItem extends GlowEntity implements Item {
     public void setItemStack(@NotNull ItemStack stack) {
         // stone is the "default state" for the item stack according to the client
         metadata.set(MetadataIndex.ITEM_ITEM, stack.clone());
+    }
+
+    @Override
+    public void setUnlimitedLifetime(boolean unlimited) {
+        willAge = !unlimited;
+    }
+
+    @Override
+    public boolean isUnlimitedLifetime() {
+        return !willAge;
     }
 
     @Override

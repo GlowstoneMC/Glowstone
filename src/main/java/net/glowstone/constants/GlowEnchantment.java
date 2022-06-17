@@ -244,6 +244,11 @@ public final class GlowEnchantment extends Enchantment implements Choice {
         return modifier >= impl.getMinRange(level) && modifier <= impl.getMaxRange(level);
     }
 
+    @Override
+    public @NotNull String translationKey() {
+        return null;
+    }
+
     // TODO: GlowEnchantment builder instead of Impl enum init
     @RequiredArgsConstructor
     private enum Impl {

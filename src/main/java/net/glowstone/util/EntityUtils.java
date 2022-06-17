@@ -3,6 +3,7 @@ package net.glowstone.util;
 import com.flowpowered.network.Message;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -82,7 +83,7 @@ public class EntityUtils {
             }
         } else if (type.equals(PotionEffectType.HARM)) {
             if (instantIntensity > 0.0) {
-                target.damage((3 << baseAmplifier) * instantIntensity,
+                ((GlowLivingEntity) target).damage((3 << baseAmplifier) * instantIntensity,
                         EntityDamageEvent.DamageCause.MAGIC);
             }
         } else if (type.isInstant()) {

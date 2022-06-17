@@ -29,6 +29,11 @@ public final class GlowScore implements Score {
     }
 
     @Override
+    public void resetScore() throws IllegalStateException {
+        setScore(0);
+    }
+
+    @Override
     @Deprecated
     public OfflinePlayer getPlayer() {
         return Bukkit.getOfflinePlayer(entry);

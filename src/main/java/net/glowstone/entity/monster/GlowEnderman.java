@@ -59,6 +59,16 @@ public class GlowEnderman extends GlowMonster implements Enderman {
     }
 
     @Override
+    public boolean hasBeenStaredAt() {
+        return false;
+    }
+
+    @Override
+    public void setHasBeenStaredAt(boolean hasBeenStaredAt) {
+
+    }
+
+    @Override
     protected Sound getHurtSound() {
         return Sound.ENTITY_ENDERMAN_HURT;
     }

@@ -10,8 +10,9 @@ import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MapFont;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.jetbrains.annotations.NotNull;
 
-import java.awt.Image;
+import java.awt.*;
 
 /**
  * Represents a canvas for drawing to a map. Each canvas is associated with a specific
@@ -57,6 +58,21 @@ public final class GlowMapCanvas implements MapCanvas {
             renderer.initialize(mapView);
             renderer.render(mapView, this, player);
         }
+    }
+
+    @Override
+    public void setPixelColor(int x, int y, @NotNull Color color) {
+
+    }
+
+    @Override
+    public @NotNull Color getPixelColor(int x, int y) {
+        return null;
+    }
+
+    @Override
+    public @NotNull Color getBasePixelColor(int x, int y) {
+        return null;
     }
 
     @Override

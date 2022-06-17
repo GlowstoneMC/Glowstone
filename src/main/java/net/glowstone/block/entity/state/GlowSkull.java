@@ -88,13 +88,26 @@ public class GlowSkull extends GlowBlockState implements Skull {
 
     @Override
     public void setOwningPlayer(OfflinePlayer offlinePlayer) {
-        this.owner = new GlowPlayerProfile(offlinePlayer.getName(), offlinePlayer.getUniqueId(),
-            true);
+        owner = new GlowPlayerProfile(offlinePlayer.getName(), offlinePlayer.getUniqueId(), true);
     }
 
     @Override
     public @Nullable PlayerProfile getPlayerProfile() {
-        return null;
+        return owner;
+    }
+
+    @Override
+    public org.bukkit.profile.@Nullable PlayerProfile getOwnerProfile() {
+        return owner;
+    }
+
+    @Override
+    public void setOwnerProfile(org.bukkit.profile.@Nullable PlayerProfile profile) {
+        owner = (GlowPlayerProfile) profile;
+    }
+
+    public void setOwner(org.bukkit.profile.@Nullable PlayerProfile profile) {
+        this.owner = (GlowPlayerProfile) profile;
     }
 
     @Override

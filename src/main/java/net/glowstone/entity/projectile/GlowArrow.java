@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.entity.EntityNetworkUtil;
+import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -128,7 +129,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
         if (isCritical()) {
             damage += 1.0;
         }
-        entity.damage(damage, shooter instanceof Entity ? (Entity) shooter : null,
+        ((GlowLivingEntity) entity).damage(damage, shooter instanceof Entity ? (Entity) shooter : null,
             EntityDamageEvent.DamageCause.PROJECTILE);
         // Burning arrow ignites target, but doesn't stack if target is already on fire.
         if (getFireTicks() > 0 && entity.getFireTicks() < TARGET_BURN_TICKS) {
@@ -192,6 +193,16 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     @Override
     public @NotNull ItemStack getItemStack() {
         return new ItemStack(Material.ARROW);
+    }
+
+    @Override
+    public void setNoPhysics(boolean noPhysics) {
+
+    }
+
+    @Override
+    public boolean hasNoPhysics() {
+        return false;
     }
 
     @Override

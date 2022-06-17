@@ -4,8 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.FurnaceEntity;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Furnace;
+import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.FurnaceInventory;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class GlowFurnace extends GlowContainer implements Furnace {
 
@@ -58,12 +63,37 @@ public class GlowFurnace extends GlowContainer implements Furnace {
     }
 
     @Override
+    public @NotNull Map<CookingRecipe<?>, Integer> getRecipesUsed() {
+        return null;
+    }
+
+    @Override
     public double getCookSpeedMultiplier() {
         return 0;
     }
 
     @Override
     public void setCookSpeedMultiplier(double multiplier) {
+
+    }
+
+    @Override
+    public int getRecipeUsedCount(@NotNull NamespacedKey furnaceRecipe) {
+        return 0;
+    }
+
+    @Override
+    public boolean hasRecipeUsedCount(@NotNull NamespacedKey furnaceRecipe) {
+        return false;
+    }
+
+    @Override
+    public void setRecipeUsedCount(@NotNull CookingRecipe<?> furnaceRecipe, int count) {
+
+    }
+
+    @Override
+    public void setRecipesUsed(@NotNull Map<CookingRecipe<?>, Integer> recipesUsed) {
 
     }
 

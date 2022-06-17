@@ -3,6 +3,7 @@ package net.glowstone.entity.projectile;
 import com.flowpowered.network.Message;
 import io.netty.util.internal.ThreadLocalRandom;
 import net.glowstone.entity.EntityNetworkUtil;
+import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
@@ -77,8 +78,7 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
 
             // Give fall damage to the eneity that threw this ender pearl.
             if (source instanceof LivingEntity) {
-                ((LivingEntity) entity).damage(ENDER_PEARL_DAMAGE,
-                    EntityDamageEvent.DamageCause.FALL);
+                ((GlowLivingEntity) entity).damage(ENDER_PEARL_DAMAGE, EntityDamageEvent.DamageCause.FALL);
             }
         }
 
@@ -97,16 +97,17 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
     /**
      * Process teleportation when collide with an entity.
      *
-     * @param entity the eneity that the ender pearl collides with
+     * @param entity the entity that the ender pearl collides with
      */
     @Override
     public void collide(LivingEntity entity) {
         ProjectileSource source = getShooter();
+        GlowLivingEntity impl = (GlowLivingEntity) entity;
         // the entity receives fake damage.
         if (source instanceof Entity) {
-            entity.damage(0, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
+            impl.damage(0, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
         } else {
-            entity.damage(0, EntityDamageEvent.DamageCause.PROJECTILE);
+            impl.damage(0, EntityDamageEvent.DamageCause.PROJECTILE);
         }
         collide(entity.getLocation().getBlock());
     }

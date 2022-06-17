@@ -8,7 +8,7 @@ import java.util.Collections;
 
 public class ShatteredSavannaPopulator extends SavannaPopulator {
 
-    private static final Biome[] BIOMES = {Biome.SHATTERED_SAVANNA, Biome.SHATTERED_SAVANNA_PLATEAU};
+    private static final Biome[] BIOMES = {};
 
     /**
      * Creates a populator specialized for the Shattered Savanna and Shattered Savanna Plateau biomes.

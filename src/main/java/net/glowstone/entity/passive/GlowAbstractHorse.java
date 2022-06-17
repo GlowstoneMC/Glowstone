@@ -17,6 +17,8 @@ import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
+import org.bukkit.inventory.AbstractHorseInventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -87,6 +89,51 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
     @Override
     public void setVariant(Horse.Variant variant) {
         // Field has been removed in 1.11
+    }
+
+    @Override
+    public boolean isEatingHaystack() {
+        return false;
+    }
+
+    @Override
+    public void setEatingHaystack(boolean eatingHaystack) {
+
+    }
+
+    @Override
+    public @NotNull AbstractHorseInventory getInventory() {
+        return null;
+    }
+
+    @Override
+    public boolean isEatingGrass() {
+        return false;
+    }
+
+    @Override
+    public void setEatingGrass(boolean eating) {
+
+    }
+
+    @Override
+    public boolean isRearing() {
+        return false;
+    }
+
+    @Override
+    public void setRearing(boolean rearing) {
+
+    }
+
+    @Override
+    public boolean isEating() {
+        return false;
+    }
+
+    @Override
+    public void setEating(boolean eating) {
+
     }
 
     @Override
