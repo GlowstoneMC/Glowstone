@@ -32,7 +32,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build with Gradle
+      - name: Gradle Build
         run: BUILD_EXTRAS=true ./gradlew assemble --no-daemon --stacktrace
 
       - name: Cleanup Gradle Cache
