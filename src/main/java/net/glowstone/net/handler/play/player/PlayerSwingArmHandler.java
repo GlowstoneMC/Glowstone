@@ -2,10 +2,10 @@ package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityAnimation;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.PlayerSwingArmMessage;
-import org.bukkit.EntityAnimation;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event.Result;

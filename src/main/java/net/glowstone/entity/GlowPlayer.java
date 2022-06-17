@@ -110,7 +110,6 @@ import org.bukkit.Difficulty;
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.Effect.Type;
-import org.bukkit.EntityAnimation;
 import org.bukkit.GameMode;
 import org.bukkit.Instrument;
 import org.bukkit.Location;

@@ -38,7 +38,6 @@ import net.glowstone.util.SoundUtil;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
 import org.bukkit.Color;
-import org.bukkit.EntityAnimation;
 import org.bukkit.EntityEffect;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
