@@ -33,7 +33,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
-        run: BUILD_EXTRAS=true ./gradlew -Dorg.gradle.parallel=true assemble --no-daemon --stacktrace
+        run: BUILD_EXTRAS=true ./gradlew assemble --no-daemon --stacktrace
 
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.

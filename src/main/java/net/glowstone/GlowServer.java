@@ -267,7 +267,7 @@ public class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = NoInline.of("1.16.5");
+    public static final String GAME_VERSION = NoInline.of("1.19");
     /**
      * The protocol version supported by the server.
      */

@@ -8,6 +8,7 @@ on:
       - etc/checkstyle.xml
       - src/**
       - gradle/**
+      - gradle.properties
       - '**/*.gradle*'
 
 jobs:
@@ -26,7 +27,6 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: ${{ matrix.java }}
-        cache: 'gradle'
 
     - name: Cache gradle
       uses: actions/cache@v3
@@ -41,13 +41,19 @@ jobs:
           ${{ runner.os }}-gradle-
 
     - name: Build
-      run: BUILD_EXTRAS=true ./gradlew -Dorg.gradle.parallel=true assemble --no-daemon --stacktrace
+      run: BUILD_EXTRAS=true ./gradlew assemble --no-daemon --stacktrace
 
     - name: Publish to Maven
-      run: BUILD_EXTRAS=true ./gradlew -Dorg.gradle.parallel=true publish --no-daemon --stacktrace
+      run: BUILD_EXTRAS=true ./gradlew publish --no-daemon --stacktrace
       env:
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+
+    - name: Get Minecraft version
+      id: version
+      run: |
+        minecraft_version=$(./gradlew -q printMinecraftVersion)
+        echo "::set-output name=minecraft_version::$minecraft_version"
 
     - name: Cleanup Gradle Cache
       # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
@@ -63,7 +69,7 @@ jobs:
       with:
         source_file: 'build/docs/javadoc/.'
         destination_repo: 'GlowstoneMC/glowstonemc.github.io'
-        destination_folder: 'content/jd/glowstone/1.16/' # TODO: detect version?
+        destination_folder: content/jd/glowstone/${{ steps.version.outputs.minecraft_version }}/
         user_email: 'mastercoms@tuta.io'
         user_name: 'mastercoms'
         commit_message: Update Javadocs for Glowstone commit ${{ github.sha }}

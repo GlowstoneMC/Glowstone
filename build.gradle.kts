@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import java.io.ByteArrayOutputStream
 import java.util.*
 
@@ -143,6 +145,14 @@ tasks.withType<ProcessResources> {
     filteringCharset = Charsets.UTF_8.name()
 }
 
+tasks.withType<Test> {
+    testLogging {
+        showStackTraces = true
+        exceptionFormat = TestExceptionFormat.FULL
+        events(TestLogEvent.STANDARD_OUT)
+    }
+}
+
 fun getGitHash(): String {
     val stdout = ByteArrayOutputStream()
     exec {
@@ -201,6 +211,12 @@ tasks.assemble { dependsOn(tasks.shadowJar) }
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.register("printMinecraftVersion") {
+    doLast {
+        println(providers.gradleProperty("mcVersion").get().trim())
+    }
 }
 
 tasks.jacocoTestReport {
