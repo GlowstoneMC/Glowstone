@@ -1,5 +1,5 @@
 [versions]
-api = "1.16.5-R0.1-SNAPSHOT"
+api = "1.19-R0.1-SNAPSHOT"
 redstone-transformer = "1.0.0-SNAPSHOT"
 linkstone = "1.0.0-SNAPSHOT"
 
