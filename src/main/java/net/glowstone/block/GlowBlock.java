@@ -342,6 +342,7 @@ public class GlowBlock implements Block {
     }
 
     public void setData(byte data) {
+        setData(data, true);
     }
 
     public void setData(byte data, boolean applyPhysics) {

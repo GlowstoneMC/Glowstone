@@ -1,5 +1,6 @@
 package net.glowstone.util;
 
+import com.google.common.base.Preconditions;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
@@ -25,6 +26,27 @@ public class InventoryUtil {
     public static final ItemStack[] NO_ITEMS = new ItemStack[0];
     public static final Collection<ItemStack> NO_ITEMS_COLLECTION = Collections.emptyList();
     public static final ImmutableItemStack EMPTY_STACK = new ImmutableItemStack(Material.AIR, 0);
+
+    /**
+     * Defaults stack size to 1, with no extra data.
+     *
+     * @param type item material
+     */
+    public static ItemStack createItem(@NotNull final Material type) {
+        Preconditions.checkArgument(type.isItem());
+        return new ItemStack(type);
+    }
+
+    /**
+     * An item stack with no extra data.
+     *
+     * @param type item material
+     * @param amount stack size
+     */
+    public static ItemStack createItem(@NotNull final Material type, final int amount){
+        Preconditions.checkArgument(type.isItem());
+        return new ItemStack(type, amount);
+    }
 
     /**
      * Checks whether the given ItemStack is empty.

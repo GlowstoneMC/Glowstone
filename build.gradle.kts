@@ -40,7 +40,7 @@ dependencies {
     }
     implementation(libs.maven.artifact)
 
-    runtimeOnly(libs.slf4j.jdk14)
+    runtimeOnly("com.lmax:disruptor:3.4.4")
 
     testImplementation(libs.bundles.junit)
     testImplementation(kotlin("test"))
@@ -185,6 +185,9 @@ tasks.jar {
                 "Specification-Version" to libs.versions.api.get(),
                 "Specification-Vendor" to "Bukkit Team"
         )
+        for (tld in setOf("net", "com", "org")) {
+            attributes("$tld/bukkit", "Sealed" to true)
+        }
     }
 }
 

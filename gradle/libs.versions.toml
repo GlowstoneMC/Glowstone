@@ -14,7 +14,6 @@ gluegen = "2.3.2"
 jocl = "2.3.2"
 naether = "0.15.8"
 maven-artifact = "3.8.1"
-slf4j = "1.7.25"
 junit-core = "4.13.1"
 junit-ext = "5.7.2"
 hamcrest = "2.2"
@@ -34,7 +33,6 @@ jocl = { module = "org.jogamp.jocl:jocl-main", version.ref = "jocl" }
 
 naether = { module = "com.tobedevoured.naether:core", version.ref = "naether" }
 maven-artifact = { module = "org.apache.maven:maven-artifact", version.ref = "maven-artifact" }
-slf4j-jdk14 = { module = "org.slf4j:slf4j-jdk14", version.ref = "slf4j" }
 jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
 jline = { module = "jline:jline", version.ref = "jline" }
 fastutil = { module = "co.aikar:fastutil-lite", version.ref = "fastutil" }
