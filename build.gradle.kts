@@ -1,7 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import java.io.ByteArrayOutputStream
-import java.util.*
 
 plugins {
     java
@@ -62,11 +61,9 @@ publishing {
         val mavenPublishUrl = "https://repo.glowstone.net/content/repositories/"
         val isSnapshot = version.toString().endsWith("-SNAPSHOT")
         maven {
+            name = "glowstone"
             url = uri(mavenPublishUrl + if (isSnapshot) "snapshots/" else "releases/")
-            credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
-            }
+            credentials(PasswordCredentials::class)
         }
     }
     publications {

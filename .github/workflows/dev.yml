@@ -40,14 +40,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: Build
-      run: BUILD_EXTRAS=true ./gradlew assemble --no-daemon --stacktrace
-
-    - name: Publish to Maven
-      run: BUILD_EXTRAS=true ./gradlew publish --no-daemon --stacktrace
+    - name: Gradle Build and Deploy
+      run: BUILD_EXTRAS=true ./gradlew assemble publish --no-daemon --stacktrace
       env:
-        MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
-        MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+        ORG_GRADLE_PROJECT_glowstoneUsername: ${{ secrets.MAVEN_USERNAME }}
+        ORG_GRADLE_PROJECT_glowstonePassword: ${{ secrets.MAVEN_PASSWORD }}
 
     - name: Get Minecraft version
       id: version
