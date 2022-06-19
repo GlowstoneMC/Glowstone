@@ -21,19 +21,25 @@ public final class SpawnObjectMessage implements Message {
     private final double z;
     private final int pitch;
     private final int yaw;
+    private final int headYaw;
     private final int data;
     private final int velX;
     private final int velY;
     private final int velZ;
 
     public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
-                              int yaw) {
-        this(id, uuid, type, x, y, z, pitch, yaw, 0, 0, 0, 0);
+                              int yaw, int headYaw) {
+        this(id, uuid, type, x, y, z, pitch, yaw, headYaw, 0, 0, 0, 0);
     }
 
     public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
-                              int yaw, int data) {
-        this(id, uuid, type, x, y, z, pitch, yaw, data, 0, 0, 0);
+                              int yaw) {
+        this(id, uuid, type, x, y, z, pitch, yaw, yaw, 0, 0, 0, 0);
+    }
+
+    public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
+                              int yaw, int data, int headYaw) {
+        this(id, uuid, type, x, y, z, pitch, yaw, headYaw, data, 0, 0, 0);
     }
 
     /**
@@ -64,7 +70,13 @@ public final class SpawnObjectMessage implements Message {
 
     public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
                               int yaw, int data, Vector vector) {
-        this(id, uuid, type, x, y, z, pitch, yaw, data,
+        this(id, uuid, type, x, y, z, pitch, yaw, yaw, data,
+            convert(vector.getX()), convert(vector.getY()), convert(vector.getZ()));
+    }
+
+    public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
+                              int yaw, int headYaw, int data, Vector vector) {
+        this(id, uuid, type, x, y, z, pitch, yaw, headYaw, data,
             convert(vector.getX()), convert(vector.getY()), convert(vector.getZ()));
     }
 

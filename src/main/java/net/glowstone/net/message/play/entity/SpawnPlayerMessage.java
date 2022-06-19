@@ -17,6 +17,5 @@ public final class SpawnPlayerMessage implements Message {
     private final double z;
     private final int rotation;
     private final int pitch;
-    private final List<Entry> metadata;
 
 }

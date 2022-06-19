@@ -277,7 +277,7 @@ public class GlowServer implements Server {
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = NoInline.of(754);
+    public static final int PROTOCOL_VERSION = NoInline.of(759);
     /**
      * The data version supported by the server.
      */
