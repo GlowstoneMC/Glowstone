@@ -43,7 +43,7 @@ public class GlowMetaShield extends GlowMetaBanner {
     }
 
     @Override
-    public @NotNull ItemMeta clone() {
+    public @NotNull GlowMetaShield clone() {
         return new GlowMetaShield(this);
     }
 

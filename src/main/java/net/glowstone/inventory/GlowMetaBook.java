@@ -66,7 +66,7 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     }
 
     @Override
-    public @NotNull BookMeta clone() {
+    public @NotNull GlowMetaBook clone() {
         return new GlowMetaBook(this);
     }
 

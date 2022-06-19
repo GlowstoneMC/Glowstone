@@ -1,6 +1,6 @@
 [versions]
 api = "1.19-R0.1-SNAPSHOT"
-redstone-transformer = "1.0.0-SNAPSHOT"
+redstone-transformer = "1.1.0-SNAPSHOT"
 linkstone = "1.0.0-SNAPSHOT"
 
 checkstyle = "8.44"
@@ -14,6 +14,7 @@ gluegen = "2.3.2"
 jocl = "2.3.2"
 naether = "0.15.8"
 maven-artifact = "3.8.1"
+log4j = "2.17.1"
 junit-core = "4.13.1"
 junit-ext = "5.7.2"
 hamcrest = "2.2"
@@ -33,6 +34,7 @@ jocl = { module = "org.jogamp.jocl:jocl-main", version.ref = "jocl" }
 
 naether = { module = "com.tobedevoured.naether:core", version.ref = "naether" }
 maven-artifact = { module = "org.apache.maven:maven-artifact", version.ref = "maven-artifact" }
+log4j = { module = "org.apache.logging.log4j:log4j-slf4j18-impl", version.ref = "log4j" }
 jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
 jline = { module = "jline:jline", version.ref = "jline" }
 fastutil = { module = "co.aikar:fastutil-lite", version.ref = "fastutil" }

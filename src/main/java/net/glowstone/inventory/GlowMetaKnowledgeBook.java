@@ -55,7 +55,7 @@ public class GlowMetaKnowledgeBook extends GlowMetaItem implements KnowledgeBook
     }
 
     @Override
-    public @NotNull KnowledgeBookMeta clone() {
+    public @NotNull GlowMetaKnowledgeBook clone() {
         return new GlowMetaKnowledgeBook(this);
     }
 }

@@ -80,7 +80,7 @@ public class GlowMetaLeatherArmor extends GlowMetaItem implements LeatherArmorMe
     }
 
     @Override
-    public @NotNull LeatherArmorMeta clone() {
+    public @NotNull GlowMetaLeatherArmor clone() {
         return new GlowMetaLeatherArmor(this);
     }
 

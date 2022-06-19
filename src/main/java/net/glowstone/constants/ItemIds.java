@@ -2,6 +2,7 @@ package net.glowstone.constants;
 
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NonNls;
@@ -513,7 +514,7 @@ public final class ItemIds {
      */
     public static String getName(Material type) {
         checkNotNull(type, "Material cannot be null"); // NON-NLS
-        return type.name().toLowerCase(Locale.ENGLISH);
+        return NamespacedKey.minecraft(type.name().toLowerCase(Locale.ENGLISH)).toString();
     }
 
     /**

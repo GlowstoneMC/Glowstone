@@ -70,7 +70,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     }
 
     @Override
-    public @NotNull SkullMeta clone() {
+    public @NotNull GlowMetaSkull clone() {
         return new GlowMetaSkull(this);
     }
 

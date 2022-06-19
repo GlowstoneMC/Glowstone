@@ -37,13 +37,13 @@ public final class GlowPotionEffect extends PotionEffectType {
 
     static {
         VANILLA_IDS.addAll(
-            Arrays.stream(Impl.values()).map(Impl::getVanillaId).collect(Collectors.toSet()));
+            Arrays.stream(Impl.values()).map(Impl::getVanillaId).map(NamespacedKey::toString).collect(Collectors.toSet()));
     }
 
     private final Impl impl;
 
     private GlowPotionEffect(Impl impl) {
-        super(impl.id, NamespacedKey.minecraft(impl.getVanillaId()));
+        super(impl.id, impl.getVanillaId());
         this.impl = impl;
     }
 
@@ -54,7 +54,7 @@ public final class GlowPotionEffect extends PotionEffectType {
         Potion.setPotionBrewer(new Brewer());
         for (Impl impl : Impl.values()) {
             GlowPotionEffect effect = new GlowPotionEffect(impl);
-            BY_VANILLA_ID.put(impl.getVanillaId(), effect);
+            BY_VANILLA_ID.put(impl.getVanillaId().toString(), effect);
             registerPotionEffectType(effect);
         }
         stopAcceptingRegistrations();
@@ -131,7 +131,7 @@ public final class GlowPotionEffect extends PotionEffectType {
      *
      * @return The vanilla id.
      */
-    public String getVanillaId() {
+    public NamespacedKey getVanillaId() {
         return impl.getVanillaId();
     }
 
@@ -189,40 +189,40 @@ public final class GlowPotionEffect extends PotionEffectType {
 
     @RequiredArgsConstructor
     private enum Impl {
-        SPEED(1, false, 1.0, Color.fromBGR(8171462), "minecraft:speed"),
-        SLOW(2, false, 0.5, Color.fromBGR(5926017), "minecraft:slowness"),
-        FAST_DIGGING(3, false, 1.5, Color.fromBGR(14270531), "minecraft:haste"),
-        SLOW_DIGGING(4, false, 0.5, Color.fromBGR(4866583), "minecraft:mining_fatigue"),
-        INCREASE_DAMAGE(5, false, 1.0, Color.fromBGR(9643043), "minecraft:strength"),
-        HEAL(6, true, 1.0, Color.fromBGR(16262179), "minecraft:instant_heal"),
-        HARM(7, true, 0.5, Color.fromBGR(4393481), "minecraft:instant_damage"),
-        JUMP(8, false, 1.0, Color.fromBGR(2293580), "minecraft:jump_boost"),
-        CONFUSION(9, false, 0.25, Color.fromBGR(5578058), "minecraft:nausea"),
-        REGENERATION(10, false, 0.25, Color.fromBGR(13458603), "minecraft:regeneration"),
-        DAMAGE_RESISTANCE(11, false, 1.0, Color.fromBGR(10044730), "minecraft:resistance"),
-        FIRE_RESISTANCE(12, false, 1.0, Color.fromBGR(14981690), "minecraft:fire_resistance"),
-        WATER_BREATHING(13, false, 1.0, Color.fromBGR(3035801), "minecraft:water_breathing"),
-        INVISIBILITY(14, false, 1.0, Color.fromBGR(8356754), "minecraft:invisibility"),
-        BLINDNESS(15, false, 0.25, Color.fromBGR(2039587), "minecraft:blindness"),
-        NIGHT_VISION(16, false, 1.0, Color.fromBGR(2039713), "minecraft:night_vision"),
-        HUNGER(17, false, 0.5, Color.fromBGR(5797459), "minecraft:hunger"),
-        WEAKNESS(18, false, 0.5, Color.fromBGR(4738376), "minecraft:weakness"),
-        POISON(19, false, 0.25, Color.fromBGR(5149489), "minecraft:poison"),
-        WITHER(20, false, 0.25, Color.fromBGR(3484199), "minecraft:wither"),
-        HEALTH_BOOST(21, false, 1.0, Color.fromBGR(16284963), "minecraft:health_boost"),
-        ABSORPTION(22, false, 1.0, Color.fromBGR(2445989), "minecraft:absorption"),
-        SATURATION(23, true, 1.0, Color.fromBGR(16262179), "minecraft:saturation"),
-        GLOWING(24, false, 1.0, Color.fromBGR(9740385), "minecraft:glowing"),
-        LEVITATION(25, false, 1.0, Color.fromBGR(13565951), "minecraft:levitation"),
-        LUCK(26, false, 1.0, Color.fromBGR(3381504), "minecraft:luck"),
-        UNLUCK(27, false, 1.0, Color.fromBGR(12624973), "minecraft:unluck");
+        SPEED(1, false, 1.0, Color.fromBGR(8171462), NamespacedKey.minecraft("speed")),
+        SLOW(2, false, 0.5, Color.fromBGR(5926017), NamespacedKey.minecraft("slowness")),
+        FAST_DIGGING(3, false, 1.5, Color.fromBGR(14270531), NamespacedKey.minecraft("haste")),
+        SLOW_DIGGING(4, false, 0.5, Color.fromBGR(4866583), NamespacedKey.minecraft("mining_fatigue")),
+        INCREASE_DAMAGE(5, false, 1.0, Color.fromBGR(9643043), NamespacedKey.minecraft("strength")),
+        HEAL(6, true, 1.0, Color.fromBGR(16262179), NamespacedKey.minecraft("instant_heal")),
+        HARM(7, true, 0.5, Color.fromBGR(4393481), NamespacedKey.minecraft("instant_damage")),
+        JUMP(8, false, 1.0, Color.fromBGR(2293580), NamespacedKey.minecraft("jump_boost")),
+        CONFUSION(9, false, 0.25, Color.fromBGR(5578058), NamespacedKey.minecraft("nausea")),
+        REGENERATION(10, false, 0.25, Color.fromBGR(13458603), NamespacedKey.minecraft("regeneration")),
+        DAMAGE_RESISTANCE(11, false, 1.0, Color.fromBGR(10044730), NamespacedKey.minecraft("resistance")),
+        FIRE_RESISTANCE(12, false, 1.0, Color.fromBGR(14981690), NamespacedKey.minecraft("fire_resistance")),
+        WATER_BREATHING(13, false, 1.0, Color.fromBGR(3035801), NamespacedKey.minecraft("water_breathing")),
+        INVISIBILITY(14, false, 1.0, Color.fromBGR(8356754), NamespacedKey.minecraft("invisibility")),
+        BLINDNESS(15, false, 0.25, Color.fromBGR(2039587), NamespacedKey.minecraft("blindness")),
+        NIGHT_VISION(16, false, 1.0, Color.fromBGR(2039713), NamespacedKey.minecraft("night_vision")),
+        HUNGER(17, false, 0.5, Color.fromBGR(5797459), NamespacedKey.minecraft("hunger")),
+        WEAKNESS(18, false, 0.5, Color.fromBGR(4738376), NamespacedKey.minecraft("weakness")),
+        POISON(19, false, 0.25, Color.fromBGR(5149489), NamespacedKey.minecraft("poison")),
+        WITHER(20, false, 0.25, Color.fromBGR(3484199), NamespacedKey.minecraft("wither")),
+        HEALTH_BOOST(21, false, 1.0, Color.fromBGR(16284963), NamespacedKey.minecraft("health_boost")),
+        ABSORPTION(22, false, 1.0, Color.fromBGR(2445989), NamespacedKey.minecraft("absorption")),
+        SATURATION(23, true, 1.0, Color.fromBGR(16262179), NamespacedKey.minecraft("saturation")),
+        GLOWING(24, false, 1.0, Color.fromBGR(9740385), NamespacedKey.minecraft("glowing")),
+        LEVITATION(25, false, 1.0, Color.fromBGR(13565951), NamespacedKey.minecraft("levitation")),
+        LUCK(26, false, 1.0, Color.fromBGR(3381504), NamespacedKey.minecraft("luck")),
+        UNLUCK(27, false, 1.0, Color.fromBGR(12624973), NamespacedKey.minecraft("unluck"));
 
         private final int id;
         private final boolean instant;
         private final double modifier;
         private final Color color;
         @Getter
-        private final String vanillaId;
+        private final NamespacedKey vanillaId;
 
         protected void pulse(LivingEntity entity, int amplifier, int ticks) {
             // TODO implement potion pulse

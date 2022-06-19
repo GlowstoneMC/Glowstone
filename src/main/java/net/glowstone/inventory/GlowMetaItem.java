@@ -15,10 +15,14 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.meta.BlockDataMeta;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +43,7 @@ import java.util.stream.Collectors;
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
  */
-public class GlowMetaItem implements ItemMeta {
+public class GlowMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
 
     private final SetMultimap<Attribute, AttributeModifier> attributeModifiers = HashMultimap.create();
     private final Set<Namespaced> placeableKeys = new HashSet<>();
@@ -421,7 +425,37 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     @Override
-    public @NotNull ItemMeta clone() {
+    public boolean hasDamage() {
+        return false;
+    }
+
+    @Override
+    public int getDamage() {
+        return 0;
+    }
+
+    @Override
+    public void setDamage(int damage) {
+
+    }
+
+    @Override
+    public boolean hasRepairCost() {
+        return false;
+    }
+
+    @Override
+    public int getRepairCost() {
+        return 0;
+    }
+
+    @Override
+    public void setRepairCost(int cost) {
+
+    }
+
+    @Override
+    public @NotNull GlowMetaItem clone() {
         return new GlowMetaItem(this);
     }
 
@@ -529,5 +563,20 @@ public class GlowMetaItem implements ItemMeta {
     @Override
     public @NotNull PersistentDataContainer getPersistentDataContainer() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean hasBlockData() {
+        return false;
+    }
+
+    @Override
+    public @NotNull BlockData getBlockData(@NotNull Material material) {
+        return null;
+    }
+
+    @Override
+    public void setBlockData(@NotNull BlockData blockData) {
+
     }
 }

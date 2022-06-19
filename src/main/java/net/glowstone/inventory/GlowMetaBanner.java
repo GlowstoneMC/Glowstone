@@ -101,7 +101,7 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
     }
 
     @Override
-    public @NotNull ItemMeta clone() {
+    public @NotNull GlowMetaBanner clone() {
         return new GlowMetaBanner(this);
     }
 

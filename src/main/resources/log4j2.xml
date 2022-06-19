@@ -2,14 +2,7 @@
 <Configuration status="WARN" shutdownHook="disable">
     <Appenders>
         <RollingRandomAccessFile name="File" fileName="logs/server.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
-            <PatternLayout>
-                <LoggerNamePatternSelector defaultPattern="[%d{HH:mm:ss}] [%t/%level]: [%logger] {%msg}%n%xEx{full}">
-                    <!-- Log root without prefix -->
-                    <!-- Disable prefix for various plugins that bypass the plugin logger -->
-                    <PatternMatch key=",com.sk89q.,ru.tehkode.,Minecraft.AWE"
-                                  pattern="[%d{HH:mm:ss}] [%t/%level]: {%msg}%n%xEx{full}" />
-                </LoggerNamePatternSelector>
-            </PatternLayout>
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: {%msg}%n%xEx{full}" />
             <Policies>
                 <TimeBasedTriggeringPolicy />
                 <OnStartupTriggeringPolicy />
@@ -17,14 +10,7 @@
             <DefaultRolloverStrategy max="1000"/>
         </RollingRandomAccessFile>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout>
-                <LoggerNamePatternSelector defaultPattern="%highlightError{[%d{HH:mm:ss} %level]: [%logger] {%msg}%n%xEx{full}}">
-                    <!-- Log root without prefix -->
-                    <!-- Disable prefix for various plugins that bypass the plugin logger -->
-                    <PatternMatch key=",,com.sk89q.,ru.tehkode.,Minecraft.AWE"
-                                  pattern="%highlightError{[%d{HH:mm:ss} %level]: {%msg}%n%xEx{full}}" />
-                </LoggerNamePatternSelector>
-            </PatternLayout>
+            <PatternLayout pattern="{[%d{HH:mm:ss} %level]: [%logger] {%msg}%n%xEx{full}}" />
         </Console>
         <Async name="Async">
             <AppenderRef ref="File"/>

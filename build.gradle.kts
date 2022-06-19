@@ -40,6 +40,7 @@ dependencies {
     }
     implementation(libs.maven.artifact)
 
+    runtimeOnly(libs.log4j)
     runtimeOnly("com.lmax:disruptor:3.4.4")
 
     testImplementation(libs.bundles.junit)
@@ -159,6 +160,15 @@ fun getGitHash(): String {
     return stdout.toString().trim()
 }
 
+fun getGitBranch(): String {
+    val stdout = ByteArrayOutputStream()
+    exec {
+        commandLine = listOf("git", "rev-parse", "--abbrev-ref", "HEAD")
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
 fun getGitDate(gitHash: String): String {
     val stdout = ByteArrayOutputStream()
     exec {
@@ -172,6 +182,7 @@ tasks.jar {
     enabled = false
     manifest {
         val gitHash = getGitHash()
+        val gitBranch = getGitBranch()
         val date = getGitDate(gitHash)
         attributes(
                 "Launcher-Agent-Class" to "net.glowstone.util.ClassPathAgent",
@@ -183,7 +194,10 @@ tasks.jar {
 
                 "Specification-Title" to "Bukkit",
                 "Specification-Version" to libs.versions.api.get(),
-                "Specification-Vendor" to "Bukkit Team"
+                "Specification-Vendor" to "Bukkit Team",
+
+                "Git-Branch" to gitBranch,
+                "Git-Commit" to gitHash,
         )
         for (tld in setOf("net", "com", "org")) {
             attributes("$tld/bukkit", "Sealed" to true)
