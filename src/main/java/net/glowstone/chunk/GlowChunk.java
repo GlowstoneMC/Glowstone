@@ -36,14 +36,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -1002,7 +995,7 @@ public class GlowChunk implements Chunk {
             blockEntities.add(tag);
         }
 
-        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, blockEntities);
+        return new ChunkDataMessage(x, z, new CompoundTag(), buf, blockEntities, true, new BitSet(), new BitSet(), new BitSet(), new BitSet(), new ArrayList<>(), new ArrayList<>());
     }
 
     public void addTick() {

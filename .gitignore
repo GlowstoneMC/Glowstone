@@ -22,3 +22,4 @@ dependency-reduced-pom.xml
 .db
 .DS_Store
 .vscode
+server

@@ -173,77 +173,78 @@ public class PlayProtocol extends GlowProtocol {
      * Creates the instance for the game's main network protocol.
      */
     public PlayProtocol() {
-        super("PLAY", 0x5B);
+        super("PLAY", 0x68);
 
         inbound(0x00, TeleportConfirmMessage.class, TeleportConfirmCodec.class,
             TeleportConfirmHandler.class);
         // TODO 0x01 : Query Block NBT
         // Note: 0x02 (Set Difficulty) is unused in multiplayer
-        inbound(0x03, IncomingChatMessage.class, IncomingChatCodec.class,
+        // TODO 0x03 Chat Command
+        inbound(0x04, IncomingChatMessage.class, IncomingChatCodec.class,
             IncomingChatHandler.class);
-        inbound(0x04, ClientStatusMessage.class, ClientStatusCodec.class,
+        // TODO 0x05 Chat Preview
+        inbound(0x06, ClientStatusMessage.class, ClientStatusCodec.class,
             ClientStatusHandler.class);
-        inbound(0x05, ClientSettingsMessage.class, ClientSettingsCodec.class,
+        inbound(0x07, ClientSettingsMessage.class, ClientSettingsCodec.class,
             ClientSettingsHandler.class);
-        inbound(0x06, TabCompleteMessage.class, TabCompleteCodec.class, TabCompleteHandler.class);
-        inbound(0x07, TransactionMessage.class, TransactionCodec.class, TransactionHandler.class);
-        inbound(0x08, ClickWindowButtonMessage.class, ClickWindowButtonCodec.class,
+        inbound(0x08, TabCompleteMessage.class, TabCompleteCodec.class, TabCompleteHandler.class);
+        inbound(0x09, ClickWindowButtonMessage.class, ClickWindowButtonCodec.class,
             ClickWindowButtonHandler.class);
-        inbound(0x09, WindowClickMessage.class, WindowClickCodec.class, WindowClickHandler.class);
-        inbound(0x0A, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);
-        inbound(0x0B, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
-        inbound(0x0C, EditBookMessage.class, EditBookCodec.class, EditBookHandler.class);
-        // TODO 0x0D : Query Entity NBT
-        inbound(0x0E, InteractEntityMessage.class, InteractEntityCodec.class,
+        inbound(0x0A, WindowClickMessage.class, WindowClickCodec.class, WindowClickHandler.class);
+        inbound(0x0B, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);
+        inbound(0x0C, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
+        inbound(0x0D, EditBookMessage.class, EditBookCodec.class, EditBookHandler.class);
+        // TODO 0x0E : Query Entity NBT
+        inbound(0x0F, InteractEntityMessage.class, InteractEntityCodec.class,
             InteractEntityHandler.class);
-        // TODO 0x0F : Generate Structure (Jigsaw Block stuff: https://wiki.vg/Protocol#Generate_Structure)
-        inbound(0x10, PingMessage.class, PingCodec.class, PingHandler.class);
-        // Note: 0x11 (Lock Difficulty) is unused in multiplayer
-        inbound(0x12, PlayerPositionMessage.class, PlayerPositionCodec.class,
+        // TODO 0x10 : Generate Structure (Jigsaw Block stuff: https://wiki.vg/Protocol#Generate_Structure)
+        inbound(0x11, PingMessage.class, PingCodec.class, PingHandler.class);
+        // Note: 0x12 (Lock Difficulty) is unused in multiplayer
+        inbound(0x13, PlayerPositionMessage.class, PlayerPositionCodec.class,
             PlayerUpdateHandler.class);
-        inbound(0x13, PlayerPositionLookMessage.class, PlayerPositionLookCodec.class,
+        inbound(0x14, PlayerPositionLookMessage.class, PlayerPositionLookCodec.class,
             PlayerUpdateHandler.class);
-        inbound(0x14, PlayerLookMessage.class, PlayerLookCodec.class, PlayerUpdateHandler.class);
-        inbound(0x15, PlayerUpdateMessage.class, PlayerUpdateCodec.class,
+        inbound(0x15, PlayerLookMessage.class, PlayerLookCodec.class, PlayerUpdateHandler.class);
+        inbound(0x16, PlayerUpdateMessage.class, PlayerUpdateCodec.class,
             PlayerUpdateHandler.class);
-        inbound(0x16, VehicleMoveMessage.class, VehicleMoveCodec.class, VehicleMoveHandler.class);
-        inbound(0x17, SteerBoatMessage.class, SteerBoatCodec.class, SteerBoatHandler.class);
-        // TODO 0x18 : Pick Item (see https://wiki.vg/Protocol#Pick_Item)
-        inbound(0x19, CraftRecipeRequestMessage.class, CraftRecipeRequestCodec.class,
+        inbound(0x17, VehicleMoveMessage.class, VehicleMoveCodec.class, VehicleMoveHandler.class);
+        inbound(0x18, SteerBoatMessage.class, SteerBoatCodec.class, SteerBoatHandler.class);
+        // TODO 0x19 : Pick Item (see https://wiki.vg/Protocol#Pick_Item)
+        inbound(0x1A, CraftRecipeRequestMessage.class, CraftRecipeRequestCodec.class,
             CraftRecipeRequestHandler.class);
-        inbound(0x1A, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class,
+        inbound(0x1B, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class,
             PlayerAbilitiesHandler.class);
-        inbound(0x1B, DiggingMessage.class, DiggingCodec.class, DiggingHandler.class);
-        inbound(0x1C, PlayerActionMessage.class, PlayerActionCodec.class,
+        inbound(0x1C, DiggingMessage.class, DiggingCodec.class, DiggingHandler.class);
+        inbound(0x1D, PlayerActionMessage.class, PlayerActionCodec.class,
             PlayerActionHandler.class);
-        inbound(0x1D, SteerVehicleMessage.class, SteerVehicleCodec.class,
+        inbound(0x1E, SteerVehicleMessage.class, SteerVehicleCodec.class,
             SteerVehicleHandler.class);
-        inbound(0x1E, DisplayedRecipeMessage.class, DisplayedRecipeCodec.class,
-            DisplayedRecipeHandler.class);
-        inbound(0x1F, RecipeBookStateMessage.class, RecipeBookStateCodec.class,
+        // TODO 0x1F : Pong
+        inbound(0x20, RecipeBookStateMessage.class, RecipeBookStateCodec.class,
             RecipeBookStateHandler.class);
-        inbound(0x20, NameItemMessage.class, NameItemCodec.class, NameItemHandler.class);
-        inbound(0x21, ResourcePackStatusMessage.class, ResourcePackStatusCodec.class,
+        inbound(0x21, DisplayedRecipeMessage.class, DisplayedRecipeCodec.class, DisplayedRecipeHandler.class);
+        inbound(0x22, NameItemMessage.class, NameItemCodec.class, NameItemHandler.class);
+        inbound(0x23, ResourcePackStatusMessage.class, ResourcePackStatusCodec.class,
             ResourcePackStatusHandler.class);
-        inbound(0x22, AdvancementTabMessage.class, AdvancementTabCodec.class,
+        inbound(0x24, AdvancementTabMessage.class, AdvancementTabCodec.class,
             AdvancementTabHandler.class);
-        // TODO 0x23 : Select Trade (when a player selects a specific trade in a villager GUI)
-        inbound(0x24, BeaconEffectMessage.class, BeaconEffectCodec.class,
+        // TODO 0x25 : Select Trade (when a player selects a specific trade in a villager GUI)
+        inbound(0x26, BeaconEffectMessage.class, BeaconEffectCodec.class,
             BeaconEffectHandler.class);
-        inbound(0x25, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
-        // TODO 0x26 : Update Command Block
-        // TODO 0x27 : Update Command Block Minecart
-        inbound(0x28, CreativeItemMessage.class, CreativeItemCodec.class,
+        inbound(0x27, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
+        // TODO 0x28 : Update Command Block
+        // TODO 0x29 : Update Command Block Minecart
+        inbound(0x2A, CreativeItemMessage.class, CreativeItemCodec.class,
             CreativeItemHandler.class);
-        // TODO 0x29 : Update Jigsaw Block
-        // TODO 0x2A : Update Structure Block (difference with 0x29)
-        inbound(0x2B, UpdateSignMessage.class, UpdateSignCodec.class, UpdateSignHandler.class);
-        inbound(0x2C, PlayerSwingArmMessage.class, PlayerSwingArmCodec.class,
+        // TODO 0x2B : Update Jigsaw Block
+        // TODO 0x2C : Update Structure Block (difference with 0x29)
+        inbound(0x2D, UpdateSignMessage.class, UpdateSignCodec.class, UpdateSignHandler.class);
+        inbound(0x2E, PlayerSwingArmMessage.class, PlayerSwingArmCodec.class,
             PlayerSwingArmHandler.class);
-        inbound(0x2D, SpectateMessage.class, SpectateCodec.class, SpectateHandler.class);
-        inbound(0x2E, BlockPlacementMessage.class, BlockPlacementCodec.class,
+        inbound(0x2F, SpectateMessage.class, SpectateCodec.class, SpectateHandler.class);
+        inbound(0x30, BlockPlacementMessage.class, BlockPlacementCodec.class,
             BlockPlacementHandler.class);
-        inbound(0x2F, UseItemMessage.class, UseItemCodec.class, UseItemHandler.class);
+        inbound(0x31, UseItemMessage.class, UseItemCodec.class, UseItemHandler.class);
 
         outbound(0x00, SpawnObjectMessage.class, SpawnObjectCodec.class);
         outbound(0x01, SpawnXpOrbMessage.class, SpawnXpOrbCodec.class);
@@ -257,86 +258,99 @@ public class PlayProtocol extends GlowProtocol {
         outbound(0x09, BlockChangeMessage.class, BlockChangeCodec.class);
         outbound(0x0A, BossBarMessage.class, BossBarCodec.class);
         outbound(0x0B, ServerDifficultyMessage.class, ServerDifficultyCodec.class);
-
-        outbound(0x0C, BossBarMessage.class, BossBarCodec.class);
-        outbound(0x0D, ServerDifficultyMessage.class, ServerDifficultyCodec.class);
-        outbound(0x0E, ChatMessage.class, ChatCodec.class);
-        outbound(0x0F, TabCompleteResponseMessage.class, TabCompleteResponseCodec.class);
-        outbound(0x10, DeclareCommandsMessage.class, DeclareCommandsCodec.class);
-        outbound(0x11, TransactionMessage.class, TransactionCodec.class);
-        outbound(0x12, CloseWindowMessage.class, CloseWindowCodec.class);
-        outbound(0x13, SetWindowContentsMessage.class, SetWindowContentsCodec.class);
-        outbound(0x14, WindowPropertyMessage.class, WindowPropertyCodec.class);
-        outbound(0x15, SetWindowSlotMessage.class, SetWindowSlotCodec.class);
-        outbound(0x16, SetCooldownMessage.class, SetCooldownCodec.class);
-        outbound(0x17, PluginMessage.class, PluginMessageCodec.class);
-        outbound(0x18, NamedSoundEffectMessage.class, NamedSoundEffectCodec.class);
-        outbound(0x19, KickMessage.class, KickCodec.class);
-        outbound(0x1A, EntityStatusMessage.class, EntityStatusCodec.class);
-        outbound(0x1B, ExplosionMessage.class, ExplosionCodec.class);
-        outbound(0x1C, UnloadChunkMessage.class, UnloadChunkCodec.class);
-        outbound(0x1D, StateChangeMessage.class, StateChangeCodec.class);
-        // TODO 0x1E : Open Horse Window (opens the horse window, all other inventories use 0x2D)
-        outbound(0x1F, PingMessage.class, PingCodec.class);
-        outbound(0x20, ChunkDataMessage.class, ChunkDataCodec.class);
-        outbound(0x21, PlayEffectMessage.class, PlayEffectCodec.class);
-        outbound(0x22, PlayParticleMessage.class, PlayParticleCodec.class);
-        // TODO 0x23 : Update Light (updates light levels in a chunk)
-        outbound(0x24, JoinGameMessage.class, JoinGameCodec.class);
-        outbound(0x25, MapDataMessage.class, MapDataCodec.class);
-        // TODO 0x26 : Trade List (the list of trades a villager is offering)
-        outbound(0x27, RelativeEntityPositionMessage.class, RelativeEntityPositionCodec.class);
-        outbound(0x28, RelativeEntityPositionRotationMessage.class,
+        // TODO 0x0C : Chat preview
+        // TODO 0x0D : Clear Titles
+        outbound(0x0E, TabCompleteResponseMessage.class, TabCompleteResponseCodec.class);
+        outbound(0x0F, DeclareCommandsMessage.class, DeclareCommandsCodec.class);
+        outbound(0x10, CloseWindowMessage.class, CloseWindowCodec.class);
+        outbound(0x11, SetWindowContentsMessage.class, SetWindowContentsCodec.class);
+        outbound(0x12, WindowPropertyMessage.class, WindowPropertyCodec.class);
+        outbound(0x13, SetWindowSlotMessage.class, SetWindowSlotCodec.class);
+        outbound(0x14, SetCooldownMessage.class, SetCooldownCodec.class);
+        outbound(0x15, PluginMessage.class, PluginMessageCodec.class);
+        outbound(0x16, NamedSoundEffectMessage.class, NamedSoundEffectCodec.class);
+        outbound(0x17, KickMessage.class, KickCodec.class);
+        outbound(0x18, EntityStatusMessage.class, EntityStatusCodec.class);
+        outbound(0x19, ExplosionMessage.class, ExplosionCodec.class);
+        outbound(0x1A, UnloadChunkMessage.class, UnloadChunkCodec.class);
+        outbound(0x1B, StateChangeMessage.class, StateChangeCodec.class);
+        // TODO 0x1C : Open Horse Window (opens the horse window, all other inventories use 0x2D)
+        // TODO 0x1D : Initialize World Border
+        outbound(0x1E, PingMessage.class, PingCodec.class);
+        outbound(0x1F, ChunkDataMessage.class, ChunkDataCodec.class);
+        outbound(0x20, PlayEffectMessage.class, PlayEffectCodec.class);
+        outbound(0x21, PlayParticleMessage.class, PlayParticleCodec.class);
+        outbound(0x22, ChunkLightDataMessage.class, ChunkLightDataCodec.class);
+        outbound(0x23, JoinGameMessage.class, JoinGameCodec.class);
+        outbound(0x24, MapDataMessage.class, MapDataCodec.class);
+        // TODO 0x25 : Trade List (the list of trades a villager is offering)
+        outbound(0x26, RelativeEntityPositionMessage.class, RelativeEntityPositionCodec.class);
+        outbound(0x27, RelativeEntityPositionRotationMessage.class,
             RelativeEntityPositionRotationCodec.class);
-        outbound(0x29, EntityRotationMessage.class, EntityRotationCodec.class);
-        // TODO 0x2A : Entity Movement / Idle (see https://wiki.vg/Protocol#Entity_Movement)
-        outbound(0x2B, VehicleMoveMessage.class, VehicleMoveCodec.class);
-        // TODO 0x2C : Open Book (this replaces the old plugin channel. tells the client to open the book they have in hand)
-        outbound(0x2D, OpenWindowMessage.class, OpenWindowCodec.class);
-        outbound(0x2E, SignEditorMessage.class, SignEditorCodec.class);
-        outbound(0x2F, CraftRecipeResponseMessage.class, CraftRecipeResponseCodec.class);
-        outbound(0x30, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class);
-        outbound(0x31, CombatEventMessage.class, CombatEventCodec.class);
-        outbound(0x32, UserListItemMessage.class, UserListItemCodec.class);
-        // TODO 0x33 : Face Player (rotates the client to face a location or entity)
-        outbound(0x34, PositionRotationMessage.class, PositionRotationCodec.class);
-        outbound(0x35, UnlockRecipesMessage.class, UnlockRecipesCodec.class);
-        outbound(0x36, DestroyEntitiesMessage.class, DestroyEntitiesCodec.class);
-        outbound(0x37, EntityRemoveEffectMessage.class, EntityRemoveEffectCodec.class);
-        outbound(0x38, ResourcePackSendMessage.class, ResourcePackSendCodec.class);
-        outbound(0x39, RespawnMessage.class, RespawnCodec.class);
-        outbound(0x3A, EntityHeadRotationMessage.class, EntityHeadRotationCodec.class);
-        outbound(0x3B, MultiBlockChangeMessage.class, MultiBlockChangeCodec.class);
-        // TODO 0x3C : Select Advancement Tab (tells the client to switch tabs)
-        outbound(0x3D, WorldBorderMessage.class, WorldBorderCodec.class);
-        outbound(0x3E, CameraMessage.class, CameraCodec.class);
-        outbound(0x3F, HeldItemMessage.class, HeldItemCodec.class);
-        // TODO 0x40 : "Update View Position" (use unclear, see https://wiki.vg/Protocol#Update_View_Position)
-        // TODO 0x41 : Update View Distance (unused in Vanilla, but could be used when changing view distance via plugins)
-        outbound(0x42, SpawnPositionMessage.class, SpawnPositionCodec.class);
-        outbound(0x43, ScoreboardDisplayMessage.class, ScoreboardDisplayCodec.class);
-        outbound(0x44, EntityMetadataMessage.class, EntityMetadataCodec.class);
-        outbound(0x45, AttachEntityMessage.class, AttachEntityCodec.class);
-        outbound(0x46, EntityVelocityMessage.class, EntityVelocityCodec.class);
-        outbound(0x47, EntityEquipmentMessage.class, EntityEquipmentCodec.class);
-        outbound(0x48, ExperienceMessage.class, ExperienceCodec.class);
-        outbound(0x49, HealthMessage.class, HealthCodec.class);
-        outbound(0x4A, ScoreboardObjectiveMessage.class, ScoreboardObjectiveCodec.class);
-        outbound(0x4B, SetPassengerMessage.class, SetPassengerCodec.class);
-        outbound(0x4C, ScoreboardTeamMessage.class, ScoreboardTeamCodec.class);
-        outbound(0x4D, ScoreboardScoreMessage.class, ScoreboardScoreCodec.class);
-        outbound(0x4E, TimeMessage.class, TimeCodec.class);
-        outbound(0x4F, TitleMessage.class, TitleCodec.class);
-        outbound(0x51, SoundEffectMessage.class, SoundEffectCodec.class);
-        outbound(0x52, StopSoundMessage.class, StopSoundCodec.class);
-        outbound(0x53, UserListHeaderFooterMessage.class, UserListHeaderFooterCodec.class);
-        // TODO 0x54 : NBT Query Response (response to Query Block/Entity NBT packets)
-        outbound(0x55, CollectItemMessage.class, CollectItemCodec.class);
-        outbound(0x56, EntityTeleportMessage.class, EntityTeleportCodec.class);
-        outbound(0x57, AdvancementsMessage.class, AdvancementsCodec.class);
-        outbound(0x58, EntityPropertyMessage.class, EntityPropertyCodec.class);
-        outbound(0x59, EntityEffectMessage.class, EntityEffectCodec.class);
-        // TODO 0x5A : Declare Recipes
-        // TODO 0x5B : Tags
+        outbound(0x28, EntityRotationMessage.class, EntityRotationCodec.class);
+        outbound(0x29, VehicleMoveMessage.class, VehicleMoveCodec.class);
+        // TODO 0x2A : Open Book (this replaces the old plugin channel. tells the client to open the book they have in hand)
+        outbound(0x2B, OpenWindowMessage.class, OpenWindowCodec.class);
+        outbound(0x2C, SignEditorMessage.class, SignEditorCodec.class);
+        // TODO 0x2D Ping (it's different to 0x1E PingMessage)
+        outbound(0x2E, CraftRecipeResponseMessage.class, CraftRecipeResponseCodec.class);
+        outbound(0x2F, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class);
+        // TODO 0x30 Player Chat Message
+        // TODO 0x31 End Combat Event
+        // TODO 0x32 Enter Combat Event
+        // TODO 0x33 Death Combat Event
+        outbound(0x34, UserListItemMessage.class, UserListItemCodec.class);
+        // TODO 0x35 : Face Player (rotates the client to face a location or entity)
+        outbound(0x36, PositionRotationMessage.class, PositionRotationCodec.class);
+        outbound(0x37, UnlockRecipesMessage.class, UnlockRecipesCodec.class);
+        outbound(0x38, DestroyEntitiesMessage.class, DestroyEntitiesCodec.class);
+        outbound(0x39, EntityRemoveEffectMessage.class, EntityRemoveEffectCodec.class);
+        outbound(0x3A, ResourcePackSendMessage.class, ResourcePackSendCodec.class);
+        outbound(0x3B, RespawnMessage.class, RespawnCodec.class);
+        outbound(0x3C, EntityHeadRotationMessage.class, EntityHeadRotationCodec.class);
+        outbound(0x3D, MultiBlockChangeMessage.class, MultiBlockChangeCodec.class);
+        // TODO 0x3E : Select Advancement Tab (tells the client to switch tabs)
+        // TODO 0x3F : Server Data
+        // TODO 0x40 : Action Bar
+        // TODO 0x41 : World Border Center
+        // TODO 0x42 : World Border Lerp Size
+        // TODO 0x43 : World Border Size
+        // TODO 0x44 : World Border Warning Delay
+        // TODO 0x45 : World Border Warning Reach
+        outbound(0x46, CameraMessage.class, CameraCodec.class);
+        outbound(0x47, HeldItemMessage.class, HeldItemCodec.class);
+        // TODO 0x48 : "Update View Position" (use unclear, see https://wiki.vg/Protocol#Update_View_Position)
+        // TODO 0x49 : Update View Distance (unused in Vanilla, but could be used when changing view distance via plugins)
+        outbound(0x4A, SpawnPositionMessage.class, SpawnPositionCodec.class);
+        // TODO 0x4B : Set Display Chat Preview
+        outbound(0x4C, ScoreboardDisplayMessage.class, ScoreboardDisplayCodec.class);
+        outbound(0x4D, EntityMetadataMessage.class, EntityMetadataCodec.class);
+        outbound(0x4E, AttachEntityMessage.class, AttachEntityCodec.class);
+        outbound(0x4F, EntityVelocityMessage.class, EntityVelocityCodec.class);
+        outbound(0x50, EntityEquipmentMessage.class, EntityEquipmentCodec.class);
+        outbound(0x51, ExperienceMessage.class, ExperienceCodec.class);
+        outbound(0x52, HealthMessage.class, HealthCodec.class);
+        outbound(0x53, ScoreboardObjectiveMessage.class, ScoreboardObjectiveCodec.class);
+        outbound(0x54, SetPassengerMessage.class, SetPassengerCodec.class);
+        outbound(0x55, ScoreboardTeamMessage.class, ScoreboardTeamCodec.class);
+        outbound(0x56, ScoreboardScoreMessage.class, ScoreboardScoreCodec.class);
+        // TODO 0x57 : Update Simulation Distance
+        // TODO 0x58 : Set Title SubTitle
+        outbound(0x59, TimeMessage.class, TimeCodec.class);
+        // TODO 0x5A : Set Title Text       outbound(0x5A, TitleMessage.class, TitleCodec.class);
+        // TODO 0x5B : Set Title Times
+        // TODO 0x5C : Entity Sound Effect
+        outbound(0x5D, SoundEffectMessage.class, SoundEffectCodec.class);
+        outbound(0x5E, StopSoundMessage.class, StopSoundCodec.class);
+        outbound(0x5F, ChatMessage.class, ChatCodec.class);
+        outbound(0x60, UserListHeaderFooterMessage.class, UserListHeaderFooterCodec.class);
+        // TODO 0x61 : NBT Query Response (response to Query Block/Entity NBT packets)
+        outbound(0x62, CollectItemMessage.class, CollectItemCodec.class);
+        outbound(0x63, EntityTeleportMessage.class, EntityTeleportCodec.class);
+        outbound(0x64, AdvancementsMessage.class, AdvancementsCodec.class);
+        outbound(0x65, EntityPropertyMessage.class, EntityPropertyCodec.class);
+        outbound(0x66, EntityEffectMessage.class, EntityEffectCodec.class);
+        // TODO 0x67 : Declare Recipes
+        // TODO 0x68 : Tags
     }
 }

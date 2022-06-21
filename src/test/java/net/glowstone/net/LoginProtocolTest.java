@@ -15,6 +15,7 @@ import net.glowstone.net.protocol.ProtocolProvider;
 import net.glowstone.util.config.ServerConfig;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -25,13 +26,13 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class LoginProtocolTest extends BaseProtocolTest {
 
     private static final Message[] TEST_MESSAGES = new Message[]{
-        new LoginStartMessage("glowstone"),
+        new LoginStartMessage("glowstone", 0, new byte[0], new byte[0]),
         new EncryptionKeyRequestMessage("sessionid1", new byte[]{0x00, 0x01},
             new byte[]{0x02, 0x03}),
         new KickMessage(ProtocolTestUtils.getTextMessage()),
         new KickMessage("Hello"),
         new EncryptionKeyResponseMessage(new byte[]{0x00, 0x01}, new byte[]{0x02, 0x03}),
-        new LoginSuccessMessage("glowstone", "glowstone1"),
+        new LoginSuccessMessage(UUID.randomUUID(), "glowstone1"),
         new SetCompressionMessage(5),
         new LoginPluginResponseMessage(0, true, new byte[]{0x00, 0x01}),
         new LoginPluginRequestMessage(0, "channel", new byte[]{0x00, 0x01})

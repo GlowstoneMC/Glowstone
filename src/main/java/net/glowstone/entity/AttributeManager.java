@@ -134,20 +134,20 @@ public class AttributeManager {
 
     @RequiredArgsConstructor
     public enum Key {
-        KEY_MAX_HEALTH("generic.maxHealth", Attribute.GENERIC_MAX_HEALTH, 20, 1024.0),
-        KEY_FOLLOW_RANGE("generic.followRange", Attribute.GENERIC_FOLLOW_RANGE, 32, 2048),
-        KEY_KNOCKBACK_RESISTANCE("generic.knockbackResistance",
+        KEY_MAX_HEALTH("generic.max_health", Attribute.GENERIC_MAX_HEALTH, 20, 1024.0),
+        KEY_FOLLOW_RANGE("generic.follow_range", Attribute.GENERIC_FOLLOW_RANGE, 32, 2048),
+        KEY_KNOCKBACK_RESISTANCE("generic.knockback_resistance",
             Attribute.GENERIC_KNOCKBACK_RESISTANCE, 0, 1),
-        KEY_MOVEMENT_SPEED("generic.movementSpeed",
+        KEY_MOVEMENT_SPEED("generic.movement_speed",
             Attribute.GENERIC_MOVEMENT_SPEED, 0.699999988079071, 1024.0),
-        KEY_ATTACK_DAMAGE("generic.attackDamage", Attribute.GENERIC_ATTACK_DAMAGE, 2, 2048.0),
-        KEY_ATTACK_SPEED("generic.attackSpeed", Attribute.GENERIC_ATTACK_SPEED, 4.0, 1024.0),
+        KEY_ATTACK_DAMAGE("generic.attack_damage", Attribute.GENERIC_ATTACK_DAMAGE, 2, 2048.0),
+        KEY_ATTACK_SPEED("generic.attack_speed", Attribute.GENERIC_ATTACK_SPEED, 4.0, 1024.0),
         KEY_ARMOR("generic.armor", Attribute.GENERIC_ARMOR, 0.0, 30.0),
-        KEY_ARMOR_TOUGHNESS("generic.armorToughness", Attribute.GENERIC_ARMOR_TOUGHNESS, 0.0, 20.0),
+        KEY_ARMOR_TOUGHNESS("generic.armor_toughness", Attribute.GENERIC_ARMOR_TOUGHNESS, 0.0, 20.0),
         KEY_LUCK("generic.luck", Attribute.GENERIC_LUCK, 0, -1024, 1024),
-        KEY_FLYING_SPEED("generic.flyingSpeed", Attribute.GENERIC_FLYING_SPEED, 0.4, 1024),
-        KEY_HORSE_JUMP_STRENGTH("horse.jumpStrength", Attribute.HORSE_JUMP_STRENGTH, 0.7, 2),
-        KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements",
+        KEY_FLYING_SPEED("generic.flying_speed", Attribute.GENERIC_FLYING_SPEED, 0.4, 1024),
+        KEY_HORSE_JUMP_STRENGTH("horse.jump_strength", Attribute.HORSE_JUMP_STRENGTH, 0.7, 2),
+        KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawn_reinforcements",
             Attribute.ZOMBIE_SPAWN_REINFORCEMENTS, 0, 1);
 
         /**

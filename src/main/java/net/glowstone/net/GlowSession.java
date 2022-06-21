@@ -314,6 +314,7 @@ public class GlowSession extends BasicSession {
 
     @Override
     public ChannelFuture sendWithFuture(Message message) {
+        System.out.println("Wysylam: " + message.getClass().getSimpleName());
         if (!isActive()) {
             // discard messages sent if we're closed, since this happens a lot
             return null;
@@ -487,7 +488,7 @@ public class GlowSession extends BasicSession {
         }
 
         // send login response
-        send(new LoginSuccessMessage(UuidUtils.toString(profile.getId()), profile.getName()));
+        send(new LoginSuccessMessage(profile.getId(), profile.getName()));
         setProtocol(protocolProvider.play);
     }
 
@@ -544,6 +545,7 @@ public class GlowSession extends BasicSession {
 
     @Override
     public void messageReceived(Message message) {
+        System.out.println("Otrzymano wiadomosc: " + message.getClass().getSimpleName());
         if (message instanceof AsyncableMessage && ((AsyncableMessage) message).isAsync()) {
             // async messages get their handlers called immediately
             super.messageReceived(message);

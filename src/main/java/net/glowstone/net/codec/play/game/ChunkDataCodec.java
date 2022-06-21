@@ -3,11 +3,12 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 
 import java.io.IOException;
 
-public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
+public final class ChunkDataCodec extends AbstractLightCodec implements Codec<ChunkDataMessage> {
 
     @Override
     public ChunkDataMessage decode(ByteBuf buffer) throws IOException {
@@ -18,8 +19,7 @@ public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
     public ByteBuf encode(ByteBuf buf, ChunkDataMessage message) throws IOException {
         buf.writeInt(message.getX());
         buf.writeInt(message.getZ());
-        buf.writeBoolean(message.isContinuous());
-        ByteBufUtils.writeVarInt(buf, message.getPrimaryMask());
+        GlowBufUtils.writeCompound(buf, message.getHeightmap());
         ByteBuf data = message.getData();
         try {
             ByteBufUtils.writeVarInt(buf, data.writerIndex());
@@ -32,6 +32,7 @@ public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
         // for (CompoundTag tag : message.getBlockEntities()) {
         //     GlowBufUtils.writeCompound(buf, tag);
         // }
+        encodeLight(buf, message);
         return buf;
     }
 }

@@ -34,6 +34,7 @@ import org.bukkit.util.Vector;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -429,6 +430,14 @@ public final class GlowBufUtils {
                 // todo: convert state to int
                 ByteBufUtils.writeVarInt(buf, 0);
             }
+        }
+    }
+
+    public static void writeBitSet(ByteBuf buf, BitSet bitSet) {
+        long[] longs = bitSet.toLongArray();
+        ByteBufUtils.writeVarInt(buf, longs.length);
+        for (long aLong : longs) {
+            buf.writeLong(aLong);
         }
     }
 }
