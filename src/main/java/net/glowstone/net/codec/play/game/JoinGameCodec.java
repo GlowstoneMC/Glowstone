@@ -3,16 +3,17 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.message.play.game.JoinGameMessage;
+import net.glowstone.util.GlobalPosition;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.NamespacedKey;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import static com.flowpowered.network.util.ByteBufUtils.readUTF8;
 import static com.flowpowered.network.util.ByteBufUtils.readVarInt;
-import static com.flowpowered.network.util.ByteBufUtils.writeUTF8;
 import static com.flowpowered.network.util.ByteBufUtils.writeVarInt;
-import static net.glowstone.net.GlowBufUtils.readCompound;
-import static net.glowstone.net.GlowBufUtils.writeCompound;
+import static net.glowstone.net.GlowBufUtils.*;
 
 public final class JoinGameCodec implements Codec<JoinGameMessage> {
 
@@ -20,26 +21,34 @@ public final class JoinGameCodec implements Codec<JoinGameMessage> {
     public JoinGameMessage decode(ByteBuf buffer) throws IOException {
         int id = buffer.readInt();
         boolean hardcore = buffer.readBoolean();
-        int mode = buffer.readByte();
+        int mode = buffer.readUnsignedByte();
         int previousMode = buffer.readByte();
 
-        String[] worlds = new String[readVarInt(buffer)];
-        for (int i = 0; i < worlds.length; i++) {
-            worlds[i] = readUTF8(buffer);
+        int worldsCount = readVarInt(buffer);
+        List<NamespacedKey> worlds = new ArrayList<>(worldsCount);
+        for (int i = 0; i < worldsCount; i++) {
+            worlds.add(readNamespacedKey(buffer));
         }
 
         // TODO: Decode dimension info from NBT
-        CompoundTag dimensionCodec = readCompound(buffer);
-        CompoundTag dimension = readCompound(buffer);
+        CompoundTag registryCodec = readCompound(buffer);
 
-        String currentWorld = readUTF8(buffer);
-        byte[] seedHash = buffer.readBytes(8).array();
+        NamespacedKey worldType = readNamespacedKey(buffer);
+        NamespacedKey currentWorld = readNamespacedKey(buffer);
+        byte[] seedHash = new byte[8];
+        buffer.readBytes(seedHash); // do not use buffer.readBytes(8).array() due memory leak
         int maxPlayers = readVarInt(buffer);
         int viewDistance = readVarInt(buffer);
+        int simulationDistance = readVarInt(buffer);
         boolean reducedDebugInfo = buffer.readBoolean();
         boolean enableRespawnScreen = buffer.readBoolean();
         boolean debug = buffer.readBoolean();
         boolean flat = buffer.readBoolean();
+        GlobalPosition globalPosition = null;
+        boolean hasGlobalPosition = buffer.readBoolean();
+        if (hasGlobalPosition) {
+            globalPosition = readGlobalPos(buffer);
+        }
 
         return new JoinGameMessage(
             id,
@@ -47,14 +56,18 @@ public final class JoinGameCodec implements Codec<JoinGameMessage> {
             mode,
             previousMode,
             worlds,
+            registryCodec,
+            worldType,
             currentWorld,
             seedHash,
             maxPlayers,
             viewDistance,
+            simulationDistance,
             reducedDebugInfo,
             enableRespawnScreen,
             debug,
-            flat
+            flat,
+            globalPosition
         );
     }
 
@@ -64,25 +77,30 @@ public final class JoinGameCodec implements Codec<JoinGameMessage> {
         buf.writeBoolean(message.isHardcore());
         buf.writeByte(message.getMode());
         buf.writeByte(message.getPreviousMode());
-        writeVarInt(buf, message.getWorlds().length);
-        for (String world : message.getWorlds()) {
-            writeUTF8(buf, world);
+        writeVarInt(buf, message.getWorlds().size());
+        for (NamespacedKey world : message.getWorlds()) {
+            writeNamespacedKey(buf, world);
         }
 
-        CompoundTag dimensionCodec = new CompoundTag(); // TODO: Serialize from message
-        writeCompound(buf, dimensionCodec);
+        writeCompound(buf, message.getRegistryCodec());
 
-        CompoundTag dimension = new CompoundTag(); // TODO: Serialize from message
-        writeCompound(buf, dimension);
-
-        writeUTF8(buf, message.getCurrentWorld());
+        writeNamespacedKey(buf, message.getWorldType());
+        writeNamespacedKey(buf, message.getCurrentWorld());
         buf.writeBytes(message.getSeedHash(), 0, 8);
         writeVarInt(buf, message.getMaxPlayers());
         writeVarInt(buf, message.getViewDistance());
+        writeVarInt(buf, message.getSimulationDistance());
         buf.writeBoolean(message.isReducedDebugInfo());
         buf.writeBoolean(message.isEnableRespawnScreen());
         buf.writeBoolean(message.isDebug());
         buf.writeBoolean(message.isFlat());
+        GlobalPosition lastDeathLocation = message.getLastDeathLocation();
+        if (lastDeathLocation != null) {
+            buf.writeBoolean(true);
+            writeGlobalPos(buf, lastDeathLocation);
+        } else {
+            buf.writeBoolean(false);
+        }
         return buf;
     }
 }

@@ -18,7 +18,8 @@ public final class PositionRotationCodec implements Codec<PositionRotationMessag
         float pitch = buffer.readFloat();
         int flags = buffer.readUnsignedByte();
         int teleportId = ByteBufUtils.readVarInt(buffer);
-        return new PositionRotationMessage(x, y, z, rotation, pitch, flags, teleportId);
+        boolean dismountVehicle = buffer.readBoolean();
+        return new PositionRotationMessage(x, y, z, rotation, pitch, flags, teleportId, dismountVehicle);
     }
 
     @Override
@@ -30,6 +31,7 @@ public final class PositionRotationCodec implements Codec<PositionRotationMessag
         buf.writeFloat(message.getPitch());
         buf.writeByte(message.getFlags());
         ByteBufUtils.writeVarInt(buf, message.getTeleportId());
+        buf.writeBoolean(message.isDismountVehicle());
         return buf;
     }
 }

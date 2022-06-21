@@ -12,7 +12,7 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import org.bukkit.GameMode;
@@ -109,7 +109,7 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
         int z = location.getBlockZ();
 
         return Lists.newArrayList(
-            new SpawnObjectMessage(
+            new SpawnEntityMessage(
                 entityId, getUniqueId(), EntityNetworkUtil.getObjectId(EntityType.LEASH_HITCH),
                 x, y, z, 0, 0),
             new EntityMetadataMessage(entityId, metadata.getEntryList())

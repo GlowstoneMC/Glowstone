@@ -71,7 +71,7 @@ public class GlowWorldBorder implements WorldBorder {
      */
     public WorldBorderMessage createMessage() {
         return new WorldBorderMessage(
-                WorldBorderMessage.Action.INITIALIZE, center.getX(), center.getZ(),
+                center.getX(), center.getZ(),
                 size, sizeLerpTarget, sizeLerpTime * 1000, 29999984,
                 warningTime, warningDistance);
     }
@@ -115,7 +115,7 @@ public class GlowWorldBorder implements WorldBorder {
     public void setSize(double size) {
         this.size = size;
         this.sizeLerpTarget = size;
-        broadcast(new WorldBorderMessage(WorldBorderMessage.Action.SET_SIZE, size));
+        broadcast(createMessage()); // TODO 1.19 packet
     }
 
     @Override
@@ -128,15 +128,13 @@ public class GlowWorldBorder implements WorldBorder {
         step = (size - this.size) / (double) ticks;
         sizeLerpTarget = size;
         sizeLerpTime = seconds;
-        broadcast(new WorldBorderMessage(WorldBorderMessage.Action.LERP_SIZE,
-                this.size, sizeLerpTarget, sizeLerpTime * 1000));
+        broadcast(createMessage()); // TODO 1.19 packet
     }
 
     @Override
     public void setCenter(Location location) {
         center = location.clone();
-        broadcast(new WorldBorderMessage(
-                WorldBorderMessage.Action.SET_CENTER, center.getX(), center.getZ()));
+        broadcast(createMessage()); // TODO 1.19 packet
     }
 
     @Override
@@ -147,13 +145,13 @@ public class GlowWorldBorder implements WorldBorder {
     @Override
     public void setWarningTime(int seconds) {
         this.warningTime = seconds;
-        broadcast(new WorldBorderMessage(WorldBorderMessage.Action.SET_WARNING_TIME, seconds));
+        broadcast(createMessage()); // TODO 1.19 packet
     }
 
     @Override
     public void setWarningDistance(int distance) {
         this.warningDistance = distance;
-        broadcast(new WorldBorderMessage(WorldBorderMessage.Action.SET_WARNING_BLOCKS, distance));
+        broadcast(createMessage()); // TODO 1.19 packet
     }
 
     @Override

@@ -25,7 +25,7 @@ public final class ChunkDataCodec extends AbstractLightCodec implements Codec<Ch
             ByteBufUtils.writeVarInt(buf, data.writerIndex());
             buf.writeBytes(data);
         } finally {
-            data.release();
+            //data.release();
         }
         // TODO: Re-enable block entities (1.13)
         ByteBufUtils.writeVarInt(buf, 0);

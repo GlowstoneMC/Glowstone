@@ -11,7 +11,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
@@ -209,7 +209,7 @@ public class GlowItem extends GlowEntity implements Item {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-            new SpawnObjectMessage(entityId, getUniqueId(),
+            new SpawnEntityMessage(entityId, getUniqueId(),
                 EntityNetworkUtil.getObjectId(EntityType.DROPPED_ITEM), location),
             new EntityMetadataMessage(entityId, metadata.getEntryList()),
             // these keep the client from assigning a random velocity
@@ -229,7 +229,7 @@ public class GlowItem extends GlowEntity implements Item {
     @Override
     public void setItemStack(@NotNull ItemStack stack) {
         // stone is the "default state" for the item stack according to the client
-        metadata.set(MetadataIndex.ITEM_ITEM, stack.clone());
+        metadata.set(MetadataIndex.ITEM_ITEM, stack != null ? stack.clone() : null);
     }
 
     @Override

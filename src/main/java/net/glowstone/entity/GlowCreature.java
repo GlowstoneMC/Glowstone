@@ -5,7 +5,8 @@ import com.flowpowered.network.Message;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
-import net.glowstone.net.message.play.entity.SpawnMobMessage;
+import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
@@ -53,9 +54,10 @@ public class GlowCreature extends GlowMob implements Creature {
         List<Message> result = new LinkedList<>();
 
         // spawn mob
-        result.add(new SpawnMobMessage(
+        result.add(new SpawnEntityMessage(
             entityId, getUniqueId(), EntityNetworkUtil.getMobId(type),
-            location, metadata.getEntryList()));
+            location));
+        result.add(new EntityMetadataMessage(entityId, metadata.getEntryList()));
 
         // head facing
         result.add(new EntityHeadRotationMessage(entityId, Position.getIntYaw(location)));

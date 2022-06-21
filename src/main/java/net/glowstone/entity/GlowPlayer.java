@@ -711,15 +711,19 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             world.isHardcore(),
             gameMode,
             -1, // TODO: determine previous gamemode
-            server.getWorlds().stream().map(World::getName).toArray(String[]::new),
-            world.getName(),
+            server.getWorlds().stream().map(World::getKey).collect(Collectors.toList()),
+            new CompoundTag(), // TODO
+            NamespacedKey.fromString(world.getWorldType().toString().toLowerCase(Locale.ROOT)),
+            world.getKey(),
             world.getSeedHash(),
             server.getMaxPlayers(),
             world.getViewDistance(),
+            world.getViewDistance(), // TODO simulation distance
             world.getGameRuleMap().getBoolean(GameRules.REDUCED_DEBUG_INFO),
             !world.getGameRuleMap().getBoolean(GameRules.DO_IMMEDIATE_RESPAWN),
             false, // TODO: Debug worlds
-            world.getWorldType() == WorldType.FLAT
+            world.getWorldType() == WorldType.FLAT,
+            null
         ));
 
         // send server brand and supported plugin channels
@@ -1068,11 +1072,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         for (Key key : knownChunks) {
             List<BlockChangeMessage> messages = world.getChunkManager().getBlockChanges(key);
             int size = messages.size();
-            if (size == 1) {
-                session.send(messages.get(0));
-            } else if (size > 1) {
-                session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), messages));
+
+            for (BlockChangeMessage message : messages) {
+                session.send(message);
             }
+
+//            TODO : MultiBlockChangeMessage with SectionPosition
+//            if (size == 1) {
+//                session.send(messages.get(0));
+//            } else if (size > 1) {
+//                session.send(new MultiBlockChangeMessage(, false, messages));
+//            }
         }
         processPersonalBlockChanges();
         // now send post-block-change messages
@@ -1106,10 +1116,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             Key key = entry.getKey();
             List<BlockChangeMessage> value = new ArrayList<>(entry.getValue().values());
 
-            if (value.size() == 1) {
-                session.send(value.get(0));
-            } else if (value.size() > 1) {
-                session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), value));
+//            TODO : MultiBlockChangeMessage with SectionPosition
+//            if (value.size() == 1) {
+//                session.send(value.get(0));
+//            } else if (value.size() > 1) {
+//                session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), value));
+//            }
+            for (BlockChangeMessage v : value) {
+                session.send(v);
             }
         }
     }

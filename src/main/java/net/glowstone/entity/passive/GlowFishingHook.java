@@ -15,7 +15,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
@@ -172,7 +172,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         int intPitch = Position.getIntPitch(location);
         int intHeadYaw = Position.getIntHeadYaw(location.getYaw());
 
-        spawnMessage.set(0, new SpawnObjectMessage(getEntityId(), getUniqueId(),
+        spawnMessage.set(0, new SpawnEntityMessage(getEntityId(), getUniqueId(),
             EntityNetworkUtil.getObjectId(EntityType.FISHING_HOOK),
             x, y, z, intPitch, intHeadYaw, shooterId, velocity));
         return spawnMessage;

@@ -8,7 +8,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.GlowVehicle;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import org.bukkit.GameMode;
@@ -56,7 +56,7 @@ public class GlowBoat extends GlowVehicle implements Boat {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-            new SpawnObjectMessage(entityId, getUniqueId(),
+            new SpawnEntityMessage(entityId, getUniqueId(),
                 EntityNetworkUtil.getObjectId(EntityType.BOAT), location),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );

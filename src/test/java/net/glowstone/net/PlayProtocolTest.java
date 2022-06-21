@@ -18,8 +18,7 @@ import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.entity.RelativeEntityPositionMessage;
 import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnGlobalEntityMessage;
-import net.glowstone.net.message.play.entity.SpawnMobMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.net.message.play.entity.SpawnXpOrbMessage;
@@ -136,15 +135,13 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new HealthMessage(1f, 2, 3f),
         new RespawnMessage("world", new byte[]{1, 2, 3}, 3, 4, false, true, false),
         new PositionRotationMessage(1.0, 2.0, 3.0, 1f, 2f),
-        new PositionRotationMessage(1.0, 2.0, 3.0, 4f, 5f, 6, 1),
+        new PositionRotationMessage(1.0, 2.0, 3.0, 4f, 5f, 6, 1, true),
         new PositionRotationMessage(new Location(null, 1.0, 2.0, 3.0, 4f, 5f)),
         new EntityAnimationMessage(1, 2),
         new SpawnPlayerMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6),
         new CollectItemMessage(1, 2, 3),
-        new SpawnObjectMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7),
-        new SpawnObjectMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
-        new SpawnMobMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-            ProtocolTestUtils.getMetadataEntry()),
+        new SpawnEntityMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7),
+        new SpawnEntityMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
         new SpawnPaintingMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6),
         new SpawnXpOrbMessage(1, 2, 3, 4, (short) 5),
         new EntityVelocityMessage(1, new Vector(1, 2, 3)),

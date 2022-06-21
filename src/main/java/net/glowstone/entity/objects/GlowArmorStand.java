@@ -13,7 +13,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.InventoryUtil;
@@ -320,7 +320,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     public List<Message> createSpawnMessage() {
 
         return Arrays.asList(
-            new SpawnObjectMessage(entityId, UUID.randomUUID(), 78, location),
+            new SpawnEntityMessage(entityId, UUID.randomUUID(), 78, location),
             // TODO: once UUID is documented, actually use the appropriate ID here
             new EntityMetadataMessage(entityId, metadata.getEntryList()),
             new EntityEquipmentMessage(entityId, EntityEquipmentMessage.HELD_ITEM,

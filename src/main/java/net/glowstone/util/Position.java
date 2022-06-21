@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.BlockVector;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 
@@ -36,9 +37,9 @@ public final class Position {
      * the data/tag that is applied to the block on placing.
      */
     public static final List<BlockFace> ROTATIONS = ImmutableList
-        .of(NORTH, NORTH_NORTH_EAST, NORTH_EAST, EAST_NORTH_EAST, EAST, EAST_SOUTH_EAST,
-            SOUTH_EAST, SOUTH_SOUTH_EAST, SOUTH, SOUTH_SOUTH_WEST, SOUTH_WEST,
-            WEST_SOUTH_WEST, WEST, WEST_NORTH_WEST, NORTH_WEST, NORTH_NORTH_WEST);
+            .of(NORTH, NORTH_NORTH_EAST, NORTH_EAST, EAST_NORTH_EAST, EAST, EAST_SOUTH_EAST,
+                    SOUTH_EAST, SOUTH_SOUTH_EAST, SOUTH, SOUTH_SOUTH_WEST, SOUTH_WEST,
+                    WEST_SOUTH_WEST, WEST, WEST_NORTH_WEST, NORTH_WEST, NORTH_NORTH_WEST);
 
     private Position() {
     }
@@ -82,7 +83,7 @@ public final class Position {
      */
     public static boolean hasMoved(Location first, Location second) {
         return first.getX() != second.getX() || first.getY() != second.getY()
-            || first.getZ() != second.getZ();
+                || first.getZ() != second.getZ();
     }
 
     /**
@@ -162,8 +163,8 @@ public final class Position {
      */
     public static long getPosition(BlockVector vector) {
         return (((long) vector.getBlockX() & 0x3FFFFFF) << 38) | (
-            ((long) vector.getBlockY() & 0xFFF) << 26) | ((long) vector.getBlockZ()
-            & 0x3FFFFFF);
+                ((long) vector.getBlockY() & 0xFFF) << 26) | ((long) vector.getBlockZ()
+                & 0x3FFFFFF);
     }
 
     /**
@@ -174,5 +175,16 @@ public final class Position {
      */
     public static BlockVector getPosition(long position) {
         return new BlockVector(position >> 38, (position >> 26) & 0xFFF, position << 38 >> 38);
+    }
+
+    public static BlockVector getChunkPosition(long position) {
+        int sectionX = (int) (position >> 42);
+        int sectionY = (int) (position << 44 >> 44);
+        int sectionZ = (int) (position << 22 >> 42);
+        return new BlockVector(sectionX, sectionY, sectionZ);
+    }
+
+    public static long getChunkPosition(BlockVector position) {
+        return ((position.getBlockX() & 0x3FFFFF) << 42) | (position.getBlockY() & 0xFFFFF) | ((position.getBlockZ() & 0x3FFFFF) << 20);
     }
 }

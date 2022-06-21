@@ -5,7 +5,8 @@ import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowAmbient;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
-import net.glowstone.net.message.play.entity.SpawnMobMessage;
+import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -27,9 +28,10 @@ public class GlowBat extends GlowAmbient implements Bat {
     public List<Message> createSpawnMessage() {
         List<Message> result = new LinkedList<>();
 
-        result.add(new SpawnMobMessage(
-            entityId, getUniqueId(), EntityNetworkUtil.getMobId(EntityType.BAT), location,
-            metadata.getEntryList()));
+        result.add(new SpawnEntityMessage(
+                entityId, getUniqueId(), EntityNetworkUtil.getMobId(EntityType.BAT),
+                location));
+        result.add(new EntityMetadataMessage(entityId, metadata.getEntryList()));
 
         // head facing
         result.add(new EntityHeadRotationMessage(entityId, Position.getIntYaw(location)));

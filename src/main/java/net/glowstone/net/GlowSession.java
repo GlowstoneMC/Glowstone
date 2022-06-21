@@ -314,7 +314,6 @@ public class GlowSession extends BasicSession {
 
     @Override
     public ChannelFuture sendWithFuture(Message message) {
-        System.out.println("Wysylam: " + message.getClass().getSimpleName());
         if (!isActive()) {
             // discard messages sent if we're closed, since this happens a lot
             return null;
@@ -333,7 +332,11 @@ public class GlowSession extends BasicSession {
      * @param buf     The byte buffer.
      */
     public void sendAndRelease(Message message, ByteBuf buf) {
-        sendWithFuture(message).addListener(f -> buf.release());
+        sendWithFuture(message).addListener(f -> {
+            if (buf.refCnt() > 0) {
+                buf.release();
+            }
+        });
     }
 
     /**
