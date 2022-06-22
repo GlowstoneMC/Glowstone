@@ -12,10 +12,14 @@ public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
     @Override
     public UnlockRecipesMessage decode(ByteBuf buf) throws IOException {
         int action = ByteBufUtils.readVarInt(buf);
-        boolean bookOpen = buf.readBoolean();
-        boolean filterOpen = buf.readBoolean();
+        boolean craftingBookOpen = buf.readBoolean();
+        boolean craftingBookFilter = buf.readBoolean();
         boolean smeltingBookOpen = buf.readBoolean();
-        boolean smeltingFilterOpen = buf.readBoolean();
+        boolean smeltingBookFilter = buf.readBoolean();
+        boolean blastBookOpen = buf.readBoolean();
+        boolean blastBookFilter = buf.readBoolean();
+        boolean smokerBookOpen = buf.readBoolean();
+        boolean smokerBookFilter = buf.readBoolean();
 
         int sizeOfRecipes = ByteBufUtils.readVarInt(buf);
         int[] recipes = new int[sizeOfRecipes];
@@ -23,8 +27,9 @@ public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
             recipes[i] = ByteBufUtils.readVarInt(buf);
         }
         if (action != UnlockRecipesMessage.ACTION_INIT) {
-            return new UnlockRecipesMessage(action, bookOpen, filterOpen,
-                smeltingBookOpen, smeltingFilterOpen, recipes);
+            return new UnlockRecipesMessage(action, craftingBookOpen, craftingBookFilter,
+                    smeltingBookOpen, smeltingBookFilter, blastBookOpen, blastBookFilter,
+                    smokerBookOpen, smokerBookFilter, recipes);
         }
         // action = INIT (0)
         sizeOfRecipes = ByteBufUtils.readVarInt(buf);
@@ -32,17 +37,22 @@ public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
         for (int i = 0; i < sizeOfRecipes; i++) {
             allRecipes[i] = ByteBufUtils.readVarInt(buf);
         }
-        return new UnlockRecipesMessage(action, bookOpen, filterOpen,
-            smeltingBookOpen, smeltingFilterOpen, recipes, allRecipes);
+        return new UnlockRecipesMessage(action, craftingBookOpen, craftingBookFilter,
+                smeltingBookOpen, smeltingBookFilter, blastBookOpen, blastBookFilter,
+                smokerBookOpen, smokerBookFilter, recipes, allRecipes);
     }
 
     @Override
     public ByteBuf encode(ByteBuf buf, UnlockRecipesMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getAction());
-        buf.writeBoolean(message.isBookOpen());
-        buf.writeBoolean(message.isFilterOpen());
+        buf.writeBoolean(message.isCraftingBookOpen());
+        buf.writeBoolean(message.isCraftingBookFilter());
         buf.writeBoolean(message.isSmeltingBookOpen());
-        buf.writeBoolean(message.isSmeltingFilterOpen());
+        buf.writeBoolean(message.isSmeltingBookFilter());
+        buf.writeBoolean(message.isBlastBookOpen());
+        buf.writeBoolean(message.isBlastBookFilter());
+        buf.writeBoolean(message.isSmokerBookOpen());
+        buf.writeBoolean(message.isSmokerBookFilter());
         ByteBufUtils.writeVarInt(buf, message.getRecipes().length);
         for (int recipe : message.getRecipes()) {
             ByteBufUtils.writeVarInt(buf, recipe);

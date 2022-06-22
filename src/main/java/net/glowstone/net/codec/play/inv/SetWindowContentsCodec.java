@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.inv;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.GlowBufUtils;
@@ -19,10 +20,12 @@ public final class SetWindowContentsCodec implements Codec<SetWindowContentsMess
     @Override
     public ByteBuf encode(ByteBuf buf, SetWindowContentsMessage message) throws IOException {
         buf.writeByte(message.getId());
-        buf.writeShort(message.getItems().length);
+        ByteBufUtils.writeVarInt(buf, message.getStateId());
+        ByteBufUtils.writeVarInt(buf, message.getItems().length);
         for (ItemStack item : message.getItems()) {
             GlowBufUtils.writeSlot(buf, item);
         }
+        GlowBufUtils.writeSlot(buf, message.getCurrentItem());
         return buf;
     }
 }

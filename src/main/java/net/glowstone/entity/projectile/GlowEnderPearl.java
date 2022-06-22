@@ -8,7 +8,7 @@ import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -120,7 +120,7 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-            new SpawnObjectMessage(
+            new SpawnEntityMessage(
                 entityId, getUniqueId(),
                 EntityNetworkUtil.getObjectId(EntityType.ENDER_PEARL), location),
             new EntityMetadataMessage(entityId, metadata.getEntryList()),

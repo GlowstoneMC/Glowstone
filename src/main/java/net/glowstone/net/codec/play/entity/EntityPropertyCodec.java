@@ -25,7 +25,7 @@ public class EntityPropertyCodec implements Codec<EntityPropertyMessage> {
     public ByteBuf encode(ByteBuf buf, EntityPropertyMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         Map<String, Property> props = message.getProperties();
-        buf.writeInt(props.size());
+        ByteBufUtils.writeVarInt(buf, props.size());
         for (Entry<String, Property> property : props.entrySet()) {
             ByteBufUtils.writeUTF8(buf, property.getKey());
             buf.writeDouble(property.getValue().getValue());

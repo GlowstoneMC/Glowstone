@@ -62,6 +62,6 @@ public class ImmutableItemStack extends ItemStack {
 
     @Override
     public ItemMeta getItemMeta() {
-        return itemMeta.clone();
+        return itemMeta != null ? itemMeta.clone() : null;
     }
 }

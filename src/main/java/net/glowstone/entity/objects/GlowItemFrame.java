@@ -12,7 +12,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.InventoryUtil;
@@ -155,7 +155,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         int yaw = getYaw();
 
         return Arrays.asList(
-            new SpawnObjectMessage(entityId, getUniqueId(),
+            new SpawnEntityMessage(entityId, getUniqueId(),
                 EntityNetworkUtil.getObjectId(EntityType.ITEM_FRAME),
                 location.getBlockX(), location.getBlockY(), location.getBlockZ(), 0, yaw,
                 HangingFace.getByBlockFace(getFacing()).ordinal()),

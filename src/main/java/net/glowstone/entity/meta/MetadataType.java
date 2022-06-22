@@ -32,6 +32,12 @@ public enum MetadataType {
     BLOCKID(Integer.class, false),
     NBTTAG(CompoundTag.class, false),
     PARTICLE(ParticleBuilder.class, false);
+    // TODO 1.19 VILLAGER_DATA
+    // TODO 1.19 OPTVARINT
+    // TODO 1.19 POSE
+    // TODO 1.19 CAT_VARIANT
+    // TODO 1.19 FROG_VARIANT
+    // TODO 1.19 PAINTING_VARIANT
 
     @Getter
     private final Class<?> dataType;

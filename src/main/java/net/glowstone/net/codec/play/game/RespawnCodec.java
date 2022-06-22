@@ -18,7 +18,8 @@ public final class RespawnCodec implements Codec<RespawnMessage> {
     public RespawnMessage decode(ByteBuf buf) throws IOException {
         CompoundTag dimension = readCompound(buf);
         String world = readUTF8(buf);
-        byte[] seedHash = buf.readBytes(8).array();
+        byte[] seedHash = new byte[8];
+        buf.readBytes(seedHash);
         int mode = buf.readByte();
         int previousMode = buf.readByte();
         boolean debug = buf.readBoolean();

@@ -7,7 +7,7 @@ import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.util.EntityUtils;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -118,7 +118,7 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
             metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_PARTICLE, new ParticleBuilder(particle));
         }
         return Arrays.asList(
-            new SpawnObjectMessage(entityId, getUniqueId(), NETWORK_TYPE_ID, location),
+            new SpawnEntityMessage(entityId, getUniqueId(), NETWORK_TYPE_ID, location),
             new EntityMetadataMessage(entityId, metadataMap.getEntryList()));
     }
 

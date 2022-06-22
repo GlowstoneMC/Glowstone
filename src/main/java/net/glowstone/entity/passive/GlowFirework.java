@@ -10,7 +10,7 @@ import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.Summonable;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
@@ -95,7 +95,7 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
         double z = location.getZ();
 
         return Arrays.asList(
-            new SpawnObjectMessage(
+            new SpawnEntityMessage(
                 entityId, UUID.randomUUID(),
                 EntityNetworkUtil.getObjectId(EntityType.FIREWORK), x, y, z, 0, 0),
             new EntityMetadataMessage(entityId, metadata.getEntryList())

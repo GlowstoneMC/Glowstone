@@ -41,7 +41,8 @@ public final class PlayerRecipeMonitor {
         int[] recipeIds = new int[0]; // todo: conversion to internal IDs
         int[] toBeDisplayedIds = new int[0]; // todo: conversion to internal IDs
         // TODO: Smelting flags
-        return new UnlockRecipesMessage(status, bookOpen, filterCraftable, bookOpen, filterCraftable,
+        return new UnlockRecipesMessage(status, bookOpen, filterCraftable, bookOpen,
+                filterCraftable, bookOpen, filterCraftable, bookOpen, filterCraftable,
                 toBeDisplayedIds, recipeIds);
     }
 

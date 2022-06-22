@@ -7,7 +7,7 @@ import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.GlowVehicle;
 import net.glowstone.inventory.GlowInventory;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -97,7 +97,7 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
 
     @Override
     public List<Message> createSpawnMessage() {
-        return Collections.singletonList(new SpawnObjectMessage(
+        return Collections.singletonList(new SpawnEntityMessage(
             entityId, getUniqueId(), 10, location, minecartType.ordinal()));
     }
 

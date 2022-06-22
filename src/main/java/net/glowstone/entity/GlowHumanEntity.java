@@ -17,6 +17,7 @@ import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
+import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
@@ -165,8 +166,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnPlayerMessage(entityId, profile.getId(), x, y, z, yaw, pitch,
-            metadata.getEntryList()));
+        result.add(new SpawnPlayerMessage(entityId, profile.getId(), x, y, z, yaw, pitch));
+
+        result.add(new EntityMetadataMessage(entityId, metadata.getEntryList()));
 
         // head facing
         result.add(new EntityHeadRotationMessage(entityId, yaw));

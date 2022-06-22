@@ -36,14 +36,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -76,6 +69,9 @@ public class GlowChunk implements Chunk {
      * The number of chunk sections in a single chunk column.
      */
     public static final int SEC_COUNT = DEPTH / SEC_DEPTH;
+
+    public static final byte[] EMPTY_LIGHT = new byte[2048];
+
     /**
      * The world of this chunk.
      */
@@ -955,33 +951,12 @@ public class GlowChunk implements Chunk {
     public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk,
                                       ByteBufAllocator alloc) {
         load();
-        int sectionBitmask = 0;
-
-        // filter sectionBitmask based on actual chunk contents
-        if (sections != null) {
-            int maxBitmask = (1 << sections.length) - 1;
-            if (entireChunk) {
-                sectionBitmask = maxBitmask;
-            } else {
-                sectionBitmask &= maxBitmask;
-            }
-
-            for (int i = 0; i < sections.length; ++i) {
-                if (sections[i] == null || sections[i].isEmpty()) {
-                    // remove empty sections from bitmask
-                    sectionBitmask &= ~(1 << i);
-                }
-            }
-        }
 
         ByteBuf buf = alloc == null ? Unpooled.buffer() : alloc.buffer();
 
         if (sections != null) {
             // get the list of sections
             for (int i = 0; i < sections.length; ++i) {
-                if ((sectionBitmask & 1 << i) == 0) {
-                    continue;
-                }
                 sections[i].writeToBuf(buf, skylight);
             }
         }
@@ -1002,7 +977,31 @@ public class GlowChunk implements Chunk {
             blockEntities.add(tag);
         }
 
-        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, blockEntities);
+        CompoundTag heightMap = new CompoundTag();
+        heightMap.putByteArray("MOTION_BLOCKING", this.heightMap);
+
+
+        BitSet skyLightMask = new BitSet();
+        BitSet blockLightMask = new BitSet();
+
+        for (int i = 0; i < SEC_COUNT + 2; i++) {
+            skyLightMask.set(i);
+            blockLightMask.set(i);
+        }
+
+        return new ChunkDataMessage(x, z, heightMap, buf, blockEntities, true, skyLightMask, blockLightMask, new BitSet(), new BitSet(),
+                Arrays.asList(
+                        EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT,
+                        EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT,
+                        EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT,
+                        EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT,
+                        EMPTY_LIGHT, EMPTY_LIGHT),
+                Arrays.asList(
+                        EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT,
+                        EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT,
+                        EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT,
+                        EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT, EMPTY_LIGHT,
+                        EMPTY_LIGHT, EMPTY_LIGHT));
     }
 
     public void addTick() {

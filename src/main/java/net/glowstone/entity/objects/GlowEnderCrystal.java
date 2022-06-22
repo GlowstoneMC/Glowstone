@@ -8,7 +8,7 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import org.bukkit.Location;
@@ -49,7 +49,7 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-            new SpawnObjectMessage(entityId,
+            new SpawnEntityMessage(entityId,
                 getUniqueId(), EntityNetworkUtil.getObjectId(EntityType.ENDER_CRYSTAL),
                 location),
             new EntityMetadataMessage(entityId, metadata.getEntryList())

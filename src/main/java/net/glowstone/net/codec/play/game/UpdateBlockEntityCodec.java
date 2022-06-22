@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UpdateBlockEntityMessage;
@@ -14,7 +15,7 @@ public final class UpdateBlockEntityCodec implements Codec<UpdateBlockEntityMess
     @Override
     public UpdateBlockEntityMessage decode(ByteBuf buffer) throws IOException {
         BlockVector pos = GlowBufUtils.readBlockPosition(buffer);
-        int action = buffer.readByte();
+        int action = ByteBufUtils.readVarInt(buffer);
         CompoundTag nbt = GlowBufUtils.readCompound(buffer);
         return new UpdateBlockEntityMessage(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(),
             action, nbt);
@@ -23,7 +24,7 @@ public final class UpdateBlockEntityCodec implements Codec<UpdateBlockEntityMess
     @Override
     public ByteBuf encode(ByteBuf buf, UpdateBlockEntityMessage message) throws IOException {
         GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
-        buf.writeByte(message.getAction());
+        ByteBufUtils.writeVarInt(buf, message.getAction());
         GlowBufUtils.writeCompound(buf, message.getNbt());
         return buf;
     }

@@ -14,7 +14,19 @@ public final class LoginStartCodec implements Codec<LoginStartMessage> {
     @Override
     public LoginStartMessage decode(ByteBuf buffer) throws IOException {
         String input = ByteBufUtils.readUTF8(buffer);
-        return new LoginStartMessage(URLEncoder.encode(input, StandardCharsets.UTF_8.toString()));
+        boolean hasSigData = buffer.readBoolean();
+        long timestamp = 0;
+        byte[] publicKey = null;
+        byte[] signature = null;
+        if (hasSigData) {
+            timestamp = buffer.readLong();
+            publicKey = new byte[ByteBufUtils.readVarInt(buffer)];
+            buffer.readBytes(publicKey);
+            signature = new byte[ByteBufUtils.readVarInt(buffer)];
+            buffer.readBytes(signature);
+        }
+        return new LoginStartMessage(URLEncoder.encode(input, StandardCharsets.UTF_8.toString()),
+                timestamp, publicKey, signature);
     }
 
     @Override

@@ -16,9 +16,10 @@ public final class PositionRotationMessage implements Message {
     private final float pitch;
     private final int flags;
     private final int teleportId;
+    private final boolean dismountVehicle;
 
     public PositionRotationMessage(double x, double y, double z, float rotation, float pitch) {
-        this(x, y, z, rotation, pitch, 0, 0);
+        this(x, y, z, rotation, pitch, 0, 0, false);
     }
 
     public PositionRotationMessage(Location location) {

@@ -1,7 +1,9 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.network.Message;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.TextMessage;
 
@@ -118,6 +120,7 @@ public final class UserListItemMessage implements Message {
     }
 
     @Data
+    @RequiredArgsConstructor
     public static final class Entry {
 
         public final UUID uuid;
@@ -126,5 +129,12 @@ public final class UserListItemMessage implements Message {
         public final int ping;
         public final TextMessage displayName;
         private final Action action;
+        public final long timestamp;
+        public final byte[] publicKey;
+        public final byte[] signature;
+
+        public Entry(UUID uuid, GlowPlayerProfile profile, int gameMode, int ping, TextMessage displayName, Action action) {
+            this(uuid, profile, gameMode, ping, displayName, action, 0, null, null);
+        }
     }
 }

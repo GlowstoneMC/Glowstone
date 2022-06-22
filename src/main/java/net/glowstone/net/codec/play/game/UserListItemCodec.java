@@ -52,6 +52,16 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
                     } else {
                         buf.writeBoolean(false);
                     }
+                    if (entry.publicKey != null && entry.signature != null) {
+                        buf.writeBoolean(true);
+                        buf.writeLong(entry.timestamp);
+                        ByteBufUtils.writeVarInt(buf, entry.publicKey.length);
+                        buf.writeBytes(entry.publicKey);
+                        ByteBufUtils.writeVarInt(buf, entry.signature.length);
+                        buf.writeBytes(entry.signature);
+                    } else {
+                        buf.writeBoolean(false);
+                    }
                     break;
 
                 case UPDATE_GAMEMODE:

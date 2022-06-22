@@ -332,7 +332,11 @@ public class GlowSession extends BasicSession {
      * @param buf     The byte buffer.
      */
     public void sendAndRelease(Message message, ByteBuf buf) {
-        sendWithFuture(message).addListener(f -> buf.release());
+        sendWithFuture(message).addListener(f -> {
+            if (buf.refCnt() > 0) {
+                buf.release();
+            }
+        });
     }
 
     /**
@@ -487,7 +491,7 @@ public class GlowSession extends BasicSession {
         }
 
         // send login response
-        send(new LoginSuccessMessage(UuidUtils.toString(profile.getId()), profile.getName()));
+        send(new LoginSuccessMessage(profile.getId(), profile.getName()));
         setProtocol(protocolProvider.play);
     }
 
@@ -544,6 +548,7 @@ public class GlowSession extends BasicSession {
 
     @Override
     public void messageReceived(Message message) {
+        System.out.println("Otrzymano wiadomosc: " + message.getClass().getSimpleName());
         if (message instanceof AsyncableMessage && ((AsyncableMessage) message).isAsync()) {
             // async messages get their handlers called immediately
             super.messageReceived(message);

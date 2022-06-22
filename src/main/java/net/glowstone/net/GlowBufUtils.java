@@ -5,6 +5,7 @@ import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
+import lombok.SneakyThrows;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.GlowParticle;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -12,17 +13,14 @@ import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
-import net.glowstone.util.GlowUnsafeValues;
-import net.glowstone.util.InventoryUtil;
-import net.glowstone.util.MaterialUtil;
-import net.glowstone.util.Position;
-import net.glowstone.util.TextMessage;
+import net.glowstone.util.*;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
 import net.glowstone.util.nbt.NbtReadLimiter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.EquipmentSlot;
@@ -34,6 +32,7 @@ import org.bukkit.util.Vector;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -122,10 +121,14 @@ public final class GlowBufUtils {
             MetadataIndex index = entry.index;
             Object value = entry.value;
 
+
             int type = index.getType().getId();
             int id = index.getIndex();
+
+            System.out.println("Metadata: " + id + " " + type);
+
             buf.writeByte(id);
-            buf.writeByte(type);
+            ByteBufUtils.writeVarInt(buf, type);
 
             if (!index.getType().isOptional() && value == null) {
                 continue;
@@ -430,5 +433,35 @@ public final class GlowBufUtils {
                 ByteBufUtils.writeVarInt(buf, 0);
             }
         }
+    }
+
+    public static void writeBitSet(ByteBuf buf, BitSet bitSet) {
+        long[] longs = bitSet.toLongArray();
+        ByteBufUtils.writeVarInt(buf, longs.length);
+        for (long aLong : longs) {
+            buf.writeLong(aLong);
+        }
+    }
+
+    @SneakyThrows
+    public static NamespacedKey readNamespacedKey(ByteBuf buf) {
+        String raw = ByteBufUtils.readUTF8(buf);
+        return NamespacedKey.fromString(ByteBufUtils.readUTF8(buf));
+    }
+
+    @SneakyThrows
+    public static void writeNamespacedKey(ByteBuf buf, NamespacedKey key) {
+        ByteBufUtils.writeUTF8(buf, key.toString());
+    }
+
+    public static GlobalPosition readGlobalPos(ByteBuf buf) {
+        NamespacedKey key = readNamespacedKey(buf);
+        BlockVector position = readBlockPosition(buf);
+        return new GlobalPosition(key, position);
+    }
+
+    public static void writeGlobalPos(ByteBuf buf, GlobalPosition globalPosition) {
+        writeNamespacedKey(buf, globalPosition.getWorld());
+        writeBlockPosition(buf, globalPosition.getPosition());
     }
 }

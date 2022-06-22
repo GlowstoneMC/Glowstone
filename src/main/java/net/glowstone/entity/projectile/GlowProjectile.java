@@ -8,7 +8,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -75,7 +75,7 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-            new SpawnObjectMessage(entityId, getUniqueId(), getObjectId(), x, y, z, pitch, yaw),
+            new SpawnEntityMessage(entityId, getUniqueId(), getObjectId(), x, y, z, pitch, yaw, yaw),
             new EntityMetadataMessage(entityId, metadata.getEntryList()),
             new EntityVelocityMessage(entityId, getVelocity())
         );

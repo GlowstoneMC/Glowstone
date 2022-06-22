@@ -8,6 +8,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
+import com.jogamp.common.util.IOUtil;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
 import com.tobedevoured.naether.NaetherException;
@@ -140,9 +141,13 @@ import net.glowstone.util.linkstone.LinkstoneClassInitObserver;
 import net.glowstone.util.linkstone.LinkstonePluginLoader;
 import net.glowstone.util.linkstone.LinkstonePluginScanner;
 import net.glowstone.util.loot.LootingManager;
+import net.glowstone.util.mojangson.Mojangson;
+import net.glowstone.util.mojangson.ex.MojangsonParseException;
+import net.glowstone.util.nbt.CompoundTag;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
@@ -181,6 +186,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -221,8 +227,11 @@ import javax.annotation.Nullable;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -277,7 +286,7 @@ public class GlowServer implements Server {
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = NoInline.of(754);
+    public static final int PROTOCOL_VERSION = NoInline.of(759);
     /**
      * The data version supported by the server.
      */
@@ -497,6 +506,9 @@ public class GlowServer implements Server {
     @Getter
     @Setter
     private int maxPlayers;
+
+    @Getter
+    private CompoundTag registry;
 
     /**
      * Creates a new server.
@@ -830,6 +842,17 @@ public class GlowServer implements Server {
             ConsoleMessages.Error.LOOTING_MANAGER.log();
             e.printStackTrace();
         }
+
+
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("builtin/dimensions.mojangson");
+            registry = Mojangson.parseCompound(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8));
+        } catch (MojangsonParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         // Start loading plugins
         String repository = config.getString(Key.LIBRARY_REPOSITORY_URL);

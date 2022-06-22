@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.Explosion;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -114,7 +114,7 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
 
     @Override
     public List<Message> createSpawnMessage() {
-        return Collections.singletonList(new SpawnObjectMessage(
+        return Collections.singletonList(new SpawnEntityMessage(
             entityId, getUniqueId(), 50, location));
     }
 

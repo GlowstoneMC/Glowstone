@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
-public final class SpawnObjectMessage implements Message {
+public final class SpawnEntityMessage implements Message {
 
     private final int id;
     private final UUID uuid; // TODO: Handle UUID
@@ -21,19 +21,25 @@ public final class SpawnObjectMessage implements Message {
     private final double z;
     private final int pitch;
     private final int yaw;
+    private final int headYaw;
     private final int data;
     private final int velX;
     private final int velY;
     private final int velZ;
 
-    public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
-                              int yaw) {
-        this(id, uuid, type, x, y, z, pitch, yaw, 0, 0, 0, 0);
+    public SpawnEntityMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
+                              int yaw, int headYaw) {
+        this(id, uuid, type, x, y, z, pitch, yaw, headYaw, 0, 0, 0, 0);
     }
 
-    public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
-                              int yaw, int data) {
-        this(id, uuid, type, x, y, z, pitch, yaw, data, 0, 0, 0);
+    public SpawnEntityMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
+                              int yaw) {
+        this(id, uuid, type, x, y, z, pitch, yaw, yaw, 0, 0, 0, 0);
+    }
+
+    public SpawnEntityMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
+                              int yaw, int data, int headYaw) {
+        this(id, uuid, type, x, y, z, pitch, yaw, headYaw, data, 0, 0, 0);
     }
 
     /**
@@ -44,7 +50,7 @@ public final class SpawnObjectMessage implements Message {
      * @param type     the network ID of the entity type
      * @param location The location whose x, y, z, pitch and yaw will be used
      */
-    public SpawnObjectMessage(int id, UUID uuid, int type, Location location) {
+    public SpawnEntityMessage(int id, UUID uuid, int type, Location location) {
         this(id, uuid, type, location, 0);
     }
 
@@ -57,14 +63,20 @@ public final class SpawnObjectMessage implements Message {
      * @param location the location whose x, y, z, pitch and yaw will be used
      * @param data     as defined by the entity type
      */
-    public SpawnObjectMessage(int id, UUID uuid, int type, Location location, int data) {
+    public SpawnEntityMessage(int id, UUID uuid, int type, Location location, int data) {
         this(id, uuid, type, location.getX(), location.getY(), location.getZ(),
             Position.getIntPitch(location), Position.getIntYaw(location), data);
     }
 
-    public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
+    public SpawnEntityMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
                               int yaw, int data, Vector vector) {
-        this(id, uuid, type, x, y, z, pitch, yaw, data,
+        this(id, uuid, type, x, y, z, pitch, yaw, yaw, data,
+            convert(vector.getX()), convert(vector.getY()), convert(vector.getZ()));
+    }
+
+    public SpawnEntityMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
+                              int yaw, int headYaw, int data, Vector vector) {
+        this(id, uuid, type, x, y, z, pitch, yaw, headYaw, data,
             convert(vector.getX()), convert(vector.getY()), convert(vector.getZ()));
     }
 

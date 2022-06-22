@@ -4,7 +4,7 @@ import com.flowpowered.network.Message;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -33,8 +33,8 @@ public class GlowEvokerFangs extends GlowEntity implements EvokerFangs {
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnObjectMessage(
-            entityId, this.getUniqueId(), 79, x, y, z, pitch, yaw, 0, 0, 0, 0));
+        result.add(new SpawnEntityMessage(
+            entityId, this.getUniqueId(), 79, x, y, z, pitch, yaw, yaw, 0, 0, 0, 0));
         return result;
     }
 
