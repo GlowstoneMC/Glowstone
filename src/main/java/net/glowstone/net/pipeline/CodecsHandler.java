@@ -35,6 +35,8 @@ public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message>
             throw new EncoderException("Unknown message type: " + clazz + ".");
         }
 
+        System.out.println("Wysylam " + msg.getClass().getSimpleName());
+
         // write header
         ByteBuf headerBuf = ctx.alloc().buffer(8);
         ByteBufUtils.writeVarInt(headerBuf, reg.getOpcode());

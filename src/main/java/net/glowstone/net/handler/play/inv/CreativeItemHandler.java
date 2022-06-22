@@ -42,7 +42,7 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
             InventoryCreativeEvent event = eventFactory
                 .callEvent(new InventoryCreativeEvent(view, SlotType.OUTSIDE, -999, stack));
             if (event.isCancelled()) {
-                session.send(new SetWindowSlotMessage(-1, -1, stack));
+                session.send(new SetWindowSlotMessage(-1, 0, -1, stack));
             } else {
                 player.drop(event.getCursor());
             }
@@ -65,7 +65,7 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
             player.sendItemChange(viewSlot, view.getItem(viewSlot));
             // don't keep track of player's current item, just give them back what they tried to
             // place
-            session.send(new SetWindowSlotMessage(-1, -1, stack));
+            session.send(new SetWindowSlotMessage(-1, 0, -1, stack));
             return;
         }
 

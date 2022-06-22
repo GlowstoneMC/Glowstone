@@ -22,8 +22,8 @@ import net.glowstone.block.blocktype.BlockBed;
 import net.glowstone.block.entity.SignEntity;
 import net.glowstone.block.itemtype.ItemFood;
 import net.glowstone.block.itemtype.ItemType;
+import net.glowstone.chunk.*;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
-import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.constants.GameRules;
 import net.glowstone.constants.GlowBlockEntity;
@@ -98,7 +98,10 @@ import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.TickUtil;
+import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.ListTag;
+import net.glowstone.util.nbt.TagType;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -193,20 +196,7 @@ import org.json.simple.JSONObject;
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ThreadLocalRandom;
@@ -692,6 +682,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    // TODO move
+    NamespacedKey[] dimensions = {NamespacedKey.minecraft("overworld"), NamespacedKey.minecraft("overworld_caves"), NamespacedKey.minecraft("the_nether"), NamespacedKey.minecraft("the_end")};
+
     /**
      * Loads the player's state and sends the messages that are necessary on login.
      *
@@ -706,15 +699,149 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         int gameMode = getGameMode().getValue();
 
+        CompoundTag registryCodecs = new CompoundTag();
+
+        {
+            List<CompoundTag> dimensionList = new ArrayList<>();
+            for (DimensionType dimensionType : Arrays.asList(DimensionTypes.OVERWORLD)) {
+                CompoundTag tag = new CompoundTag();
+                tag.putByte("piglin_safe", dimensionType.isPiglinSafe() ? 1 : 0);
+                tag.putByte("has_raids", dimensionType.isHasRaids() ? 1 : 0);
+                tag.putInt("monster_spawn_light_level", dimensionType.getMonsterSpawnLightLevel());
+                tag.putInt("monster_spawn_block_light_limit", dimensionType.getMonsterSpawnBlockLightLimit());
+                tag.putByte("natural", dimensionType.isNatural() ? 1 : 0);
+                tag.putFloat("ambient_light", dimensionType.getAmbientLight());
+                dimensionType.getFixedTime().ifPresent(val -> tag.putFloat("fixed_time", val));
+                tag.putString("infiniburn", "#" + dimensionType.getInfiniburn().map(NamespacedKey::toString).orElse(""));
+                tag.putByte("respawn_anchor_works", dimensionType.isRespawnAnchorWorks() ? 1 : 0);
+                tag.putByte("has_skylight", dimensionType.isSkyLight() ? 1 : 0);
+                tag.putByte("bed_works", dimensionType.isBedWorks() ? 1 : 0);
+                tag.putString("effects", dimensionType.getEffects().toString());
+                tag.putInt("min_y", dimensionType.getMinY());
+                tag.putInt("height", dimensionType.getHeight());
+                tag.putInt("logical_height", dimensionType.getLogicalHeight());
+                tag.putDouble("coordinate_scale", dimensionType.getCoordinateScale());
+                tag.putByte("ultrawarm", dimensionType.isUltraWarm() ? 1 : 0);
+                tag.putByte("has_ceiling", dimensionType.isHasCeiling() ? 1 : 0);
+
+                CompoundTag parent = new CompoundTag();
+                parent.putString("name", "minecraft:overworld");
+                parent.putInt("id", 0);
+                parent.putCompound("element", tag);
+
+                dimensionList.add(parent);
+            }
+
+            CompoundTag dimensionsTag = new CompoundTag();
+            dimensionsTag.putString("type", "minecraft:dimension_type");
+            dimensionsTag.putCompoundList("value", dimensionList);
+
+            registryCodecs.putCompound("minecraft:dimension_type", dimensionsTag);
+        }
+
+        {
+
+            List<CompoundTag> biomeList = new ArrayList<>();
+            for (WorldGenBiome worldGenBiome : Arrays.asList(WorldGenBiomes.PLAINS)) {
+
+                CompoundTag biomeTag = new CompoundTag();
+
+                biomeTag.putString("precipitation", worldGenBiome.getPrecipitation());
+                biomeTag.putFloat("depth", worldGenBiome.getDepth());
+                biomeTag.putFloat("temperature", worldGenBiome.getTemperature());
+                biomeTag.putFloat("scale", worldGenBiome.getScale());
+                biomeTag.putFloat("downfall", worldGenBiome.getDownfall());
+                biomeTag.putString("category", worldGenBiome.getCategory());
+                worldGenBiome.getTemperatureModifier().ifPresent(val -> biomeTag.putString("temperature_modifier", val));
+
+                CompoundTag effects = new CompoundTag();
+                effects.putInt("sky_color", worldGenBiome.getSkyColor());
+                effects.putInt("water_fog_color", worldGenBiome.getWaterFogColor());
+                effects.putInt("fog_color", worldGenBiome.getFogColor());
+                effects.putInt("water_color", worldGenBiome.getWaterColor());
+                worldGenBiome.getFoliageColor().ifPresent(val -> effects.putInt("foliage_color", val));
+                worldGenBiome.getGrassColor().ifPresent(val -> effects.putInt("grass_color", val));
+                worldGenBiome.getGrassColorModifier().ifPresent(val -> effects.putString("grass_color_modifier", val));
+//                worldGenBiome.getMusic().ifPresent(val -> biomeTag.putInt("foliage_color", val));
+//                worldGenBiome.getAmbientSound().ifPresent(val -> biomeTag.putInt("foliage_color", val));
+//                worldGenBiome.getAdditionsSound().ifPresent(val -> biomeTag.putInt("foliage_color", val));
+//                worldGenBiome.getMoodSound().ifPresent(val -> biomeTag.putInt("foliage_color", val));
+
+                CompoundTag paricles = new CompoundTag();
+                paricles.putFloat("probability", worldGenBiome.getParticleProbability());
+                CompoundTag probabilityOptions = new CompoundTag();
+                probabilityOptions.putString("type", worldGenBiome.getParticleOptions());
+                paricles.putCompound("probability", probabilityOptions);
+
+                effects.putCompound("particle", paricles);
+
+                biomeTag.putCompound("effects", effects);
+
+                CompoundTag parent = new CompoundTag();
+                parent.putString("name", "minecraft:plains");
+                parent.putInt("id", 0);
+                parent.putCompound("element", biomeTag);
+
+                biomeList.add(parent);
+            }
+
+            CompoundTag biomeRegistry = new CompoundTag();
+            biomeRegistry.putString("type", "minecraft:worldgen/biome");
+            biomeRegistry.putCompoundList("value", biomeList);
+
+            registryCodecs.putCompound("minecraft:worldgen/biome", biomeRegistry);
+
+        }
+
+
+        {
+
+            List<CompoundTag> chatList = new ArrayList<>();
+
+            {
+                CompoundTag system = new CompoundTag();
+                system.putCompound("chat", new CompoundTag());
+
+                CompoundTag narration = new CompoundTag();
+                narration.putString("priority", "system");
+                system.putCompound("narration", narration);
+
+                CompoundTag parent = new CompoundTag();
+                parent.putString("name", "minecraft:system");
+                parent.putInt("id", 0);
+                parent.putCompound("element", system);
+
+                chatList.add(parent);
+            }
+
+            {
+                CompoundTag gameInfo = new CompoundTag();
+                gameInfo.putCompound("overlay", new CompoundTag());
+
+                CompoundTag parent = new CompoundTag();
+                parent.putString("name", "minecraft:game_info");
+                parent.putInt("id", 1);
+                parent.putCompound("element", gameInfo);
+
+                chatList.add(parent);
+            }
+
+            CompoundTag chatRegistry = new CompoundTag();
+            chatRegistry.putString("type", "minecraft:chat_type");
+            chatRegistry.putCompoundList("value", chatList);
+
+            registryCodecs.putCompound("minecraft:chat_typee", chatRegistry);
+        }
+
         session.send(new JoinGameMessage(
             getEntityId(),
             world.isHardcore(),
             gameMode,
             -1, // TODO: determine previous gamemode
-            server.getWorlds().stream().map(World::getKey).collect(Collectors.toList()),
-            new CompoundTag(), // TODO
-            NamespacedKey.fromString(world.getWorldType().toString().toLowerCase(Locale.ROOT)),
-            world.getKey(),
+            Arrays.asList(dimensions), // TODO -|
+            registryCodecs, // TODO       |
+            dimensions[0], // TODO  ------------|
+            dimensions[0], // TODO  ------------|
             world.getSeedHash(),
             server.getMaxPlayers(),
             world.getViewDistance(),
@@ -1663,7 +1790,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void setCompassTarget(Location loc) {
         compassTarget = loc;
-        session.send(new SpawnPositionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+        session.send(new SpawnPositionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getYaw()));
     }
 
     @Override
@@ -3518,7 +3645,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void updateInventory() {
-        session.send(new SetWindowContentsMessage(invMonitor.getId(), invMonitor.getContents()));
+        session.send(new SetWindowContentsMessage(invMonitor.getId(), 0, invMonitor.getContents(), getItemInHand()));
     }
 
     @Override
@@ -3534,14 +3661,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void sendItemChange(int slot, ItemStack item) {
         if (invMonitor != null) {
-            session.send(new SetWindowSlotMessage(invMonitor.getId(), slot, item));
+            session.send(new SetWindowSlotMessage(invMonitor.getId(), 0, slot, item));
         }
     }
 
     @Override
     public void setItemOnCursor(ItemStack item) {
         super.setItemOnCursor(item);
-        session.send(new SetWindowSlotMessage(-1, -1, item));
+        session.send(new SetWindowSlotMessage(-1, 0,-1, item));
     }
 
     @Override

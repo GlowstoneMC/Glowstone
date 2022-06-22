@@ -272,9 +272,9 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         EventFactory.getInstance().callEvent(event);
         if (event.isCancelled()) {
             int slot = event.getSlot();
-            player.getSession().send(new SetWindowSlotMessage(player.getOpenWindowId(),
+            player.getSession().send(new SetWindowSlotMessage(player.getOpenWindowId(), 0,
                 slot, event.getInventory().getItem(slot)));
-            player.getSession().send(new SetWindowSlotMessage(-1, -1, player.getItemOnCursor()));
+            player.getSession().send(new SetWindowSlotMessage(-1, 0, -1, player.getItemOnCursor()));
             return true;
         }
 
