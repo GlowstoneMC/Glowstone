@@ -1,4 +1,4 @@
-package net.glowstone.net.codec.login;
+package net.glowstone.net.message.login;
 
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;

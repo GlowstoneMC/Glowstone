@@ -229,7 +229,7 @@ public class GlowItem extends GlowEntity implements Item {
     @Override
     public void setItemStack(@NotNull ItemStack stack) {
         // stone is the "default state" for the item stack according to the client
-        metadata.set(MetadataIndex.ITEM_ITEM, stack != null ? stack.clone() : null);
+        metadata.set(MetadataIndex.ITEM_ITEM, InventoryUtil.itemOrEmpty(stack).clone());
     }
 
     @Override

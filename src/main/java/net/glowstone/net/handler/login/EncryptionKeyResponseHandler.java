@@ -11,6 +11,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.http.HttpCallback;
 import net.glowstone.net.http.HttpClient;
 import net.glowstone.net.message.login.EncryptionKeyResponseMessage;
+import net.glowstone.net.message.login.EncryptionKeyResponseWithVerifyToken;
 import net.glowstone.util.UuidUtils;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
@@ -73,19 +74,25 @@ public final class EncryptionKeyResponseHandler implements
             return;
         }
 
-        // decrypt verify token
-        byte[] verifyToken;
-        try {
-            rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
-            verifyToken = rsaCipher.doFinal(message.getVerifyToken());
-        } catch (Exception ex) {
-            ConsoleMessages.Warn.Crypt.BAD_VERIFY_TOKEN.log(ex);
-            session.disconnect(GlowstoneMessages.Kick.Crypt.VERIFY_TOKEN.get());
-            return;
-        }
+        if (message.hasVerifyToken()) {
+            // decrypt verify token
+            byte[] verifyToken;
+            try {
+                rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
+                verifyToken = rsaCipher.doFinal(((EncryptionKeyResponseWithVerifyToken) message).getVerifyToken());
+            } catch (Exception ex) {
+                ConsoleMessages.Warn.Crypt.BAD_VERIFY_TOKEN.log(ex);
+                session.disconnect(GlowstoneMessages.Kick.Crypt.VERIFY_TOKEN.get());
+                return;
+            }
 
-        // check verify token
-        if (!Arrays.equals(verifyToken, session.getVerifyToken())) {
+            // check verify token
+            if (!Arrays.equals(verifyToken, session.getVerifyToken())) {
+                session.disconnect(GlowstoneMessages.Kick.Crypt.VERIFY_TOKEN.get());
+                return;
+            }
+        } else {
+            // TODO
             session.disconnect(GlowstoneMessages.Kick.Crypt.VERIFY_TOKEN.get());
             return;
         }

@@ -321,7 +321,7 @@ public class GlowSession extends BasicSession {
         // Useful for debugging packet sends
         // TODO: config option?
         // Throwable trace = new Throwable();
-        // return super.sendWithFuture(message).addListener(f -> GlowServer.logger.log(Level.INFO, "Sent packet " + message.toString() + " to " + this, trace));
+        // return super.sendWithFuture(message).addListener(f -> GlowServer.logger.log(Level.INFO, "Message sent: " + message.toString() + " to " + this, trace));
         return super.sendWithFuture(message);
     }
 
@@ -548,7 +548,10 @@ public class GlowSession extends BasicSession {
 
     @Override
     public void messageReceived(Message message) {
-        System.out.println("Otrzymano wiadomosc: " + message.getClass().getSimpleName());
+        // Useful for debugging packet receives
+        // TODO: config option?
+        // Throwable trace = new Throwable();
+        // GlowServer.logger.log(Level.INFO, "Message sent: " + message.toString() + " to " + this, trace);
         if (message instanceof AsyncableMessage && ((AsyncableMessage) message).isAsync()) {
             // async messages get their handlers called immediately
             super.messageReceived(message);
