@@ -142,7 +142,7 @@ public class GlowPluginTypeDetector {
         public boolean isForgeN;
 
         public GlowVisitor() {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM10_EXPERIMENTAL);
         }
 
         @Override
