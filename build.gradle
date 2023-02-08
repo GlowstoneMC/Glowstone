@@ -1,0 +1,86 @@
+plugins {
+    id('java')
+    id('application')
+    id('maven-publish')
+    id('checkstyle')
+    id('jacoco')
+
+    id("io.freefair.lombok") version "6.5.0-rc1"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+}
+application {
+    mainClass = "net.glowstone.GlowServer"
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://libraries.minecraft.net"
+    }
+    maven{
+        url ("https://repo.papermc.io/repository/maven-public/")
+    }
+}
+
+dependencies {
+    implementation("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
+
+    implementation("org.fusesource.jansi:jansi:1.18")
+    implementation("jline:jline:2.14.6")
+    implementation("com.eatthepath:fast-uuid:0.1")
+    implementation("com.mojang:brigadier:1.0.17")
+    implementation("org.jogamp.gluegen:gluegen-rt-main:2.3.2")
+    implementation("org.jogamp.jocl:jocl-main:2.3.2")
+    implementation("com.tobedevoured.naether:core:0.15.8") {
+        exclude group: "org.slf4j", module: "slf4j-simple"
+    }
+    implementation('org.apache.commons:commons-lang3:3.12.0')
+
+
+    runtimeOnly("org.apache.logging.log4j:log4j-slf4j18-impl:2.17.1")
+    runtimeOnly("com.lmax:disruptor:3.4.4")
+
+    testImplementation("junit:junit:4.13.1")
+    testImplementation("org.junit.vintage:junit-vintage-engine:5.7.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.2")
+
+    testImplementation("org.hamcrest:hamcrest:2.2")
+    testImplementation("org.powermock:powermock-core:2.0.9")
+    testImplementation("org.powermock:powermock-module-junit4:2.0.9")
+    testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
+
+    compileOnly("org.jetbrains:annotations:21.0.1")
+    compileOnly('com.flowpowered:flow-network:1.0.0')
+}
+
+group = "net.glowstone"
+version = "2022.6.1-SNAPSHOT"
+description = "A fast, customizable and compatible open source Minecraft server."
+var javaVersion = 17
+var buildExtras = java.util.Optional.ofNullable(System.getenv("BUILD_EXTRAS"))
+
+checkstyle {
+    configFile = new File(project.projectDir, "/etc/checkstyle.xml")
+    configProperties["checkstyle.header.file"] = new File(project.projectDir, "LICENSE")
+    ignoreFailures = false
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion)
+    }
+
+    if (buildExtras.isPresent() && Boolean.parseBoolean(buildExtras.get())){
+        withSourcesJar()
+        tasks.named<Jar>("sourcesJar") {
+            archiveVersion.set("")
+        }
+
+        withJavadocJar()
+        tasks.named<Jar>("javadocJar") {
+            archiveVersion.set("")
+        }
+    }
+}
