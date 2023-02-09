@@ -60,7 +60,7 @@ dependencies {
     testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
 
     compileOnly("org.jetbrains:annotations:21.0.1")
-    implementation('com.flowpowered:flow-network:1.0.0')
+    implementation('com.flowpowered:flow-network:1.2.11-SNAPSHOT')
 }
 
 group = "net.glowstone"

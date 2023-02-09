@@ -130,7 +130,7 @@ public class ServerShim implements Server {
 
     @Override
     public @NotNull String getMinecraftVersion() {
-        return "1.19";
+        return "1.19.3";
     }
 
     @Override
