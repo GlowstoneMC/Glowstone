@@ -66,12 +66,12 @@ public class GlowCreeper extends GlowMonster implements Creeper {
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_CREEPER_DEATH;
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_CREEPER_HURT;
     }
 

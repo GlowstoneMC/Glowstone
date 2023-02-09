@@ -85,12 +85,12 @@ public class GlowEnderDragon extends GlowBoss implements EnderDragon {
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_ENDER_DRAGON_DEATH;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_ENDER_DRAGON_AMBIENT;
     }
 }

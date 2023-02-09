@@ -28,6 +28,25 @@ import java.util.UUID;
  * with other entities.
  */
 public abstract class GlowProjectile extends GlowEntity implements Projectile {
+    @Override
+    public boolean hasLeftShooter() {
+        return false;
+    }
+
+    @Override
+    public void setHasLeftShooter(boolean leftShooter) {
+
+    }
+
+    @Override
+    public boolean hasBeenShot() {
+        return true;
+    }
+
+    @Override
+    public void setHasBeenShot(boolean beenShot) {
+
+    }
 
     @Getter
     @Setter

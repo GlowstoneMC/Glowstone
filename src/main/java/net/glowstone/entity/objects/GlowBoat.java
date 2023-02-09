@@ -164,6 +164,16 @@ public class GlowBoat extends GlowVehicle implements Boat {
     }
 
     @Override
+    public @NotNull Type getBoatType() {
+        return null;
+    }
+
+    @Override
+    public void setBoatType(@NotNull Type type) {
+
+    }
+
+    @Override
     public double getMaxSpeed() {
         return 0.4;
     }
@@ -201,6 +211,11 @@ public class GlowBoat extends GlowVehicle implements Boat {
     @Override
     public void setWorkOnLand(boolean workOnLand) {
         this.workOnLand = workOnLand;
+    }
+
+    @Override
+    public @NotNull Status getStatus() {
+        return null;
     }
 
     @Override

@@ -12,12 +12,12 @@ public class GlowMagmaCube extends GlowSlime implements MagmaCube {
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_MAGMA_CUBE_DEATH;
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_MAGMA_CUBE_HURT;
     }
 }

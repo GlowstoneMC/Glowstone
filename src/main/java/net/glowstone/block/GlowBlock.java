@@ -580,9 +580,29 @@ public class GlowBlock implements Block {
     }
 
     @Override
+    public boolean breakNaturally(boolean triggerEffect, boolean dropExperience) {
+        return true;
+    }
+
+    @Override
     public boolean breakNaturally(@NotNull ItemStack tool, boolean triggerEffect) {
         // TODO: triggerEffect
         return breakNaturally(tool);
+    }
+
+    @Override
+    public boolean breakNaturally(@NotNull ItemStack tool, boolean triggerEffect, boolean dropExperience) {
+        return false;
+    }
+
+    @Override
+    public void tick() {
+
+    }
+
+    @Override
+    public void randomTick() {
+
     }
 
     @Override

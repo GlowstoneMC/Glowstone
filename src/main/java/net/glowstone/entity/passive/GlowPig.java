@@ -80,17 +80,17 @@ public class GlowPig extends GlowAnimal implements Pig {
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_PIG_HURT;
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_PIG_DEATH;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_PIG_AMBIENT;
     }
 

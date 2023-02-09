@@ -4,10 +4,12 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
+import net.glowstone.block.data.BlockDataManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -174,6 +176,16 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     @Override
     public void setOwnerProfile(org.bukkit.profile.@Nullable PlayerProfile profile) {
         owner.set((GlowPlayerProfile) profile);
+    }
+
+    @Override
+    public void setNoteBlockSound(@Nullable NamespacedKey noteBlockSound) {
+
+    }
+
+    @Override
+    public @Nullable NamespacedKey getNoteBlockSound() {
+        return NamespacedKey.fromString("minecraft:guitar");
     }
 
     private boolean setOwningPlayerInternal(OfflinePlayer owningPlayer) {

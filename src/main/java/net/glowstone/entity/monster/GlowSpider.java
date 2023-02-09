@@ -22,17 +22,17 @@ public class GlowSpider extends GlowMonster implements Spider {
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_SPIDER_HURT;
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_SPIDER_DEATH;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_SPIDER_AMBIENT;
     }
 

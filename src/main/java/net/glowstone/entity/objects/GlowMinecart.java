@@ -320,6 +320,16 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
         public Explosive(Location location) {
             super(location, MinecartType.TNT);
         }
+
+        @Override
+        public void setFuseTicks(int fuseTicks) {
+
+        }
+
+        @Override
+        public int getFuseTicks() {
+            return 0;
+        }
     }
 
     public static class Hopper extends GlowMinecart implements HopperMinecart {
@@ -422,6 +432,16 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
 
         @Override
         public void setSeed(long seed) {
+
+        }
+
+        @Override
+        public int getPickupCooldown() {
+            return 0;
+        }
+
+        @Override
+        public void setPickupCooldown(int cooldown) {
 
         }
     }

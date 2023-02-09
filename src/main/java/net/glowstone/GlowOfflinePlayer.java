@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import lombok.Getter;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
@@ -15,7 +16,6 @@ import org.bukkit.Statistic;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.profile.PlayerProfile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

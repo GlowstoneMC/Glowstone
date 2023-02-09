@@ -27,6 +27,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
@@ -261,6 +262,11 @@ public class GlowChunk implements Chunk {
     @Override
     public boolean contains(@NotNull BlockData block) {
         // TODO
+        return false;
+    }
+
+    @Override
+    public boolean contains(@NotNull Biome biome) {
         return false;
     }
 

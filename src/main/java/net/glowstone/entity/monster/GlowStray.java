@@ -12,17 +12,17 @@ public class GlowStray extends GlowSkeleton implements Stray {
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_STRAY_DEATH;
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_STRAY_HURT;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_STRAY_AMBIENT;
     }
 }

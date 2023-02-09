@@ -3,6 +3,7 @@ package net.glowstone.util;
 import com.google.common.collect.Multimap;
 import io.papermc.paper.inventory.ItemRarity;
 import net.glowstone.GlowServer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -11,6 +12,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.RegionAccessor;
 import org.bukkit.Registry;
 import org.bukkit.Statistic;
 import org.bukkit.UnsafeValues;
@@ -21,6 +23,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.CreativeCategory;
@@ -31,6 +34,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -92,6 +96,11 @@ public final class GlowUnsafeValues implements UnsafeValues {
     @Override
     public LegacyComponentSerializer legacyComponentSerializer() {
         return LegacyComponentSerializer.builder().build();
+    }
+
+    @Override
+    public Component resolveWithContext(Component component, CommandSender context, Entity scoreboardSubject, boolean bypassPermissions) throws IOException {
+        return null;
     }
 
     @Override
@@ -340,5 +349,15 @@ public final class GlowUnsafeValues implements UnsafeValues {
     @Override
     public boolean isCollidable(@NotNull Material material) {
         return false;
+    }
+
+    @Override
+    public @NotNull NamespacedKey getBiomeKey(RegionAccessor accessor, int x, int y, int z) {
+        return null;
+    }
+
+    @Override
+    public void setBiomeKey(RegionAccessor accessor, int x, int y, int z, NamespacedKey biomeKey) {
+
     }
 }

@@ -10,6 +10,8 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
+import io.papermc.paper.entity.LookAnchor;
+import io.papermc.paper.entity.RelativeTeleportFlag;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -103,6 +105,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.ListTag;
 import net.glowstone.util.nbt.TagType;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.TriState;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -133,6 +136,7 @@ import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
@@ -142,6 +146,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -189,6 +194,7 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
@@ -1604,6 +1610,61 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     }
 
+    @Override
+    public boolean teleport(@NotNull Location location, @NotNull TeleportCause cause, boolean ignorePassengers, boolean dismount, @NotNull RelativeTeleportFlag @NotNull ... teleportFlags) {
+        return false;
+    }
+
+    @Override
+    public void lookAt(double x, double y, double z, @NotNull LookAnchor playerAnchor) {
+
+    }
+
+    @Override
+    public void lookAt(@NotNull Entity entity, @NotNull LookAnchor playerAnchor, @NotNull LookAnchor entityAnchor) {
+
+    }
+
+    @Override
+    public void showElderGuardian(boolean silent) {
+
+    }
+
+    @Override
+    public int getWardenWarningCooldown() {
+        return 0;
+    }
+
+    @Override
+    public void setWardenWarningCooldown(int cooldown) {
+
+    }
+
+    @Override
+    public int getWardenTimeSinceLastWarning() {
+        return 0;
+    }
+
+    @Override
+    public void setWardenTimeSinceLastWarning(int time) {
+
+    }
+
+    @Override
+    public int getWardenWarningLevel() {
+        return 0;
+    }
+
+    @Override
+    public void setWardenWarningLevel(int warningLevel) {
+
+    }
+
+    @Override
+    public void increaseWardenWarningLevel() {
+
+    }
+
     /**
      * Set this player's client settings.
      *
@@ -1983,6 +2044,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void setFlyingFallDamage(@NotNull TriState flyingFallDamage) {
+
+    }
+
+    @Override
+    public @NotNull TriState hasFlyingFallDamage() {
+        return null;
+    }
+
+    @Override
     public void setFlying(boolean value) {
         flying = value && canFly;
         getServer().sendPlayerAbilities(this);
@@ -2267,6 +2338,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void setStarvationRate(int i) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable Firework fireworkBoost(@NotNull ItemStack fireworkItemStack) {
+        return null;
     }
 
     private boolean shouldCalculateExhaustion() {
@@ -2994,6 +3070,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void addAdditionalChatCompletions(@NotNull Collection<String> completions) {
+
+    }
+
+    @Override
+    public void removeAdditionalChatCompletions(@NotNull Collection<String> completions) {
+
+    }
+
+    @Override
     public @NotNull Set<Player> getTrackedPlayers() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -3094,7 +3180,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void playSound(@NotNull Entity entity, @NotNull String sound, float volume, float pitch) {
+
+    }
+
+    @Override
     public void playSound(@NotNull Entity entity, @NotNull Sound sound, @NotNull SoundCategory category, float volume, float pitch) {
+
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull String sound, @NotNull SoundCategory category, float volume, float pitch) {
 
     }
 
@@ -3120,6 +3216,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             sound = null;
         }
         session.send(new StopSoundMessage(category, sound));
+    }
+
+    @Override
+    public void stopSound(@NotNull SoundCategory category) {
+
     }
 
     @Override
@@ -3189,6 +3290,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sendBlockChange(loc, MaterialUtil.getId(blockData));
     }
 
+    @Override
+    public void sendBlockChanges(@NotNull Collection<BlockState> blocks, boolean suppressLightUpdates) {
+
+    }
+
     private void sendBlockChange(@NotNull Location loc, int type) {
         sendBlockChange(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), type));
     }
@@ -3217,12 +3323,22 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void sendBlockDamage(@NotNull Location loc, float progress, int destroyerIdentity) {
+
+    }
+
+    @Override
     public void sendMultiBlockChange(@NotNull Map<Location, BlockData> blockChanges, boolean suppressLightUpdates) {
 
     }
 
     @Override
     public void sendEquipmentChange(@NotNull LivingEntity entity, @NotNull EquipmentSlot slot, @NotNull ItemStack item) {
+
+    }
+
+    @Override
+    public void sendEquipmentChange(@NotNull LivingEntity entity, @NotNull Map<EquipmentSlot, ItemStack> equipmentChanges) {
 
     }
 
@@ -3312,6 +3428,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new MapDataMessage(map.getId(), map.getScale().ordinal(), Collections
             .emptyList(),
             mapCanvas.toSection()));
+    }
+
+    @Override
+    public void showWinScreen() {
+
     }
 
     @Override
@@ -3697,6 +3818,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public @org.jetbrains.annotations.Nullable FishHook getFishHook() {
+        return null;
+    }
+
+    @Override
     public MainHand getMainHand() {
         return metadata.getByte(MetadataIndex.PLAYER_MAIN_HAND) == 0 ? MainHand.LEFT
             : MainHand.RIGHT;
@@ -3709,6 +3835,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         session.send(new WindowPropertyMessage(invMonitor.getId(), prop.getId(), value));
         return true;
+    }
+
+    @Override
+    public int getEnchantmentSeed() {
+        return 0;
+    }
+
+    @Override
+    public void setEnchantmentSeed(int seed) {
+
     }
 
     @Override
@@ -4318,5 +4454,20 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             return -1;
         }
         return invMonitor.getId();
+    }
+
+    @Override
+    public @NotNull TriState getFrictionState() {
+        return null;
+    }
+
+    @Override
+    public void setFrictionState(@NotNull TriState state) {
+
+    }
+
+    @Override
+    public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> projectile, @org.jetbrains.annotations.Nullable Vector velocity, @org.jetbrains.annotations.Nullable Consumer<T> function) {
+        return null;
     }
 }

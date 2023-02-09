@@ -3,9 +3,11 @@ package net.glowstone.entity.monster;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Raider;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A mob that can raid villages.
@@ -33,5 +35,10 @@ public abstract class GlowRaider extends GlowMonster implements Raider {
     @Override
     public void setCelebrating(boolean celebrating) {
 
+    }
+
+    @Override
+    public @NotNull Sound getCelebrationSound() {
+        return Sound.ENTITY_PILLAGER_CELEBRATE;
     }
 }

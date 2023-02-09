@@ -14,6 +14,7 @@ application {
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven {
         url "https://libraries.minecraft.net"
     }
@@ -24,7 +25,13 @@ repositories {
 
 dependencies {
     implementation("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
+    implementation("net.glowstone:glowkit:1.19.3-R0.1-SNAPSHOT")
+    implementation("net.glowstone:block-data-generated:1.1.0-SNAPSHOT")
+    implementation("net.glowstone:data-pack-generated:1.1.0-SNAPSHOT")
 
+    implementation("io.netty:netty-all:4.1.87.Final")
+    implementation("org.ow2.asm:asm:9.2")
+    implementation("org.ow2.asm:asm-commons:9.2")
     implementation("org.fusesource.jansi:jansi:1.18")
     implementation("jline:jline:2.14.6")
     implementation("com.eatthepath:fast-uuid:0.1")
@@ -35,6 +42,7 @@ dependencies {
         exclude group: "org.slf4j", module: "slf4j-simple"
     }
     implementation('org.apache.commons:commons-lang3:3.12.0')
+    implementation("org.apache.maven:maven-artifact:3.8.1")
 
 
     runtimeOnly("org.apache.logging.log4j:log4j-slf4j18-impl:2.17.1")
@@ -52,7 +60,7 @@ dependencies {
     testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
 
     compileOnly("org.jetbrains:annotations:21.0.1")
-    compileOnly('com.flowpowered:flow-network:1.0.0')
+    implementation('com.flowpowered:flow-network:1.0.0')
 }
 
 group = "net.glowstone"
@@ -83,4 +91,7 @@ java {
             archiveVersion.set("")
         }
     }
+}
+tasks.withType(JavaCompile) {
+    options.warnings = false
 }

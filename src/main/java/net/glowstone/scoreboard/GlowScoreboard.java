@@ -13,6 +13,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.RenderType;
@@ -254,6 +255,16 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     @Override
+    public @NotNull Objective registerNewObjective(@NotNull String name, @NotNull Criteria criteria, @Nullable Component displayName) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
+    public @NotNull Objective registerNewObjective(@NotNull String name, @NotNull Criteria criteria, @Nullable Component displayName, @NotNull RenderType renderType) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
     public Objective registerNewObjective(String name, String criteria,
             String displayName) throws IllegalArgumentException {
         Objective objective = registerNewObjective(name, criteria);
@@ -270,6 +281,16 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     @Override
+    public @NotNull Objective registerNewObjective(@NotNull String name, @NotNull Criteria criteria, @NotNull String displayName) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
+    public @NotNull Objective registerNewObjective(@NotNull String name, @NotNull Criteria criteria, @NotNull String displayName, @NotNull RenderType renderType) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
     public Objective getObjective(String name) throws IllegalArgumentException {
         return objectives.get(name);
     }
@@ -283,6 +304,11 @@ public final class GlowScoreboard implements Scoreboard {
     @Override
     public Set<Objective> getObjectivesByCriteria(String criteria) throws IllegalArgumentException {
         return ImmutableSet.copyOf(getForCriteria(criteria));
+    }
+
+    @Override
+    public @NotNull Set<Objective> getObjectivesByCriteria(@NotNull Criteria criteria) throws IllegalArgumentException {
+        return null;
     }
 
     @Override

@@ -8,6 +8,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GameServer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.server.ServerListPingEvent;
 
 import java.io.UnsupportedEncodingException;
@@ -37,7 +38,7 @@ public class LegacyPingHandler extends ChannelInboundHandlerAdapter {
                     .channel().remoteAddress();
 
                 ServerListPingEvent legacyPingEvent = new ServerListPingEvent(
-                    inetsocketaddress.getAddress(), server.getMotd(),
+                    inetsocketaddress.getAddress(), Component.text(server.getMotd()),
                     server.getOnlinePlayers().size(), server.getMaxPlayers());
                 EventFactory.getInstance().callEvent(legacyPingEvent);
 

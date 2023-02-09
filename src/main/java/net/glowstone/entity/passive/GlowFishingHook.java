@@ -140,6 +140,26 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         }
     }
 
+    @Override
+    public boolean hasLeftShooter() {
+        return false;
+    }
+
+    @Override
+    public void setHasLeftShooter(boolean leftShooter) {
+
+    }
+
+    @Override
+    public boolean hasBeenShot() {
+        return false;
+    }
+
+    @Override
+    public void setHasBeenShot(boolean beenShot) {
+
+    }
+
     private int calculateLifeTime() {
         // Waiting time is 5-45 seconds
         int lifeTime = ThreadLocalRandom.current().nextInt(MINIMUM_BASE_WAIT, MAXIMUM_WAIT + 1);

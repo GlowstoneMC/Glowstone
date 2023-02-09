@@ -56,17 +56,17 @@ public class GlowOcelot extends GlowTameable implements Ocelot {
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_CAT_HURT;
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_CAT_DEATH;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_CAT_AMBIENT;
     }
 

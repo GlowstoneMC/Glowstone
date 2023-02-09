@@ -118,6 +118,11 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public boolean contains(@NotNull Biome biome) {
+        return false;
+    }
+
     public int getBlockTypeId(int x, int y, int z) {
         ChunkSection section = getSection(y);
         return section == null ? 0 : section.getType(x, y, z) >> 4;

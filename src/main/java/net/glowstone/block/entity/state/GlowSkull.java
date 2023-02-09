@@ -10,6 +10,7 @@ import net.glowstone.block.entity.SkullEntity;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.Position;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.SkullType;
 import org.bukkit.block.BlockFace;
@@ -104,6 +105,16 @@ public class GlowSkull extends GlowBlockState implements Skull {
     @Override
     public void setOwnerProfile(org.bukkit.profile.@Nullable PlayerProfile profile) {
         owner = (GlowPlayerProfile) profile;
+    }
+
+    @Override
+    public @Nullable NamespacedKey getNoteBlockSound() {
+        return null;
+    }
+
+    @Override
+    public void setNoteBlockSound(@Nullable NamespacedKey noteBlockSound) {
+
     }
 
     public void setOwner(org.bukkit.profile.@Nullable PlayerProfile profile) {

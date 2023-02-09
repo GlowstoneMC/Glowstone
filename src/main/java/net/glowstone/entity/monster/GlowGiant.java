@@ -13,7 +13,7 @@ public class GlowGiant extends GlowMonster implements Giant {
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_PLAYER_HURT;
     }
 }

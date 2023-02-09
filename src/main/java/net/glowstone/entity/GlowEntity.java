@@ -39,6 +39,7 @@ import org.bukkit.Chunk;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
@@ -1810,6 +1811,51 @@ public abstract class GlowEntity implements Entity {
     @Override
     public PersistentDataContainer getPersistentDataContainer() {
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean teleport(@NotNull Location location, @NotNull TeleportCause cause, boolean ignorePassengers, boolean dismount) {
+        return teleport(location, cause, ignorePassengers);
+    }
+
+    @Override
+    public @NotNull Sound getSwimSound() {
+        return Sound.ENTITY_GENERIC_SWIM;
+    }
+
+    @Override
+    public @NotNull Sound getSwimSplashSound() {
+        return Sound.ENTITY_GENERIC_SPLASH;
+    }
+
+    @Override
+    public @NotNull Sound getSwimHighSpeedSplashSound() {
+        return Sound.ENTITY_GENERIC_SPLASH;
+    }
+
+    @Override
+    public boolean isSneaking() {
+        return false;
+    }
+
+    @Override
+    public void setSneaking(boolean sneak) {
+
+    }
+
+    @Override
+    public boolean isUnderWater() {
+        return false;
+    }
+
+    @Override
+    public boolean collidesAt(@NotNull Location location) {
+        return false;
+    }
+
+    @Override
+    public boolean wouldCollideUsing(org.bukkit.util.@NotNull BoundingBox boundingBox) {
+        return false;
     }
 
     /**

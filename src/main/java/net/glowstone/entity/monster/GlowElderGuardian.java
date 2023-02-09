@@ -13,17 +13,17 @@ public class GlowElderGuardian extends GlowGuardian implements ElderGuardian {
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_ELDER_GUARDIAN_DEATH;
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_ELDER_GUARDIAN_HURT;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_ELDER_GUARDIAN_AMBIENT;
     }
 

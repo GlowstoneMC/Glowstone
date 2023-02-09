@@ -116,4 +116,9 @@ public class GlowAdvancementDisplay implements AdvancementDisplay {
     public @Nullable NamespacedKey backgroundPath() {
         return background;
     }
+
+    @Override
+    public @NotNull Component displayName() {
+        return null;
+    }
 }

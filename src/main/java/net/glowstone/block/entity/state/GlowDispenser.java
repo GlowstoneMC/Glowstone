@@ -33,7 +33,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.projectiles.BlockProjectileSource;
+import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -201,6 +204,11 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile,
                                                      Vector velocity) {
         // todo: projectile launching
+        return null;
+    }
+
+    @Override
+    public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> projectile, @Nullable Vector velocity, @Nullable Consumer<T> function) {
         return null;
     }
 

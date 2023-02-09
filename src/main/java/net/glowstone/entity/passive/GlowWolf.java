@@ -74,6 +74,16 @@ public class GlowWolf extends GlowTameable implements Wolf {
     }
 
     @Override
+    public boolean isWet() {
+        return false;
+    }
+
+    @Override
+    public float getTailAngle() {
+        return 0;
+    }
+
+    @Override
     public void setInterested(boolean interested) {
 
     }
@@ -166,17 +176,17 @@ public class GlowWolf extends GlowTameable implements Wolf {
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_WOLF_HURT;
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_WOLF_DEATH;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_WOLF_AMBIENT;
     }
 
