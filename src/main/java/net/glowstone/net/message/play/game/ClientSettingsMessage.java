@@ -12,5 +12,7 @@ public final class ClientSettingsMessage implements Message {
     private final boolean chatColors;
     private final int skinFlags;
     private final int hand;
+    private final boolean textFilteringEnabled;
+    private final boolean serverListingEnables;
 
 }

@@ -8,5 +8,6 @@ import org.bukkit.Difficulty;
 public final class ServerDifficultyMessage implements Message {
 
     private final Difficulty difficulty;
+    private final boolean locked;
 
 }

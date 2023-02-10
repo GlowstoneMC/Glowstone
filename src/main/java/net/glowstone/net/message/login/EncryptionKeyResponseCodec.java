@@ -12,21 +12,10 @@ public final class EncryptionKeyResponseCodec implements Codec<EncryptionKeyResp
     public EncryptionKeyResponseMessage decode(ByteBuf buffer) throws IOException {
         byte[] sharedSecret = new byte[ByteBufUtils.readVarInt(buffer)];
         buffer.readBytes(sharedSecret);
+        byte[] verifyToken = new byte[ByteBufUtils.readVarInt(buffer)];
+        buffer.readBytes(verifyToken);
 
-        boolean hasVerifyToken = buffer.readBoolean();
-
-        if (hasVerifyToken) {
-            byte[] verifyToken = new byte[ByteBufUtils.readVarInt(buffer)];
-            buffer.readBytes(verifyToken);
-
-            return new EncryptionKeyResponseWithVerifyToken(sharedSecret, verifyToken);
-        } else {
-            long salt = buffer.readLong();
-            byte[] messageSignature = new byte[ByteBufUtils.readVarInt(buffer)];
-            buffer.readBytes(messageSignature);
-
-            return new EncryptionKeyResponseWithSignature(sharedSecret, salt, messageSignature);
-        }
+        return new EncryptionKeyResponseWithVerifyToken(sharedSecret, verifyToken);
     }
 
     @Override

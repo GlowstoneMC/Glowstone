@@ -1137,7 +1137,7 @@ public class GlowWorld implements World {
     @Override
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
-        ServerDifficultyMessage message = new ServerDifficultyMessage(difficulty);
+        ServerDifficultyMessage message = new ServerDifficultyMessage(difficulty, false);
         for (GlowPlayer player : getRawPlayers()) {
             player.getSession().send(message);
         }
