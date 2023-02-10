@@ -320,9 +320,9 @@ public class GlowSession extends BasicSession {
         }
         // Useful for debugging packet sends
         // TODO: config option?
-        // Throwable trace = new Throwable();
-        // return super.sendWithFuture(message).addListener(f -> GlowServer.logger.log(Level.INFO, "Message sent: " + message.toString() + " to " + this, trace));
-        return super.sendWithFuture(message);
+        Throwable trace = new Throwable();
+        return super.sendWithFuture(message).addListener(f -> GlowServer.logger.log(Level.INFO, "Message sent: " + message.toString() + " to " + this, trace));
+        //return super.sendWithFuture(message);
     }
 
     /**
@@ -491,7 +491,7 @@ public class GlowSession extends BasicSession {
         }
 
         // send login response
-        send(new LoginSuccessMessage(profile.getId(), profile.getName()));
+        send(new LoginSuccessMessage(profile.getId(), profile.getName(), new ArrayList<LoginSuccessMessage.LoginSuccessProperties>()));
         setProtocol(protocolProvider.play);
     }
 

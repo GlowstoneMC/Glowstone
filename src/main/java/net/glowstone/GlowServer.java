@@ -870,7 +870,7 @@ public class GlowServer implements Server {
         String seedString = config.getString(Key.LEVEL_SEED);
         WorldType type = WorldType.getByName(getWorldType());
         if (type == null) {
-            type = WorldType.NORMAL;
+            type = WorldType.FLAT;
         }
 
         long seed = new Random().nextLong();

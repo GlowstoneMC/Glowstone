@@ -112,6 +112,9 @@ public final class NbtSerialization {
      */
     public static ItemStack[] readInventory(List<CompoundTag> tagList, int start, int size) {
         ItemStack[] items = new ItemStack[size];
+        Arrays.setAll(items, (index) -> {
+            return new ItemStack(Material.AIR);
+        });
         for (CompoundTag tag : tagList) {
             tag.readByte("Slot", slot -> {
                 if (slot >= start && slot < start + size) {

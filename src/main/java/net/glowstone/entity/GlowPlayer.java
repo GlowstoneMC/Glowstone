@@ -7,6 +7,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
@@ -103,6 +104,7 @@ import net.glowstone.util.TickUtil;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.ListTag;
+import net.glowstone.util.nbt.StringTag;
 import net.glowstone.util.nbt.TagType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.TriState;
@@ -805,21 +807,29 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             List<CompoundTag> chatList = new ArrayList<>();
 
             {
-                CompoundTag system = new CompoundTag();
-                system.putCompound("chat", new CompoundTag());
+                CompoundTag chat = new CompoundTag();
+                chat.putString("translation_key", "");
+                chat.putCompound("style", new CompoundTag());
+                chat.putList("parameters", TagType.STRING, Lists.newArrayList("sender", "target", "content"), (StringTag::new));
 
                 CompoundTag narration = new CompoundTag();
-                narration.putString("priority", "system");
-                system.putCompound("narration", narration);
+                narration.putString("translation_key", "");
+                narration.putList("parameters", TagType.STRING, Lists.newArrayList("sender", "target", "content"), (StringTag::new));
+
+                CompoundTag element = new CompoundTag();
+                element.putCompound("chat", chat);
+                element.putCompound("narration", narration);
+
+
 
                 CompoundTag parent = new CompoundTag();
                 parent.putString("name", "minecraft:system");
                 parent.putInt("id", 0);
-                parent.putCompound("element", system);
+                parent.putCompound("element", element);
 
                 chatList.add(parent);
             }
-
+        /*
             {
                 CompoundTag gameInfo = new CompoundTag();
                 gameInfo.putCompound("overlay", new CompoundTag());
@@ -832,11 +842,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 chatList.add(parent);
             }
 
+         */
+
             CompoundTag chatRegistry = new CompoundTag();
             chatRegistry.putString("type", "minecraft:chat_type");
             chatRegistry.putCompoundList("value", chatList);
 
-            registryCodecs.putCompound("minecraft:chat_typee", chatRegistry);
+            registryCodecs.putCompound("minecraft:chat_type", chatRegistry);
         }
 
         session.send(new JoinGameMessage(

@@ -963,7 +963,9 @@ public class GlowChunk implements Chunk {
         if (sections != null) {
             // get the list of sections
             for (int i = 0; i < sections.length; ++i) {
-                sections[i].writeToBuf(buf, skylight);
+                if (sections[i] != null) {
+                    sections[i].writeToBuf(buf, skylight);
+                }
             }
         }
 

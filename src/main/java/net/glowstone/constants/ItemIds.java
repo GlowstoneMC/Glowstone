@@ -32,6 +32,7 @@ public final class ItemIds {
 
     static {
         // blocks
+        both(-1, "cave_air");
         both(0, "air");
         both(1, "stone");
         both(2, "grass");
@@ -551,9 +552,8 @@ public final class ItemIds {
         if (!blocks.containsKey(name)) {
             return null;
         }
-        return Material.getMaterial(name);
+        return Material.matchMaterial(name);
     }
-
     /**
      * Verify that a given material is a valid item. All non-blocks are valid items, but some blocks
      * cannot be represented as items.

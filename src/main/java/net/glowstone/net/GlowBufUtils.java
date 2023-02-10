@@ -446,7 +446,7 @@ public final class GlowBufUtils {
     @SneakyThrows
     public static NamespacedKey readNamespacedKey(ByteBuf buf) {
         String raw = ByteBufUtils.readUTF8(buf);
-        return NamespacedKey.fromString(ByteBufUtils.readUTF8(buf));
+        return NamespacedKey.fromString(raw);
     }
 
     @SneakyThrows
