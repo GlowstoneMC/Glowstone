@@ -6,6 +6,7 @@ import com.flowpowered.network.Message;
 import com.flowpowered.network.MessageHandler;
 import com.flowpowered.network.protocol.AbstractProtocol;
 import com.flowpowered.network.session.BasicSession;
+import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -293,12 +294,12 @@ public class GlowSession extends BasicSession {
             + UuidUtils.toString(player.getUniqueId()));
 
         // message and user list
-        String message = EventFactory.getInstance().onPlayerJoin(player).getJoinMessage();
+        String message = EventFactory.getInstance().onPlayerJoin(player).joinMessage().examinableName();
         if (message != null && !message.isEmpty()) {
             server.broadcastMessage(message);
         }
 
-        Message addMessage = new UserListItemMessage(Action.ADD_PLAYER, player.getUserListEntry());
+        Message addMessage = new UserListItemMessage(Lists.newArrayList(Action.ADD_PLAYER), player.getUserListEntry());
         List<Entry> entries = new ArrayList<>();
         for (GlowPlayer other : server.getRawOnlinePlayers()) {
             if (other != player && other.canSee(player)) {
@@ -308,7 +309,7 @@ public class GlowSession extends BasicSession {
                 entries.add(other.getUserListEntry());
             }
         }
-        send(new UserListItemMessage(Action.ADD_PLAYER, entries));
+        send(new UserListItemMessage(Lists.newArrayList(Action.ADD_PLAYER), entries));
         send(server.createAdvancementsMessage(false, Collections.emptyList(), player));
     }
 
@@ -320,9 +321,9 @@ public class GlowSession extends BasicSession {
         }
         // Useful for debugging packet sends
         // TODO: config option?
-        //Throwable trace = new Throwable();
-        //return super.sendWithFuture(message).addListener(f -> GlowServer.logger.log(Level.INFO, "Message sent: " + message.toString() + " to " + this, trace));
-        return super.sendWithFuture(message);
+        Throwable trace = new Throwable();
+        return super.sendWithFuture(message).addListener(f -> GlowServer.logger.log(Level.INFO, "Message sent: " + message.toString() + " to " + this, trace));
+        //return super.sendWithFuture(message);
     }
 
     /**

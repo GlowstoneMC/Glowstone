@@ -1,6 +1,7 @@
 package net.glowstone.chunk;
 
 import com.flowpowered.network.util.ByteBufUtils;
+import com.google.common.primitives.Longs;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -290,6 +291,7 @@ public final class ChunkSection {
      */
     public int getType(int x, int y, int z) {
         int value = data.get(index(x, y, z));
+
         if (palette != null) {
             value = palette.getInt(value);
         }
@@ -437,8 +439,7 @@ public final class ChunkSection {
         if (this.isEmpty()) {
             throw new IllegalStateException("Can't write empty sections");
         }
-        // This should write the number of non air blocks in this section, but we currently dont track that
-        buf.writeShort(1024);
+        buf.writeShort(count);
         buf.writeByte(data.getBitsPerValue()); // Bit per value -> varies
         if (palette != null) {
             ByteBufUtils.writeVarInt(buf, palette.size()); // Palette size
@@ -453,16 +454,19 @@ public final class ChunkSection {
         buf.ensureWritable((backing.length << 3) + blockLight.byteSize() + (skylight ? skyLight
             .byteSize() : 0));
         for (long value : backing) {
-            buf.writeLong(0);
+            buf.writeLong(value);
         }
 
+        buf.writeByte(0);
+        ByteBufUtils.writeVarInt(buf, 0);
+        ByteBufUtils.writeVarInt(buf, 0);
         // Palette
-        ByteBufUtils.writeVarInt(buf, 0); // Palette length
-        ByteBufUtils.writeVarInt(buf, 0); // Palette data (AIR)
+        //ByteBufUtils.writeVarInt(buf, 0); // Palette length
+        //ByteBufUtils.writeVarInt(buf, 0); // Palette data (AIR)
 
         // Section data (4096 indices of 4-bit, 64 bit longs -> 256 empty longs)
-        ByteBufUtils.writeVarInt(buf, 256); // Data size
-        buf.writeBytes(new byte[2048]); // 256 longs is 2048 bytes
+        //ByteBufUtils.writeVarInt(buf, 256); // Data size
+        //buf.writeBytes(new byte[2048]); // 256 longs is 2048 bytes
 
         // buf.writeByte(data.getBitsPerValue()); // Bit per value -> varies
 

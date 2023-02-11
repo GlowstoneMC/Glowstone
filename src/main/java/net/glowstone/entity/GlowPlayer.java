@@ -896,23 +896,23 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new PositionRotationMessage(location));
 
         // send initial velocity
-//        session.send(new EntityVelocityMessage(getEntityId(), velocity));
+        session.send(new EntityVelocityMessage(getEntityId(), velocity));
 
         // send initial health
-//        sendHealth();
+        sendHealth();
 
         // send gamemode defaults
-//        setGameModeDefaults();
+        setGameModeDefaults();
 
         // send held item
-//        getSession().send(new HeldItemMessage(getInventory().getHeldItemSlot()));
+        getSession().send(new HeldItemMessage(getInventory().getHeldItemSlot()));
 
         // send xp bar
-//        sendExperience();
+        sendExperience();
 
-//        session.send(world.getWorldBorder().createMessage());
-//        sendTime();
-//        setCompassTarget(world.getSpawnLocation()); // set our compass target
+        session.send(world.getWorldBorder().createMessage());
+        sendTime();
+        setCompassTarget(world.getSpawnLocation()); // set our compass target
 
         //scoreboard = server.getScoreboardManager().getMainScoreboard();
         //scoreboard.subscribe(this);
@@ -4073,7 +4073,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         hiddenEntities.remove(player.getUniqueId());
-        session.send(new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, ((GlowPlayer)
+        session.send(new UserListItemMessage(Lists.newArrayList(UserListItemMessage.Action.ADD_PLAYER), ((GlowPlayer)
             player)
             .getUserListEntry()));
     }

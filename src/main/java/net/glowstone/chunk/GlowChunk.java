@@ -569,7 +569,7 @@ public class GlowChunk implements Chunk {
     @Deprecated
     public int getType(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.getType(x, y, z) >> 4;
+        return section == null ? 0 : section.getType(x, y, z);
     }
 
     /**
