@@ -125,7 +125,7 @@ public final class GlowBufUtils {
             int type = index.getType().getId();
             int id = index.getIndex();
 
-            System.out.println("Metadata: " + id + " " + type);
+            //System.out.println("Metadata: " + id + " " + type);
 
             buf.writeByte(id);
             ByteBufUtils.writeVarInt(buf, type);

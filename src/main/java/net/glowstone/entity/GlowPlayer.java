@@ -1405,13 +1405,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         // spawn into world
         session.send(new RespawnMessage(
-            world.getName(),
+            NamespacedKey.fromString("minecraft:overworld"),
+            world.getKey(),
             world.getSeedHash(),
             getGameMode().getValue(),
             -1,
             false,
             world.getWorldType() == WorldType.FLAT,
-            oldWorld.getEnvironment() != world.getEnvironment()
+            oldWorld.getEnvironment() != world.getEnvironment(),
+                oldWorld.getKey(),
+                location
         ));
 
         setRawLocation(location, false); // take us to spawn position
