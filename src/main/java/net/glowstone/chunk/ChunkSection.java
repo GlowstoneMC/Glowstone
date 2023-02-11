@@ -437,7 +437,8 @@ public final class ChunkSection {
         if (this.isEmpty()) {
             throw new IllegalStateException("Can't write empty sections");
         }
-
+        // This should write the number of non air blocks in this section, but we currently dont track that
+        buf.writeShort(1024);
         buf.writeByte(data.getBitsPerValue()); // Bit per value -> varies
         if (palette != null) {
             ByteBufUtils.writeVarInt(buf, palette.size()); // Palette size
@@ -452,11 +453,11 @@ public final class ChunkSection {
         buf.ensureWritable((backing.length << 3) + blockLight.byteSize() + (skylight ? skyLight
             .byteSize() : 0));
         for (long value : backing) {
-            buf.writeLong(value);
+            buf.writeLong(0);
         }
 
         // Palette
-        ByteBufUtils.writeVarInt(buf, 1); // Palette length
+        ByteBufUtils.writeVarInt(buf, 0); // Palette length
         ByteBufUtils.writeVarInt(buf, 0); // Palette data (AIR)
 
         // Section data (4096 indices of 4-bit, 64 bit longs -> 256 empty longs)

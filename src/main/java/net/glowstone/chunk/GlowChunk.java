@@ -986,7 +986,19 @@ public class GlowChunk implements Chunk {
         }
 
         CompoundTag heightMap = new CompoundTag();
-        heightMap.putByteArray("MOTION_BLOCKING", this.heightMap);
+        long actualHeightMap[] = new long[37];
+        for (int i = 0; i < 37; i++) {
+            long mappedLong = 0;
+            for (int j = 0; j < 7; j++) {
+                if ((i * 7) + j < 256){
+                    mappedLong = mappedLong << 9;
+                    mappedLong += this.heightMap[(i * 7) + j];
+                }
+            }
+            actualHeightMap[i] = mappedLong << 1;
+        }
+
+        heightMap.putLongArray("MOTION_BLOCKING", actualHeightMap);
 
 
         BitSet skyLightMask = new BitSet();

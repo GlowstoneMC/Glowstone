@@ -112,6 +112,16 @@ import static java.lang.Math.sin;
  */
 public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
     @Override
+    public float getBodyYaw() {
+        return 0;
+    }
+
+    @Override
+    public void setBodyYaw(float bodyYaw) {
+
+    }
+
+    @Override
     public @Nullable BlockFace getTargetBlockFace(int maxDistance, @NotNull FluidCollisionMode fluidMode) {
         return null;
     }

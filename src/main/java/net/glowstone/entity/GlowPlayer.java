@@ -890,38 +890,39 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sendRainDensity();
         sendSkyDarkness();
         getServer().sendPlayerAbilities(this);
+        int count = 0;
 
         // send initial location
         session.send(new PositionRotationMessage(location));
 
         // send initial velocity
-        session.send(new EntityVelocityMessage(getEntityId(), velocity));
+//        session.send(new EntityVelocityMessage(getEntityId(), velocity));
 
         // send initial health
-        sendHealth();
+//        sendHealth();
 
         // send gamemode defaults
-        setGameModeDefaults();
+//        setGameModeDefaults();
 
         // send held item
-        getSession().send(new HeldItemMessage(getInventory().getHeldItemSlot()));
+//        getSession().send(new HeldItemMessage(getInventory().getHeldItemSlot()));
 
         // send xp bar
-        sendExperience();
+//        sendExperience();
 
-        session.send(world.getWorldBorder().createMessage());
-        sendTime();
-        setCompassTarget(world.getSpawnLocation()); // set our compass target
+//        session.send(world.getWorldBorder().createMessage());
+//        sendTime();
+//        setCompassTarget(world.getSpawnLocation()); // set our compass target
 
-        scoreboard = server.getScoreboardManager().getMainScoreboard();
-        scoreboard.subscribe(this);
+        //scoreboard = server.getScoreboardManager().getMainScoreboard();
+        //scoreboard.subscribe(this);
 
-        invMonitor = new InventoryMonitor(getOpenInventory());
-        updateInventory(); // send inventory contents
-        session.send(recipeMonitor.createInitMessage());
+//        invMonitor = new InventoryMonitor(getOpenInventory());
+//        updateInventory(); // send inventory contents
+//        session.send(recipeMonitor.createInitMessage());
 
         if (!server.getResourcePackUrl().isEmpty()) {
-            setResourcePack(server.getResourcePackUrl(), server.getResourcePackHash());
+//            setResourcePack(server.getResourcePackUrl(), server.getResourcePackHash());
         }
     }
 
@@ -4482,4 +4483,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> projectile, @org.jetbrains.annotations.Nullable Vector velocity, @org.jetbrains.annotations.Nullable Consumer<T> function) {
         return null;
     }
+
+
 }
