@@ -18,6 +18,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -139,5 +140,20 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
     @Override
     public void setBounce(boolean doesBounce) {
         // deprecated, does not do anything
+    }
+
+    @Override
+    public void hitEntity(@NotNull Entity entity, @NotNull Vector vector) {
+        //TODO: implement
+    }
+
+    @Override
+    public boolean canHitEntity(@NotNull Entity entity) {
+        return false;
+    }
+
+    @Override
+    public void hitEntity(@NotNull Entity entity) {
+
     }
 }

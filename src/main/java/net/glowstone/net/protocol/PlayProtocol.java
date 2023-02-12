@@ -46,6 +46,7 @@ import net.glowstone.net.codec.play.player.PlayerActionCodec;
 import net.glowstone.net.codec.play.player.PlayerLookCodec;
 import net.glowstone.net.codec.play.player.PlayerPositionCodec;
 import net.glowstone.net.codec.play.player.PlayerPositionLookCodec;
+import net.glowstone.net.codec.play.player.PlayerSessionCodec;
 import net.glowstone.net.codec.play.player.PlayerSwingArmCodec;
 import net.glowstone.net.codec.play.player.PlayerUpdateCodec;
 import net.glowstone.net.codec.play.player.ResourcePackSendCodec;
@@ -86,6 +87,7 @@ import net.glowstone.net.handler.play.player.DiggingHandler;
 import net.glowstone.net.handler.play.player.InteractEntityHandler;
 import net.glowstone.net.handler.play.player.PlayerAbilitiesHandler;
 import net.glowstone.net.handler.play.player.PlayerActionHandler;
+import net.glowstone.net.handler.play.player.PlayerSessionHandler;
 import net.glowstone.net.handler.play.player.PlayerSwingArmHandler;
 import net.glowstone.net.handler.play.player.PlayerUpdateHandler;
 import net.glowstone.net.handler.play.player.ResourcePackStatusHandler;
@@ -141,6 +143,7 @@ import net.glowstone.net.message.play.player.PlayerActionMessage;
 import net.glowstone.net.message.play.player.PlayerLookMessage;
 import net.glowstone.net.message.play.player.PlayerPositionLookMessage;
 import net.glowstone.net.message.play.player.PlayerPositionMessage;
+import net.glowstone.net.message.play.player.PlayerSessionMessage;
 import net.glowstone.net.message.play.player.PlayerSwingArmMessage;
 import net.glowstone.net.message.play.player.PlayerUpdateMessage;
 import net.glowstone.net.message.play.player.ResourcePackSendMessage;
@@ -218,7 +221,7 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x1E, SteerVehicleMessage.class, SteerVehicleCodec.class,
             SteerVehicleHandler.class);
         // TODO 0x1F : Pong
-        // TODO 0x20 : PlayerSession
+        inbound(0x20, PlayerSessionMessage.class, PlayerSessionCodec.class, PlayerSessionHandler.class);
         inbound(0x21, RecipeBookStateMessage.class, RecipeBookStateCodec.class,
             RecipeBookStateHandler.class);
         inbound(0x22, DisplayedRecipeMessage.class, DisplayedRecipeCodec.class, DisplayedRecipeHandler.class);

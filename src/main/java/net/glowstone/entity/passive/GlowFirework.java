@@ -356,4 +356,19 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
     public void setHasBeenShot(boolean beenShot) {
 
     }
+
+    @Override
+    public boolean canHitEntity(@NotNull Entity entity) {
+        return false;
+    }
+
+    @Override
+    public void hitEntity(@NotNull Entity entity) {
+
+    }
+
+    @Override
+    public void hitEntity(@NotNull Entity entity, @NotNull Vector vector) {
+
+    }
 }

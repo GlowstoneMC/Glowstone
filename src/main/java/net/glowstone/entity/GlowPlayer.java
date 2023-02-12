@@ -4487,5 +4487,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return null;
     }
 
+    @Override
+    public boolean hasSeenWinScreen() {
+        return false;
+    }
 
+    @Override
+    public void setHasSeenWinScreen(boolean hasSeenWinScreen) {
+
+    }
 }
