@@ -139,7 +139,6 @@ public final class GlowBufUtils {
                     continue;
                 }
             }
-
             writeValue(buf, value, index.getType());
         }
 

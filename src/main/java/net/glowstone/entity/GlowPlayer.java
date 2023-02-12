@@ -606,7 +606,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         invMonitor = new InventoryMonitor(getOpenInventory());
         server.getPlayerStatisticIoService().readStatistics(this);
         recipeMonitor = new PlayerRecipeMonitor(this);
-
         updateBossBars();
     }
 
@@ -870,6 +869,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             world.getWorldType() == WorldType.FLAT,
             null
         ));
+        joinTime = System.currentTimeMillis();
+        // Add player to list of online players
+        getServer().setPlayerOnline(this, true);
 
         // send server brand and supported plugin channels
         Message pluginMessage = PluginMessage.fromString("minecraft:brand", server.getName());
@@ -877,53 +879,46 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             session.send(pluginMessage);
         }
         sendSupportedChannels();
-        joinTime = System.currentTimeMillis();
 
-        // Add player to list of online players
-        getServer().setPlayerOnline(this, true);
+        getServer().sendPlayerAbilities(this);
+        // send held item
+        getSession().send(new HeldItemMessage(getInventory().getHeldItemSlot()));
+        //TODO: Update recipes and tags
+        //TODO: Send OP perm level
+        //TODO: Send commands
+        session.send(recipeMonitor.createInitMessage());
+        // send initial location
+        session.send(new PositionRotationMessage(location));
+        //TODO: Set center chunk
+        //TODO: Update light
+        streamBlocks(); // stream the initial set of blocks
+        session.send(world.getWorldBorder().createMessage());
+        setCompassTarget(world.getSpawnLocation());
+        //Tell client they can now load in
+        session.send(new PositionRotationMessage(location));
 
         // save data back out
         saveData();
 
-        streamBlocks(); // stream the initial set of blocks
+        //Send client all current world info
+        session.send(new EntityVelocityMessage(getEntityId(), velocity));
         sendWeather();
         sendRainDensity();
         sendSkyDarkness();
-        getServer().sendPlayerAbilities(this);
-        int count = 0;
-
-        // send initial location
-        session.send(new PositionRotationMessage(location));
-
-        // send initial velocity
-        session.send(new EntityVelocityMessage(getEntityId(), velocity));
-
-        // send initial health
         sendHealth();
-
-        // send gamemode defaults
         setGameModeDefaults();
-
-        // send held item
-        getSession().send(new HeldItemMessage(getInventory().getHeldItemSlot()));
-
-        // send xp bar
         sendExperience();
-
-        session.send(world.getWorldBorder().createMessage());
         sendTime();
-        setCompassTarget(world.getSpawnLocation()); // set our compass target
+         // set our compass target
+        invMonitor = new InventoryMonitor(getOpenInventory());
+        updateInventory(); // send inventory contents
 
         //scoreboard = server.getScoreboardManager().getMainScoreboard();
         //scoreboard.subscribe(this);
 
-//        invMonitor = new InventoryMonitor(getOpenInventory());
-//        updateInventory(); // send inventory contents
-//        session.send(recipeMonitor.createInitMessage());
-
-        if (!server.getResourcePackUrl().isEmpty()) {
+//        if (!server.getResourcePackUrl().isEmpty()) {
 //            setResourcePack(server.getResourcePackUrl(), server.getResourcePackHash());
-        }
+//        }
     }
 
     @Override
@@ -1417,7 +1412,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 location
         ));
 
-        setRawLocation(location, false); // take us to spawn position
+        // take us to spawn position
+        setRawLocation(location, false);
         session.send(new PositionRotationMessage(location));
         teleportedTo = location.clone();
         setCompassTarget(world.getSpawnLocation()); // set our compass target
@@ -2948,6 +2944,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param async if true, save asynchronously; if false, block until saved
      */
     public void saveData(boolean async) {
+        if (this.location.getBlockX() != -94){
+            return;
+        }
         if (async) {
             Bukkit.getScheduler().runTaskAsynchronously(null, () -> {
                 server.getPlayerDataService().writeData(GlowPlayer.this);
@@ -4495,5 +4494,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void setHasSeenWinScreen(boolean hasSeenWinScreen) {
 
+    }
+
+    public void savePlayerData() {
+        world.getStorage().getPlayerDataService().writeData(this);
     }
 }

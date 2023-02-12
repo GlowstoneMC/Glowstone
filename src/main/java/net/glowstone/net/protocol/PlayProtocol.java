@@ -329,8 +329,8 @@ public class PlayProtocol extends GlowProtocol {
         outbound(0x49, HeldItemMessage.class, HeldItemCodec.class);
         // TODO 0x4A Set Center Chunk
         // TODO 0x4B Set Render Distance
-        outbound(0x4C, SpawnPositionMessage.class, SpawnPositionCodec.class);
         // TODO 0x4B : Set Display Chat Preview
+        outbound(0x4C, SpawnPositionMessage.class, SpawnPositionCodec.class);
         outbound(0x4D, ScoreboardDisplayMessage.class, ScoreboardDisplayCodec.class);
         outbound(0x4E, EntityMetadataMessage.class, EntityMetadataCodec.class);
         outbound(0x4F, AttachEntityMessage.class, AttachEntityCodec.class);
