@@ -52,6 +52,7 @@ public final class ChunkSection {
      */
     @Nullable
     private IntList palette;
+
     private VariableValueArray data;
     /**
      * The sky light array. This array is always set, even in dimensions without skylight.
@@ -175,6 +176,12 @@ public final class ChunkSection {
                 + types.length);
         }
         return new ChunkSection(types);
+    }
+
+    public static ChunkSection initNewEmptySection() {
+        ChunkSection result = new ChunkSection();
+        result.count = 0;
+        return result;
     }
 
     /**
@@ -437,26 +444,31 @@ public final class ChunkSection {
      */
     public void writeToBuf(ByteBuf buf, boolean skylight) throws IllegalStateException {
         if (this.isEmpty()) {
-            throw new IllegalStateException("Can't write empty sections");
+            buf.writeShort(0);
+            buf.writeByte(0);
+            ByteBufUtils.writeVarInt(buf, 0);
         }
-        buf.writeShort(count);
-        buf.writeByte(data.getBitsPerValue()); // Bit per value -> varies
-        if (palette != null) {
-            ByteBufUtils.writeVarInt(buf, palette.size()); // Palette size
-            // Foreach loops can't be used due to autoboxing
-            IntListIterator itr = palette.iterator();
-            while (itr.hasNext()) {
-                ByteBufUtils.writeVarInt(buf, itr.nextInt()); // The palette entry
+        else {
+            buf.writeShort(count);
+            buf.writeByte(data.getBitsPerValue()); // Bit per value -> varies
+            if (palette != null) {
+                ByteBufUtils.writeVarInt(buf, palette.size()); // Palette size
+                // Foreach loops can't be used due to autoboxing
+                IntListIterator itr = palette.iterator();
+                while (itr.hasNext()) {
+                    ByteBufUtils.writeVarInt(buf, itr.nextInt()); // The palette entry
+                }
+            }
+            long[] backing = data.getBacking();
+            ByteBufUtils.writeVarInt(buf, backing.length);
+            buf.ensureWritable((backing.length << 3) + blockLight.byteSize() + (skylight ? skyLight
+                    .byteSize() : 0));
+            for (long value : backing) {
+                buf.writeLong(value);
             }
         }
-        long[] backing = data.getBacking();
-        ByteBufUtils.writeVarInt(buf, backing.length);
-        buf.ensureWritable((backing.length << 3) + blockLight.byteSize() + (skylight ? skyLight
-            .byteSize() : 0));
-        for (long value : backing) {
-            buf.writeLong(value);
-        }
 
+        // Biome palette, hardcoded for now
         buf.writeByte(0);
         ByteBufUtils.writeVarInt(buf, 0);
         ByteBufUtils.writeVarInt(buf, 0);

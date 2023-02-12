@@ -2944,9 +2944,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param async if true, save asynchronously; if false, block until saved
      */
     public void saveData(boolean async) {
-        if (this.location.getBlockX() != -94){
-            return;
-        }
         if (async) {
             Bukkit.getScheduler().runTaskAsynchronously(null, () -> {
                 server.getPlayerDataService().writeData(GlowPlayer.this);

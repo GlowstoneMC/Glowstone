@@ -321,6 +321,9 @@ public final class ChunkManager {
                     if (extSections[i] != null) {
                         sections[i] = ChunkSection.fromStateArray(extSections[i]);
                     }
+                    else {
+                        sections[i] = ChunkSection.initNewEmptySection();
+                    }
                 }
                 chunk.initializeSections(sections);
                 chunk.setBiomes(biomes.biomes);
