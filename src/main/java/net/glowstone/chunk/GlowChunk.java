@@ -361,7 +361,7 @@ public class GlowChunk implements Chunk {
                 new Throwable());
             return;
         }
-        if (initSections.length != SEC_COUNT) {
+        if (initSections.length != 16 && initSections.length != 24) {
             GlowServer.logger.log(Level.WARNING,
                 "Got an unexpected section length - wanted " + SEC_COUNT + ", but length was "
                     + initSections.length,
@@ -369,11 +369,11 @@ public class GlowChunk implements Chunk {
         }
         //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
 
-        sections = new ChunkSection[SEC_COUNT];
+        sections = new ChunkSection[initSections.length];
         biomes = new byte[WIDTH * HEIGHT];
         heightMap = new byte[WIDTH * HEIGHT];
 
-        for (int y = 0; y < SEC_COUNT && y < initSections.length; y++) {
+        for (int y = 0; y < initSections.length; y++) {
             if (initSections[y] != null) {
                 initializeSection(y, initSections[y]);
             }
@@ -527,6 +527,11 @@ public class GlowChunk implements Chunk {
      * @return The ChunkSection, or null if it is empty.
      */
     private ChunkSection getSection(int y) {
+        DimensionType dimensionType = DimensionTypes.getByEnvironmentId(this.getWorld().getEnvironment().getId());
+        if (dimensionType.equals(DimensionTypes.OVERWORLD)) {
+            //Offset y by 64 since our 0th section is at y = -64
+            y+=64;
+        }
         int idx = y >> 4;
         if (y < 0 || y >= DEPTH || !load() || idx >= sections.length) {
             return null;

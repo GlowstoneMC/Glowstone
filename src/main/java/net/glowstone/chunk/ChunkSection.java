@@ -447,6 +447,7 @@ public final class ChunkSection {
             buf.writeShort(0);
             buf.writeByte(0);
             ByteBufUtils.writeVarInt(buf, 0);
+            ByteBufUtils.writeVarInt(buf, 0);
         }
         else {
             buf.writeShort(count);

@@ -197,7 +197,7 @@ public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldCo
      */
     public enum Key {
         // World
-        SEA_LEVEL("general.sea_level", 64),
+        SEA_LEVEL("general.sea_level", 52),
         // Overworld generator
         OVERWORLD_COORDINATE_SCALE("overworld.coordinate-scale", 684.412),
         OVERWORLD_HEIGHT_SCALE("overworld.height.scale", 684.412),
