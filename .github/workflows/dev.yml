@@ -1,0 +1,102 @@
+name: Dev Build
+
+on:
+  push:
+    branches: [dev, '1.12']
+    paths:
+      - .github/workflows/**
+      - etc/checkstyle.xml
+      - src/**
+      - gradle/**
+      - gradle.properties
+      - '**/*.gradle*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 17 ]
+    name: Dev Build (Java ${{ matrix.java }})
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: gradle/wrapper-validation-action@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+
+      - name: Cache gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/jdks
+            ~/.gradle/native
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'gradle/libs.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Gradle Build and Deploy
+        run: BUILD_EXTRAS=true ./gradlew assemble publish --no-daemon --stacktrace
+        env:
+          ORG_GRADLE_PROJECT_glowstoneUsername: ${{ secrets.MAVEN_USERNAME }}
+          ORG_GRADLE_PROJECT_glowstonePassword: ${{ secrets.MAVEN_PASSWORD }}
+
+      - name: Get Minecraft version
+        id: version
+        run: |
+          minecraft_version=$(./gradlew -q printMinecraftVersion)
+          echo "::set-output name=minecraft_version::$minecraft_version"
+
+      - name: Cleanup Gradle Cache
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+      - name: Push Javadocs to Pages
+        uses: dmnemec/copy_file_to_another_repo_action@v1.1.1
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.GH_TOKEN }}
+        with:
+          source_file: 'build/docs/javadoc/.'
+          destination_repo: 'GlowstoneMC/glowstonemc.github.io'
+          destination_folder: content/jd/glowstone/${{ steps.version.outputs.minecraft_version }}/
+          user_email: 'mastercoms@tuta.io'
+          user_name: 'mastercoms'
+          commit_message: Update Javadocs for Glowstone commit ${{ github.sha }}
+
+      - name: GitHub Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: glowstone
+          path: build/libs/glowstone.jar
+
+      - name: Setup SSH
+        if: ${{ github.ref == 'refs/heads/1.12' }}
+        run: |
+          mkdir -p ~/.ssh
+          cat << EOF > ~/.ssh/config
+          Host *
+            ControlMaster auto
+            ControlPath ~/.ssh/-%r@%h:%p
+            ControlPersist 120
+          EOF
+          echo $SSH_KNOWN_HOSTS >> ~/.ssh/known_hosts
+          sudo apt-get install sshpass
+        env:
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+
+      - name: Deploy to Test Server
+        if: ${{ github.ref == 'refs/heads/1.12' }}
+        run: |
+          sshpass -e scp target/glowstone.jar glowstone@$SSH_ADDRESS:
+          sshpass -e ssh glowstone@$SSH_ADDRESS sudo systemctl restart glowstone
+        env:
+          SSH_ADDRESS: ${{ secrets.SSH_ADDRESS }}
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
