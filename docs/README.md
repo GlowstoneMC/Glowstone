@@ -142,8 +142,7 @@ Sponsor Glowstone [on Bountysource](https://www.bountysource.com/teams/glowstone
  * [Tad Hardesty](https://github.com/SpaceManiac) and [all the contributors](https://github.com/GlowstoneMC/Glowstone-Legacy/graphs/contributors) to Glowstone Legacy.
  * [deathcap](https://github.com/deathcap) for starting Glowstone++.
  * All the people behind [Maven](https://maven.apache.org/team-list.html) and [Java](https://java.net/people).
- * [Notch](https://notch.tumblr.com/) and
-   [Mojang](https://mojang.com/about) - for making such an awesome game in the first
+ * [Mojang](https://mojang.com/about) - for making such an awesome game in the first
    place!
 
 ## Copyright
