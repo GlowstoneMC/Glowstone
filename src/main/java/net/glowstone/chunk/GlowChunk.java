@@ -213,8 +213,8 @@ public class GlowChunk implements Chunk {
     }
 
     /**
-     * Formula taken from Minecraft Gamepedia.
-     * https://minecraft.gamepedia.com/Slime#.22Slime_chunks.22
+     * Formula taken from Minecraft Wiki.
+     * https://minecraft.wiki/w/Slime#.22Slime_chunks.22
      */
     @Override
     public boolean isSlimeChunk() {
@@ -965,7 +965,7 @@ public class GlowChunk implements Chunk {
         if (entireChunk && biomes != null) {
             for (int i = 0; i < 256; i++) {
                 // TODO: 1.13 Biome ID (0 = OCEAN)
-                // For biome IDs, see https://minecraft.gamepedia.com/Biome#Biome_IDs
+                // For biome IDs, see https://minecraft.wiki/w/Biome#Biome_IDs
                 buf.writeInt(0);
             }
         }

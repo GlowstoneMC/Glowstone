@@ -20,7 +20,7 @@ public abstract class GlowStructurePiece {
     private BlockFace orientation;
     /**
      * The NBT data field "GD" described in
-     * https://minecraft.gamepedia.com/Generated_structures_data_file_format like this:
+     * https://minecraft.wiki/w/Generated_structures_data_file_format like this:
      * "Appears to be some sort of measure of how far this piece is from the start."
      */
     @Getter
