@@ -28,7 +28,7 @@ public final class GlowMapRenderer extends MapRenderer {
     }
 
     /**
-     * Based on https://minecraft.gamepedia.com/Slime#.22Slime_chunks.22 but simplified (doesn't
+     * Based on https://minecraft.wiki/w/Slime#.22Slime_chunks.22 but simplified (doesn't
      * instantiate a Random, and doesn't vary with the world seed. Designed to be reproducible, so
      * that updating a map doesn't change the color unless the map contents have changed.
      */

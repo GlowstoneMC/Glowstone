@@ -835,7 +835,7 @@ public class GlowWorld implements World {
     /**
      * Returns the fraction of the moon that is illuminated, ranging from 0.0 at new moon to 1.0 at
      * full moon. Always a multiple of 0.25. See
-     * <a href="https://minecraft.gamepedia.com/Moon#Phases">Moon Phases</a> at Gamepedia.
+     * <a href="https://minecraft.wiki/w/Moon#Phases">Moon Phases</a> at Wiki.
      *
      * @return the fraction of the moon that is illuminated
      */

@@ -57,7 +57,7 @@ public abstract class EntityStore<T extends GlowEntity> {
     }
 
     // For information on the NBT tags loaded here and elsewhere:
-    // http://minecraft.gamepedia.com/Chunk_format#Entity_Format
+    // https://minecraft.wiki/w/Entity_format
 
     // todo: the following tags
     // - bool "Invulnerable"

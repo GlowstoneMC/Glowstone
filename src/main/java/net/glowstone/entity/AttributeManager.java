@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Manages the attributes described at https://minecraft.gamepedia.com/Attribute
+ * Manages the attributes described at https://minecraft.wiki/w/Attribute
  */
 public class AttributeManager {
 
@@ -151,7 +151,7 @@ public class AttributeManager {
             Attribute.ZOMBIE_SPAWN_REINFORCEMENTS, 0, 1);
 
         /**
-         * Attribute name from https://minecraft.gamepedia.com/Attribute
+         * Attribute name from https://minecraft.wiki/w/Attribute
          */
         private final String name;
         /**
@@ -283,7 +283,7 @@ public class AttributeManager {
          *
          * <p>
          * Attributes with the same uuid will be overridden according to
-         * https://minecraft.gamepedia.com/Attribute#Attributes
+         * https://minecraft.wiki/w/Attribute#Attributes
          * </p>
          *
          * @param attributeModifier to add to this property

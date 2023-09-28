@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Represents a llama.
- * The data comes from https://minecraft.gamepedia.com/Llama
+ * The data comes from https://minecraft.wiki/w/Llama
  */
 public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements Llama {
 

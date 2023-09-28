@@ -346,7 +346,7 @@ public final class GlowEnchantment extends Enchantment implements Choice {
         private final EnchantmentRarity rarity;
         private final boolean treasure;
         private final boolean cursed;
-        private final int minValue; // https://minecraft.gamepedia.com/Enchanting/Levels
+        private final int minValue; // https://minecraft.wiki/w/Enchanting/Levels
         private final int minIncrement;
         private final int maxIncrement;
         private final int maxValue;

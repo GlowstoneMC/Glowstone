@@ -19,7 +19,7 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         super(clazz, type);
     }
 
-    // documented at http://minecraft.gamepedia.com/Player.dat_Format
+    // documented at http://minecraft.wiki/w/Player.dat_format
     // player data that does not correspond to HumanEntity is in PlayerStore
 
     @Override
