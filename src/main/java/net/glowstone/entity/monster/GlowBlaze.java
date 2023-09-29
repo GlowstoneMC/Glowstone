@@ -22,17 +22,17 @@ public class GlowBlaze extends GlowMonster implements Blaze {
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_BLAZE_DEATH;
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_BLAZE_HURT;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_BLAZE_AMBIENT;
     }
 }

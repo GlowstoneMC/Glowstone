@@ -2,6 +2,7 @@ package net.glowstone.entity.monster;
 
 import net.glowstone.entity.GlowCreature;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 

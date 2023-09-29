@@ -23,17 +23,27 @@ public class GlowEndermite extends GlowMonster implements Endermite {
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public void setLifetimeTicks(int ticks) {
+
+    }
+
+    @Override
+    public int getLifetimeTicks() {
+        return 0;
+    }
+
+    @Override
+    public Sound getDeathSound() {
         return Sound.ENTITY_ENDERMITE_DEATH;
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_ENDERMITE_HURT;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_ENDERMITE_AMBIENT;
     }
 

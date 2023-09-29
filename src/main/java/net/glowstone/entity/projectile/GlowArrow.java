@@ -9,6 +9,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -193,6 +194,26 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     @Override
     public @NotNull ItemStack getItemStack() {
         return new ItemStack(Material.ARROW);
+    }
+
+    @Override
+    public void setLifetimeTicks(int ticks) {
+
+    }
+
+    @Override
+    public int getLifetimeTicks() {
+        return 0;
+    }
+
+    @Override
+    public @NotNull Sound getHitSound() {
+        return Sound.ENTITY_ARROW_HIT;
+    }
+
+    @Override
+    public void setHitSound(@NotNull Sound sound) {
+
     }
 
     @Override

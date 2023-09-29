@@ -23,19 +23,24 @@ import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.InventoryView.Property;
@@ -47,6 +52,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -821,6 +827,76 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public void setLastDeathLocation(@Nullable Location location) {
+
+    }
+
+    @Override
+    public @Nullable BlockFace getTargetBlockFace(int maxDistance, @NotNull FluidCollisionMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceEntities(int maxDistance, boolean ignoreBlocks) {
+        return null;
+    }
+
+    @Override
+    public void setArrowsInBody(int count, boolean fireEvent) {
+
+    }
+
+    @Override
+    public @NotNull Sound getFallDamageSound(int fallHeight) {
+        return null;
+    }
+
+    @Override
+    public @NotNull Sound getFallDamageSoundSmall() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Sound getFallDamageSoundBig() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Sound getDrinkingSound(@NotNull ItemStack itemStack) {
+        return Sound.ENTITY_GENERIC_DRINK;
+    }
+
+    @Override
+    public @NotNull Sound getEatingSound(@NotNull ItemStack itemStack) {
+        return Sound.ENTITY_GENERIC_EAT;
+    }
+
+    @Override
+    public boolean canBreatheUnderwater() {
+        return false;
+    }
+
+    @Override
+    public void knockback(double strength, double directionX, double directionZ) {
+
+    }
+
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot slot) {
+
+    }
+
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot slot, @NotNull Collection<Player> players) {
+
+    }
+
+    @Override
+    public @NotNull ItemStack damageItemStack(@NotNull ItemStack stack, int amount) {
+        return null;
+    }
+
+    @Override
+    public void damageItemStack(@NotNull EquipmentSlot slot, int amount) {
 
     }
 }

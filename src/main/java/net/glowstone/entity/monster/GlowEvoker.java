@@ -80,12 +80,12 @@ public class GlowEvoker extends GlowSpellcaster implements Evoker {
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_EVOKER_DEATH;
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_EVOKER_HURT;
     }
 
@@ -96,7 +96,7 @@ public class GlowEvoker extends GlowSpellcaster implements Evoker {
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_EVOKER_AMBIENT;
     }
 

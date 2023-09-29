@@ -57,17 +57,27 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public void setMoreCarrotTicks(int ticks) {
+
+    }
+
+    @Override
+    public int getMoreCarrotTicks() {
+        return 0;
+    }
+
+    @Override
+    public Sound getHurtSound() {
         return Sound.ENTITY_RABBIT_HURT;
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_RABBIT_DEATH;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_RABBIT_AMBIENT;
     }
 

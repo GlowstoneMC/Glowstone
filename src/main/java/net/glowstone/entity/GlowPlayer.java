@@ -7,9 +7,12 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
+import io.papermc.paper.entity.LookAnchor;
+import io.papermc.paper.entity.RelativeTeleportFlag;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -101,8 +104,10 @@ import net.glowstone.util.TickUtil;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.ListTag;
+import net.glowstone.util.nbt.StringTag;
 import net.glowstone.util.nbt.TagType;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.TriState;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -133,6 +138,7 @@ import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
@@ -142,6 +148,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -189,6 +196,7 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
@@ -598,7 +606,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         invMonitor = new InventoryMonitor(getOpenInventory());
         server.getPlayerStatisticIoService().readStatistics(this);
         recipeMonitor = new PlayerRecipeMonitor(this);
-
         updateBossBars();
     }
 
@@ -799,21 +806,29 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             List<CompoundTag> chatList = new ArrayList<>();
 
             {
-                CompoundTag system = new CompoundTag();
-                system.putCompound("chat", new CompoundTag());
+                CompoundTag chat = new CompoundTag();
+                chat.putString("translation_key", "");
+                chat.putCompound("style", new CompoundTag());
+                chat.putList("parameters", TagType.STRING, Lists.newArrayList("sender", "target", "content"), (StringTag::new));
 
                 CompoundTag narration = new CompoundTag();
-                narration.putString("priority", "system");
-                system.putCompound("narration", narration);
+                narration.putString("translation_key", "");
+                narration.putList("parameters", TagType.STRING, Lists.newArrayList("sender", "target", "content"), (StringTag::new));
+
+                CompoundTag element = new CompoundTag();
+                element.putCompound("chat", chat);
+                element.putCompound("narration", narration);
+
+
 
                 CompoundTag parent = new CompoundTag();
                 parent.putString("name", "minecraft:system");
                 parent.putInt("id", 0);
-                parent.putCompound("element", system);
+                parent.putCompound("element", element);
 
                 chatList.add(parent);
             }
-
+        /*
             {
                 CompoundTag gameInfo = new CompoundTag();
                 gameInfo.putCompound("overlay", new CompoundTag());
@@ -826,11 +841,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 chatList.add(parent);
             }
 
+         */
+
             CompoundTag chatRegistry = new CompoundTag();
             chatRegistry.putString("type", "minecraft:chat_type");
             chatRegistry.putCompoundList("value", chatList);
 
-            registryCodecs.putCompound("minecraft:chat_typee", chatRegistry);
+            registryCodecs.putCompound("minecraft:chat_type", chatRegistry);
         }
 
         session.send(new JoinGameMessage(
@@ -852,6 +869,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             world.getWorldType() == WorldType.FLAT,
             null
         ));
+        joinTime = System.currentTimeMillis();
+        // Add player to list of online players
+        getServer().setPlayerOnline(this, true);
 
         // send server brand and supported plugin channels
         Message pluginMessage = PluginMessage.fromString("minecraft:brand", server.getName());
@@ -859,52 +879,46 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             session.send(pluginMessage);
         }
         sendSupportedChannels();
-        joinTime = System.currentTimeMillis();
 
-        // Add player to list of online players
-        getServer().setPlayerOnline(this, true);
+        getServer().sendPlayerAbilities(this);
+        // send held item
+        getSession().send(new HeldItemMessage(getInventory().getHeldItemSlot()));
+        //TODO: Update recipes and tags
+        //TODO: Send OP perm level
+        //TODO: Send commands
+        session.send(recipeMonitor.createInitMessage());
+        // send initial location
+        session.send(new PositionRotationMessage(location));
+        //TODO: Set center chunk
+        //TODO: Update light
+        streamBlocks(); // stream the initial set of blocks
+        session.send(world.getWorldBorder().createMessage());
+        setCompassTarget(world.getSpawnLocation());
+        //Tell client they can now load in
+        session.send(new PositionRotationMessage(location));
 
         // save data back out
         saveData();
 
-        streamBlocks(); // stream the initial set of blocks
+        //Send client all current world info
+        session.send(new EntityVelocityMessage(getEntityId(), velocity));
         sendWeather();
         sendRainDensity();
         sendSkyDarkness();
-        getServer().sendPlayerAbilities(this);
-
-        // send initial location
-        session.send(new PositionRotationMessage(location));
-
-        // send initial velocity
-        session.send(new EntityVelocityMessage(getEntityId(), velocity));
-
-        // send initial health
         sendHealth();
-
-        // send gamemode defaults
         setGameModeDefaults();
-
-        // send held item
-        getSession().send(new HeldItemMessage(getInventory().getHeldItemSlot()));
-
-        // send xp bar
         sendExperience();
-
-        session.send(world.getWorldBorder().createMessage());
         sendTime();
-        setCompassTarget(world.getSpawnLocation()); // set our compass target
-
-        scoreboard = server.getScoreboardManager().getMainScoreboard();
-        scoreboard.subscribe(this);
-
+         // set our compass target
         invMonitor = new InventoryMonitor(getOpenInventory());
         updateInventory(); // send inventory contents
-        session.send(recipeMonitor.createInitMessage());
 
-        if (!server.getResourcePackUrl().isEmpty()) {
-            setResourcePack(server.getResourcePackUrl(), server.getResourcePackHash());
-        }
+        //scoreboard = server.getScoreboardManager().getMainScoreboard();
+        //scoreboard.subscribe(this);
+
+//        if (!server.getResourcePackUrl().isEmpty()) {
+//            setResourcePack(server.getResourcePackUrl(), server.getResourcePackHash());
+//        }
     }
 
     @Override
@@ -1386,16 +1400,20 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         // spawn into world
         session.send(new RespawnMessage(
-            world.getName(),
+            NamespacedKey.fromString("minecraft:overworld"),
+            world.getKey(),
             world.getSeedHash(),
             getGameMode().getValue(),
             -1,
             false,
             world.getWorldType() == WorldType.FLAT,
-            oldWorld.getEnvironment() != world.getEnvironment()
+            oldWorld.getEnvironment() != world.getEnvironment(),
+                oldWorld.getKey(),
+                location
         ));
 
-        setRawLocation(location, false); // take us to spawn position
+        // take us to spawn position
+        setRawLocation(location, false);
         session.send(new PositionRotationMessage(location));
         teleportedTo = location.clone();
         setCompassTarget(world.getSpawnLocation()); // set our compass target
@@ -1601,6 +1619,61 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setRotation(float yaw, float pitch) {
+
+    }
+
+    @Override
+    public boolean teleport(@NotNull Location location, @NotNull TeleportCause cause, boolean ignorePassengers, boolean dismount, @NotNull RelativeTeleportFlag @NotNull ... teleportFlags) {
+        return false;
+    }
+
+    @Override
+    public void lookAt(double x, double y, double z, @NotNull LookAnchor playerAnchor) {
+
+    }
+
+    @Override
+    public void lookAt(@NotNull Entity entity, @NotNull LookAnchor playerAnchor, @NotNull LookAnchor entityAnchor) {
+
+    }
+
+    @Override
+    public void showElderGuardian(boolean silent) {
+
+    }
+
+    @Override
+    public int getWardenWarningCooldown() {
+        return 0;
+    }
+
+    @Override
+    public void setWardenWarningCooldown(int cooldown) {
+
+    }
+
+    @Override
+    public int getWardenTimeSinceLastWarning() {
+        return 0;
+    }
+
+    @Override
+    public void setWardenTimeSinceLastWarning(int time) {
+
+    }
+
+    @Override
+    public int getWardenWarningLevel() {
+        return 0;
+    }
+
+    @Override
+    public void setWardenWarningLevel(int warningLevel) {
+
+    }
+
+    @Override
+    public void increaseWardenWarningLevel() {
 
     }
 
@@ -1983,6 +2056,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void setFlyingFallDamage(@NotNull TriState flyingFallDamage) {
+
+    }
+
+    @Override
+    public @NotNull TriState hasFlyingFallDamage() {
+        return null;
+    }
+
+    @Override
     public void setFlying(boolean value) {
         flying = value && canFly;
         getServer().sendPlayerAbilities(this);
@@ -2267,6 +2350,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void setStarvationRate(int i) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable Firework fireworkBoost(@NotNull ItemStack fireworkItemStack) {
+        return null;
     }
 
     private boolean shouldCalculateExhaustion() {
@@ -2994,6 +3082,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void addAdditionalChatCompletions(@NotNull Collection<String> completions) {
+
+    }
+
+    @Override
+    public void removeAdditionalChatCompletions(@NotNull Collection<String> completions) {
+
+    }
+
+    @Override
     public @NotNull Set<Player> getTrackedPlayers() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -3094,7 +3192,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void playSound(@NotNull Entity entity, @NotNull String sound, float volume, float pitch) {
+
+    }
+
+    @Override
     public void playSound(@NotNull Entity entity, @NotNull Sound sound, @NotNull SoundCategory category, float volume, float pitch) {
+
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull String sound, @NotNull SoundCategory category, float volume, float pitch) {
 
     }
 
@@ -3120,6 +3228,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             sound = null;
         }
         session.send(new StopSoundMessage(category, sound));
+    }
+
+    @Override
+    public void stopSound(@NotNull SoundCategory category) {
+
     }
 
     @Override
@@ -3189,6 +3302,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sendBlockChange(loc, MaterialUtil.getId(blockData));
     }
 
+    @Override
+    public void sendBlockChanges(@NotNull Collection<BlockState> blocks, boolean suppressLightUpdates) {
+
+    }
+
     private void sendBlockChange(@NotNull Location loc, int type) {
         sendBlockChange(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), type));
     }
@@ -3217,12 +3335,22 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void sendBlockDamage(@NotNull Location loc, float progress, int destroyerIdentity) {
+
+    }
+
+    @Override
     public void sendMultiBlockChange(@NotNull Map<Location, BlockData> blockChanges, boolean suppressLightUpdates) {
 
     }
 
     @Override
     public void sendEquipmentChange(@NotNull LivingEntity entity, @NotNull EquipmentSlot slot, @NotNull ItemStack item) {
+
+    }
+
+    @Override
+    public void sendEquipmentChange(@NotNull LivingEntity entity, @NotNull Map<EquipmentSlot, ItemStack> equipmentChanges) {
 
     }
 
@@ -3312,6 +3440,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new MapDataMessage(map.getId(), map.getScale().ordinal(), Collections
             .emptyList(),
             mapCanvas.toSection()));
+    }
+
+    @Override
+    public void showWinScreen() {
+
     }
 
     @Override
@@ -3697,6 +3830,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public @org.jetbrains.annotations.Nullable FishHook getFishHook() {
+        return null;
+    }
+
+    @Override
     public MainHand getMainHand() {
         return metadata.getByte(MetadataIndex.PLAYER_MAIN_HAND) == 0 ? MainHand.LEFT
             : MainHand.RIGHT;
@@ -3709,6 +3847,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         session.send(new WindowPropertyMessage(invMonitor.getId(), prop.getId(), value));
         return true;
+    }
+
+    @Override
+    public int getEnchantmentSeed() {
+        return 0;
+    }
+
+    @Override
+    public void setEnchantmentSeed(int seed) {
+
     }
 
     @Override
@@ -3924,7 +4072,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         hiddenEntities.remove(player.getUniqueId());
-        session.send(new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, ((GlowPlayer)
+        session.send(new UserListItemMessage(Lists.newArrayList(UserListItemMessage.Action.ADD_PLAYER), ((GlowPlayer)
             player)
             .getUserListEntry()));
     }
@@ -4318,5 +4466,34 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             return -1;
         }
         return invMonitor.getId();
+    }
+
+    @Override
+    public @NotNull TriState getFrictionState() {
+        return null;
+    }
+
+    @Override
+    public void setFrictionState(@NotNull TriState state) {
+
+    }
+
+    @Override
+    public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> projectile, @org.jetbrains.annotations.Nullable Vector velocity, @org.jetbrains.annotations.Nullable Consumer<T> function) {
+        return null;
+    }
+
+    @Override
+    public boolean hasSeenWinScreen() {
+        return false;
+    }
+
+    @Override
+    public void setHasSeenWinScreen(boolean hasSeenWinScreen) {
+
+    }
+
+    public void savePlayerData() {
+        world.getStorage().getPlayerDataService().writeData(this);
     }
 }

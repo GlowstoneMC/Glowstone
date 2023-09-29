@@ -119,6 +119,36 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
         this.lifeTime = calculateLifeTime(fireworkMeta.getPower());
     }
 
+    @Override
+    public boolean setAttachedTo(@Nullable LivingEntity entity) {
+        return false;
+    }
+
+    @Override
+    public @Nullable LivingEntity getAttachedTo() {
+        return null;
+    }
+
+    @Override
+    public boolean setLife(int ticks) {
+        return false;
+    }
+
+    @Override
+    public int getLife() {
+        return 0;
+    }
+
+    @Override
+    public boolean setMaxLife(int ticks) {
+        return false;
+    }
+
+    @Override
+    public int getMaxLife() {
+        return 0;
+    }
+
     /**
      * Get the underlying firework item.
      *
@@ -156,6 +186,11 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
             return;
         }
         setTicksLived(lifeTime);
+    }
+
+    @Override
+    public boolean isDetonated() {
+        return false;
     }
 
     @Override
@@ -300,5 +335,40 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
     @Override
     public void setBounce(boolean doesBounce) {
         // deprecated, does not do anything
+    }
+
+    @Override
+    public boolean hasLeftShooter() {
+        return false;
+    }
+
+    @Override
+    public void setHasLeftShooter(boolean leftShooter) {
+
+    }
+
+    @Override
+    public boolean hasBeenShot() {
+        return false;
+    }
+
+    @Override
+    public void setHasBeenShot(boolean beenShot) {
+
+    }
+
+    @Override
+    public boolean canHitEntity(@NotNull Entity entity) {
+        return false;
+    }
+
+    @Override
+    public void hitEntity(@NotNull Entity entity) {
+
+    }
+
+    @Override
+    public void hitEntity(@NotNull Entity entity, @NotNull Vector vector) {
+
     }
 }

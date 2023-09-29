@@ -100,6 +100,7 @@ import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.generator.structure.Structure;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataStore;
@@ -110,6 +111,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.Consumer;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.StructureSearchResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -1135,7 +1137,7 @@ public class GlowWorld implements World {
     @Override
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
-        ServerDifficultyMessage message = new ServerDifficultyMessage(difficulty);
+        ServerDifficultyMessage message = new ServerDifficultyMessage(difficulty, false);
         for (GlowPlayer player : getRawPlayers()) {
             player.getSession().send(message);
         }
@@ -1552,6 +1554,11 @@ public class GlowWorld implements World {
 
     @Override
     public boolean lineOfSightExists(@NotNull Location from, @NotNull Location to) {
+        return false;
+    }
+
+    @Override
+    public boolean hasCollisionsIn(org.bukkit.util.@NotNull BoundingBox boundingBox) {
         return false;
     }
 
@@ -2399,7 +2406,17 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public void playSound(@NotNull Entity entity, @NotNull String sound, float volume, float pitch) {
+
+    }
+
+    @Override
     public void playSound(@NotNull Entity entity, @NotNull Sound sound, @NotNull SoundCategory category, float volume, float pitch) {
+
+    }
+
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull String sound, @NotNull SoundCategory category, float volume, float pitch) {
 
     }
 
@@ -2737,6 +2754,16 @@ public class GlowWorld implements World {
     @Override
     public @Nullable Location locateNearestStructure(@NotNull Location location,
             @NotNull StructureType structureType, int i, boolean b) {
+        return null;
+    }
+
+    @Override
+    public @Nullable StructureSearchResult locateNearestStructure(@NotNull Location origin, org.bukkit.generator.structure.@NotNull StructureType structureType, int radius, boolean findUnexplored) {
+        return null;
+    }
+
+    @Override
+    public @Nullable StructureSearchResult locateNearestStructure(@NotNull Location origin, @NotNull Structure structure, int radius, boolean findUnexplored) {
         return null;
     }
 

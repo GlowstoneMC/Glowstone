@@ -90,7 +90,7 @@ public final class NbtSerialization {
 
     public static BlockData readBlockData(CompoundTag tag) {
         NamespacedKey key = namespacedKeyFromString(tag.getString("Name"));
-        Material type = Material.getMaterial(key.toString());
+        Material type = Material.matchMaterial(key.toString());
         Optional<CompoundTag> properties = tag.tryGetCompound("Properties");
         return Bukkit.getServer().createBlockData(type);
     }
@@ -112,6 +112,9 @@ public final class NbtSerialization {
      */
     public static ItemStack[] readInventory(List<CompoundTag> tagList, int start, int size) {
         ItemStack[] items = new ItemStack[size];
+        Arrays.setAll(items, (index) -> {
+            return new ItemStack(Material.AIR);
+        });
         for (CompoundTag tag : tagList) {
             tag.readByte("Slot", slot -> {
                 if (slot >= start && slot < start + size) {

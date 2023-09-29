@@ -173,6 +173,16 @@ public class GlowVillager extends GlowAgeable implements Villager {
     }
 
     @Override
+    public boolean increaseLevel(int amount) {
+        return false;
+    }
+
+    @Override
+    public boolean addTrades(int amount) {
+        return false;
+    }
+
+    @Override
     public int getRestocksToday() {
         throw new UnsupportedOperationException();
     }
@@ -339,17 +349,17 @@ public class GlowVillager extends GlowAgeable implements Villager {
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_VILLAGER_HURT;
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_VILLAGER_DEATH;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_VILLAGER_AMBIENT;
     }
 

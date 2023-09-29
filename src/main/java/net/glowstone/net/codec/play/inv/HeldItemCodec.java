@@ -10,7 +10,7 @@ public final class HeldItemCodec implements Codec<HeldItemMessage> {
 
     @Override
     public HeldItemMessage decode(ByteBuf buf) throws IOException {
-        int slot = buf.readShort();
+        int slot = buf.readByte();
         return new HeldItemMessage(slot);
     }
 

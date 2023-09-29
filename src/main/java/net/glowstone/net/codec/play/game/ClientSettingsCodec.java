@@ -17,7 +17,9 @@ public final class ClientSettingsCodec implements Codec<ClientSettingsMessage> {
         boolean colors = buf.readBoolean();
         int skinFlags = buf.readUnsignedByte();
         int hand = ByteBufUtils.readVarInt(buf);
-        return new ClientSettingsMessage(locale, viewDistance, chatFlags, colors, skinFlags, hand);
+        boolean textFiltering = buf.readBoolean();
+        boolean serverListing = buf.readBoolean();
+        return new ClientSettingsMessage(locale, viewDistance, chatFlags, colors, skinFlags, hand, textFiltering, serverListing);
     }
 
     @Override
@@ -28,6 +30,8 @@ public final class ClientSettingsCodec implements Codec<ClientSettingsMessage> {
         buf.writeBoolean(message.isChatColors());
         buf.writeByte(message.getSkinFlags());
         ByteBufUtils.writeVarInt(buf, message.getHand());
+        buf.writeBoolean(message.isTextFilteringEnabled());
+        buf.writeBoolean(message.isServerListingEnables());
         return buf;
     }
 }

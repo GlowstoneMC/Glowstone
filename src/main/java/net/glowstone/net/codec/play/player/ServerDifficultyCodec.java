@@ -12,7 +12,8 @@ public final class ServerDifficultyCodec implements Codec<ServerDifficultyMessag
     @Override
     public ServerDifficultyMessage decode(ByteBuf buffer) throws IOException {
         int difficulty = buffer.readUnsignedByte();
-        return new ServerDifficultyMessage(Difficulty.values()[difficulty]);
+        boolean locked = buffer.readBoolean();
+        return new ServerDifficultyMessage(Difficulty.values()[difficulty], locked);
     }
 
     @Override

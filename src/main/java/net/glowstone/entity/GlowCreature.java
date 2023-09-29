@@ -8,11 +8,15 @@ import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.util.Position;
+import net.kyori.adventure.util.TriState;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.loot.LootTable;
+import org.bukkit.util.Consumer;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,5 +100,20 @@ public class GlowCreature extends GlowMob implements Creature {
     @Override
     public void setSeed(long seed) {
 
+    }
+
+    @Override
+    public @NotNull TriState getFrictionState() {
+        return TriState.NOT_SET;
+    }
+
+    @Override
+    public void setFrictionState(@NotNull TriState state) {
+
+    }
+
+    @Override
+    public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> projectile, @Nullable Vector velocity, @Nullable Consumer<T> function) {
+        return null;
     }
 }

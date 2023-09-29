@@ -111,6 +111,85 @@ import static java.lang.Math.sin;
  * @author Graham Edgecombe.
  */
 public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
+    @Override
+    public float getBodyYaw() {
+        return 0;
+    }
+
+    @Override
+    public void setBodyYaw(float bodyYaw) {
+
+    }
+
+    @Override
+    public @Nullable BlockFace getTargetBlockFace(int maxDistance, @NotNull FluidCollisionMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceEntities(int maxDistance, boolean ignoreBlocks) {
+        return null;
+    }
+
+    @Override
+    public void setArrowsInBody(int count, boolean fireEvent) {
+
+    }
+
+    @Override
+    public @NotNull Sound getFallDamageSound(int fallHeight) {
+        return Sound.ENTITY_GENERIC_BIG_FALL;
+    }
+
+    @Override
+    public @NotNull Sound getFallDamageSoundSmall() {
+        return Sound.ENTITY_GENERIC_SMALL_FALL;
+    }
+
+    @Override
+    public @NotNull Sound getFallDamageSoundBig() {
+        return Sound.ENTITY_GENERIC_BIG_FALL;
+    }
+
+    @Override
+    public @NotNull Sound getDrinkingSound(@NotNull ItemStack itemStack) {
+        return Sound.ENTITY_GENERIC_DRINK;
+    }
+
+    @Override
+    public @NotNull Sound getEatingSound(@NotNull ItemStack itemStack) {
+        return Sound.ENTITY_GENERIC_EAT;
+    }
+
+    @Override
+    public boolean canBreatheUnderwater() {
+        return false;
+    }
+
+    @Override
+    public void knockback(double strength, double directionX, double directionZ) {
+
+    }
+
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot slot) {
+
+    }
+
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot slot, @NotNull Collection<Player> players) {
+
+    }
+
+    @Override
+    public @NotNull ItemStack damageItemStack(@NotNull ItemStack stack, int amount) {
+        return null;
+    }
+
+    @Override
+    public void damageItemStack(@NotNull EquipmentSlot slot, int amount) {
+
+    }
 
     /**
      * The entity's AI task manager.
@@ -654,7 +733,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      *
      * @return the hurt sound if available
      */
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return null;
     }
 
@@ -663,7 +742,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      *
      * @return the death sound if available
      */
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return null;
     }
 
@@ -672,7 +751,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      *
      * @return the ambient sound if available
      */
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return null;
     }
 

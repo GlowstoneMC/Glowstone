@@ -351,7 +351,7 @@ public class GlowPlayerProfile implements PlayerProfile {
     }
 
     @Override
-    public @NotNull CompletableFuture<org.bukkit.profile.PlayerProfile> update() {
+    public @NotNull CompletableFuture<PlayerProfile> update() {
         return null;
     }
 

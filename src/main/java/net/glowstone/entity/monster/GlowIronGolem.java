@@ -29,12 +29,12 @@ public class GlowIronGolem extends GlowMonster implements IronGolem {
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_IRON_GOLEM_DEATH;
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_IRON_GOLEM_HURT;
     }
 }

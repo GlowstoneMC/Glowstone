@@ -102,4 +102,9 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
     public void setPotionMeta(@NotNull PotionMeta meta) {
 
     }
+
+    @Override
+    public void splash() {
+
+    }
 }

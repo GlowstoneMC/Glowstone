@@ -1,6 +1,7 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
+import io.papermc.paper.math.Rotations;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -17,6 +18,7 @@ import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.InventoryUtil;
+import net.kyori.adventure.util.TriState;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,8 +39,11 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.util.Consumer;
 import org.bukkit.util.EulerAngle;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -611,6 +616,66 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
+    public @NotNull Rotations getBodyRotations() {
+        return null;
+    }
+
+    @Override
+    public void setBodyRotations(@NotNull Rotations rotations) {
+
+    }
+
+    @Override
+    public @NotNull Rotations getLeftArmRotations() {
+        return null;
+    }
+
+    @Override
+    public void setLeftArmRotations(@NotNull Rotations rotations) {
+
+    }
+
+    @Override
+    public @NotNull Rotations getRightArmRotations() {
+        return null;
+    }
+
+    @Override
+    public void setRightArmRotations(@NotNull Rotations rotations) {
+
+    }
+
+    @Override
+    public @NotNull Rotations getLeftLegRotations() {
+        return null;
+    }
+
+    @Override
+    public void setLeftLegRotations(@NotNull Rotations rotations) {
+
+    }
+
+    @Override
+    public @NotNull Rotations getRightLegRotations() {
+        return null;
+    }
+
+    @Override
+    public void setRightLegRotations(@NotNull Rotations rotations) {
+
+    }
+
+    @Override
+    public @NotNull Rotations getHeadRotations() {
+        return null;
+    }
+
+    @Override
+    public void setHeadRotations(@NotNull Rotations rotations) {
+
+    }
+
+    @Override
     public void addEquipmentLock(@NotNull EquipmentSlot equipmentSlot, @NotNull LockType lockType) {
         // TODO: 1.16
         throw new UnsupportedOperationException("Not implemented yet.");
@@ -633,5 +698,20 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public EntityEquipment getEquipment() {
         return this.equipment;
+    }
+
+    @Override
+    public @NotNull TriState getFrictionState() {
+        return null;
+    }
+
+    @Override
+    public void setFrictionState(@NotNull TriState state) {
+
+    }
+
+    @Override
+    public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> projectile, @Nullable Vector velocity, @Nullable Consumer<T> function) {
+        return null;
     }
 }

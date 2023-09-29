@@ -106,6 +106,8 @@ import net.glowstone.linkstone.runtime.Boxes;
 import net.glowstone.linkstone.runtime.FieldSet;
 import net.glowstone.linkstone.runtime.LinkstoneRuntimeData;
 import net.glowstone.linkstone.runtime.inithook.ClassInitHook;
+import net.glowstone.linkstone.runtime.FieldSet;
+import net.glowstone.linkstone.runtime.LinkstoneRuntimeData;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.GlowSession;
@@ -140,6 +142,8 @@ import net.glowstone.util.library.LibraryManager;
 import net.glowstone.util.linkstone.LinkstoneClassInitObserver;
 import net.glowstone.util.linkstone.LinkstonePluginLoader;
 import net.glowstone.util.linkstone.LinkstonePluginScanner;
+import net.glowstone.util.linkstone.LinkstoneClassInitObserver;
+import net.glowstone.util.linkstone.LinkstonePluginScanner;
 import net.glowstone.util.loot.LootingManager;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.mojangson.ex.MojangsonParseException;
@@ -161,6 +165,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Registry;
 import org.bukkit.Server;
 import org.bukkit.StructureType;
 import org.bukkit.Tag;
@@ -216,6 +221,7 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.potion.PotionBrewer;
 import org.bukkit.profile.PlayerProfile;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.structure.StructureManager;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
@@ -282,11 +288,11 @@ public class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = NoInline.of("1.19");
+    public static final String GAME_VERSION = NoInline.of("1.19.3");
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = NoInline.of(759);
+    public static final int PROTOCOL_VERSION = NoInline.of(761);
     /**
      * The data version supported by the server.
      */
@@ -868,7 +874,7 @@ public class GlowServer implements Server {
         String seedString = config.getString(Key.LEVEL_SEED);
         WorldType type = WorldType.getByName(getWorldType());
         if (type == null) {
-            type = WorldType.NORMAL;
+            type = WorldType.FLAT;
         }
 
         long seed = new Random().nextLong();
@@ -1611,6 +1617,11 @@ public class GlowServer implements Server {
         return null;
     }
 
+    @Override
+    public @org.jetbrains.annotations.Nullable <T extends Keyed> Registry<T> getRegistry(@NotNull Class<T> tClass) {
+        return null;
+    }
+
     /**
      * Registers an advancement to the advancement registry.
      *
@@ -1970,6 +1981,11 @@ public class GlowServer implements Server {
     @Override
     public GlowScoreboardManager getScoreboardManager() {
         return scoreboardManager;
+    }
+
+    @Override
+    public @NotNull Criteria getScoreboardCriteria(@NotNull String name) {
+        return null;
     }
 
     @Override
@@ -2517,6 +2533,11 @@ public class GlowServer implements Server {
         return (List) worlds.getWorlds();
     }
 
+    @Override
+    public boolean isTickingWorlds() {
+        return false;
+    }
+
     /**
      * Gets the default ChunkGenerator for the given environment and type.
      *
@@ -2686,6 +2707,11 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public int getMaxChainedNeighborUpdates() {
+        return 0;
+    }
+
+    @Override
     public GlowServerIcon getServerIcon() {
         return defaultIcon;
     }
@@ -2746,6 +2772,16 @@ public class GlowServer implements Server {
     @Override
     public void setSpawnRadius(int value) {
         spawnRadius = value;
+    }
+
+    @Override
+    public boolean shouldSendChatPreviews() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnforcingSecureProfiles() {
+        return false;
     }
 
     @Override

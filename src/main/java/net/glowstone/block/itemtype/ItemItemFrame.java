@@ -22,7 +22,7 @@ public class ItemItemFrame extends ItemType {
             face);
 
         if (EventFactory.getInstance()
-            .callEvent(new HangingPlaceEvent(entity, player, target, face))
+            .callEvent(new HangingPlaceEvent(entity, player, target, face, hand))
             .isCancelled()) {
             return;
         }

@@ -58,6 +58,11 @@ public class GlowParrot extends GlowTameable implements Parrot {
         metadata.set(MetadataIndex.PARROT_VARIANT, variant.ordinal());
     }
 
+    @Override
+    public boolean isDancing() {
+        return false;
+    }
+
     public LivingEntity getImitatedEntity() {
         return null;
     }
@@ -142,17 +147,17 @@ public class GlowParrot extends GlowTameable implements Parrot {
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_PARROT_HURT;
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_PARROT_DEATH;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_PARROT_AMBIENT;
     }
 

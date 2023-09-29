@@ -14,6 +14,7 @@ import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.entity.SpawnEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.TickUtil;
+import net.kyori.adventure.util.TriState;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -255,5 +256,15 @@ public class GlowItem extends GlowEntity implements Item {
     @Override
     public boolean willAge() {
         return willAge;
+    }
+
+    @Override
+    public @NotNull TriState getFrictionState() {
+        return TriState.NOT_SET;
+    }
+
+    @Override
+    public void setFrictionState(@NotNull TriState state) {
+
     }
 }

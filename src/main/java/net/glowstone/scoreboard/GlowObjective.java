@@ -6,6 +6,7 @@ import net.glowstone.util.TextMessage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -96,6 +97,11 @@ public final class GlowObjective implements Objective {
     public String getCriteria() throws IllegalStateException {
         checkValid();
         return criteria;
+    }
+
+    @Override
+    public @NotNull Criteria getTrackedCriteria() throws IllegalStateException {
+        return null;
     }
 
     @Override

@@ -78,12 +78,12 @@ public class GlowShulker extends GlowMonster implements Shulker {
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_SHULKER_DEATH;
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         if (getShieldHeight() == 0) {
             return Sound.ENTITY_SHULKER_HURT_CLOSED;
         }
@@ -91,7 +91,7 @@ public class GlowShulker extends GlowMonster implements Shulker {
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_SHULKER_AMBIENT;
     }
 

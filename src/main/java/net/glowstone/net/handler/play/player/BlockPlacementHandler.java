@@ -131,7 +131,7 @@ public final class BlockPlacementHandler implements
         // Get values from the message
         Vector clickedLoc = new Vector(message.getCursorX(), message.getCursorY(),
             message.getCursorZ());
-        BlockFace face = convertFace(message.getDirection());
+        BlockFace face = convertFace(message.getFace());
         ItemStack holding = InventoryUtil
             .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
 

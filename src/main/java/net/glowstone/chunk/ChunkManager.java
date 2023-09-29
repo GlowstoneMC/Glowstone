@@ -315,13 +315,31 @@ public final class ChunkManager {
 
         if (glowChunkData != null) {
             int[][] extSections = glowChunkData.getSections();
+            DimensionType dimensionType = DimensionTypes.getByEnvironmentId(world.getEnvironment().getId());
+            int numSections = dimensionType.getLogicalHeight() / GlowChunk.SEC_DEPTH;
+            ChunkSection[] sections = new ChunkSection[numSections];
             if (extSections != null) {
-                ChunkSection[] sections = new ChunkSection[extSections.length];
-                for (int i = 0; i < extSections.length; ++i) {
-                    if (extSections[i] != null) {
-                        sections[i] = ChunkSection.fromStateArray(extSections[i]);
+                if (DimensionTypes.OVERWORLD.equals(dimensionType)) {
+                    for (int i = 0; i < 4; i++) {
+                        sections[i] = ChunkSection.initNewEmptySection();
+                    }
+                    for (int i = 0; i < extSections.length; i++) {
+                        if (extSections[i] != null) {
+                            sections[i+4] = ChunkSection.fromStateArray(extSections[i]);
+                        }
                     }
                 }
+                else {
+                    for (int i = 0; i < extSections.length; ++i) {
+                        if (extSections[i] != null) {
+                            sections[i] = ChunkSection.fromStateArray(extSections[i]);
+                        }
+                        else {
+                            sections[i] = ChunkSection.initNewEmptySection();
+                        }
+                    }
+                }
+
                 chunk.initializeSections(sections);
                 chunk.setBiomes(biomes.biomes);
                 chunk.automaticHeightMap();

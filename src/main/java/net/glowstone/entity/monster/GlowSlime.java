@@ -51,12 +51,12 @@ public class GlowSlime extends GlowMonster implements Slime {
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_SLIME_HURT;
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_SLIME_DEATH;
     }
 }

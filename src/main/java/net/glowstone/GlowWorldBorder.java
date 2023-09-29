@@ -8,6 +8,9 @@ import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
 
 public class GlowWorldBorder implements WorldBorder {
 
@@ -132,6 +135,11 @@ public class GlowWorldBorder implements WorldBorder {
     }
 
     @Override
+    public void setSize(double newSize, @NotNull TimeUnit unit, long time) {
+
+    }
+
+    @Override
     public void setCenter(Location location) {
         center = location.clone();
         broadcast(createMessage()); // TODO 1.19 packet
@@ -160,6 +168,16 @@ public class GlowWorldBorder implements WorldBorder {
         Location min = center.clone().subtract(size / 2, 0, size / 2);
         return location.getX() <= max.getX() && location.getZ() <= max.getZ()
                 && location.getX() >= min.getX() && location.getZ() >= min.getZ();
+    }
+
+    @Override
+    public double getMaxSize() {
+        return 0;
+    }
+
+    @Override
+    public double getMaxCenterCoordinate() {
+        return 0;
     }
 
     private void broadcast(WorldBorderMessage message) {

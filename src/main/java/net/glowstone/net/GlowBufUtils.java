@@ -125,7 +125,7 @@ public final class GlowBufUtils {
             int type = index.getType().getId();
             int id = index.getIndex();
 
-            System.out.println("Metadata: " + id + " " + type);
+            //System.out.println("Metadata: " + id + " " + type);
 
             buf.writeByte(id);
             ByteBufUtils.writeVarInt(buf, type);
@@ -139,7 +139,6 @@ public final class GlowBufUtils {
                     continue;
                 }
             }
-
             writeValue(buf, value, index.getType());
         }
 
@@ -446,7 +445,7 @@ public final class GlowBufUtils {
     @SneakyThrows
     public static NamespacedKey readNamespacedKey(ByteBuf buf) {
         String raw = ByteBufUtils.readUTF8(buf);
-        return NamespacedKey.fromString(ByteBufUtils.readUTF8(buf));
+        return NamespacedKey.fromString(raw);
     }
 
     @SneakyThrows

@@ -196,7 +196,7 @@ public class EventFactory {
     }
 
     public PlayerKickEvent onPlayerKick(Player player, String reason) {
-        return callEvent(new PlayerKickEvent(player, reason, null));
+        return callEvent(new PlayerKickEvent(player, reason, ""));
     }
 
     public PlayerQuitEvent onPlayerQuit(Player player) {

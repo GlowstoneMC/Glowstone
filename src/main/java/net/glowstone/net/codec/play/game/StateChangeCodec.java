@@ -10,7 +10,7 @@ public final class StateChangeCodec implements Codec<StateChangeMessage> {
 
     @Override
     public StateChangeMessage decode(ByteBuf buffer) throws IOException {
-        int reason = buffer.readByte();
+        int reason = buffer.readUnsignedByte();
         float value = buffer.readFloat();
 
         return new StateChangeMessage(reason, value);

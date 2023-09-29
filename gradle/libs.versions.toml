@@ -1,5 +1,5 @@
 [versions]
-api = "1.19-R0.1-SNAPSHOT"
+api = "1.19.3-R0.1-SNAPSHOT"
 redstone-transformer = "1.1.0-SNAPSHOT"
 linkstone = "1.0.0-SNAPSHOT"
 
@@ -7,7 +7,7 @@ checkstyle = "8.44"
 jansi = "1.18"
 jline = "2.14.6"
 fastutil = "1.0"
-flow = "1.2.10-SNAPSHOT"
+flow = "1.2.11-SNAPSHOT"
 fastuuid = "0.1"
 brigadier = "1.0.17"
 gluegen = "2.3.2"

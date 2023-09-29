@@ -11,6 +11,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Llama;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
@@ -65,17 +67,47 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public boolean inCaravan() {
+        return false;
+    }
+
+    @Override
+    public void joinCaravan(@NotNull Llama llama) {
+
+    }
+
+    @Override
+    public void leaveCaravan() {
+
+    }
+
+    @Override
+    public @Nullable Llama getCaravanHead() {
+        return null;
+    }
+
+    @Override
+    public boolean hasCaravanTail() {
+        return false;
+    }
+
+    @Override
+    public @Nullable Llama getCaravanTail() {
+        return null;
+    }
+
+    @Override
+    public Sound getDeathSound() {
         return Sound.ENTITY_LLAMA_DEATH;
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_LLAMA_HURT;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_LLAMA_AMBIENT;
     }
 

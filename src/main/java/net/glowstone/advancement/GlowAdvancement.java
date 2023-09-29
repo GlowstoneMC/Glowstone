@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.papermc.paper.advancement.AdvancementDisplay;
 import lombok.Data;
+import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
 import org.jetbrains.annotations.NotNull;
@@ -113,5 +114,10 @@ public class GlowAdvancement implements Advancement {
 
     public @Nullable AdvancementDisplay getDisplay() {
         return display;
+    }
+
+    @Override
+    public @NotNull Component displayName() {
+        return null;
     }
 }

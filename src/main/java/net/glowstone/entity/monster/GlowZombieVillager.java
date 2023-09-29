@@ -71,17 +71,17 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     }
 
     @Override
-    protected Sound getHurtSound() {
+    public Sound getHurtSound() {
         return Sound.ENTITY_ZOMBIE_VILLAGER_HURT;
     }
 
     @Override
-    protected Sound getDeathSound() {
+    public Sound getDeathSound() {
         return Sound.ENTITY_ZOMBIE_VILLAGER_DEATH;
     }
 
     @Override
-    protected Sound getAmbientSound() {
+    public Sound getAmbientSound() {
         return Sound.ENTITY_ZOMBIE_VILLAGER_AMBIENT;
     }
 
@@ -110,5 +110,10 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
         } else {
             conversionPlayerId = offlinePlayer.getUniqueId();
         }
+    }
+
+    @Override
+    public void setConversionTime(int time, boolean broadcastEntityEvent) {
+
     }
 }

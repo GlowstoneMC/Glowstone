@@ -1,6 +1,7 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.network.Message;
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -17,30 +18,28 @@ import java.util.UUID;
 @Data
 public final class UserListItemMessage implements Message {
 
-    private final Action action;
+    private final List<Action> actions;
     private final List<Entry> entries;
 
     /**
      * Creates an instance.
      *
-     * @param action  the action code: 0 = add player; 1 = update gamemode; 2 = update latency;
-     *                3 = update display name; 4 = remove player
+     * @param actions  List of actions in this message
      * @param entries the players to add, update or remove
      */
-    public UserListItemMessage(Action action, List<Entry> entries) {
-        this.action = action;
+    public UserListItemMessage(List<Action> actions, List<Entry> entries) {
+        this.actions = actions;
         this.entries = entries;
 
         for (Entry entry : entries) {
-            if (entry.action != action) {
-                throw new IllegalArgumentException(
-                    "Entries must be " + action + ", not " + entry.action);
+            if (!entry.actions.equals(actions)) {
+                throw new IllegalArgumentException("Entries do not match");
             }
         }
     }
 
-    public UserListItemMessage(Action action, Entry entry) {
-        this(action, Arrays.asList(entry));
+    public UserListItemMessage(List<Action> actions, Entry entry) {
+        this(actions, Arrays.asList(entry));
     }
 
     // add
@@ -62,61 +61,72 @@ public final class UserListItemMessage implements Message {
                             TextMessage displayName) {
         // TODO: measure ping
         return new Entry(profile.getId(), profile, gameMode, ping, displayName,
-            Action.ADD_PLAYER);
+            Lists.newArrayList(Action.ADD_PLAYER));
     }
 
     public static UserListItemMessage addOne(GlowPlayerProfile profile) {
-        return new UserListItemMessage(Action.ADD_PLAYER, add(profile));
+        return new UserListItemMessage(Lists.newArrayList(Action.ADD_PLAYER), add(profile));
     }
 
     // gamemode
 
     public static Entry gameMode(UUID uuid, int gameMode) {
-        return new Entry(uuid, null, gameMode, 0, null, Action.UPDATE_GAMEMODE);
+        return new Entry(uuid, null, gameMode, 0, null, Lists.newArrayList(Action.UPDATE_GAMEMODE));
     }
 
     public static UserListItemMessage gameModeOne(UUID uuid, int gameMode) {
-        return new UserListItemMessage(Action.UPDATE_GAMEMODE, gameMode(uuid, gameMode));
+        return new UserListItemMessage(Lists.newArrayList(Action.UPDATE_GAMEMODE), gameMode(uuid, gameMode));
     }
 
     // latency
 
     public static Entry latency(UUID uuid, int ping) {
-        return new Entry(uuid, null, 0, ping, null, Action.UPDATE_LATENCY);
+        return new Entry(uuid, null, 0, ping, null, Lists.newArrayList(Action.UPDATE_LATENCY));
     }
 
     public static UserListItemMessage latencyOne(UUID uuid, int ping) {
-        return new UserListItemMessage(Action.UPDATE_LATENCY, latency(uuid, ping));
+        return new UserListItemMessage(Lists.newArrayList(Action.UPDATE_LATENCY), latency(uuid, ping));
     }
 
     // display name
 
     public static Entry displayName(UUID uuid, TextMessage displayName) {
-        return new Entry(uuid, null, 0, 0, displayName, Action.UPDATE_DISPLAY_NAME);
+        return new Entry(uuid, null, 0, 0, displayName, Lists.newArrayList(Action.UPDATE_DISPLAY_NAME));
     }
 
     public static UserListItemMessage displayNameOne(UUID uuid, TextMessage displayName) {
-        return new UserListItemMessage(Action.UPDATE_DISPLAY_NAME, displayName(uuid, displayName));
+        return new UserListItemMessage(Lists.newArrayList(Action.UPDATE_DISPLAY_NAME), displayName(uuid, displayName));
     }
 
     // remove
 
     public static Entry remove(UUID uuid) {
-        return new Entry(uuid, null, 0, 0, null, Action.REMOVE_PLAYER);
+        return new Entry(uuid, null, 0, 0, null, Lists.newArrayList(Action.REMOVE_PLAYER));
     }
 
     public static UserListItemMessage removeOne(UUID uuid) {
-        return new UserListItemMessage(Action.REMOVE_PLAYER, remove(uuid));
+        return new UserListItemMessage(Lists.newArrayList(Action.REMOVE_PLAYER), remove(uuid));
     }
 
     // inner classes
 
+    /**
+     * The actions that can be performed in a user list update
+     * The bitFieldIndex field is the index of the action fla
+     */
     public enum Action {
-        ADD_PLAYER,
-        UPDATE_GAMEMODE,
-        UPDATE_LATENCY,
-        UPDATE_DISPLAY_NAME,
-        REMOVE_PLAYER
+        ADD_PLAYER(0),
+        UPDATE_GAMEMODE(2),
+        REMOVE_PLAYER(3),
+        UPDATE_LATENCY(4),
+        UPDATE_DISPLAY_NAME(5);
+        private int bitFieldIndex;
+        private Action(int bitIndex) {
+            this.bitFieldIndex = bitIndex;
+        }
+        public int getBitFieldIndex() {
+            return bitFieldIndex;
+        }
     }
 
     @Data
@@ -128,13 +138,13 @@ public final class UserListItemMessage implements Message {
         public final int gameMode;
         public final int ping;
         public final TextMessage displayName;
-        private final Action action;
+        private final List<Action> actions;
         public final long timestamp;
         public final byte[] publicKey;
         public final byte[] signature;
 
-        public Entry(UUID uuid, GlowPlayerProfile profile, int gameMode, int ping, TextMessage displayName, Action action) {
-            this(uuid, profile, gameMode, ping, displayName, action, 0, null, null);
+        public Entry(UUID uuid, GlowPlayerProfile profile, int gameMode, int ping, TextMessage displayName, List<Action> actions) {
+            this(uuid, profile, gameMode, ping, displayName, actions, 0, null, null);
         }
     }
 }

@@ -8,6 +8,7 @@ plugins {
     checkstyle
     jacoco
     kotlin("jvm") version "1.7.0"
+    application
 
     id("io.freefair.lombok") version "6.5.0-rc1"
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -52,6 +53,13 @@ dependencies {
 
     compileOnly(libs.jetbrains.annotations)
 }
+
+
+application {
+    mainClass.set("net.glowstone.GlowServer")
+}
+
+
 
 group = "net.glowstone"
 version = "2022.6.1-SNAPSHOT"
@@ -127,6 +135,7 @@ kotlin {
 tasks.withType<JavaCompile> {
     options.encoding = Charsets.UTF_8.name()
     options.release.set(javaVersion)
+    options.isWarnings = false;
 }
 
 tasks.withType<Javadoc> {
@@ -208,8 +217,8 @@ tasks.jar {
 tasks.shadowJar {
     val prefix = "org.bukkit.craftbukkit.libs"
     listOf(
-        "jline",
-        "it.unimi",
+            "jline",
+            "it.unimi",
     ).forEach { pattern ->
         relocate(pattern, "$prefix.$pattern")
     }
