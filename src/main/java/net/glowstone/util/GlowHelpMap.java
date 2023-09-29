@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -59,7 +58,7 @@ public final class GlowHelpMap implements HelpMap {
      */
     public GlowHelpMap(GlowServer server) {
         this.server = server;
-        helpTopics = new TreeMap<>(NAME_COMPARE);
+        helpTopics = new HashMap<>();
         defaultTopic
             = new IndexHelpTopic("Index", null, null, indexTopics, "Use /help [n] to get page"
             + " n of help.");

@@ -5,6 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.Random;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RedwoodTree extends GenericTree {
 
@@ -45,6 +47,7 @@ public class RedwoodTree extends GenericTree {
 
     @Override
     public boolean canPlace(int baseX, int baseY, int baseZ, World world) {
+        Set<Material> overridableSet = new HashSet<>(overridables);
         for (int y = baseY; y <= baseY + 1 + height; y++) {
             // Space requirement
             int radius; // default radius if above first block
@@ -59,7 +62,7 @@ public class RedwoodTree extends GenericTree {
                     if (y >= 0 && y < 256) {
                         // we can overlap some blocks around
                         Material type = blockTypeAt(x, y, z, world);
-                        if (!overridables.contains(type)) {
+                        if (!overridableSet.contains(type)) {
                             return false;
                         }
                     } else { // height out of range
@@ -81,6 +84,8 @@ public class RedwoodTree extends GenericTree {
         int radius = random.nextInt(2);
         int peakRadius = 1;
         int minRadius = 0;
+        Set<Material> overridableSet = new HashSet<>(overridables);
+        
         for (int y = blockY + height; y >= blockY + leavesHeight; y--) {
             // leaves are built from top to bottom
             for (int x = blockX - radius; x <= blockX + radius; x++) {
@@ -107,7 +112,7 @@ public class RedwoodTree extends GenericTree {
         // generate the trunk
         for (int y = 0; y < height - random.nextInt(3); y++) {
             Material type = blockTypeAt(blockX, blockY + y, blockZ, world);
-            if (overridables.contains(type)) {
+            if (overridableSet.contains(type)) {
                 delegate.setType(world, blockX, blockY + y,
                         blockZ, logType);
             }
