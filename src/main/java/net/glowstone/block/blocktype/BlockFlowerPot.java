@@ -40,7 +40,8 @@ public class BlockFlowerPot extends BlockType {
 
     @Override
     public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new FlowerPotEntity(chunk.getBlock(cx, cy, cz));
+        // In 1.13+, flower pot variants are flattened into individual blocks; no block entity needed.
+        return null;
     }
 
     @Override
