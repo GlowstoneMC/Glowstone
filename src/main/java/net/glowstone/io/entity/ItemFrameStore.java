@@ -24,7 +24,7 @@ class ItemFrameStore extends HangingStore<GlowItemFrame> {
     public void load(GlowItemFrame entity, CompoundTag tag) {
         super.load(entity, tag);
         tag.readItem("Item", entity::setItem);
-        tag.readInt("Rotation", rotation -> entity.setRotation(Rotation.values()[rotation]));
+        tag.readByte("Rotation", rotation -> entity.setRotation(Rotation.values()[rotation & 0xFF]));
     }
 
     @Override
@@ -32,6 +32,6 @@ class ItemFrameStore extends HangingStore<GlowItemFrame> {
         super.save(entity, tag);
         tag.putByte("Facing", HangingFace.getByBlockFace(entity.getFacing()).ordinal());
         tag.putCompound("Item", NbtSerialization.writeItem(entity.getItem(), -1));
-        tag.putInt("Rotation", entity.getRotation().ordinal());
+        tag.putByte("Rotation", entity.getRotation().ordinal());
     }
 }
