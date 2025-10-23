@@ -14,7 +14,7 @@ public class BlockGrassPath extends BlockDirectDrops {
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
         Material oldType, byte oldData, Material newType, byte newData) {
         if (face == BlockFace.UP && newType.isSolid()) {
-            block.setType(Material.DIRT);
+            block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
         }
     }
 }

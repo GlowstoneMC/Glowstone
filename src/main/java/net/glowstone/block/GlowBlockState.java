@@ -69,7 +69,8 @@ public class GlowBlockState implements BlockState {
 
     @Override
     public @NotNull BlockData getBlockData() {
-        return getBlock().getBlockData();
+        // Represent this state using a simple BlockData wrapper for the stored type.
+        return new net.glowstone.block.data.SimpleBlockData(getType());
     }
 
     @Override
@@ -123,7 +124,8 @@ public class GlowBlockState implements BlockState {
     public boolean update(boolean force, boolean applyPhysics) {
         Block block = getBlock();
         if (block.getType() == getType() || force) {
-            block.setBlockData(block.getBlockData(), applyPhysics);
+            // Apply this state's BlockData to the block
+            block.setBlockData(getBlockData(), applyPhysics);
             return true;
         }
         return false;
