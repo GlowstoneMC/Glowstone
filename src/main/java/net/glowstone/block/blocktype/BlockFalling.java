@@ -52,7 +52,7 @@ public class BlockFalling extends BlockType {
 
         if (!me.isEmpty()) {
             BlockData data = me.getBlockData();
-            me.setType(Material.AIR);
+            me.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
             me.getWorld().spawnFallingBlock(me.getLocation().add(0.50, 0.00, 0.50), data);
         }
     }

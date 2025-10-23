@@ -20,7 +20,7 @@ public class EmptyBucketDispenseBehavior extends DefaultDispenseBehavior {
             return super.dispenseStack(block, stack);
         }
         Material bucket = liquid.getBucketType();
-        target.setType(Material.AIR);
+        target.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
         stack.setAmount(stack.getAmount() - 1);
         if (stack.getAmount() == 0) {
             stack.setAmount(1);

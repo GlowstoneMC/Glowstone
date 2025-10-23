@@ -32,7 +32,7 @@ public class BlockSponge extends BlockType {
             if (iterator.hasNext()) {
                 absorbedWater = true;
                 do {
-                    iterator.next().setType(Material.AIR);
+                    iterator.next().setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
                 } while (iterator.hasNext());
             }
         }

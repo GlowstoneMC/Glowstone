@@ -190,7 +190,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND,
                     block.getType().getId(), 64, player);
             GlowBlockState state = block.getState();
-            block.setType(Material.AIR);
+            block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
             if (blockType != null) {
                 blockType.afterDestroy(player, block, face, state);
             }

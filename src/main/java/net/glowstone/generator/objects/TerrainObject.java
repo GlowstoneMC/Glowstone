@@ -61,10 +61,10 @@ public interface TerrainObject {
                 Block plantTop = blockAbove.getRelative(BlockFace.UP);
                 BlockData plantTopData = plantTop.getBlockData();
                 if (plantTopData.getMaterial() == mat && ((Bisected) plantTopData).getHalf() == Bisected.Half.TOP) {
-                    plantTop.setType(Material.AIR);
+                    plantTop.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
                 }
             }
-            blockAbove.setType(Material.AIR);
+            blockAbove.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
             return true;
         }
         return false;

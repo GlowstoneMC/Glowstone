@@ -54,13 +54,13 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
             if (!getMaterials().contains(block.getType())) {
                 return;
             }
-            blockUnder.setType(Material.AIR);
+            blockUnder.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
         } else {
             GlowBlock blockTop = block.getRelative(BlockFace.UP);
             if (!getMaterials().contains(block.getType())) {
                 return;
             }
-            blockTop.setType(Material.AIR);
+            blockTop.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
         }
     }
 
@@ -97,9 +97,9 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
         Material species = block.getType();
         if (species == Material.TALL_GRASS
             || species == Material.LARGE_FERN) {
-            if (holdingType != null && holdingType.canPlaceAt(null, block, face)) {
-                block.getRelative(BlockFace.UP).setType(Material.AIR, (byte) 0, false);
-            }
+                    if (holdingType != null && holdingType.canPlaceAt(null, block, face)) {
+                        block.getRelative(BlockFace.UP).setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR), false);
+                    }
             return true;
         }
         Bisected data = getCastedBlockData(Bisected.class, block.getBlockData());
@@ -110,7 +110,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
                 if (underSpecies == Material.TALL_GRASS
                     || underSpecies == Material.LARGE_FERN) {
                     if (holdingType != null && holdingType.canPlaceAt(null, block, face)) {
-                        under.setType(Material.AIR, (byte) 0, false);
+                        under.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR), false);
                     }
                     return true;
                 }

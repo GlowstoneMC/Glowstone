@@ -213,7 +213,7 @@ public class CloneCommand extends GlowVanillaCommand {
                 }
 
                 if (cloneMode == CloneMode.MOVE) {
-                    fromBlock.setType(Material.AIR, false);
+                    fromBlock.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR), false);
                 }
 
                 blocksCloned++;

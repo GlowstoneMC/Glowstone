@@ -23,7 +23,7 @@ public class BlockTnt extends BlockType {
      */
     public static void igniteBlock(
         Block tntBlock, boolean ignitedByExplosion, GlowPlayer player) {
-        tntBlock.setType(Material.AIR);
+        tntBlock.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
         World world = tntBlock.getWorld();
         GlowTntPrimed tnt = (GlowTntPrimed) world
             .spawnEntity(tntBlock.getLocation().add(0.5, 0, 0.5), EntityType.PRIMED_TNT);

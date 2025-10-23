@@ -123,12 +123,12 @@ public class BlockBed extends BlockType {
                                    Material oldType, byte oldData, Material newType, byte newData) {
         if (changedBlock.equals(getHead(block)) || changedBlock.equals(getFoot(block))) {
             if (newType == Material.AIR) {
-                block.setType(Material.AIR);
+                block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
             }
         }
         if (changedBlock.equals(getHead(block).getRelative(BlockFace.DOWN)) || changedBlock.equals(getFoot(block).getRelative(BlockFace.DOWN))) {
             if (newType == Material.AIR) {
-                block.setType(Material.AIR);
+                block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
             }
         }
     }

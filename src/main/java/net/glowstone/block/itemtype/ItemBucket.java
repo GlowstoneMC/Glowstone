@@ -92,7 +92,7 @@ public class ItemBucket extends ItemType {
                 }
             }
 
-            target.setType(Material.AIR);
+            target.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
         }
     }
 }

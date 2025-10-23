@@ -34,8 +34,7 @@ public class BlockSnowBlock extends BlockType {
     public void updateBlock(GlowBlock block) {
         if (block.getLightFromBlocks() > 11) {
             GlowBlockState state = block.getState();
-            state.setType(Material.AIR);
-            state.setData(new MaterialData(Material.AIR));
+            state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
             BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
             EventFactory.getInstance().callEvent(fadeEvent);
             if (!fadeEvent.isCancelled()) {

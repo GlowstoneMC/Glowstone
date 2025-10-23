@@ -260,7 +260,7 @@ public class BlockFire extends BlockNeedsAttached {
                         state.setRawData(
                             (byte) (increasedAge > MAX_FIRE_AGE ? MAX_FIRE_AGE : increasedAge));
                     } else {
-                        state.setType(Material.AIR);
+                        state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
                         state.setRawData((byte) 0);
                     }
                     state.update(true);

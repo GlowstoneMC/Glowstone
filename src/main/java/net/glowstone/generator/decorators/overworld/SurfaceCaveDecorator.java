@@ -75,7 +75,7 @@ public class SurfaceCaveDecorator extends BlockDecorator {
                                 + (blockZ - z) * (blockZ - z);
                     if (distanceSquared < radius * radius) {
                         GlowBlock pocket = block.getWorld().getBlockAt(x, y, z);
-                        pocket.setType(Material.AIR);
+                        pocket.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
                     }
                 }
             }

@@ -63,7 +63,7 @@ public class BlockPiston extends BlockDirectional {
             // break piston extension if extended
             if (isPistonExtended(block)) {
                 block.getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing())
-                    .setType(Material.AIR);
+                    .setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
             }
         }
 

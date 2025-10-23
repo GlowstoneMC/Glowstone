@@ -188,18 +188,18 @@ public abstract class BlockLiquid extends BlockType {
         Material targetMaterial) {
         if (flowingMaterial == Material.WATER && targetMaterial == Material.LAVA) {
             if (target.getState().getRawData() == STRENGTH_SOURCE) {
-                target.setType(Material.OBSIDIAN);
+                target.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.OBSIDIAN));
             } else if (direction == DOWN) {
-                target.setType(Material.COBBLESTONE);
+                target.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.COBBLESTONE));
             }
         }
         if (flowingMaterial == Material.LAVA && (targetMaterial == Material.WATER)) {
             if (direction == DOWN) {
-                target.setType(Material.STONE);
+                target.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.STONE));
             }
             if (direction == NORTH || direction == SOUTH || direction == EAST
                 || direction == WEST) {
-                target.setType(Material.COBBLESTONE);
+                target.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.COBBLESTONE));
             }
         }
     }
@@ -232,12 +232,12 @@ public abstract class BlockLiquid extends BlockType {
                     }
                     if (me.getWorld().getServer().getClassicWater()
                         && me.getRelative(face).getState().getRawData() == STRENGTH_SOURCE) {
-                        me.getRelative(face).setType(Material.AIR);
+                        me.getRelative(face).setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
                     }
                 }
             }
             if (!connected) {
-                me.setType(Material.AIR);
+                me.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
                 return;
             }
             if (count == 2) {
