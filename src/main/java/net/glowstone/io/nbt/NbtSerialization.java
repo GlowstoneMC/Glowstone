@@ -50,9 +50,19 @@ public final class NbtSerialization {
         if (count[0] == 0) {
             return null;
         }
-        final short[] damage = {0};
-        tag.readShort("Damage", x -> damage[0] = x);
-        ItemStack stack = new ItemStack(material[0], count[0], damage[0]);
+        final short[] nbtDamage = {0};
+        tag.readShort("Damage", x -> nbtDamage[0] = x);
+        // In 1.13+, the Damage tag represents remaining durability, whereas Bukkit stores
+        // damage taken (0 = brand new). Convert if the item is damageable.
+        short bukkitDamage = nbtDamage[0];
+        int maxDurability = material[0].getMaxDurability();
+        if (maxDurability > 0) {
+            int converted = maxDurability - (nbtDamage[0] & 0xFFFF);
+            if (converted < 0) converted = 0;
+            if (converted > maxDurability) converted = maxDurability;
+            bukkitDamage = (short) converted;
+        }
+        ItemStack stack = new ItemStack(material[0], count[0], bukkitDamage);
         // This is slightly different than what tag.readItem would do, since we specify the
         // material separately.
         tag.readCompound("tag",
@@ -75,7 +85,16 @@ public final class NbtSerialization {
             return tag;
         }
         tag.putString("id", ItemIds.getName(stack.getType()));
-        tag.putShort("Damage", stack.getDurability());
+        // In 1.13+, the Damage tag stores remaining durability. Bukkit stores damage taken.
+        int maxDurability = stack.getType().getMaxDurability();
+        short nbtDamage = stack.getDurability();
+        if (maxDurability > 0) {
+            int remaining = maxDurability - (stack.getDurability() & 0xFFFF);
+            if (remaining < 0) remaining = 0;
+            if (remaining > maxDurability) remaining = maxDurability;
+            nbtDamage = (short) remaining;
+        }
+        tag.putShort("Damage", nbtDamage);
         tag.putByte("Count", stack.getAmount());
         tag.putByte("Slot", slot);
         CompoundTag meta = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
