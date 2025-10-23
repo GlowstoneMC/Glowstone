@@ -17,7 +17,8 @@ public class BlockNote extends BlockType {
 
     @Override
     public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new NoteblockEntity(chunk.getBlock(cx, cy, cz));
+        // In 1.13+, note value is represented via block state; no block entity needed.
+        return null;
     }
 
     @Override

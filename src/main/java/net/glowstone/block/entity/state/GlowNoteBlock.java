@@ -34,7 +34,13 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
                 "GlowNoteBlock: expected NOTE_BLOCK, got " + block.getType());
         }
 
-        note = getBlockEntity().getNote();
+        NoteblockEntity entity = getBlockEntity();
+        if (entity != null) {
+            note = entity.getNote();
+        } else {
+            // Fallback: store note in block metadata/data when no block entity is present
+            note = new Note(getBlock().getData());
+        }
     }
 
     private static Instrument instrumentOf(Material mat) {
@@ -222,7 +228,13 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
         if (result) {
-            getBlockEntity().setNote(note);
+            NoteblockEntity entity = getBlockEntity();
+            if (entity != null) {
+                entity.setNote(note);
+            } else {
+                // Persist via block metadata/data in absence of a block entity
+                getBlock().setData(note.getId());
+            }
         }
         return result;
     }
