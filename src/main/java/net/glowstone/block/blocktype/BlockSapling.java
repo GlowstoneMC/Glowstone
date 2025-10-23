@@ -100,11 +100,11 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         int data = block.getData() & 0x7;
 
         // replaces the sapling block(s)
-        block.setType(Material.AIR);
+        block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
         if (type == TreeType.JUNGLE || type == TreeType.MEGA_REDWOOD || type == TreeType.DARK_OAK) {
-            block.getRelative(BlockFace.SOUTH).setType(Material.AIR);
-            block.getRelative(BlockFace.EAST).setType(Material.AIR);
-            block.getRelative(BlockFace.SOUTH_EAST).setType(Material.AIR);
+            block.getRelative(BlockFace.SOUTH).setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
+            block.getRelative(BlockFace.EAST).setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
+            block.getRelative(BlockFace.SOUTH_EAST).setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
         }
 
         // try to generate a tree
@@ -190,7 +190,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
                 if (data instanceof Sapling) {
                     Sapling sapling = (Sapling) data;
                     TreeType type = getTreeType(sapling.getSpecies());
-                    block.setType(Material.AIR);
+                    block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.AIR));
                     int saplingData = block.getData() & 0x7;
                     if (!block.getWorld().generateTree(block.getLocation(), type)) {
                         // TODO: 1.13 sapling types

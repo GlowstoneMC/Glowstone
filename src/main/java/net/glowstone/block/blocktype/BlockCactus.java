@@ -65,8 +65,7 @@ public class BlockCactus extends BlockType {
                     state.setRawData((byte) 0);
                     state.update(true);
                     state = blockAbove.getState();
-                    state.setType(Material.CACTUS);
-                    state.setRawData((byte) 0);
+                    state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.CACTUS));
                     BlockGrowEvent growEvent = new BlockGrowEvent(blockAbove, state);
                     EventFactory.getInstance().callEvent(growEvent);
                     if (!growEvent.isCancelled()) {
