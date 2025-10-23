@@ -41,7 +41,7 @@ public class SugarCane implements TerrainObject {
                     return n > 0;
                 }
                 BlockState state = caneBlock.getState();
-                state.setType(Material.SUGAR_CANE);
+                state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.SUGAR_CANE));
                 state.update(true);
             }
         }

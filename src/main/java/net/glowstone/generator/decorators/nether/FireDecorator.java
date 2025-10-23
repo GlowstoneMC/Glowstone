@@ -30,8 +30,7 @@ public class FireDecorator extends BlockDecorator {
                 if (y < 128 && block.getType() == Material.AIR
                     && blockBelow.getType() == Material.NETHERRACK) {
                     BlockState state = block.getState();
-                    state.setType(Material.FIRE);
-                    state.setData(new MaterialData(Material.FIRE));
+                    state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.FIRE));
                     state.update(true);
                 }
             }

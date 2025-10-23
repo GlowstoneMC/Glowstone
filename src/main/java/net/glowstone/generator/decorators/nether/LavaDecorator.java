@@ -51,7 +51,7 @@ public class LavaDecorator extends BlockDecorator {
         if (netherrackBlockCount == 5
             || flowing && airBlockCount == 1 && netherrackBlockCount == 4) {
             BlockState state = block.getState();
-            state.setType(Material.LAVA);
+            state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.LAVA));
             state.update(true);
             new PulseTask((GlowBlock) block, true, 1, true).startPulseTask();
         }

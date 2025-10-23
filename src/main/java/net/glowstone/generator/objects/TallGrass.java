@@ -35,9 +35,8 @@ public class TallGrass implements TerrainObject {
             if (y < 255 && block.getType() == Material.AIR && (
                     blockTypeBelow == Material.GRASS_BLOCK || blockTypeBelow == Material.DIRT)) {
                 BlockState state = block.getState();
-                // TODO: 1.13 grass types
-                state.setType(Material.TALL_GRASS);
-                state.setData(grassType);
+                // TODO: 1.13 grass types - placeholder default BlockData
+                state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.TALL_GRASS));
                 state.update(true);
                 succeeded = true;
             }

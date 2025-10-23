@@ -31,8 +31,7 @@ public class Cactus implements TerrainObject {
                         }
                     }
                     BlockState state = block.getState();
-                    state.setType(Material.CACTUS);
-                    state.setData(new MaterialData(Material.CACTUS));
+                    state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.CACTUS));
                     state.update(true);
                 }
             }

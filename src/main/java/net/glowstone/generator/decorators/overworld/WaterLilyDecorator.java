@@ -28,8 +28,7 @@ public class WaterLilyDecorator extends BlockDecorator {
             if (y >= 0 && y <= 255 && world.getBlockAt(x, y, z).getType() == Material.AIR
                 && world.getBlockAt(x, y - 1, z).getType() == Material.WATER) {
                 BlockState state = world.getBlockAt(x, y, z).getState();
-                state.setType(Material.LILY_PAD);
-                state.setData(new MaterialData(Material.LILY_PAD));
+                state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.LILY_PAD));
                 state.update(true);
             }
         }

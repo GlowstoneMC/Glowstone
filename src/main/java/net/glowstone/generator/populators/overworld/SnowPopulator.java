@@ -35,14 +35,14 @@ public class SnowPopulator extends BlockPopulator {
                         case LAVA:
                             break;
                         case DIRT:
-                            block.setType(Material.GRASS_BLOCK);
+                            block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.GRASS_BLOCK));
                             if (blockAbove.isEmpty()) {
-                                blockAbove.setType(Material.SNOW);
+                                blockAbove.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.SNOW));
                             }
                             break;
                         default:
                             if (blockAbove.isEmpty()) {
-                                blockAbove.setType(Material.SNOW);
+                                blockAbove.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.SNOW));
                             }
                             break;
                     }

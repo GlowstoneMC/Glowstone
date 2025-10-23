@@ -29,9 +29,8 @@ public class PumpkinDecorator extends BlockPopulator {
                 if (world.getBlockAt(x, y, z).getType() == Material.AIR
                         && world.getBlockAt(x, y - 1, z).getType() == Material.GRASS_BLOCK) {
                     BlockState state = world.getBlockAt(x, y, z).getState();
-                    state.setType(Material.PUMPKIN);
-                    // random facing
-                    state.setData(new Pumpkin(FACES[random.nextInt(FACES.length)]));
+                    // For now, place default-facing pumpkin via BlockData; facing can be refined later.
+                    state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.PUMPKIN));
                     state.update(true);
                 }
             }

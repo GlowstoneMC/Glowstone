@@ -63,7 +63,7 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
         if (world.getEnvironment() == Environment.THE_END) {
             Block block = location.getBlock();
             if (block.getType() != Material.FIRE) {
-                block.setType(Material.FIRE);
+                block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.FIRE));
             }
         }
     }

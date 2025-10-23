@@ -39,7 +39,7 @@ public class GlowstoneDecorator extends BlockDecorator {
                 continue;
             }
             BlockState state = block.getState();
-            state.setType(Material.GLOWSTONE);
+            state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.GLOWSTONE));
             state.update(true);
 
             for (int j = 0; j < 1500; j++) {
@@ -58,7 +58,7 @@ public class GlowstoneDecorator extends BlockDecorator {
                 }
                 if (glowstoneBlockCount == 1) {
                     state = block.getState();
-                    state.setType(Material.GLOWSTONE);
+                    state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.GLOWSTONE));
                     state.update(true);
                 }
             }
