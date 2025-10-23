@@ -24,6 +24,10 @@ version = glowstoneVersion
 
 repositories {
     mavenLocal()
+    mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://repo.md-5.net/content/repositories/public/' }
+    maven { url 'https://repo.md-5.net/content/repositories/snapshots/' }
 
     maven {
         name = 'Glowstone'
