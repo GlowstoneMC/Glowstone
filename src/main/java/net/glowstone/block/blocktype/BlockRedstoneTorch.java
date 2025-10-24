@@ -89,9 +89,7 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
                     me.count(60);
                 }
 
-                me.setTypeIdAndData(
-                    (powered ? Material.REDSTONE_TORCH : Material.REDSTONE_TORCH).getId(), // TODO: block data OFF : ON
-                    me.getData(), true);
+                me.setBlockData(new net.glowstone.block.data.SimpleBlockData(me.getType()), true); // TODO: use Lightable when available
                 extraUpdate(me);
             }
         }
