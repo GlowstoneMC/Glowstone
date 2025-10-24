@@ -38,8 +38,7 @@ public class DeadBushDecorator extends BlockDecorator {
                 for (Material soil : SOIL_TYPES) {
                     if (soil == blockBelow.getType()) {
                         BlockState state = world.getBlockAt(x, y, z).getState();
-                        state.setType(Material.DEAD_BUSH);
-                        state.setData(new LongGrass(GrassSpecies.DEAD));
+                        state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.DEAD_BUSH));
                         state.update(true);
                         break;
                     }

@@ -87,7 +87,7 @@ public class RedwoodTree extends GenericTree {
                     if ((Math.abs(x - blockX) != radius
                             || Math.abs(z - blockZ) != radius || radius <= 0)
                             && blockTypeAt(x, y, z, world) == Material.AIR) {
-                        delegate.setType(world, x, y, z, leavesType);
+                        delegate.setTypeAndData(world, x, y, z, leavesType, new net.glowstone.block.data.SimpleBlockData(leavesType));
                     }
                 }
             }
@@ -107,15 +107,15 @@ public class RedwoodTree extends GenericTree {
         for (int y = 0; y < height - random.nextInt(3); y++) {
             Material type = blockTypeAt(blockX, blockY + y, blockZ, world);
             if (overridables.contains(type)) {
-                delegate.setType(world, blockX, blockY + y,
-                        blockZ, logType);
+                delegate.setTypeAndData(world, blockX, blockY + y,
+                        blockZ, logType, new net.glowstone.block.data.SimpleBlockData(logType));
             }
         }
 
         // block below trunk is always dirt
-        delegate.setType(world, blockX,
+        delegate.setTypeAndData(world, blockX,
                 blockY - 1, blockZ,
-                Material.DIRT);
+                Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
 
         return true;
     }

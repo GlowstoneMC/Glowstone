@@ -78,9 +78,9 @@ public class MegaJungleTree extends GenericTree {
                 // branches are always longer when facing south or east (positive X or positive Z)
                 x = (int) (Math.cos(d) * i + 1.5F);
                 z = (int) (Math.sin(d) * i + 1.5F);
-                delegate.setType(world, blockX + x,
+                delegate.setTypeAndData(world, blockX + x,
                         blockY + branchHeight - 3 + i / 2,
-                        blockZ + z, logType);
+                        blockZ + z, logType, new net.glowstone.block.data.SimpleBlockData(logType));
             }
             // generates leaves for this branch
             for (int y = branchHeight - (random.nextInt(2) + 1); y <= branchHeight; y++) {
@@ -135,39 +135,39 @@ public class MegaJungleTree extends GenericTree {
                     .getBlockAt(blockX + 0, blockY + y, blockZ + 0)
                     .getType();
             if (type == Material.AIR || LEAF_TYPES.contains(type)) {
-                delegate.setType(world, blockX + 0, blockY + y,
-                        blockZ, logType);
+                delegate.setTypeAndData(world, blockX + 0, blockY + y,
+                        blockZ, logType, new net.glowstone.block.data.SimpleBlockData(logType));
             }
             type = world
                     .getBlockAt(blockX + 0, blockY + y, blockZ + 1)
                     .getType();
             if (type == Material.AIR || LEAF_TYPES.contains(type)) {
-                delegate.setType(world, blockX + 0, blockY + y,
-                        blockZ + 1, logType);
+                delegate.setTypeAndData(world, blockX + 0, blockY + y,
+                        blockZ + 1, logType, new net.glowstone.block.data.SimpleBlockData(logType));
             }
             type = world
                     .getBlockAt(blockX + 1, blockY + y, blockZ + 0)
                     .getType();
             if (type == Material.AIR || LEAF_TYPES.contains(type)) {
-                delegate.setType(world, blockX + 1, blockY + y,
-                        blockZ, logType);
+                delegate.setTypeAndData(world, blockX + 1, blockY + y,
+                        blockZ, logType, new net.glowstone.block.data.SimpleBlockData(logType));
             }
             type = world
                     .getBlockAt(blockX + 1, blockY + y, blockZ + 1)
                     .getType();
             if (type == Material.AIR || LEAF_TYPES.contains(type)) {
-                delegate.setType(world, blockX + 1, blockY + y,
-                        blockZ + 1, logType);
+                delegate.setTypeAndData(world, blockX + 1, blockY + y,
+                        blockZ + 1, logType, new net.glowstone.block.data.SimpleBlockData(logType));
             }
         }
     }
 
     protected void generateDirtBelowTrunk(World world, int blockX, int blockY, int blockZ) {
         // SELF, SOUTH, EAST, SOUTH EAST
-        delegate.setType(world, blockX + 0, blockY + -1, blockZ + 0, Material.DIRT);
-        delegate.setType(world, blockX + 0, blockY + -1, blockZ + 1, Material.DIRT);
-        delegate.setType(world, blockX + 1, blockY + -1, blockZ + 0, Material.DIRT);
-        delegate.setType(world, blockX + 1, blockY + -1, blockZ + 1, Material.DIRT);
+        delegate.setTypeAndData(world, blockX + 0, blockY + -1, blockZ + 0, Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
+        delegate.setTypeAndData(world, blockX + 0, blockY + -1, blockZ + 1, Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
+        delegate.setTypeAndData(world, blockX + 1, blockY + -1, blockZ + 0, Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
+        delegate.setTypeAndData(world, blockX + 1, blockY + -1, blockZ + 1, Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
     }
 
     private void addVinesOnTrunk(World world, int blockX, int blockY, int blockZ, Random random) {
@@ -205,8 +205,8 @@ public class MegaJungleTree extends GenericTree {
                 && blockTypeAt(absoluteX, absoluteY, absoluteZ, world)
                 == Material.AIR) {
             // TODO: 1.13, set direction of vine
-            delegate.setType(world, absoluteX, absoluteY,
-                    absoluteZ, Material.VINE);
+            delegate.setTypeAndData(world, absoluteX, absoluteY,
+                    absoluteZ, Material.VINE, new net.glowstone.block.data.SimpleBlockData(Material.VINE));
         }
     }
 

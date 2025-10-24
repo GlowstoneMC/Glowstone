@@ -34,7 +34,7 @@ public class IceSpike implements TerrainObject {
                     Block block = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
                     if (Arrays.asList(MATERIALS).contains(block.getType())
                         || block.getType() == Material.PACKED_ICE) {
-                        block.setType(Material.PACKED_ICE);
+                        block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.PACKED_ICE));
                         stackHeight--;
                         if (stackHeight <= 0) {
                             y -= random.nextInt(5);
@@ -63,14 +63,14 @@ public class IceSpike implements TerrainObject {
                     Block block = world
                         .getBlockAt(sourceX + x, sourceY + tipOffset + y, sourceZ + z);
                     if (Arrays.asList(MATERIALS).contains(block.getType())) {
-                        block.setType(Material.PACKED_ICE);
+                        block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.PACKED_ICE));
                         succeeded = true;
                     }
                     if (radius > 1 && y != 0) { // same shape in bottom direction
                         block = world
                             .getBlockAt(sourceX + x, sourceY + tipOffset - y, sourceZ + z);
                         if (Arrays.asList(MATERIALS).contains(block.getType())) {
-                            block.setType(Material.PACKED_ICE);
+                            block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.PACKED_ICE));
                             succeeded = true;
                         }
                     }

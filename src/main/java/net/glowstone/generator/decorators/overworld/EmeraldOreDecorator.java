@@ -19,7 +19,7 @@ public class EmeraldOreDecorator extends BlockPopulator {
             int y = random.nextInt(28) + 4;
 
             if (world.getBlockAt(x, y, z).getType() == Material.STONE) {
-                world.getBlockAt(x, y, z).setType(Material.EMERALD_ORE);
+                world.getBlockAt(x, y, z).setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.EMERALD_ORE));
             }
         }
     }

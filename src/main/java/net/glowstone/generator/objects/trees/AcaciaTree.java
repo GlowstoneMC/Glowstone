@@ -60,8 +60,8 @@ public class AcaciaTree extends GenericTree {
             Material material = blockTypeAt(centerX, blockY + y, centerZ, world);
             if (material == Material.AIR || LEAF_TYPES.contains(material)) {
                 trunkTopY = blockY + y;
-                delegate.setType(world, centerX, blockY + y, centerZ,
-                        logType);
+                delegate.setTypeAndData(world, centerX, blockY + y, centerZ,
+                        logType, new net.glowstone.block.data.SimpleBlockData(logType));
             }
         }
 
@@ -106,8 +106,8 @@ public class AcaciaTree extends GenericTree {
                     Material material = blockTypeAt(centerX, blockY + y, centerZ, world);
                     if (material == Material.AIR || LEAF_TYPES.contains(material)) {
                         trunkTopY = blockY + y;
-                        delegate.setType(world, centerX, blockY + y,
-                                centerZ, logType);
+                        delegate.setTypeAndData(world, centerX, blockY + y,
+                                centerZ, logType, new net.glowstone.block.data.SimpleBlockData(logType));
                     }
                     twistCount--;
                 }
@@ -131,14 +131,14 @@ public class AcaciaTree extends GenericTree {
         }
 
         // block below trunk is always dirt
-        delegate.setType(world, blockX, blockY - 1, blockZ, Material.DIRT);
+        delegate.setTypeAndData(world, blockX, blockY - 1, blockZ, Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
 
         return true;
     }
 
     private void setLeaves(int x, int y, int z, World world) {
         if (blockTypeAt(x, y, z, world) == Material.AIR) {
-            delegate.setType(world, x, y, z, leavesType);
+            delegate.setTypeAndData(world, x, y, z, leavesType, new net.glowstone.block.data.SimpleBlockData(leavesType));
         }
     }
 }

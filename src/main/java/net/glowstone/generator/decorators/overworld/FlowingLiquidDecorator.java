@@ -55,7 +55,7 @@ public class FlowingLiquidDecorator extends BlockDecorator {
                 }
                 if (airBlockCount == 1) {
                     BlockState state = block.getState();
-                    state.setType(type);
+                    state.setBlockData(new net.glowstone.block.data.SimpleBlockData(type));
                     state.update(true);
                     new PulseTask((GlowBlock) state.getBlock(), true, 1, true).startPulseTask();
                 }

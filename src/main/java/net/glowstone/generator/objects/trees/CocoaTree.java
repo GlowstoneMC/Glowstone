@@ -78,29 +78,29 @@ public class CocoaTree extends JungleTree {
                     && blockTypeAt(trunkX - 1, trunkY + y, trunkZ, world)
                     == Material.AIR) {
                 // TODO: 1.13, set direction to EAST
-                delegate.setType(world, trunkX - 1, trunkY + y,
-                        trunkZ, Material.VINE);
+                delegate.setTypeAndData(world, trunkX - 1, trunkY + y,
+                        trunkZ, Material.VINE, new net.glowstone.block.data.SimpleBlockData(Material.VINE));
             }
             if (random.nextInt(3) != 0
                     && blockTypeAt(trunkX + 1, trunkY + y, trunkZ, world)
                     == Material.AIR) {
                 // TODO: 1.13, set direction to WEST
-                delegate.setType(world, trunkX + 1, trunkY + y,
-                        trunkZ, Material.VINE);
+                delegate.setTypeAndData(world, trunkX + 1, trunkY + y,
+                        trunkZ, Material.VINE, new net.glowstone.block.data.SimpleBlockData(Material.VINE));
             }
             if (random.nextInt(3) != 0
                     && blockTypeAt(trunkX, trunkY + y, trunkZ - 1, world)
                     == Material.AIR) {
                 // TODO: 1.13, set direction to SOUTH
-                delegate.setType(world, trunkX, trunkY + y,
-                        trunkZ - 1, Material.VINE);
+                delegate.setTypeAndData(world, trunkX, trunkY + y,
+                        trunkZ - 1, Material.VINE, new net.glowstone.block.data.SimpleBlockData(Material.VINE));
             }
             if (random.nextInt(3) != 0
                     && blockTypeAt(trunkX, trunkY + y, trunkZ + 1, world)
                     == Material.AIR) {
                 // TODO: 1.13, set direction to NORTH
-                delegate.setType(world, trunkX, trunkY + y,
-                        trunkZ + 1, Material.VINE);
+                delegate.setTypeAndData(world, trunkX, trunkY + y,
+                        trunkZ + 1, Material.VINE, new net.glowstone.block.data.SimpleBlockData(Material.VINE));
             }
         }
     }
@@ -111,7 +111,7 @@ public class CocoaTree extends JungleTree {
                 break;
             }
             // TODO: 1.13, set direction of vine
-            delegate.setType(world, x, y - i, z, Material.VINE);
+            delegate.setTypeAndData(world, x, y - i, z, Material.VINE, new net.glowstone.block.data.SimpleBlockData(Material.VINE));
         }
     }
 
@@ -127,9 +127,9 @@ public class CocoaTree extends JungleTree {
                                         sourceZ)
                                 .getBlock().getRelative(cocoaFace);
                         // TODO: 1.13, set Cocoa BlockData
-                        delegate.setType(world, block.getX(), block.getY(),
+                        delegate.setTypeAndData(world, block.getX(), block.getY(),
                                 block.getZ(),
-                                Material.COCOA);
+                                Material.COCOA, new net.glowstone.block.data.SimpleBlockData(Material.COCOA));
                     }
                 }
             }

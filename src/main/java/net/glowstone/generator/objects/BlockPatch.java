@@ -54,8 +54,7 @@ public class BlockPatch implements TerrainObject {
                         break;
                     }
                     BlockState state = block.getState();
-                    state.setType(type);
-                    state.setData(new MaterialData(type));
+                    state.setBlockData(new net.glowstone.block.data.SimpleBlockData(type));
                     state.update(true);
                     succeeded = true;
                     break;

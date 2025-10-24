@@ -37,7 +37,7 @@ public class ObsidianPillar implements TerrainObject {
                 for (int j = -radius; j <= radius; j++) {
                     if (i * i + j * j <= radius * radius + 1) {
                         Block block = world.getBlockAt(sourceX + i, sourceY + k, sourceZ + j);
-                        block.setType(Material.OBSIDIAN);
+                        block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.OBSIDIAN));
                     }
                 }
             }
@@ -47,7 +47,7 @@ public class ObsidianPillar implements TerrainObject {
             sourceZ + 0.5D, random.nextFloat() * 360, 0);
         world.spawnEntity(loc, EntityType.ENDER_CRYSTAL);
         Block block = world.getBlockAt(sourceX, sourceY + height, sourceZ);
-        block.setType(Material.BEDROCK);
+        block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.BEDROCK));
         return true;
     }
 }

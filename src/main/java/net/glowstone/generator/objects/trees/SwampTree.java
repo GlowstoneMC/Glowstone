@@ -100,7 +100,7 @@ public class SwampTree extends CocoaTree {
             Material material = blockTypeAt(blockX, blockY + y, blockZ, world);
             if (material == Material.AIR || LEAF_TYPES.contains(material)
                     || material == Material.WATER) {
-                delegate.setType(world, blockX, blockY + y, blockZ, logType);
+                delegate.setTypeAndData(world, blockX, blockY + y, blockZ, logType, new net.glowstone.block.data.SimpleBlockData(logType));
             }
         }
 
@@ -108,7 +108,7 @@ public class SwampTree extends CocoaTree {
         addVinesOnLeaves(blockX, blockY, blockZ, world, random);
 
         // block below trunk is always dirt
-        delegate.setType(world, blockX, blockY - 1, blockZ, Material.DIRT);
+        delegate.setTypeAndData(world, blockX, blockY - 1, blockZ, Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
 
         return true;
     }

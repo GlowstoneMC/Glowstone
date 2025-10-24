@@ -42,8 +42,8 @@ public class JungleBush extends GenericTree {
 
         // generates the trunk
         final int adjustedY = l.getBlockY();
-        delegate.setType(world, blockX, adjustedY + 1, blockZ,
-                logType);
+        delegate.setTypeAndData(world, blockX, adjustedY + 1, blockZ,
+                logType, new net.glowstone.block.data.SimpleBlockData(logType));
 
         // generates the leaves
         for (int y = adjustedY + 1; y <= adjustedY + 3; y++) {
@@ -54,7 +54,7 @@ public class JungleBush extends GenericTree {
                     if ((Math.abs(x - l.getBlockX()) != radius
                             || Math.abs(z - l.getBlockZ()) != radius || random.nextBoolean())
                             && !delegate.getBlockState(world, x, y, z).getType().isSolid()) {
-                        delegate.setType(world, x, y, z, leavesType);
+                        delegate.setTypeAndData(world, x, y, z, leavesType, new net.glowstone.block.data.SimpleBlockData(leavesType));
                     }
                 }
             }

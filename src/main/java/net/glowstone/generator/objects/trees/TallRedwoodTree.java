@@ -35,7 +35,7 @@ public class TallRedwoodTree extends RedwoodTree {
                     if ((Math.abs(x - blockX) != radius
                             || Math.abs(z - blockZ) != radius || radius <= 0)
                             && blockTypeAt(x, y, z, world) == Material.AIR) {
-                        delegate.setType(world, x, y, z, leavesType);
+                        delegate.setTypeAndData(world, x, y, z, leavesType, new net.glowstone.block.data.SimpleBlockData(leavesType));
                     }
                 }
             }
@@ -52,8 +52,8 @@ public class TallRedwoodTree extends RedwoodTree {
         }
 
         // block below trunk is always dirt
-        delegate.setType(world, blockX, blockY - 1, blockZ,
-                Material.DIRT);
+        delegate.setTypeAndData(world, blockX, blockY - 1, blockZ,
+                Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
 
         return true;
     }

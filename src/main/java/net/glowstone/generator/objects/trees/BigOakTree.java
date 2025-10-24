@@ -65,8 +65,8 @@ public class BigOakTree extends GenericTree {
                         if (sizeX * sizeX + sizeZ * sizeZ <= size * size && overridables.contains(
                                 blockTypeAt(node.getX() + x, node.getY() + y, node.getZ() + z,
                                         world))) {
-                            delegate.setType(world, node.getX() + x,
-                                    node.getY() + y, node.getZ() + z, leavesType);
+                            delegate.setTypeAndData(world, node.getX() + x,
+                                    node.getY() + y, node.getZ() + z, leavesType, new net.glowstone.block.data.SimpleBlockData(leavesType));
                         }
                     }
                 }
@@ -75,8 +75,8 @@ public class BigOakTree extends GenericTree {
 
         // generate the trunk
         for (int y = 0; y < trunkHeight; y++) {
-            delegate.setType(world, blockX, blockY + y,
-                    blockZ, logType);
+            delegate.setTypeAndData(world, blockX, blockY + y,
+                    blockZ, logType, new net.glowstone.block.data.SimpleBlockData(logType));
         }
 
         // generate the branches
@@ -98,9 +98,9 @@ public class BigOakTree extends GenericTree {
                     int max = Math.max(x, z);
                     // TODO: 1.13, convert to Directional BlockData
                     int direction = max > 0 ? max == x ? 4 : 8 : 0; // EAST / SOUTH
-                    delegate.setType(world,
+                    delegate.setTypeAndData(world,
                             branch.getBlockX(), branch.getBlockY(), branch.getBlockZ(),
-                            logType);
+                            logType, new net.glowstone.block.data.SimpleBlockData(logType));
                 }
             }
         }

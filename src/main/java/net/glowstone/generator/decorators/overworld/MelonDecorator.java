@@ -24,9 +24,7 @@ public class MelonDecorator extends BlockPopulator {
             if (world.getBlockAt(x, y, z).getType() == Material.AIR
                     && world.getBlockAt(x, y - 1, z).getType() == Material.GRASS_BLOCK) {
                 BlockState state = world.getBlockAt(x, y, z).getState();
-                state.setType(Material.MELON);
-                // TODO: 1.13 block data
-                state.setData(new MaterialData(Material.MELON));
+                state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.MELON));
                 state.update(true);
             }
         }

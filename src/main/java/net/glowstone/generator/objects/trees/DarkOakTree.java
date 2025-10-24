@@ -63,10 +63,10 @@ public class DarkOakTree extends GenericTree {
             }
             trunkTopY = blockY + y;
             // SELF, SOUTH, EAST, SOUTH EAST
-            delegate.setType(world, centerX, blockY + y, centerZ, logType);
-            delegate.setType(world, centerX, blockY + y, centerZ + 1, logType);
-            delegate.setType(world, centerX + 1, blockY + y, centerZ, logType);
-            delegate.setType(world, centerX + 1, blockY + y, centerZ + 1, logType);
+            delegate.setTypeAndData(world, centerX, blockY + y, centerZ, logType, new net.glowstone.block.data.SimpleBlockData(logType));
+            delegate.setTypeAndData(world, centerX, blockY + y, centerZ + 1, logType, new net.glowstone.block.data.SimpleBlockData(logType));
+            delegate.setTypeAndData(world, centerX + 1, blockY + y, centerZ, logType, new net.glowstone.block.data.SimpleBlockData(logType));
+            delegate.setTypeAndData(world, centerX + 1, blockY + y, centerZ + 1, logType, new net.glowstone.block.data.SimpleBlockData(logType));
         }
 
         // generates leaves
@@ -104,8 +104,8 @@ public class DarkOakTree extends GenericTree {
                     Material material = blockTypeAt(
                             blockX + x, trunkTopY - y - 1, blockZ + z, world);
                     if (material == Material.AIR || LEAF_TYPES.contains(material)) {
-                        delegate.setType(world, blockX + x,
-                                trunkTopY - y - 1, blockZ + z, logType);
+                        delegate.setTypeAndData(world, blockX + x,
+                                trunkTopY - y - 1, blockZ + z, logType, new net.glowstone.block.data.SimpleBlockData(logType));
                     }
                 }
 
@@ -134,17 +134,17 @@ public class DarkOakTree extends GenericTree {
         }
 
         // block below trunk is always dirt (SELF, SOUTH, EAST, SOUTH EAST)
-        delegate.setType(world, blockX, blockY - 1, blockZ, Material.DIRT);
-        delegate.setType(world, blockX, blockY - 1, blockZ + 1, Material.DIRT);
-        delegate.setType(world, blockX + 1, blockY - 1, blockZ, Material.DIRT);
-        delegate.setType(world, blockX + 1, blockY - 1, blockZ + 1, Material.DIRT);
+        delegate.setTypeAndData(world, blockX, blockY - 1, blockZ, Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
+        delegate.setTypeAndData(world, blockX, blockY - 1, blockZ + 1, Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
+        delegate.setTypeAndData(world, blockX + 1, blockY - 1, blockZ, Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
+        delegate.setTypeAndData(world, blockX + 1, blockY - 1, blockZ + 1, Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
 
         return true;
     }
 
     private void setLeaves(int x, int y, int z, World world) {
         if (blockTypeAt(x, y, z, world) == Material.AIR) {
-            delegate.setType(world, x, y, z, leavesType);
+            delegate.setTypeAndData(world, x, y, z, leavesType, new net.glowstone.block.data.SimpleBlockData(leavesType));
         }
     }
 }

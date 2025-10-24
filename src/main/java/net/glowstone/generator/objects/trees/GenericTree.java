@@ -191,7 +191,7 @@ public class GenericTree implements TerrainObject {
         }
 
         // block below trunk is always dirt
-        delegate.setType(world, blockX, blockY - 1, blockZ, Material.DIRT);
+        delegate.setTypeAndData(world, blockX, blockY - 1, blockZ, Material.DIRT, new net.glowstone.block.data.SimpleBlockData(Material.DIRT));
         return true;
     }
 
@@ -225,7 +225,7 @@ public class GenericTree implements TerrainObject {
                                         World world) {
         Material oldMaterial = blockTypeAt(x, y, z, world);
         if (oldMaterial == Material.AIR || LEAF_TYPES.contains(oldMaterial)) {
-            delegate.setType(world, x, y, z, newMaterial);
+            delegate.setTypeAndData(world, x, y, z, newMaterial, new net.glowstone.block.data.SimpleBlockData(newMaterial));
         }
     }
 

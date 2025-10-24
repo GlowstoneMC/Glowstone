@@ -46,8 +46,7 @@ public class MushroomDecorator extends BlockDecorator {
             if (y < 128 && block.getType() == Material.AIR && Arrays.asList(MATERIALS)
                 .contains(blockBelow.getType())) {
                 BlockState state = block.getState();
-                state.setType(type);
-                state.setData(new MaterialData(type));
+                state.setBlockData(new net.glowstone.block.data.SimpleBlockData(type));
                 state.update(true);
             }
         }
