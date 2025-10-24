@@ -106,10 +106,11 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
             && ((Diode) target.getState().getData()).getFacing() == diode.getFacing();
 
         if (!powered && block.getType() == Material.REPEATER) {
-            block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.REPEATER), true); // TODO: set delay/locked properties
+            // Preserve facing/delay from existing diode data
+            block.setBlockData(new net.glowstone.block.data.LegacyBlockData(Material.REPEATER, ((Diode) block.getState().getData()).getData()), true);
             extraUpdate(block);
         } else if (powered && block.getType() == Material.REPEATER) { // TODO: repeater off data
-            block.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.REPEATER), true); // TODO: set powered/locked properties
+            block.setBlockData(new net.glowstone.block.data.LegacyBlockData(Material.REPEATER, ((Diode) block.getState().getData()).getData()), true);
             extraUpdate(block);
         }
     }

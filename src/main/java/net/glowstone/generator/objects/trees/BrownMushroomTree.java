@@ -77,8 +77,8 @@ public class BrownMushroomTree extends GenericTree {
 
         // generate the stem
         for (int y = 0; y < height; y++) {
-            delegate.setType(world, blockX, blockY + y,
-                    blockZ, Material.MUSHROOM_STEM); // stem texture
+            delegate.setTypeAndData(world, blockX, blockY + y,
+                    blockZ, Material.MUSHROOM_STEM, new net.glowstone.block.data.SimpleBlockData(Material.MUSHROOM_STEM)); // stem texture
         }
 
         // TODO: 1.13, replace with MultipleFacing BlockData
@@ -154,7 +154,7 @@ public class BrownMushroomTree extends GenericTree {
                     // a data of 5 below the top layer means air
                     if (data != 5 || y >= blockY + height) {
                         // TODO: 1.13, set BlockData
-                        delegate.setType(world, x, y, z, type);
+                        delegate.setTypeAndData(world, x, y, z, type, new net.glowstone.block.data.SimpleBlockData(type));
                     }
                 }
             }

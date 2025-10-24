@@ -103,9 +103,14 @@ public class GlowBlock implements Block {
 
     @Override
     public void setBlockData(@NotNull BlockData data, boolean applyPhysics) {
-        // Minimal bridging implementation: set type from BlockData and reset legacy data
+        // Minimal bridging implementation: prefer LegacyBlockData legacy byte when available
         if (data == null) return;
-        setType(data.getMaterial(), (byte) 0, applyPhysics);
+        if (data instanceof net.glowstone.block.data.LegacyBlockData) {
+            byte legacy = ((net.glowstone.block.data.LegacyBlockData) data).getLegacyData();
+            setType(data.getMaterial(), legacy, applyPhysics);
+        } else {
+            setType(data.getMaterial(), (byte) 0, applyPhysics);
+        }
     }
 
     @Override

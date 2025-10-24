@@ -449,7 +449,7 @@ public class StructureBuilder {
             BlockState state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ())
                     .getState();
             delegate.backupBlockState(state.getBlock());
-            state.setType(Material.SPAWNER);
+            state.setBlockData(new net.glowstone.block.data.SimpleBlockData(Material.SPAWNER));
             state.update(true);
 
             state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()).getState();
