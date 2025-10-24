@@ -185,7 +185,8 @@ public class BlockPiston extends BlockDirectional {
             performMovement(pistonBlockFace.getOppositeFace(), blocksToMove, blocksToBreak);
         } else {
             // remove piston head
-            me.getRelative(pistonBlockFace).setTypeIdAndData(0, (byte) 0, true);
+            me.getRelative(pistonBlockFace)
+                .setBlockData(new net.glowstone.block.data.SimpleBlockData(org.bukkit.Material.AIR), true);
         }
     }
 
