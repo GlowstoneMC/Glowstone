@@ -15,6 +15,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import net.glowstone.entity.physics.EntityPhysics;
 
 import java.util.Collections;
 import java.util.List;
@@ -64,8 +65,14 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         }
         this.sourceLocation = location.clone();
         setBoundingBox(0.98, 0.98);
+
+        // Use vanilla-accurate physics for falling blocks
+        setEntityPhysics(EntityPhysics.FALLING_BLOCK);
+
+        // Legacy values for backward compatibility
         setAirDrag(0.98);
         setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
+
         setDropItem(true);
         setHurtEntities(true);
         this.blockData = blockData;

@@ -27,6 +27,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import net.glowstone.entity.physics.EntityPhysics;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -89,9 +90,14 @@ public class GlowItem extends GlowEntity implements Item {
         super(location);
         setItemStack(InventoryUtil.itemOrEmpty(item));
         setBoundingBox(0.25, 0.25);
+
+        // Use vanilla-accurate physics for items
+        setEntityPhysics(EntityPhysics.ITEM);
+
+        // Legacy values for backward compatibility
         setAirDrag(0.98);
         setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
-        setApplyDragBeforeAccel(true);
+
         pickupDelay = 20;
         health = DEFAULT_HEALTH;
     }

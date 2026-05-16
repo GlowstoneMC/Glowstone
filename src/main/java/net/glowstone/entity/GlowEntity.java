@@ -20,6 +20,8 @@ import net.glowstone.entity.objects.GlowLeashHitch;
 import net.glowstone.entity.objects.GlowPainting;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.entity.physics.EntityBoundingBox;
+import net.glowstone.entity.physics.EntityPhysics;
+import net.glowstone.entity.physics.FluidPhysics;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.AttachEntityMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
@@ -232,9 +234,19 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * If drag is applied before appling acceleration while calculating physics.
+     * @deprecated Use {@link #entityPhysics} with appropriate {@link EntityPhysics.TickingOrder}
      */
     @Setter
+    @Deprecated
     protected boolean applyDragBeforeAccel = false;
+
+    /**
+     * The physics configuration for this entity, defining gravity, drag, and ticking order.
+     * When set, vanilla-accurate physics are used. When null, legacy physics are used.
+     */
+    @Getter
+    @Setter
+    protected EntityPhysics entityPhysics = null;
 
     /**
      * This entity's unique id.
@@ -1100,7 +1112,114 @@ public abstract class GlowEntity implements Entity {
     }
 
     protected void pulsePhysics() {
-        // The pending location and the block at that location
+        // Use new physics system if configured, otherwise fall back to legacy
+        if (entityPhysics != null) {
+            pulsePhysicsNew();
+        } else {
+            pulsePhysicsLegacy();
+        }
+    }
+
+    /**
+     * New physics implementation using EntityPhysics configuration.
+     * Implements vanilla-accurate physics with correct ticking order, separate
+     * horizontal/vertical drag, and water flow push mechanics.
+     */
+    protected void pulsePhysicsNew() {
+        Block currentBlock = location.getBlock();
+        Material blockType = currentBlock.getType();
+        boolean inWater = FluidPhysics.isWater(blockType);
+        boolean inLava = FluidPhysics.isLava(blockType);
+        boolean inFluid = inWater || inLava;
+
+        // Apply physics based on ticking order - critical for vanilla accuracy
+        switch (entityPhysics.getTickingOrder()) {
+            case POSITION_ACCELERATION_DRAG:
+                applyPositionUpdate();
+                applyAcceleration(inFluid);
+                applyDrag(inFluid, inWater, inLava);
+                break;
+
+            case ACCELERATION_POSITION_DRAG:
+                applyAcceleration(inFluid);
+                applyPositionUpdate();
+                applyDrag(inFluid, inWater, inLava);
+                break;
+
+            case ACCELERATION_DRAG_POSITION:
+                applyAcceleration(inFluid);
+                applyDrag(inFluid, inWater, inLava);
+                applyPositionUpdate();
+                break;
+        }
+
+        // Apply water flow push if applicable
+        if (inWater && entityPhysics.isPushedByWaterFlow()) {
+            FluidPhysics.applyWaterFlowPush(velocity, entityPhysics, currentBlock);
+        }
+
+        // Apply velocity threshold
+        entityPhysics.applyVelocityThreshold(velocity);
+    }
+
+    private void applyAcceleration(boolean inFluid) {
+        if (!hasGravity()) {
+            return;
+        }
+        double gravity = entityPhysics.getGravity();
+        if (inFluid) {
+            gravity *= 0.25;
+        }
+        velocity.setY(velocity.getY() + gravity);
+    }
+
+    private void applyDrag(boolean inFluid, boolean inWater, boolean inLava) {
+        if (!hasFriction()) {
+            return;
+        }
+        if (inFluid) {
+            double fluidDrag = inWater ? entityPhysics.getWaterDrag() : entityPhysics.getLavaDrag();
+            velocity.multiply(fluidDrag);
+        } else if (isOnGround()) {
+            double groundDrag = slipMultiplier * entityPhysics.getHorizontalDrag();
+            velocity.setX(velocity.getX() * groundDrag);
+            velocity.setY(0);
+            velocity.setZ(velocity.getZ() * groundDrag);
+        } else {
+            velocity.setX(velocity.getX() * entityPhysics.getHorizontalDrag());
+            velocity.setY(velocity.getY() * entityPhysics.getVerticalDrag());
+            velocity.setZ(velocity.getZ() * entityPhysics.getHorizontalDrag());
+        }
+    }
+
+    private void applyPositionUpdate() {
+        Location pendingLocation = location.clone().add(velocity);
+        Block pendingBlock = pendingLocation.getBlock();
+
+        if (pendingBlock.getType().isSolid()) {
+            if (location.clone().add(velocity.getX(), 0, 0).getBlock().getType().isSolid()) {
+                velocity.setX(0);
+            }
+            if (location.clone().add(0, velocity.getY(), 0).getBlock().getType().isSolid()) {
+                velocity.setY(0);
+            }
+            if (location.clone().add(0, 0, velocity.getZ()).getBlock().getType().isSolid()) {
+                velocity.setZ(0);
+            }
+            if (this instanceof Projectile) {
+                EventFactory.getInstance()
+                        .callEvent(new ProjectileHitEvent((Projectile) this, pendingBlock));
+            }
+            collide(pendingBlock);
+            pendingLocation = location.clone().add(velocity);
+        }
+        setRawLocation(pendingLocation);
+    }
+
+    /**
+     * Legacy physics implementation for backward compatibility.
+     */
+    protected void pulsePhysicsLegacy() {
         Location pendingLocation = location.clone().add(velocity);
         Block pendingBlock = pendingLocation.getBlock();
 
@@ -1109,12 +1228,10 @@ public abstract class GlowEntity implements Entity {
             if (pendingLocationX.getBlock().getType().isSolid()) {
                 velocity.setX(0);
             }
-
             Location pendingLocationY = location.clone().add(0, velocity.getY(), 0);
             if (pendingLocationY.getBlock().getType().isSolid()) {
                 velocity.setY(0);
             }
-
             Location pendingLocationZ = location.clone().add(0, 0, velocity.getZ());
             if (pendingLocationZ.getBlock().getType().isSolid()) {
                 velocity.setZ(0);
@@ -1126,7 +1243,6 @@ public abstract class GlowEntity implements Entity {
             collide(pendingBlock);
         } else {
             if (hasFriction()) {
-                // apply friction and gravity
                 if (location.getBlock().getType() == Material.WATER) {
                     velocity.multiply(liquidDrag);
                     velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
@@ -1139,7 +1255,6 @@ public abstract class GlowEntity implements Entity {
                     } else {
                         velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
                     }
-
                     if (isOnGround()) {
                         velocity.setX(velocity.getX() * slipMultiplier);
                         velocity.setY(0);
@@ -1150,14 +1265,7 @@ public abstract class GlowEntity implements Entity {
                     }
                 }
             } else if (hasGravity() && !isOnGround()) {
-                switch (location.getBlock().getType()) {
-                    case WATER:
-                    case LAVA:
-                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
-                        break;
-                    default:
-                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
-                }
+                velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
             }
             setRawLocation(pendingLocation);
         }
