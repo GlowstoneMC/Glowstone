@@ -10,7 +10,7 @@ public class LookAroundTask extends EntityTask {
     private int delay = ThreadLocalRandom.current().nextInt(10) + 15;
 
     public LookAroundTask() {
-        super("look_around");
+        super("look_around", 10);
     }
 
     @Override

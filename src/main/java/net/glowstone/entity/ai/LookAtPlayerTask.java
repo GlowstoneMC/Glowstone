@@ -17,7 +17,7 @@ public class LookAtPlayerTask extends EntityTask {
     private int delay = 1;
 
     public LookAtPlayerTask() {
-        super("look_player");
+        super("look_player", 9);
     }
 
     @Override

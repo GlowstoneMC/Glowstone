@@ -16,6 +16,21 @@ public abstract class EntityTask implements Comparable<EntityTask> {
     @Getter
     @NonNls
     private final String name;
+
+    /**
+     * The priority of this task. Lower values execute first.
+     * Typical ranges:
+     * - 0-2: Critical survival tasks (swim, breathe)
+     * - 3-4: Combat/panic tasks
+     * - 5-6: Target selection
+     * - 7-8: Movement tasks (wander, follow)
+     * - 9-10: Idle behaviors (look around)
+     *
+     * @return the priority of this EntityTask.
+     */
+    @Getter
+    private final int priority;
+
     /**
      * Whether this task is currently being executed.
      *
@@ -33,12 +48,17 @@ public abstract class EntityTask implements Comparable<EntityTask> {
     private boolean paused = false;
 
     public EntityTask(@NonNls String name) {
+        this(name, 5);
+    }
+
+    public EntityTask(@NonNls String name, int priority) {
         this.name = name;
+        this.priority = priority;
     }
 
     @Override
     public int compareTo(EntityTask other) {
-        return 0; // TODO: AI task priority
+        return Integer.compare(this.priority, other.priority);
     }
 
     /**
