@@ -90,8 +90,10 @@ public class GlowItem extends GlowEntity implements Item {
         setItemStack(InventoryUtil.itemOrEmpty(item));
         setBoundingBox(0.25, 0.25);
         setAirDrag(0.98);
+        setVerticalAirDrag(0.98);
         setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
         setApplyDragBeforeAccel(true);
+        setWaterFlowPush(false); // Items are not pushed by water flow in vanilla
         pickupDelay = 20;
         health = DEFAULT_HEALTH;
     }

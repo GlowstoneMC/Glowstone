@@ -65,9 +65,11 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         this.sourceLocation = location.clone();
         setBoundingBox(0.98, 0.98);
         setAirDrag(0.98);
+        setVerticalAirDrag(0.98);
         setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
         setDropItem(true);
         setHurtEntities(true);
+        setWaterFlowPush(false); // Falling blocks are not pushed by water flow
         this.blockData = blockData;
     }
 

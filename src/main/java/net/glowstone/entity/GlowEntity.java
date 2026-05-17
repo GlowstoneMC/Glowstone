@@ -201,29 +201,51 @@ public abstract class GlowEntity implements Entity {
     protected boolean removed;
 
     /**
-     * Velocity reduction applied each tick in air.
+     * Velocity reduction applied each tick in air (horizontal drag).
      * For example, if the multiplier is 0.98,
-     * the entity will lose 2% of its velocity each physics tick.
-     * The default value 1 indicates no air drag.
+     * the entity will lose 2% of its horizontal velocity each physics tick.
+     * The default value 0.91 indicates 9% air drag horizontally for living entities.
      */
     @Setter
     protected double airDrag = 1;
 
     /**
-     * Velocity reduction applied each tick in water.
+     * Velocity reduction applied each tick in air (vertical drag).
      * For example, if the multiplier is 0.98,
-     * the entity will lose 2% of its velocity each physics tick.
+     * the entity will keep 98% of its vertical velocity each physics tick.
+     * The default value 0.98 indicates 2% vertical drag in air.
+     */
+    @Setter
+    protected double verticalAirDrag = 0.98;
+
+    /**
+     * Velocity reduction applied each tick in water (horizontal drag).
+     * For example, if the multiplier is 0.98,
+     * the entity will lose 2% of its horizontal velocity each physics tick.
      * The default value 0.8 indicates 20% water drag.
      */
     @Setter
     protected double liquidDrag = 0.8;
 
     /**
-     * Gravity acceleration applied each tick.
-     * The default value (0,0,0) indicates no gravity acceleration.
+     * Velocity reduction applied each tick in water (vertical drag).
+     * The default value 0.8 indicates 20% water vertical drag.
      */
     @Setter
-    protected Vector gravityAccel = new Vector(0, 0, 0);
+    protected double verticalLiquidDrag = 0.8;
+
+    /**
+     * Gravity acceleration applied each tick.
+     * The default value -0.08 indicates standard living entity gravity.
+     */
+    @Setter
+    protected Vector gravityAccel = new Vector(0, -0.08, 0);
+
+    /**
+     * Whether water flow pushes the entity.
+     */
+    @Setter
+    protected boolean waterFlowPush = true;
 
     /**
      * The slipperiness multiplier applied according to the block this entity was on.
@@ -1126,18 +1148,27 @@ public abstract class GlowEntity implements Entity {
             collide(pendingBlock);
         } else {
             if (hasFriction()) {
-                // apply friction and gravity
-                if (location.getBlock().getType() == Material.WATER) {
-                    velocity.multiply(liquidDrag);
-                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
-                } else if (location.getBlock().getType() == Material.LAVA) {
-                    velocity.multiply(liquidDrag - 0.3);
-                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
+                // apply friction and gravity with proper ticking order
+                Material currentBlock = location.getBlock().getType();
+                if (currentBlock == Material.WATER) {
+                    // Apply horizontal drag first, then vertical drag, then gravity, then flow push
+                    velocity.setX(velocity.getX() * liquidDrag);
+                    velocity.setZ(velocity.getZ() * liquidDrag);
+                    velocity.setY(velocity.getY() * verticalLiquidDrag + getGravityAccel().getY() / 4);
+                    // Apply water flow push
+                    if (waterFlowPush) {
+                        applyWaterFlowPush();
+                    }
+                } else if (currentBlock == Material.LAVA) {
+                    velocity.setX(velocity.getX() * (liquidDrag - 0.3));
+                    velocity.setZ(velocity.getZ() * (liquidDrag - 0.3));
+                    velocity.setY(velocity.getY() * verticalLiquidDrag + getGravityAccel().getY() / 4);
                 } else {
+                    // Air - apply drag before or after acceleration based on flag
                     if (applyDragBeforeAccel) {
                         velocity.setY(airDrag * velocity.getY() + getGravityAccel().getY());
                     } else {
-                        velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
+                        velocity.setY(verticalAirDrag * (velocity.getY() + getGravityAccel().getY()));
                     }
 
                     if (isOnGround()) {
@@ -1150,17 +1181,83 @@ public abstract class GlowEntity implements Entity {
                     }
                 }
             } else if (hasGravity() && !isOnGround()) {
-                switch (location.getBlock().getType()) {
-                    case WATER:
-                    case LAVA:
-                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
-                        break;
-                    default:
-                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
+                Material currentBlock = location.getBlock().getType();
+                if (currentBlock == Material.WATER) {
+                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
+                    if (waterFlowPush) {
+                        applyWaterFlowPush();
+                    }
+                } else if (currentBlock == Material.LAVA) {
+                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
+                } else {
+                    velocity.setY(velocity.getY() + getGravityAccel().getY());
                 }
             }
             setRawLocation(pendingLocation);
         }
+    }
+
+    /**
+     * Applies water flow push to the entity based on the direction of water flow.
+     * This follows vanilla Minecraft behavior where entities are pushed by water currents.
+     */
+    protected void applyWaterFlowPush() {
+        Block block = location.getBlock();
+        if (block.getType() != Material.WATER) {
+            return;
+        }
+
+        // Get neighboring water blocks to determine flow direction
+        Block[] neighbors = {
+            block.getRelative(BlockFace.NORTH),
+            block.getRelative(BlockFace.SOUTH),
+            block.getRelative(BlockFace.EAST),
+            block.getRelative(BlockFace.WEST)
+        };
+
+        double flowX = 0;
+        double flowZ = 0;
+        int waterCount = 0;
+
+        for (Block neighbor : neighbors) {
+            if (neighbor.getType() == Material.WATER) {
+                // Check if neighbor has more water (flowing into this block)
+                double neighborHeight = getWaterHeight(neighbor);
+                double thisHeight = getWaterHeight(block);
+                if (neighborHeight > thisHeight) {
+                    if (neighbor == block.getRelative(BlockFace.NORTH)) {
+                        flowZ -= 1;
+                    } else if (neighbor == block.getRelative(BlockFace.SOUTH)) {
+                        flowZ += 1;
+                    } else if (neighbor == block.getRelative(BlockFace.EAST)) {
+                        flowX += 1;
+                    } else if (neighbor == block.getRelative(BlockFace.WEST)) {
+                        flowX -= 1;
+                    }
+                    waterCount++;
+                }
+            }
+        }
+
+        // Apply flow push proportional to flow magnitude
+        if (waterCount > 0) {
+            double flowMagnitude = Math.sqrt(flowX * flowX + flowZ * flowZ);
+            if (flowMagnitude > 0) {
+                // Flow velocity is proportional to the number of source blocks
+                double flowStrength = 0.014; // Base water flow push strength
+                velocity.setX(velocity.getX() + (flowX / flowMagnitude) * flowStrength * waterCount);
+                velocity.setZ(velocity.getZ() + (flowZ / flowMagnitude) * flowStrength * waterCount);
+            }
+        }
+    }
+
+    /**
+     * Gets the effective water height at a block, considering both water level and flow.
+     */
+    private double getWaterHeight(Block block) {
+        // Water blocks have a data value representing water level
+        // Full water block = 0, decreasing by 1 for each half-block of height
+        return block.getType() == Material.WATER ? 1.0 : 0.0;
     }
 
     /**
