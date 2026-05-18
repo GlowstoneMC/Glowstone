@@ -91,7 +91,8 @@ public class BlockChest extends BlockContainer {
             GlowBlock otherPartBlock = chestBlock.getRelative(otherPart);
 
             if (getAttachedChest(otherPartBlock) != null) {
-                ConsoleMessages.Warn.Block.Chest.TRIPLE_END.log();
+                chest.setFacingDirection(normalFacing);
+                state.setData(chest);
                 return;
             }
 
@@ -135,17 +136,7 @@ public class BlockChest extends BlockContainer {
 
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
-        Collection<BlockFace> nearChests = searchChests(block);
-
-        if (nearChests.size() == 1) {
-            GlowBlock otherPartBlock = block.getRelative(nearChests.iterator().next());
-
-            if (getAttachedChest(otherPartBlock) != null) {
-                return false;
-            }
-        }
-        return nearChests.size() <= 1;
-
+        return searchChests(block).size() <= 1;
     }
 
     private Collection<BlockFace> searchChests(GlowBlock block) {
