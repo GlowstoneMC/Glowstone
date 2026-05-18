@@ -1,4 +1,4 @@
-Here is a list of people who have supported Glowstone [on Bountysource](https://www.bountysource.com/teams/glowstonemc)!
+Here is a list of people who have supported Glowstone!
 
 * [Aternos](https://aternos.org/)
 * [Martin Panzer (Postremus)](https://martinpanzer.de/)
