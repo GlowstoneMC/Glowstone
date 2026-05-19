@@ -10,6 +10,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.MaterialUtil;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -20,7 +21,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockLeaves extends BlockType {
 
-    private final byte[] blockMap = new byte[11 * 11 * 11];
+    private static final int LOG_SEARCH_RADIUS = 6;
+    private static final int LEAF_DECAY_DISTANCE = 7;
+    private static final int BLOCK_MAP_SIZE = LOG_SEARCH_RADIUS * 2 + 3;
+
+    private final byte[] blockMap = new byte[BLOCK_MAP_SIZE * BLOCK_MAP_SIZE * BLOCK_MAP_SIZE];
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
@@ -72,8 +77,7 @@ public class BlockLeaves extends BlockType {
             for (int z = 0; z < 3; z++) {
                 for (int y = 0; y < 3; y++) {
                     GlowBlock b = world.getBlockAt(block.getLocation().add(x - 1, y - 1, z - 1));
-                    // TODO: 1.13 leaves
-                    if (b.getType() == Material.LEGACY_LEAVES || b.getType() == Material.LEGACY_LEAVES_2) {
+                    if (isLeaf(b.getType())) {
                         GlowBlockState state = b.getState();
                         if ((state.getRawData() & 0x08) == 0 && (state.getRawData() & 0x04)
                             == 0) { // check decay is off and decay is on
@@ -97,18 +101,18 @@ public class BlockLeaves extends BlockType {
         }
         GlowWorld world = block.getWorld();
 
-        // build a 9x9x9 box to map neighboring blocks
-        for (int x = 0; x < 9; x++) {
-            for (int z = 0; z < 9; z++) {
-                for (int y = 0; y < 9; y++) {
+        // build a box to map neighboring blocks
+        int searchSize = LOG_SEARCH_RADIUS * 2 + 1;
+        for (int x = 0; x < searchSize; x++) {
+            for (int z = 0; z < searchSize; z++) {
+                for (int y = 0; y < searchSize; y++) {
                     GlowBlock b = world
-                        .getBlockAt(block.getLocation().add(x - 4, y - 4, z - 4));
+                        .getBlockAt(block.getLocation().add(x - LOG_SEARCH_RADIUS,
+                            y - LOG_SEARCH_RADIUS, z - LOG_SEARCH_RADIUS));
                     byte val = 127;
-                    // TODO: 1.13 leaves and log types
-                    if (b.getType() == Material.LEGACY_LOG || b.getType() == Material.LEGACY_LOG_2) {
+                    if (isLog(b.getType())) {
                         val = 0;
-                    } else if (b.getType() == Material.LEGACY_LEAVES
-                        || b.getType() == Material.LEGACY_LEAVES_2) {
+                    } else if (isLeaf(b.getType())) {
                         val = -1;
                     }
                     setBlockInMap(val, x, y, z);
@@ -117,12 +121,12 @@ public class BlockLeaves extends BlockType {
         }
 
         // browse the map in several pass to detect connected leaves:
-        // leaf block that is 5 blocks away from log or without connection
+        // leaf block that is 7 blocks away from log or without connection
         // to another connected leaves block will decay
-        for (int i = 0; i < 4; i++) {
-            for (int x = 0; x < 9; x++) {
-                for (int z = 0; z < 9; z++) {
-                    for (int y = 0; y < 9; y++) {
+        for (int i = 0; i < LEAF_DECAY_DISTANCE - 1; i++) {
+            for (int x = 0; x < searchSize; x++) {
+                for (int z = 0; z < searchSize; z++) {
+                    for (int y = 0; y < searchSize; y++) {
                         if (getBlockInMap(x, y, z) != i) {
                             continue;
                         }
@@ -149,7 +153,8 @@ public class BlockLeaves extends BlockType {
             }
         }
 
-        if (getBlockInMap(4, 4, 4) < 0) { // leaf decay
+        if (getBlockInMap(LOG_SEARCH_RADIUS, LOG_SEARCH_RADIUS, LOG_SEARCH_RADIUS) < 0) {
+            // leaf decay
             LeavesDecayEvent decayEvent = new LeavesDecayEvent(block);
             EventFactory.getInstance().callEvent(decayEvent);
             if (!decayEvent.isCancelled()) {
@@ -162,10 +167,20 @@ public class BlockLeaves extends BlockType {
     }
 
     private byte getBlockInMap(int x, int y, int z) {
-        return blockMap[((x + 1) * 11 + z + 1) * 11 + y + 1];
+        return blockMap[((x + 1) * BLOCK_MAP_SIZE + z + 1) * BLOCK_MAP_SIZE + y + 1];
     }
 
     private void setBlockInMap(byte val, int x, int y, int z) {
-        blockMap[((x + 1) * 11 + z + 1) * 11 + y + 1] = val;
+        blockMap[((x + 1) * BLOCK_MAP_SIZE + z + 1) * BLOCK_MAP_SIZE + y + 1] = val;
+    }
+
+    private static boolean isLog(Material material) {
+        return material == Material.LEGACY_LOG || material == Material.LEGACY_LOG_2
+            || MaterialUtil.LOGS.contains(material);
+    }
+
+    private static boolean isLeaf(Material material) {
+        return material == Material.LEGACY_LEAVES || material == Material.LEGACY_LEAVES_2
+            || MaterialUtil.LEAVES.contains(material);
     }
 }
