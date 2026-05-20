@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.jetbrains.annotations.NonNls;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -157,8 +157,7 @@ public class Library implements Comparable<Library> {
      * @return A map that is able to be serialized into a config.
      */
     public Map<?, ?> toConfigMap() {
-        // Using LinkedHashMap to keep the props in order when written into the config file.
-        Map<String, Object> configMap = new LinkedHashMap<>();
+        Map<String, Object> configMap = new HashMap<>();
         configMap.put(GROUP_ID_KEY, libraryKey.getGroupId());
         configMap.put(ARTIFACT_ID_KEY, libraryKey.getArtifactId());
         configMap.put(VERSION_KEY, version);
@@ -168,7 +167,7 @@ public class Library implements Comparable<Library> {
         }
 
         if (checksumType != null && checksumValue != null) {
-            Map<String, Object> checksumMap = new LinkedHashMap<>();
+            Map<String, Object> checksumMap = new HashMap<>();
             checksumMap.put(CHECKSUM_TYPE_KEY, checksumType.getName());
             checksumMap.put(CHECKSUM_VALUE_KEY, checksumValue);
             configMap.put(CHECKSUM_KEY, checksumMap);
