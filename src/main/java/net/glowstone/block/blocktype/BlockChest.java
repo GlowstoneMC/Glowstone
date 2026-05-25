@@ -2,6 +2,8 @@ package net.glowstone.block.blocktype;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
@@ -73,8 +75,8 @@ public class BlockChest extends BlockContainer {
 
             BlockFace normalFacing = getOppositeBlockFace(player.getLocation(), false);
 
-            Collection<BlockFace> attachedChests = searchChests(chestBlock);
-            switch (attachedChests.size()) {
+            List<BlockFace> attachableChests = findAttachableChests(chestBlock);
+            switch (attachableChests.size()) {
                 case 0:
                     chest.setFacingDirection(normalFacing);
                     state.setData(chest);
@@ -85,14 +87,9 @@ public class BlockChest extends BlockContainer {
                     ConsoleMessages.Warn.Block.Chest.TRIPLE_MIDDLE.log();
                     return;
             }
-            BlockFace otherPart = attachedChests.iterator().next();
+            BlockFace otherPart = attachableChests.iterator().next();
 
             GlowBlock otherPartBlock = chestBlock.getRelative(otherPart);
-
-            if (getAttachedChest(otherPartBlock) != null) {
-                ConsoleMessages.Warn.Block.Chest.TRIPLE_END.log();
-                return;
-            }
 
             BlockState otherPartState = otherPartBlock.getState();
             MaterialData otherPartData = otherPartState.getData();
@@ -134,23 +131,21 @@ public class BlockChest extends BlockContainer {
 
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
-        Collection<BlockFace> nearChests = searchChests(block);
-
-        if (nearChests.size() == 1) {
-            GlowBlock otherPartBlock = block.getRelative(nearChests.iterator().next());
-
-            if (getAttachedChest(otherPartBlock) != null) {
-                return false;
-            }
-        }
-        return nearChests.size() <= 1;
+        return findAttachableChests(block).size() <= 1;
 
     }
 
     private Collection<BlockFace> searchChests(GlowBlock block) {
+        return searchChests(block, null);
+    }
+
+    private Collection<BlockFace> searchChests(GlowBlock block, BlockFace excludedFace) {
         Collection<BlockFace> chests = new ArrayList<>();
 
         for (BlockFace face : SIDES) {
+            if (face == excludedFace) {
+                continue;
+            }
             GlowBlock possibleChest = block.getRelative(face);
             if (possibleChest.getType() == (isTrapped ? Material.TRAPPED_CHEST : Material.CHEST)) {
                 chests.add(face);
@@ -160,13 +155,23 @@ public class BlockChest extends BlockContainer {
         return chests;
     }
 
+    private List<BlockFace> findAttachableChests(GlowBlock block) {
+        return searchChests(block).stream()
+            .filter(face -> getAttachedChest(block.getRelative(face), face.getOppositeFace()) == null)
+            .collect(Collectors.toList());
+    }
+
     /**
      * Get the other half of a chest, or null if the given chest isn't part of a double chest.
      * @param me a chest block
      * @return the other half of the double chest if {@code me} is part of one; null otherwise
      */
     public BlockFace getAttachedChest(GlowBlock me) {
-        Collection<BlockFace> attachedChests = searchChests(me);
+        return getAttachedChest(me, null);
+    }
+
+    private BlockFace getAttachedChest(GlowBlock me, BlockFace excludedFace) {
+        Collection<BlockFace> attachedChests = searchChests(me, excludedFace);
         if (attachedChests.isEmpty()) {
             return null;
         }
