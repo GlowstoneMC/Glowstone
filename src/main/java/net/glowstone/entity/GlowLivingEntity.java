@@ -452,6 +452,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (nextAmbientTime == 0) {
             nextAmbientTime = getAmbientDelay();
         }
+
+        // pulse AI tasks
+        if (hasAI()) {
+            taskManager.pulse();
+        }
     }
 
     @Override
@@ -1147,6 +1152,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             Sound hurtSound = getHurtSound();
             if (hurtSound != null && !isSilent()) {
                 world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
+            }
+            // triggered state for passive mobs to flee
+            if (hasAI() && (state == MobState.IDLE || state == MobState.WANDER)) {
+                setState(MobState.ATTACKED);
             }
         }
         setLastDamager(source);

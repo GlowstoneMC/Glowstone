@@ -44,6 +44,8 @@ public class GlowAnimal extends GlowAgeable implements Animals {
         if (type != null) {
             EntityDirector.registerEntityMobState(type, MobState.IDLE, "look_around");
             EntityDirector.registerEntityMobState(type, MobState.IDLE, "look_player");
+            EntityDirector.registerEntityMobState(type, MobState.IDLE, "wander");
+            EntityDirector.registerEntityMobState(type, MobState.ATTACKED, "flee");
         }
         setState(MobState.IDLE);
 

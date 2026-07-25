@@ -20,6 +20,9 @@ public class EntityDirector {
         registerEntityTask("look_around", LookAroundTask.class);
         registerEntityTask("look_player", LookAtPlayerTask.class);
         registerEntityTask("follow_player", FollowPlayerTask.class);
+        registerEntityTask("wander", WanderTask.class);
+        registerEntityTask("melee_attack", MeleeAttackTask.class);
+        registerEntityTask("flee", FleeTask.class);
     }
 
     /**

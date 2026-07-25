@@ -6,6 +6,7 @@ import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Monster;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -88,7 +89,7 @@ public class LookAtPlayerTask extends EntityTask {
         // todo: pitch rotation (head up/down)
         delay = 1;
 
-        if (entity.getType() == EntityType.ZOMBIE) {
+        if (entity instanceof Monster) {
             entity.setState(HostileMobState.TARGETING);
         }
     }

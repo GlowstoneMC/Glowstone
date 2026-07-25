@@ -1,6 +1,9 @@
 package net.glowstone.entity.monster;
 
 import net.glowstone.entity.GlowCreature;
+import net.glowstone.entity.ai.EntityDirector;
+import net.glowstone.entity.ai.HostileMobState;
+import net.glowstone.entity.ai.MobState;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
@@ -21,6 +24,13 @@ public class GlowMonster extends GlowCreature implements Monster {
      */
     public GlowMonster(Location loc, EntityType type, double maxHealth) {
         super(loc, type, maxHealth);
+        if (type != null) {
+            EntityDirector.registerEntityMobState(type, MobState.IDLE, "look_around");
+            EntityDirector.registerEntityMobState(type, MobState.IDLE, "look_player");
+            EntityDirector.registerEntityMobState(type, MobState.IDLE, "wander");
+            EntityDirector.registerEntityMobState(type, HostileMobState.TARGETING, "melee_attack");
+        }
+        setState(MobState.IDLE);
     }
 
     /**
