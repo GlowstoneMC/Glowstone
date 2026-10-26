@@ -22,6 +22,7 @@ jobs:
       uses: actions/setup-java@v6
       with:
         java-version: ${{ matrix.java }}
+        distribution: temurin
         server-id: glowstone-upstream
         server-username: MAVEN_USERNAME
         server-password: MAVEN_PASSWORD
