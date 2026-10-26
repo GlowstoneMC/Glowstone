@@ -82,7 +82,7 @@ jobs:
       if: ${{ matrix.java == 8 && github.ref == 'refs/heads/1.12' }}
       run: |
         sshpass -e scp target/glowstone.jar glowstone@$SSH_ADDRESS:
-        sshpass -e ssh glowstone@$SSH_ADDRESS sudo systemctl restart glowstone
+        sshpass -e ssh glowstone@$SSH_ADDRESS sudo systemctl stop glowstone
       env:
         SSH_ADDRESS: ${{ secrets.SSH_ADDRESS }}
         SSHPASS: ${{ secrets.SSH_PASSWORD }}
